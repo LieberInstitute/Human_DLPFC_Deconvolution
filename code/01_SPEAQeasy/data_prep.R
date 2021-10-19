@@ -1,0 +1,30 @@
+library(tidyverse)
+library(here)
+
+#### Get Data info ####
+
+fastq1_fn <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*1.fastq.gz")
+fastq2_fn <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*2.fastq.gz")
+
+library_type <- read_csv(here("processed-data", "01_SPEAQeasy", "library_type.csv"))
+
+data_info <- tibble(fastq1 = fastq1_fn, fastq2 = fastq2_fn) %>%
+  separate(fastq1, into = c("dir", "sample", NA), extra = "drop", sep = "/", remove = FALSE)%>%
+  mutate(Sample = paste0(dir, "-",sample)) %>%
+  separate(sample, into = c("BrNum", "location", "library_prep"), sep = "_") %>%
+  replace_na(list(library_prep = "Bulk")) %>%
+  left_join(library_type) %>%
+  select(Sample, dir, BrNum, location, library_prep, library_type, round, fastq1, fastq2)
+
+data_info %>% count(library_type)
+data_info %>% count(BrNum)
+
+write_csv(data_info, file = here("processed-data", "01_SPEAQeasy", "data_info.csv"))
+
+#### Create Manifest ####
+
+manifest <- data_info %>% 
+  mutate(zeros = 0, zeros2 = 0) %>%
+  select(fastq1, zeros, fastq2, zeros2, Sample)
+
+write.table(manifest, file = here("raw-data", "bulkRNA", "samples.manifest"), quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
