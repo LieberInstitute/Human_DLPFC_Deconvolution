@@ -1,8 +1,13 @@
 library(tidyverse)
 library(here)
+library(jaffelab)
 
+## move file to make names compatable w/ SPEAQeasy
+# fastq <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*Br*")
+# fast_path <- unlist(map(strsplit(fastq,"/"), ~paste0(.x[[1]], "/", .x[[2]])))
+# fast_new <- paste0(fast_path, "/" ,ss(fastq,"/"),"-", basename(fastq))
+# cat(paste("mv", fastq, fast_new), file = "../../raw-data/bulkRNA/mv_data.sh", sep = "\n)
 #### Get Data info ####
-
 fastq1_fn <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*1.fastq.gz")
 fastq2_fn <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*2.fastq.gz")
 

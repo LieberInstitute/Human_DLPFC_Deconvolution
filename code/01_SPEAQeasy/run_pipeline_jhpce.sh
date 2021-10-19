@@ -18,7 +18,7 @@ nextflow $ORIG_DIR/main.nf \
     --input "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/bulkRNA" \
     --output "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/01_SPEAQeasy/round1_2021-10-19" \
     --annotation "/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/SPEAQeasy/Annotation" \
-    --experiment "Human_DLPFC_Deconvolution"
+    --experiment "Human_DLPFC_Deconvolution" \
     -with-report execution_reports/JHPCE_run.html \
     -profile jhpce
 
