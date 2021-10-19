@@ -21,7 +21,7 @@ echo "Task id: ${SGE_TASK_ID}"
 module list
 
 
-MAINDIR="/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/"
+MAINDIR="/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution"
 
 ## Set new permissions
 find ${MAINDIR} -type d -exec nfs4_setfacl -a "A:g:hickslab@cm.cluster:RWX" {} \;
