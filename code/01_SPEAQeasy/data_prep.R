@@ -16,11 +16,11 @@ library_type <- read.csv(here("processed-data", "01_SPEAQeasy", "library_type.cs
 
 data_info <- tibble(fastq = fastq, fastq1 = fastq1_fn, fastq2 = fastq2_fn) %>%
   separate(fastq, into = c("Dataset", "sample", NA), extra = "drop", sep = "/")%>%
-  mutate(Sample = paste0(Dataset, "-",sample)) %>%
+  mutate(SAMPLE_ID = paste0(Dataset, "-",sample)) %>%
   separate(sample, into = c("BrNum", "location", "library_prep"), sep = "_") %>%
   replace_na(list(library_prep = "Bulk")) %>%
   left_join(library_type) %>%
-  select(Sample, Dataset, BrNum, location, library_prep, library_type, round, fastq1, fastq2)
+  select(SAMPLE_ID, Dataset, BrNum, location, library_prep, library_type, round, fastq1, fastq2)
 
 data_info %>% count(library_type)
 data_info %>% count(BrNum)
@@ -30,6 +30,6 @@ write_csv(data_info, file = here("processed-data", "01_SPEAQeasy", "data_info.cs
 #### Create Manifest ####
 manifest <- data_info %>% 
   mutate(zeros = 0, zeros2 = 0) %>%
-  select(fastq1, zeros, fastq2, zeros2, Sample)
+  select(fastq1, zeros, fastq2, zeros2, SAMPLE_ID)
 
 write.table(manifest, file = here("raw-data", "bulkRNA", "samples.manifest"), quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
