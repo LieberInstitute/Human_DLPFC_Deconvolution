@@ -93,10 +93,9 @@ pd_new_qc_key <- pd_new_qc_long %>%
   mutate(anno = ss(SAMPLE_ID, "-", 3)) %>%
   highlight_key(~anno)
 
-
 qc_new_boxplots <-  pd_new_qc_key %>%
   ggplot(aes(x = Dataset, y = value)) +
-  geom_boxplot(aes(fill = `library_type`)) +
+  geom_boxplot(aes(fill = `library_type`), outlier.shape = NA) +
   geom_jitter() +
   facet_wrap(~qc_var, scales = "free_y", ncol = 5 ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -105,4 +104,16 @@ qc_new_boxplots <-  pd_new_qc_key %>%
 
 ggsave(qc_new_boxplots, filename = here("plots", "02_quality_control", "qc_new_boxplots.png"), width = 20, height = 12)
 
-qc_new_boxplots_plotly <- ggplotly(prop_key_plot_signif, tooltip = c("colour","text"))
+qc_new_boxplots_plotly <- ggplotly(qc_new_boxplots, tooltip = c("colour","text"))
+
+htmlwidgets::saveWidget(highlight(qc_new_boxplots_plotly,
+                                  on = "plotly_click",
+                                  off = "plotly_doubleclick",
+                                  selectize = TRUE,
+                                  dynamic = TRUE,
+                                  persistent = FALSE,),
+                        selfcontained = FALSE,
+                        file = here("plots", "02_quality_control", "qc_new_boxplots.html"))
+
+
+pd_new %>% filter(totalMapped < 5e7)
