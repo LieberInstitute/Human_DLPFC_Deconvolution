@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=2G,h_vmem=2G,h_fsize=400G
-#$ -N move_bulk_round1
-#$ -o logs/move_bulk_round1.$TASK_ID.txt
-#$ -e logs/move_bulk_round1.$TASK_ID.txt
+#$ -N move_bulk_round2
+#$ -o logs/move_bulk_round2.$TASK_ID.txt
+#$ -e logs/move_bulk_round2.$TASK_ID.txt
 #$ -m e
 #$ -t 1-2
 #$ -tc 2
@@ -22,7 +22,7 @@ echo "Task id: ${SGE_TASK_ID}"
 module list
 
 ## Locate directory
-ORIGINALDIR=$(awk "NR==${SGE_TASK_ID}" bulk_round1_dirs.txt)
+ORIGINALDIR=$(awk "NR==${SGE_TASK_ID}" bulk_round2_dirs.txt)
 echo "Processing directory ${ORIGINALDIR}"
 date
 
