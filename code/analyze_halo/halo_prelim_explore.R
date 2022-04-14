@@ -5,65 +5,44 @@ library("sessioninfo")
 halo_files <- list.files(here("raw-data","HALO"), full.names = TRUE)
 names(halo_files) <- gsub(".csv", "", basename(halo_files))
 
-halo_test <- read_csv(halo_files[[1]])
-colnames(halo_test)
 
-halo_test %>% count(`Analysis Region`)
+halo_anno <- map2(halo_files, names(halo_files), function(fn, samp){
+  output <- read_csv(fn) %>%
+    mutate(cell_type = case_when(OLIG2 == 1 ~ "Oligo",
+                                 SLC17A7 == 1 ~ "Excit",
+                                 TMEM119 == 1 ~ "Micro",
+                                 TRUE~"Other"),
+           Sample_name = samp) %>%
+    separate(Sample_name , into = c(NA, "Round", "Sample", "Combo", NA), sep = "_")
+    ## maybe add combo to "Other" label?
+  return(output)
+})
 
-halo_test %>% filter(`OLIG2 (Alexa 647) Positive` == 1) %>%
-  count(`OLIG2 (Alexa 647) Positive Cytoplasm`, 
-        `OLIG2 (Alexa 647) Positive Nucleus`, 
-        OLIG2)
+halo_all <- do.call("rbind", halo_anno)
 
-halo_test %>% count(`TMEM119 (Alexa 555) Copies` > 0, TMEM119)
+(sample_n <- halo_all %>% count(Sample, Combo) %>% rename(sample_n = n))
+# Sample Combo sample_n
+# <chr>  <chr>    <int>
+# 1 2720M  Star     22677
+# 2 6432A  Star     54921
+# 3 6432M  Star     21017
+# 4 6432P  Star     31633
+# 5 6471A  Star     46238
 
-halo_test %>% count(OLIG2, SLC17A7, TMEM119)
-# OLIG2 SLC17A7 TMEM119     n
-# <dbl>   <dbl>   <dbl> <int>
-# 1     0       0       0 12631 Other/multi
-# 2     0       0       1   876  Micorglia
-# 3     0       1       0  6341 Excit
-# 4     1       0       0  2829 Oligo
+sample_prop <- halo_all %>% 
+  group_by(Sample, cell_type) %>%
+  count() %>%
+  left_join(sample_n) %>%
+  mutate(prop = n/sample_n)
 
-halo_test %>% count(`OLIG2 (Alexa 647) Positive`,
-                    `SLC17A7 (Opal 520) Positive`,
-                    `TMEM119 (Alexa 555) Copies` > 0)
-# `OLIG2 (Alexa 647) Positive` `SLC17A7 (Opal 520) Positive` `\`TMEM119 (Alexa 555) Copies\` > 0`     n
-# <dbl>                         <dbl> <lgl>                                <int>
-#   1                            0                             0 FALSE                                10016 
-# 2                            0                             0 TRUE                                   876 * 
-# 3                            0                             1 FALSE                                 6341 *
-# 4                            0                             1 TRUE                                   300
-# 5                            1                             0 FALSE                                 2829 * 
-# 6                            1                             0 TRUE                                  1430
-# 7                            1                             1 FALSE                                  530
-# 8                            1                             1 TRUE                                   355
+(sample_prop_wide <- sample_prop %>%
+  select(Sample, cell_type, prop) %>%
+  pivot_wider(names_from = cell_type, values_from = prop))
+# Sample    Excit    Micro Oligo Other
+# <chr>     <dbl>    <dbl> <dbl> <dbl>
+# 1 2720M   0.280   0.0386   0.125 0.557
+# 2 6432A   0.00275 0.00120  0.674 0.322
+# 3 6432M  NA       0.000666 0.868 0.131
+# 4 6432P   0.116   0.0602   0.269 0.555
+# 5 6471A   0.156   0.0319   0.257 0.555
 
-
-halo_test %>% select(starts_with("TMEM119")) %>% summary()
-
-halo_test %>%
-  ggplot(aes(xmin = XMin, xmax = XMax, ymin = YMin, ymax = YMax)) +
-  geom_rect() +
-  theme_void() +
-  coord_equal()
-
-halo_test2 <- halo_test %>%
-  mutate(cell_type = case_when(OLIG2 == 1 ~ "Oligo",
-                              SLC17A7 == 1 ~ "Excit",
-                              TMEM119 == 1 ~ "Micro",
-                              TRUE~"Other"))
-
-halo_test2 %>% count(cell_type) %>%
-  mutate(prop = n/nrow(halo_test2))
-
-# cell_type     n   prop
-# <chr>     <int>  <dbl>
-# 1 Excit      6341 0.280 
-# 2 Micro       876 0.0386
-# 3 Oligo      2829 0.125 
-# 4 Other     12631 0.557
-
-dlpfc_cell_types <- read_csv("code/analyze_halo/DLPFC_cell_types.csv")
-total_dlpfc <- sum(dlpfc_cell_types$DLPFC)
-dlpfc_cell_types %>% mutate(prop = DLPFC/total_dlpfc)
