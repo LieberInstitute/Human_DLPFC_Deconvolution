@@ -12,6 +12,10 @@ Transfered from `/dcs04/lieber/data/transfers/psomagen/` with `_jhpce_org/move_b
 
 
 ## HALO
+**Metadata + Notes**  
+`Deconvolution_HALO_Analysis.xlsx`  
+Downloaded from [this google sheet](https://docs.google.com/spreadsheets/d/1bld6g-7MN2G18b8hwXEkC0dDOhWlzmFTAmpcPYdgXjI) on 6/29/22  
+
 
 **Prelim files from Kelsey** Apr-2022
 
@@ -25,4 +29,5 @@ Transfered from `/dcs04/lieber/data/transfers/psomagen/` with `_jhpce_org/move_b
 `HA_R1_6432P_Star_Final.csv`  
 `HA_R1_6471A_Circle_Final.csv`  
 `HA_R1_6471A_Star_Final.csv`  
+
 
