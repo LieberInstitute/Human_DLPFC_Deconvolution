@@ -1318,6 +1318,40 @@ AN00000906/Br8667_Mid_Cyto/Br8667_Mid_Cyto_2.fastq.gz.md5sum
           AN00000906/Br8667_Mid/Br8667_Mid_2.fastq.gz.md5sum 
                                                         TRUE 
 NOW All unique basenames: TRUE
+
+AN00000904/Br2720_Post_Cyt/AN00000904_Br2720_Post_Cyt_1.fastq.gz -> AN00000904/Br2720_Post_Cyto/AN00000904_Br2720_Post_Cyto_1.fastq.gz
+AN00000904/Br2720_Post_Cyt/AN00000904_Br2720_Post_Cyt_1.fastq.gz.md5sum -> AN00000904/Br2720_Post_Cyto/AN00000904_Br2720_Post_Cyto_1.fastq.gz.md5sum
+AN00000904/Br2720_Post_Cyt/AN00000904_Br2720_Post_Cyt_2.fastq.gz -> AN00000904/Br2720_Post_Cyto/AN00000904_Br2720_Post_Cyto_2.fastq.gz
+AN00000904/Br2720_Post_Cyt/AN00000904_Br2720_Post_Cyt_2.fastq.gz.md5sum -> AN00000904/Br2720_Post_Cyto/AN00000904_Br2720_Post_Cyto_2.fastq.gz.md5sum
+AN00000904/Br6423_Post_Cyt/AN00000904_Br6423_Post_Cyt_1.fastq.gz -> AN00000904/Br6423_Post_Cyto/AN00000904_Br6423_Post_Cyto_1.fastq.gz
+AN00000904/Br6423_Post_Cyt/AN00000904_Br6423_Post_Cyt_1.fastq.gz.md5sum -> AN00000904/Br6423_Post_Cyto/AN00000904_Br6423_Post_Cyto_1.fastq.gz.md5sum
+AN00000904/Br6423_Post_Cyt/AN00000904_Br6423_Post_Cyt_2.fastq.gz -> AN00000904/Br6423_Post_Cyto/AN00000904_Br6423_Post_Cyto_2.fastq.gz
+AN00000904/Br6423_Post_Cyt/AN00000904_Br6423_Post_Cyt_2.fastq.gz.md5sum -> AN00000904/Br6423_Post_Cyto/AN00000904_Br6423_Post_Cyto_2.fastq.gz.md5sum
+AN00000904/Br6522_Post_Cyt/AN00000904_Br6522_Post_Cyt_1.fastq.gz -> AN00000904/Br6522_Post_Cyto/AN00000904_Br6522_Post_Cyto_1.fastq.gz
+AN00000904/Br6522_Post_Cyt/AN00000904_Br6522_Post_Cyt_1.fastq.gz.md5sum -> AN00000904/Br6522_Post_Cyto/AN00000904_Br6522_Post_Cyto_1.fastq.gz.md5sum
+AN00000904/Br6522_Post_Cyt/AN00000904_Br6522_Post_Cyt_2.fastq.gz -> AN00000904/Br6522_Post_Cyto/AN00000904_Br6522_Post_Cyto_2.fastq.gz
+AN00000904/Br6522_Post_Cyt/AN00000904_Br6522_Post_Cyt_2.fastq.gz.md5sum -> AN00000904/Br6522_Post_Cyto/AN00000904_Br6522_Post_Cyto_2.fastq.gz.md5sum
+AN00000904/Br8492_Post_Cyt/AN00000904_Br8492_Post_Cyt_1.fastq.gz -> AN00000904/Br8492_Post_Cyto/AN00000904_Br8492_Post_Cyto_1.fastq.gz
+AN00000904/Br8492_Post_Cyt/AN00000904_Br8492_Post_Cyt_1.fastq.gz.md5sum -> AN00000904/Br8492_Post_Cyto/AN00000904_Br8492_Post_Cyto_1.fastq.gz.md5sum
+AN00000904/Br8492_Post_Cyt/AN00000904_Br8492_Post_Cyt_2.fastq.gz -> AN00000904/Br8492_Post_Cyto/AN00000904_Br8492_Post_Cyto_2.fastq.gz
+AN00000904/Br8492_Post_Cyt/AN00000904_Br8492_Post_Cyt_2.fastq.gz.md5sum -> AN00000904/Br8492_Post_Cyto/AN00000904_Br8492_Post_Cyto_2.fastq.gz.md5sum
+AN00000906/Br2720_Post_Cyt/AN00000906_Br2720_Post_Cyt_1.fastq.gz -> AN00000906/Br2720_Post_Cyto/AN00000906_Br2720_Post_Cyto_1.fastq.gz
+AN00000906/Br2720_Post_Cyt/AN00000906_Br2720_Post_Cyt_1.fastq.gz.md5sum -> AN00000906/Br2720_Post_Cyto/AN00000906_Br2720_Post_Cyto_1.fastq.gz.md5sum
+AN00000906/Br2720_Post_Cyt/AN00000906_Br2720_Post_Cyt_2.fastq.gz -> AN00000906/Br2720_Post_Cyto/AN00000906_Br2720_Post_Cyto_2.fastq.gz
+AN00000906/Br2720_Post_Cyt/AN00000906_Br2720_Post_Cyt_2.fastq.gz.md5sum -> AN00000906/Br2720_Post_Cyto/AN00000906_Br2720_Post_Cyto_2.fastq.gz.md5sum
+AN00000906/Br6423_Post_Cyt/AN00000906_Br6423_Post_Cyt_1.fastq.gz -> AN00000906/Br6423_Post_Cyto/AN00000906_Br6423_Post_Cyto_1.fastq.gz
+AN00000906/Br6423_Post_Cyt/AN00000906_Br6423_Post_Cyt_1.fastq.gz.md5sum -> AN00000906/Br6423_Post_Cyto/AN00000906_Br6423_Post_Cyto_1.fastq.gz.md5sum
+AN00000906/Br6423_Post_Cyt/AN00000906_Br6423_Post_Cyt_2.fastq.gz -> AN00000906/Br6423_Post_Cyto/AN00000906_Br6423_Post_Cyto_2.fastq.gz
+AN00000906/Br6423_Post_Cyt/AN00000906_Br6423_Post_Cyt_2.fastq.gz.md5sum -> AN00000906/Br6423_Post_Cyto/AN00000906_Br6423_Post_Cyto_2.fastq.gz.md5sum
+AN00000906/Br6522_Post_Cyt/AN00000906_Br6522_Post_Cyt_1.fastq.gz -> AN00000906/Br6522_Post_Cyto/AN00000906_Br6522_Post_Cyto_1.fastq.gz
+AN00000906/Br6522_Post_Cyt/AN00000906_Br6522_Post_Cyt_1.fastq.gz.md5sum -> AN00000906/Br6522_Post_Cyto/AN00000906_Br6522_Post_Cyto_1.fastq.gz.md5sum
+AN00000906/Br6522_Post_Cyt/AN00000906_Br6522_Post_Cyt_2.fastq.gz -> AN00000906/Br6522_Post_Cyto/AN00000906_Br6522_Post_Cyto_2.fastq.gz
+AN00000906/Br6522_Post_Cyt/AN00000906_Br6522_Post_Cyt_2.fastq.gz.md5sum -> AN00000906/Br6522_Post_Cyto/AN00000906_Br6522_Post_Cyto_2.fastq.gz.md5sum
+AN00000906/Br8492_Post_Cyt/AN00000906_Br8492_Post_Cyt_1.fastq.gz -> AN00000906/Br8492_Post_Cyto/AN00000906_Br8492_Post_Cyto_1.fastq.gz
+AN00000906/Br8492_Post_Cyt/AN00000906_Br8492_Post_Cyt_1.fastq.gz.md5sum -> AN00000906/Br8492_Post_Cyto/AN00000906_Br8492_Post_Cyto_1.fastq.gz.md5sum
+AN00000906/Br8492_Post_Cyt/AN00000906_Br8492_Post_Cyt_2.fastq.gz -> AN00000906/Br8492_Post_Cyto/AN00000906_Br8492_Post_Cyto_2.fastq.gz
+AN00000906/Br8492_Post_Cyt/AN00000906_Br8492_Post_Cyt_2.fastq.gz.md5sum -> AN00000906/Br8492_Post_Cyto/AN00000906_Br8492_Post_Cyto_2.fastq.gz.md5sum
+
 [1] "Reproducibility information:"
 [1] "2022-07-06 12:52:14 EDT"
    user  system elapsed 

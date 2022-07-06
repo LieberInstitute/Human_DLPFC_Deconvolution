@@ -10,7 +10,9 @@ raw_data_files <- list.files(file_dir, recursive = TRUE)
 message("All unique basenames: ",!any(duplicated(basename(raw_data_files))))
 
 ## Exclude non-nested files
+message("Excluding:")
 raw_data_files[!grepl("/Br",raw_data_files)]
+
 raw_data_files <- raw_data_files[grepl("/Br",raw_data_files)]
 
 fix_br_name <- function(path){
@@ -28,11 +30,22 @@ fix_br_name <- function(path){
   return(file.exists(new_full_path))
 }
 
+message("Changing these names:")
 sapply(raw_data_files, fix_br_name)
 
 new_data_files <- list.files(file_dir, recursive = TRUE)
 
 message("NOW All unique basenames: ",!any(duplicated(basename(new_data_files))))
+
+#### CYT to CYTO ####
+## fix directories 
+all_dirs <- list.dirs(file_dir, recursive = TRUE)
+cyt_dirs <- all_dirs[grepl("Cyt$", all_dirs)]
+file.rename(cyt_dirs, paste0(cyt_dirs,"o"))
+
+## fix filenames
+(cyt_data_files <- list.files(file_dir, pattern = "Cyt_", recursive = TRUE, full.names = TRUE))
+file.rename(cyt_data_files, gsub("Cyt_","Cyto_", cyt_data_files))
 
 # sgejobs::job_single('01_fix_filenames', create_shell = TRUE, memory = '5G', command = "Rscript 01_fix_filenames.R")
 ## Reproducibility information
