@@ -4,27 +4,27 @@ Loading LIBD module for git-status-size/github
 Loading LIBD module for git-lfs/2.8.0
 Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.1.x
+Loading conda_R/devel
 **** Job starts ****
-Tue Oct 19 13:15:59 EDT 2021
+Wed Jul  6 11:45:23 EDT 2022
 **** JHPCE info ****
-User: lcollado
-Job id: 7300830
+User: lhuuki
+Job id: 1278336
 Job name: move_bulk_round1
-Hostname: compute-099.cm.cluster
+Hostname: compute-095.cm.cluster
 Task id: 2
 
 Currently Loaded Modules:
   1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
   2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
   3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
-  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.1.x
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
   5) gcc/4.4.7        10) git-lfs/2.8.0
 
  
 
 Processing directory /dcs04/lieber/data/transfers/2107UNHS-0293
-Tue Oct 19 13:15:59 EDT 2021
+Wed Jul  6 11:45:23 EDT 2022
 0.0712015 TB
 wulrich Br2720_Mid
 wulrich Br2720_Mid_Cyto
@@ -162,7 +162,7 @@ Br6471_Ant_Nuc/Br6471_Ant_Nuc.md5
 Br6471_Ant_Nuc/Br6471_Ant_Nuc_1.fastq.gz
 Br6471_Ant_Nuc/Br6471_Ant_Nuc_2.fastq.gz
 
-sent 78.31G bytes  received 927 bytes  82.56M bytes/sec
+sent 78.31G bytes  received 927 bytes  79.30M bytes/sec
 total size is 78.29G  speedup is 1.00
 **** Job ends ****
-Tue Oct 19 13:31:48 EDT 2021
+Wed Jul  6 12:01:51 EDT 2022
