@@ -1,0 +1,3 @@
+[submodule "code/SPEAQeasy"]
+	path = code/SPEAQeasy
+	url = git@github.com:LieberInstitute/SPEAQeasy.git
