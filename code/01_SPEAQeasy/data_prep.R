@@ -1,6 +1,6 @@
-library(tidyverse)
-library(here)
-library(jaffelab)
+library("tidyverse")
+library("here")
+library("jaffelab")
 
 ## move file to make names compatable w/ SPEAQeasy
 # fastq <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern = "*Br*")
