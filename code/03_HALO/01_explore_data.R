@@ -10,15 +10,30 @@ names(halo_files) <- gsub("HA_|_Final\\.csv","",basename(halo_files))
 all(basename(halo_files_prelim) %in% basename(halo_files))
 # [1] TRUE
 
+kelsey_notes <- read.csv(here("processed-data", "03_HALO","Deconvolution_HALO_Analysis_kelsey_googlesheet.csv"))
+
+slide_tab <- kelsey_notes %>% 
+  select(Section, Slide, Combo = Combination) %>%
+  separate(Slide, into = c("Slide","subslide"), sep = ', ') %>%
+  group_by(Slide, subslide, Combo) %>%
+  mutate(i = row_number(),
+         subslide2 = factor(paste0(subslide, i)),
+         Slide = factor(Slide)) %>%
+  ungroup()
+  
+slide_tab %>% count(Slide, Combo)
+slide_tab %>% count(Combo, Slide, subslide2)
+
 meta_data <- tibble(file = names(halo_files)) %>%
   separate(file, into = c("Round","Section", "Combo"), sep = "_", remove = FALSE)%>%
   separate(Section, into = c("BrNum", "Position"), sep = "(?<=[0-9])(?=[A-Z])", remove = FALSE) %>%
-  mutate(BrNum = paste0("Br", BrNum))
+  mutate(BrNum = paste0("Br", BrNum)) %>%
+  left_join(slide_tab)
 
 
-meta_data %>% count(round)
-meta_data %>% count(Experiment)
-# Experiment     n
+meta_data %>% count(Round)
+meta_data %>% count(Combo)
+# Combo     n
 # <chr>      <int>
 # 1 Circle        21
 # 2 Star          21
@@ -42,6 +57,8 @@ meta_data %>% count(Position)
 # 1 A           14
 # 2 M           16
 # 3 P           12
+
+meta_data %>% count(Combo, Slide, subslide2) %>% count(n)
 
 #### Read csv files ####
 
@@ -79,29 +96,50 @@ tibble(cellType = c('Endo',"Astro", "Inhib", "Excit", "Micro", "Oligo"),
 
 meta_data <- meta_data %>% add_column(n_nuc = map_int(halo_tables, nrow))
 sum(meta_data$n_nuc)
-# [1] 1936064
-write_csv(meta_data, file = here("processed-data","HALO","HALO_meta_data.csv"))
+# [1] 1936064write_csv(meta_data, file = here("processed-data","HALO","HALO_meta_data.csv"))
 
 ## Exploratory n nuc plots
 summary(meta_data$n_nuc)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 22677   40586   46286   46097   53010   63293 
 
-n_nuc_col <- ggplot(meta_data, aes(x = Section, y = n_nuc, fill = Experiment)) +
+n_nuc_col <- ggplot(meta_data, aes(x = Section, y = n_nuc, fill = Combo)) +
   geom_col(position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-ggsave(n_nuc_col, filename = here("plots", "HALO","n_nuc_col.png"), width = 10)
+ggsave(n_nuc_col, filename = here("plots", "03_HALO","n_nuc_col.png"), width = 10)
 
 
-n_nuc_box <- ggplot(meta_data, aes(x = Experiment, y = n_nuc, fill = Experiment)) +
+n_nuc_box <- ggplot(meta_data, aes(x = Slide, y = n_nuc, fill = Combo)) +
   geom_boxplot(position = "dodge") 
 
-ggsave(n_nuc_box, filename = here("plots", "HALO","n_nuc_box.png"))
+ggsave(n_nuc_box, filename = here("plots", "03_HALO","n_nuc_box.png"))
 
 
-n_nuc_box_round <- ggplot(meta_data, aes(x = Experiment, y = n_nuc, fill = Experiment)) +
+n_nuc_box_round <- ggplot(meta_data, aes(x = Combo, y = n_nuc, fill = Combo)) +
   geom_boxplot(position = "dodge") +
   facet_wrap(~round)
 
 ggsave(n_nuc_box_round, filename = here("plots", "HALO","n_nuc_box_round.png"))
+
+
+slide_tile_nuc <-  meta_data %>%
+  ggplot(aes(x = Slide, y = subslide2, fill = n_nuc)) +
+  geom_tile() +
+  geom_text(aes(label = Section))+
+  facet_wrap(~Combo) +
+  theme_bw()
+
+ggsave(slide_tile_nuc, filename = here("plots", "03_HALO","n_nuc_slide_tile.png"), width = 10)
+
+
+slide_tile_round <-  meta_data %>%
+  ggplot(aes(x = Slide, y = subslide2, fill = Round)) +
+  geom_tile() +
+  geom_text(aes(label = Section))+
+  facet_wrap(~Combo) +
+  theme_bw()
+
+ggsave(slide_tile_round, filename = here("plots", "03_HALO","round_slide_tile.png"), width = 10)
+
+
