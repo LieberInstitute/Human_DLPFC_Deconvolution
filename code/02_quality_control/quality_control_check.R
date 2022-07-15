@@ -1,11 +1,11 @@
-library(SummarizedExperiment)
-library(tidyverse)
-library(sessioninfo)
-library(here)
-library(readxl)
-library(ggrepel)
-library(jaffelab)
-library(plotly)
+library("SummarizedExperiment")
+library("tidyverse")
+library("sessioninfo")
+library("here")
+library("readxl")
+library("ggrepel")
+library("jaffelab")
+library("plotly")
 
 #### Load Big Data ####
 load("/dcl01/ajaffe/data/lab/brain_swap/count_data/RNAseq_Collection_postQC_n5761_12dataset_2021-06_geneRSE.Rdata", verbose = TRUE)
@@ -46,22 +46,43 @@ colnames(pd_big)
 # [21] "bamFile"           "rna_preSwap_BrNum" "library_type" 
 
 #### Load New Data ####
-load(here("processed-data","01_SPEAQeasy","round1_2021-10-19","rse_gene.Rdata"), verbose = TRUE)
+# load(here("processed-data","01_SPEAQeasy","round1_2022-07-06","rse_gene.Rdata"), verbose = TRUE)
+load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","rse","rse_gene.Rdata"), verbose = TRUE)
 pd_new <- as.data.frame(colData(rse_gene))
 
 ## pass fail matrix
 pass_fail <- pd_new %>%
-  select(SAMPLE_ID, basic_statistics:adapter_content) %>%
-  pivot_longer(!SAMPLE_ID, names_to = "Test")
+  select(SAMPLE_ID,Dataset, basic_statistics:adapter_content) %>%
+  pivot_longer(!c(SAMPLE_ID,Dataset), names_to = "Test")
 
 pass_fail %>% group_by(Test) %>%
   count(value)
 
+
+pass_fail %>% group_by(Dataset, Test) %>%
+  count(value) %>%
+  filter(value=="FAIL")
+
+# Dataset       Test                        value     n
+# <chr>         <chr>                       <chr> <int>
+# 1 2107UNHS-0291 per_sequence_gc_content     FAIL      1
+# 2 2107UNHS-0291 sequence_duplication_levels FAIL     12
+# 3 2107UNHS-0293 per_base_sequence_content   FAIL      1
+# 4 2107UNHS-0293 per_sequence_gc_content     FAIL     10
+# 5 2107UNHS-0293 sequence_duplication_levels FAIL      4
+# 6 AN00000904    per_sequence_gc_content     FAIL      4
+# 7 AN00000904    sequence_duplication_levels FAIL     44
+# 8 AN00000906    per_base_sequence_content   FAIL      4
+# 9 AN00000906    per_sequence_gc_content     FAIL     41
+# 10 AN00000906    sequence_duplication_levels FAIL     18
+
+
 pass_fail_plot <- ggplot(pass_fail, aes(x = Test, y = SAMPLE_ID)) +
   geom_tile(aes(fill = value)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(~Dataset, scales = "free_y")
 
-ggsave(pass_fail_plot, filename = here("plots","02_quality_control","pass_fail_tile.png"))
+ggsave(pass_fail_plot, filename = here("plots","02_quality_control","pass_fail_tile.png"), height = 10, width = 10)
 
 ## Subset and QC data
 qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
@@ -100,7 +121,7 @@ qc_new_boxplots <-  pd_new_qc_key %>%
   facet_wrap(~qc_var, scales = "free_y", ncol = 5 ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         text = element_text(size = 17)) +
-  labs(title = "Human DLPFC Deconvolution", subtitle = "Bulk Round 1")
+  labs(title = "Human DLPFC Deconvolution", subtitle = "Bulk Round 1 + 2")
 
 ggsave(qc_new_boxplots, filename = here("plots", "02_quality_control", "qc_new_boxplots.png"), width = 20, height = 12)
 
