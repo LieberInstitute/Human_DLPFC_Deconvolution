@@ -5,7 +5,7 @@ library("sessioninfo")
 library("DeconvoBuddies")
 
 #### Plot Set-up ####
-plot_dir <- here(plot_dir,  "01_explore_data")
+plot_dir <- here("plots", "03_HALO",  "01_explore_data")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
@@ -252,7 +252,7 @@ circle_n_nuc <- halo_circle %>%
 
 circle_prop <- halo_circle %>% 
   count(Sample_Combo, cell_type) %>%
-  left_join(circle_n_nuc) %>% 
+  right_join(metadata, .) %>% 
   mutate(prop = n/n_nuc)
 
 circle_prop_wide <- circle_prop %>%
@@ -260,28 +260,27 @@ circle_prop_wide <- circle_prop %>%
   select(Sample_Combo, cell_type, prop) %>%
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
-circle_prop_bar <- plot_composition_bar(circle_prop, sample_col = "Sample_Combo",x_col = "Sample_Combo") +
- scale_fill_manual(values = cell_type_colors_halo) +
-  labs(title = "Circle Combo")
-ggsave(circle_prop_bar, filename = here(plot_dir, "prop_bar_circle.png"), width = 12)
-
 #### Star combo ####
 
 ## need to fix R5 colnames SLC17A -> SLC17A7
 cn <- colnames(halo_tables$R1_2720M_Star)
-cn2 <- colnames(halo_tables$R5_8667A_Star)
-cn[!cn %in% cn2]
-cn2[!cn2 %in% cn]
 
-map(halo_tables[grep("Star", names(halo_tables))], ~colnames(.x) == cn)
+## fix typos
+colnames(halo_tables$R5_8325A_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325A_Star))
+colnames(halo_tables$R5_8325M_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325M_Star))
+colnames(halo_tables$R5_8667A_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8667A_Star))
 
-## need to fix and include R5
-halo_star <- do.call("rbind", halo_tables[grep("R[1234].*Star", names(halo_tables))])
+map_lgl(halo_tables[grep("Star", names(halo_tables))], ~all(colnames(.x) == cn))
 
+## rbind all star tables
+halo_star <- do.call("rbind", halo_tables[grep("Star", names(halo_tables))])
+dim(halo_star)
 halo_star %>% count(SLC17A7,TMEM119,OLIG2)
-# 4 Excit    SLC17A7 Star  
-# 5 Micro    TMEM119 Star  
-# 6 Oligo    OLIG2   Star
+# SLC17A7 TMEM119 OLIG2      n
+# 1       0       0     0 623519
+# 2       0       0     1  66579
+# 3       0       1     0  34504
+# 4       1       0     0 199546
 
 halo_star <- halo_star %>% 
   rownames_to_column("Sample") %>%
@@ -296,33 +295,56 @@ halo_star <- halo_star %>%
          ))
 
 halo_star %>% count(cell_type)
-# cell_type     n
-# 1     Excit  6785
-# 2     Micro  2000
-# 3     Oligo   368
-# 4     Other 13524
+halo_star %>% count(Sample_Combo, cell_type)
+# cell_type      n
+# 1     Excit 199546
+# 2     Micro  34504
+# 3     Oligo  66579
+# 4     Other 623519
 
-star_n_nuc <- halo_star %>%
-  group_by(Sample_Combo) %>%
-  summarize(n_nuc = n())
+colnames(halo_tables$R5_8325A_Star)
+halo_tables$R5_8325A_Star %>% count(SLC17A7,TMEM119,OLIG2)
+halo_tables$R5_8325A_Star %>% count(SLC17A7..Opal.520..Positive.Cytoplasm)
 
-(star_prop <- halo_star %>% 
+halo_star %>% count(Sample_Combo)
+
+star_prop <- halo_star %>% 
   count(Sample_Combo, cell_type) %>%
-  left_join(star_n_nuc) %>% 
-  mutate(prop = n/n_nuc))
+  right_join(metadata, .) %>% 
+  mutate(prop = n/n_nuc)
 
 star_prop_wide <- star_prop %>%
   mutate(prop = round(prop, 2)) %>%
   select(Sample_Combo, cell_type, prop) %>%
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
-star_prop_bar <- plot_composition_bar(star_prop, sample_col = "Sample_Combo",x_col = "Sample_Combo") +
-  scale_fill_manual(values = cell_type_colors_halo) +
-  labs(title = "star Combo")
+star_prop %>% filter(cell_type == 'Other', prop == 1) %>% select(Sample, Sample_Combo, Round)
+
+
+save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
+
+#### Composition Plots ####
+circle_colors <- cell_type_colors_halo[c("Astro", "Endo", "Inhib", "Other")]
+star_colors <- cell_type_colors_halo[c("Excit", "Micro", "Oligo", "Other")]
+
+circle_prop_bar <- plot_composition_bar(circle_prop, sample_col = "Sample",x_col = "Sample") +
+  scale_fill_manual(values = circle_colors) +
+  labs(title = "Circle Combo") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+ggsave(circle_prop_bar, filename = here(plot_dir, "prop_bar_circle.png"), width = 12)
+
+star_prop_bar <- plot_composition_bar(star_prop, sample_col = "Sample", x_col = "Sample") +
+  scale_fill_manual(values = star_colors) +
+  labs(title = "Star Combo") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
+
 ggsave(star_prop_bar, filename = here(plot_dir, "prop_bar_star.png"), width = 12)
 
-prop_all <- rbind(circle_prop, star_prop) %>%
-  left_join(metadata %>% select(Sample_Combo, Sample, Combo, Position, Round))
+## Combine ##
+prop_all <- rbind(circle_prop, star_prop)
 
 prop_boxplots <- prop_all %>%
   ggplot(aes(x = Round, y  = prop, color = cell_type)) +
@@ -332,8 +354,32 @@ prop_boxplots <- prop_all %>%
 
 ggsave(prop_boxplots, filename = here(plot_dir, "prop_boxplots.png"))
 
+prop_boxplots <- prop_all %>%
+  filter(cell_type != "Other") %>%
+  ggplot(aes(x = cell_type, y  = prop, fill = cell_type)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
+  geom_jitter(width = 0.2, colour="black",pch=21) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  # scale_color_manual(values = cell_type_colors_broad) +
+  theme_bw() +
+  theme(legend.position = "None")+
+  labs(title = "RNAscope Cell Type Proportions")
 
-head(prop_all)
+ggsave(prop_boxplots, filename = here(plot_dir, "prop_boxplots.png"))
+
+
+prop_boxplot_position <- prop_all %>%
+  ggplot(aes(x = Position, y = prop, fill = cell_type)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
+  geom_jitter(width = 0.2, colour="black",pch=21) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, scales = "free_y") +
+  theme_bw() +
+  theme(legend.position = "None") +
+  labs(title = "RNAscope Cell Type Proportions")
+
+ggsave(prop_boxplot_position, filename = here(plot_dir, "prop_boxplot_position.png"))
+
 
 prop_other_adj <- prop_all %>%
   filter(cell_type != "Other") %>%
@@ -341,15 +387,28 @@ prop_other_adj <- prop_all %>%
   summarize(cell_type = "Other_est", 
             prop = 1 - sum(prop)) 
 
-prop_all_adj <-  prop_all %>%
+prop_all_adj <- prop_all %>%
   filter(cell_type != "Other") %>%
   select(Sample, cell_type, prop) %>%
-  rbind(prop_other_adj) %>%
-  left_join(metadata %>% select(Sample, Position, Round))
+  rbind(prop_other_adj)
+
+prop_all_adj %>% group_by(Sample) %>% summarize(sum(prop))
 
 adj_prop_bar <- plot_composition_bar(prop_all_adj, sample_col = "Sample",x_col = "Sample",min_prop_text = .01) +
   scale_fill_manual(values = cell_type_colors_halo) +
-  labs(title = "Estimated Sample Compositions") 
+  labs(title = "Estimated Sample Compositions") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
 
 ggsave(adj_prop_bar, filename = here(plot_dir, "prop_bar_adj.png"), width = 12)
 
+
+prop_all %>% 
+  filter(prop != 1) %>%
+  group_by(Combo, cell_type) %>% 
+  summarize(min = min(prop),
+            mean = mean(prop),
+            median = median(prop),
+            max = max(prop))
+
+write_csv(prop_all, file = here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
