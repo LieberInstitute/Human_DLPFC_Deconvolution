@@ -1,32 +1,37 @@
 library("tidyverse")
 library("colorblindr")
 library("ggthemes")
-library("RColorBrewer")
+# library("RColorBrewer")
 library("here")
 
 #### Load data ####
-load(here("processed-data", "00_data_prep","cell_colors.Rdata"), verbose = TRUE)
-# treg_cell_colors
+
+# DLPFC snRNA-seq cell colors
+load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
+cell_type_colors_broad
+#     Excit       Inhib       Oligo         OPC       Astro       Micro  Endo.Mural Micro.Oligo        drop       Multi 
+# "#247FBC"   "#E94F37"   "#E07000"   "#D2B037"   "#3BB273"   "#663894"   "#FF56AF"   "#AB0091"     "black"   "#4E586A" 
+#    Other 
+# "#90A583
+cell_type_colors_broad[['Other']] <- "#4E586A"
+
+#### Define cell type colors ####
+cell_types_halo <- c("Astro", "Endo", "Micro", "Oligo", "Excit", "Inhib", "Other")
+cell_types_halo_temp <- c("Astro", "Endo.Mural", "Micro", "Oligo", "Excit", "Inhib", "Other")
+length(cell_types_halo)
+# [1] 12
+
+cell_type_colors_halo <- cell_type_colors_broad[cell_types_halo_temp]
+names(cell_type_colors_halo) <- cell_types_halo
+
+save(cell_type_colors_halo, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
 
 ## Define plotting theme
 
 
-#### Define cell type colors ####
-cell_type_levels <- c("Astro","Endo","Macro","Micro", "Mural", "Oligo", "OPC", "Tcell", "Excit", "Inhib", "Multi", "Other")
-length(cell_type_levels)
-# [1] 12
-
-## tableau 20 pallet
-# tableau_pal <- tableau_color_pal("Tableau 10")
-# tableau_pal <- tableau_color_pal("qualitative")
-# cell_type_pallet <- tableau_pal(length(cell_type_levels))
-# names(cell_type_pallet) <- cell_type_levels
-
-## R Color Brewer Pallet
-cell_type_pallet <-  RColorBrewer::brewer.pal(n = length(cell_type_levels), name = "Set3")
-names(cell_type_pallet) <- cell_type_levels
-
 ## add fake data
+cell_type_levels <- names(cell_type_colors_halo)
+
 n = 50
 n_levels <- length(cell_type_levels)
 cell_type_test_data <- tibble(cell_type = rep(rep(cell_type_levels, each = n),2),
@@ -64,5 +69,5 @@ test_pallet_plots <- function(pallet, pallet_name){
 }
 
 pdf(here("plots", "00_data_prep","cell_color_test_plots.pdf"))
-test_pallet_plots(treg_cell_colors, "TREG Colors")
+test_pallet_plots(cell_type_colors_halo, "TREG Colors")
 dev.off()
