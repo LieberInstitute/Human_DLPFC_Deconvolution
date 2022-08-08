@@ -100,8 +100,8 @@ for(sampi in unique(dfrn$sample_label)){
 #---------------------------
 # facet grid by sample label
 #---------------------------
-sampvf <- unique(dfp$sample_label)
-dfpf <- dfp[dfp$sample_label %in% sampvf,]
+sampvf <- unique(dfp.all$sample_label)
+dfpf <- dfp.all[dfp.all$sample_label %in% sampvf,]
 
 # get plot objects
 ggpt.ncell <- ggplot(dfpf, aes(x = ncell.rn, y = ncell.sn, color = cell_type)) +
@@ -116,14 +116,14 @@ ggpt.propcell <- ggplot(dfpf, aes(x = propcell.rn, y = propcell.sn, color = cell
                      legend.position = "none")
 
 # save new plots
-ggpt <- ggpt.ncell + facet_wrap(~sample_label, nrow = 2) + 
+ggpt <- ggpt.ncell + facet_wrap(~sample_label, nrow = 4) + 
   ggtitle("Number of nuclei") + xlab("RNAscope") + ylab("snRNA-seq")
 png.fname <- "ggpt-grid-bysamp_ncell_rn-sn_dlpfc-ro1.png"
-ggsave(plot = ggpt, filename = png.fname, width = 8, height = 5, 
+ggsave(plot = ggpt, filename = png.fname, width = 8, height = 8, 
        units = "in", dpi = 400)
 # 
-ggpt <- ggpt.propcell + facet_wrap(~sample_label, nrow = 2) + 
+ggpt <- ggpt.propcell + facet_wrap(~sample_label, nrow = 4) + 
   ggtitle("Proportion of nuclei") + xlab("RNAscope") + ylab("snRNA-seq")
 png.fname <- "ggpt-grid-bysamp_propcell_rn-sn_dlpfc-ro1.png"
-ggsave(plot = ggpt, filename = png.fname, width = 8, height = 5, 
+ggsave(plot = ggpt, filename = png.fname, width = 8, height = 8, 
        units = "in", dpi = 400)
