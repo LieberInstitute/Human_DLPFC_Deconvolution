@@ -39,9 +39,8 @@ slide_tab %>% count(Combo, Slide, subslide2)
 position_codes <- data.frame(Pos = c("A","M","P"),
                              Position = factor(c("Anterior","Middle","Posterior")))
 
-## Sample_Combo - maybe need a better name?
-metadata <- tibble(Sample_Combo = names(halo_files)) %>%
-  separate(Sample_Combo, into = c("Round","Section", "Combo"), sep = "_", remove = FALSE)%>%
+metadata <- tibble(SAMPLE_ID = names(halo_files)) %>%
+  separate(SAMPLE_ID, into = c("Round","Section", "Combo"), sep = "_", remove = FALSE)%>%
   separate(Section, into = c("BrNum", "Pos"), sep = "(?<=[0-9])(?=[A-Z])", remove = FALSE) %>%
   left_join(position_codes) %>%
   mutate(BrNum = paste0("Br", BrNum),
@@ -49,7 +48,7 @@ metadata <- tibble(Sample_Combo = names(halo_files)) %>%
   left_join(slide_tab)
 
 head(metadata)
-# Sample_Combo    Round Section BrNum  Pos   Combo  Position  Sample     Slide subslide     i subslide2
+# SAMPLE_ID    Round Section BrNum  Pos   Combo  Position  Sample     Slide subslide     i subslide2
 # <chr>           <chr> <chr>   <chr>  <chr> <chr>  <fct>     <chr>      <fct> <chr>    <int> <fct>    
 #   1 R1_2720M_Circle R1    2720M   Br2720 M     Circle Middle    Br2720_mid 5     A            1 A1       
 # 2 R1_6432A_Circle R1    6432A   Br6432 A     Circle Anterior  Br6432_ant 5     D            1 D1       
@@ -183,9 +182,10 @@ ggsave(slide_tile_round, filename = here(plot_dir, "round_slide_tile.png"), widt
 
 #### Cell Type Annotation ####
 
-tibble(cellType = c('Endo',"Astro", "Inhib", "Excit", "Micro", "Oligo"),
+ct_markers <- tibble(cellType = c('Endo',"Astro", "Inhib", "Excit", "Micro", "Oligo"),
        marker = c('CLDN5','GFAP','GAD1','SLC17A7','TMEM119','OLIG2'),
        Combo = rep(c("Circle", "Star"), each = 3))
+write_csv(ct_markers, here("processed-data","03_HALO","CellType_markers.csv"))
 
 # cellType marker  Combo 
 # <chr>    <chr>   <chr> 
@@ -211,7 +211,7 @@ halo_circle %>% count(GAD1,GFAP,CLDN5)
 ## cell cell types
 halo_circle <- halo_circle %>% 
   rownames_to_column("Sample") %>%
-  separate(Sample, into = c("Sample_Combo",NA), sep = "\\.") %>%
+  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") %>%
   mutate(n_marker = GAD1 + GFAP + CLDN5,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -247,17 +247,17 @@ halo_circle %>% count(cell_type)
 # 4     Other 683079
 
 circle_n_nuc <- halo_circle %>%
-  group_by(Sample_Combo) %>%
+  group_by(SAMPLE_ID) %>%
   summarize(n_nuc = n())
 
 circle_prop <- halo_circle %>% 
-  count(Sample_Combo, cell_type) %>%
+  count(SAMPLE_ID, cell_type) %>%
   right_join(metadata, .) %>% 
   mutate(prop = n/n_nuc)
 
 circle_prop_wide <- circle_prop %>%
   mutate(prop = round(prop, 2)) %>%
-  select(Sample_Combo, cell_type, prop) %>%
+  select(SAMPLE_ID, cell_type, prop) %>%
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
 #### Star combo ####
@@ -284,7 +284,7 @@ halo_star %>% count(SLC17A7,TMEM119,OLIG2)
 
 halo_star <- halo_star %>% 
   rownames_to_column("Sample") %>%
-  separate(Sample, into = c("Sample_Combo",NA), sep = "\\.") %>%
+  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") %>%
   mutate(n_marker = SLC17A7 + TMEM119 + OLIG2,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -295,7 +295,7 @@ halo_star <- halo_star %>%
          ))
 
 halo_star %>% count(cell_type)
-halo_star %>% count(Sample_Combo, cell_type)
+halo_star %>% count(SAMPLE_ID, cell_type)
 # cell_type      n
 # 1     Excit 199546
 # 2     Micro  34504
@@ -306,19 +306,19 @@ colnames(halo_tables$R5_8325A_Star)
 halo_tables$R5_8325A_Star %>% count(SLC17A7,TMEM119,OLIG2)
 halo_tables$R5_8325A_Star %>% count(SLC17A7..Opal.520..Positive.Cytoplasm)
 
-halo_star %>% count(Sample_Combo)
+halo_star %>% count(SAMPLE_ID)
 
 star_prop <- halo_star %>% 
-  count(Sample_Combo, cell_type) %>%
+  count(SAMPLE_ID, cell_type) %>%
   right_join(metadata, .) %>% 
   mutate(prop = n/n_nuc)
 
 star_prop_wide <- star_prop %>%
   mutate(prop = round(prop, 2)) %>%
-  select(Sample_Combo, cell_type, prop) %>%
+  select(SAMPLE_ID, cell_type, prop) %>%
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
-star_prop %>% filter(cell_type == 'Other', prop == 1) %>% select(Sample, Sample_Combo, Round)
+star_prop %>% filter(cell_type == 'Other', prop == 1) %>% select(Sample, SAMPLE_ID, Round)
 
 
 save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
