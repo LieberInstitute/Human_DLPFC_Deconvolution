@@ -63,9 +63,9 @@ get_lparam <- function(ht, paramv = NULL){
   return(lparam)
 }
 
-#-----------------------------------------
-# settings rank differences across samples
-#-----------------------------------------
+#-----------------------------------------------------
+# get params with varying priority rank across samples
+#-----------------------------------------------------
 # get unique params
 paramv <- unique(ht[!ht$priority=="",]$parameter_name)
 
