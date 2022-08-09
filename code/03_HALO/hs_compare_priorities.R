@@ -21,7 +21,7 @@ ht <- get_halo_settings_table(fnv)
 #-----------------
 # helper functions
 #-----------------
-# get the median rank difference for a single parameter
+# get the absolute median rank difference for a single parameter
 param_median_rankdiff <- function(pi, ht){
   usampv <- unique(ht$filename)
   cond.parami <- ht$parameter_name==pi
@@ -36,7 +36,7 @@ param_median_rankdiff <- function(pi, ht){
   return(medv)
 }
 
-# get summary statistics for rank differences
+# get summary statistics for absolute priority rank differences
 get_rankdiff_sstat <- function(ht, pi, usampv){
   cond.parami <- ht$parameter_name==pi
   dt <- do.call(rbind, lapply(usampv, function(si){
@@ -53,7 +53,7 @@ get_rankdiff_sstat <- function(ht, pi, usampv){
   return(dt) 
 }
 
-# get list of parameter rank differences
+# get list of parameter rank absolute priority rank differences
 get_lparam <- function(ht, paramv = NULL){
   # get list of parameter rank diffs
   if(is.null(paramv)){paramv <- unique(ht[!ht$priority=="",]$parameter_name)}
@@ -71,7 +71,7 @@ paramv <- unique(ht[!ht$priority=="",]$parameter_name)
 
 # check for any non-zero median rank diffs among params, samples
 medv <- unlist(lapply(paramv, param_median_rankdiff, ht = ht))
-length(medv) # [1] 98
+length(medv) # [1] 378
 length(medv[!medv==0]) # [1] 98
 summary(medv)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
