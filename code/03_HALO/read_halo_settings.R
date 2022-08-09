@@ -76,8 +76,8 @@ get_halo_settings_table <- function(fnv){
 #--------
 # example
 #--------
-# load data
-dpath <- file.path("HALO", "Exported_Settings_Files")
-fnv <- list.files(fpath, recursive = T)
-# get all halo settings tables
-ht <- get_halo_settings_table(fnv)
+## load data
+# dpath <- file.path("HALO", "Exported_Settings_Files")
+# fnv <- list.files(dpath, recursive = T)
+## get all halo settings tables
+# ht <- get_halo_settings_table(fnv)
