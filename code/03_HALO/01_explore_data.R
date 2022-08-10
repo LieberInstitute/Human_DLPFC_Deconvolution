@@ -14,7 +14,7 @@ load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 ## Halo files 
 halo_files_prelim <- list.files(path = here("raw-data","HALO","prelim"), full.names = TRUE, recursive = TRUE)
 halo_files <- list.files(path = here("raw-data","HALO","Deconvolution_HALO_analysis"), full.names = TRUE, recursive = TRUE)
-names(halo_files) <- gsub("HA_|_Final\\.csv","",basename(halo_files))
+names(halo_files) <- gsub("HA_|_Final|.csv","",basename(halo_files))
 
 ## All prelim data in final analysis csv
 all(basename(halo_files_prelim) %in% basename(halo_files))
@@ -116,9 +116,10 @@ write_csv(metadata, file = here("processed-data","03_HALO","HALO_metadata.csv"))
 
 #### Exploratory n nuc plots ####
 summary(metadata$n_nuc)
-sd(metadata$n_nuc)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 22677   40586   46286   46097   53010   63293 
+sd(metadata$n_nuc)
+# [1] 9953.509
 
 n_nuc_col <- ggplot(metadata, aes(x = Sample, y = n_nuc, fill = Combo)) +
   geom_col(position = "dodge") +
@@ -265,6 +266,8 @@ circle_prop_wide <- circle_prop %>%
 ## need to fix R5 colnames SLC17A -> SLC17A7
 cn <- colnames(halo_tables$R1_2720M_Star)
 
+map(halo_tables[grep("R5.*Star",names(halo_tables))], colnames)
+
 ## fix typos
 colnames(halo_tables$R5_8325A_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325A_Star))
 colnames(halo_tables$R5_8325M_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325M_Star))
@@ -277,10 +280,10 @@ halo_star <- do.call("rbind", halo_tables[grep("Star", names(halo_tables))])
 dim(halo_star)
 halo_star %>% count(SLC17A7,TMEM119,OLIG2)
 # SLC17A7 TMEM119 OLIG2      n
-# 1       0       0     0 623519
-# 2       0       0     1  66579
-# 3       0       1     0  34504
-# 4       1       0     0 199546
+# 1       0       0     0 578505
+# 2       0       0     1  75834
+# 3       0       1     0  40497
+# 4       1       0     0 229312
 
 halo_star <- halo_star %>% 
   rownames_to_column("Sample") %>%
@@ -292,7 +295,7 @@ halo_star <- halo_star %>%
            TMEM119 == 1 ~ "Micro",
            OLIG2 == 1 ~ "Oligo",
            TRUE ~ "Other"
-         ))
+         )) 
 
 halo_star %>% count(cell_type)
 halo_star %>% count(SAMPLE_ID, cell_type)
@@ -302,8 +305,13 @@ halo_star %>% count(SAMPLE_ID, cell_type)
 # 3     Oligo  66579
 # 4     Other 623519
 
-colnames(halo_tables$R5_8325A_Star)
+
 halo_tables$R5_8325A_Star %>% count(SLC17A7,TMEM119,OLIG2)
+#   SLC17A7 TMEM119 OLIG2     n
+# 1       0       0     0 22267
+# 2       0       1     0  1563
+# 3       1       0     0 10949
+
 halo_tables$R5_8325A_Star %>% count(SLC17A7..Opal.520..Positive.Cytoplasm)
 
 halo_star %>% count(SAMPLE_ID)
@@ -320,8 +328,13 @@ star_prop_wide <- star_prop %>%
 
 star_prop %>% filter(cell_type == 'Other', prop == 1) %>% select(Sample, SAMPLE_ID, Round)
 
-
 save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
+
+#### Build HALO ALL ####
+common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
+halo_all <- rbind(halo_star[,common_cols], halo_circle[,common_cols]) |> left_join(metadata)
+
+save(halo_all, file = here("processed-data","03_HALO","halo_all.Rdata"))
 
 #### Composition Plots ####
 circle_colors <- cell_type_colors_halo[c("Astro", "Endo", "Inhib", "Other")]
@@ -335,6 +348,18 @@ circle_prop_bar <- plot_composition_bar(circle_prop, sample_col = "Sample",x_col
 
 ggsave(circle_prop_bar, filename = here(plot_dir, "prop_bar_circle.png"), width = 12)
 
+circle_count_bar <- halo_circle %>% 
+  count(SAMPLE_ID, cell_type) %>%
+  ggplot(aes(x = SAMPLE_ID, y = n,fill = cell_type))+
+  geom_col()+
+  scale_fill_manual(values = circle_colors) +
+  labs(title = "Circle Combo") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+ggsave(circle_count_bar, filename = here(plot_dir, "count_bar_circle.png"), width = 12)
+
+
 star_prop_bar <- plot_composition_bar(star_prop, sample_col = "Sample", x_col = "Sample") +
   scale_fill_manual(values = star_colors) +
   labs(title = "Star Combo") +
@@ -342,6 +367,30 @@ star_prop_bar <- plot_composition_bar(star_prop, sample_col = "Sample", x_col = 
   theme(axis.text.x = element_text(angle = 45, hjust=1))
 
 ggsave(star_prop_bar, filename = here(plot_dir, "prop_bar_star.png"), width = 12)
+
+star_count_bar <- halo_star %>% 
+  count(SAMPLE_ID, cell_type) %>%
+  ggplot(aes(x = SAMPLE_ID, y = n,fill = cell_type))+
+  geom_col()+
+  scale_fill_manual(values = star_colors) +
+  labs(title = "star Combo") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+ggsave(star_count_bar, filename = here(plot_dir, "count_bar_star.png"), width = 12)
+
+## 
+all_count_bar <- halo_all %>% 
+  count(Sample, Combo, cell_type) %>%
+  ggplot(aes(x = Sample, y = n,fill = cell_type))+
+  geom_col()+
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~Combo, ncol = 1) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL.png"), width = 12)
+
 
 ## Combine ##
 prop_all <- rbind(circle_prop, star_prop)
@@ -410,5 +459,37 @@ prop_all %>%
             mean = mean(prop),
             median = median(prop),
             max = max(prop))
+# Combo  cell_type      min   mean median    max
+# <chr>  <chr>        <dbl>  <dbl>  <dbl>  <dbl>
+# 1 Circle Astro     0.0487   0.177  0.136  0.592 
+# 2 Circle Endo      0.000291 0.0396 0.0374 0.0877
+# 3 Circle Inhib     0.0479   0.103  0.110  0.142 
+# 4 Circle Other     0.325    0.680  0.705  0.840 
+# 5 Star   Excit     0.0174   0.246  0.274  0.342 
+# 6 Star   Micro     0.000915 0.0459 0.0426 0.0948
+# 7 Star   Oligo     0.000131 0.0868 0.0308 0.319 
+# 8 Star   Other     0.490    0.625  0.629  0.741 
 
 write_csv(prop_all, file = here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
+
+## cell type correlations
+prop_wide <- prop_all |>
+  filter(cell_type != "Other") |>
+  ungroup() |>
+  select(Sample, cell_type, prop) |>
+  pivot_wider(names_from = "cell_type", values_from = "prop")
+
+library("GGally")
+
+prop_pairs <- ggpairs(prop_wide, columns = 2:7)
+ggsave(prop_pairs, filename = here(plot_dir, "prop_pairs.png"))
+
+n_wide <- prop_all |>
+  filter(cell_type != "Other") |>
+  ungroup() |>
+  select(Sample, cell_type, n) |>
+  pivot_wider(names_from = "cell_type", values_from = "n")
+
+n_pairs <- ggpairs(n_wide, columns = 2:7)
+ggsave(n_pairs, filename = here(plot_dir, "n_nuc_pairs.png"))
+
