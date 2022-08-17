@@ -10,7 +10,7 @@
 # load data
 #----------
 # source helper functions
-fpath <- file.path("read_halo_settings.R")
+fpath <- file.path("read-halo-settings_functions.R")
 source(fpath)
 
 # concat settings flat tables
