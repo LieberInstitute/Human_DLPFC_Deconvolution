@@ -24,11 +24,9 @@
 #----------
 # load snrnaseq
 save.path <- "/users/smaden/"
-
 base.path <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/"
-sce.fpath <- file.path(base.path,
-                       "DLPFC_snRNAseq", "processed-data", "sce",
-                       "sce_DLPFC.Rdata")
+sce.fpath <- file.path(base.path, "DLPFC_snRNAseq", "processed-data", 
+                       "sce", "sce_DLPFC.Rdata")
 sce <- get(load(sce.fpath))
 
 # load rnascope data
