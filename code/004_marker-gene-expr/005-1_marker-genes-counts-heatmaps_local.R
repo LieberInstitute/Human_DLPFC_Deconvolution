@@ -2,7 +2,6 @@
 
 #
 # Get the data and images for heatmap summaries of marker genes
-#
 
 library(pheatmap)
 
@@ -14,12 +13,16 @@ se.fpath <- "se_marker-genes_dlpfc-ro1.rda"
 #-----------
 # set params
 #-----------
+projid <- "dlpfc-ro1" # id of the current project
 celltypevar <- "cellType_broad_k" # cell type from cluster assignment
 donoridvar <- "BrNum" # brain id num corresponding to the donor id
 agevar <- "age" # age of the donor
 positionvar <- "Position" # anatomic (P,M,A) position in DLPFC
 sexvar <- "sex" # recorded sex
 roundvar <- "round" # id of processing batch
+lhm.fname <- paste0("lhm_", projid) # filename of list object for hm data
+lhm.names <- c("celltype", "donor", "age", 
+               "position", "sex", "round") # lhm names
 
 #----------
 # load data
@@ -43,17 +46,16 @@ get_hmdat <- function(sce, varname){
   return(list(mean = dat.means, median = dat.medians))
 }
 
-#------------------------
-# inspect variable states
-#------------------------
+#----------------------------
+# get count summaries by vars
+#----------------------------
+lapply()
+names(lapply) <- 
 
-#--------------------
-# get count summaries
-#--------------------
-# by cell type ki
+
 lhm.cell <- get_hmdat(sce, )
-# by donor id
-lhm.donor <- get_hmdat()
+lhm.donor <- get_hmdat(sce, )
+
 
 #-------------
 # make heatmap
