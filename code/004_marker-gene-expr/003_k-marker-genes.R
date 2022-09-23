@@ -95,7 +95,45 @@ rt.fname <- "ratio-tables_dlpfc-ro1.rda"
 rt.fpath <- file.path("processed-data/004_marker-gene-expr", rt.fname)
 rt <- get(load(rt.fpath))
 
+#------------------------------------
+# summaries of marker gene properties
+#------------------------------------
+# number of unique marker genes
+length(unique(rt$gene)) # 8845
 
+# top repeated marker genes
+dt <- as.data.frame(table(rt$gene))
+dt <- dt[rev(order(dt[,2])),]
+head(dt)
+#        Var1 Freq
+# 8757 ZNF638    8
+# 8491 ZBTB20    8
+# 8416   WWOX    8
+# 7986   TTC3    8
+# 7814 TNRC6B    8
+# 7813 TNRC6A    8
+
+# 
+
+
+
+#--------------------------------------
+# get top marker genes from ratio table
+#--------------------------------------
+# get a single set of marker genes across 6 cell types
+
+# get a series of marker gene sets for 6 cell types
+
+# save series of marker gene sets
+
+
+#--------------------------------------------
+# summarize top marker genes from ratio table
+#--------------------------------------------
+
+#---------------------------------------------------
+# go back and show counts gene expr for marker genes
+#---------------------------------------------------
 
 
 
