@@ -87,3 +87,21 @@ get_mean_ratio2_lapply <- function (sce, cellType_col = "cellType",
 #--------------------
 rt_fpath <- "/users/smaden/ratio-table_dlpfc-ro1.rda"
 y <- get_mean_ratio2_lapply(sce, "cellType_broad_k", save_fpath = rt_fpath)
+
+#----------------
+# get ratio table
+#----------------
+rt.fname <- "ratio-tables_dlpfc-ro1.rda"
+rt.fpath <- file.path("processed-data/004_marker-gene-expr", rt.fname)
+rt <- get(load(rt.fpath))
+
+
+
+
+
+
+
+
+
+
+
