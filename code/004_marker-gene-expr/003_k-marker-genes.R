@@ -52,8 +52,9 @@ get_ratio_table_delayedarray <- function(sce, sce_assay, cellType_col, cell_mean
   return(ratio_table)
 }
 
-get_mean_ratio2_lapply <- function (sce, cellType_col = "cellType", assay_name = "logcounts", 
-                             add_symbol = TRUE){
+get_mean_ratio2_lapply <- function (sce, cellType_col = "cellType", 
+                                    assay_name = "logcounts", add_symbol = TRUE,
+                                    save_fpath = NULL){
   # get mean ratios by cell types, using lapply
   #
   # uses lapply to get mean ratios (avoids out of memory issues but likely 
@@ -76,87 +77,13 @@ get_mean_ratio2_lapply <- function (sce, cellType_col = "cellType", assay_name =
                                                            sce_assay, 
                                                            cellType_col, 
                                                            cell_means))
-  ratio_tables <- do.call("rbind", ratio_tables)
-  if(add_symbol){
-    ratio_tables$Symbol <- SummarizedExperiment::rowData(sce)[
-      ratio_tables$gene,]$Symbol}
-  ratio_tables <- ratio_tables %>% 
-    dplyr::mutate(anno_ratio = paste0(cellType.target, "/", cellType, ": ", 
-                                      base::round(ratio, 3)))
-  return(ratio_tables)
+  ratio_table <- do.call("rbind", ratio_tables)
+  if(!is.null(save_fpath)){save(ratio_table, file = save_fpath)}
+  return(ratio_table)
 }
 
 #--------------------
 # try get_mean_ratio2
 #--------------------
-y <- get_mean_ratio2_lapply(sce, "cellType_broad_k")
-
-
-# get gene markers
-# use mean ratio function from DeconvoBuddies
-y <- get_mean_ratio2(sce, cellType_col = "cellType_broad_k")
-# note: returns error
-# > Error: cannot allocate vector of size 21.2 Gb
-
-#--------------------------
-# try get_mean_ratio2 steps
-#--------------------------
-
-# note:
-# define new function `get_mean_ratio2_lapply()`
-# this is slower but avoids out-of-memory issues
-
-sce <- get(load("scef_kg-sg200_dlpfc_tran2021.rda"))
-
-cellType_col = "cellType_broad_k"
-assay_name = "logcounts"
-add_symbol = TRUE
-cell_type_regex = c("Oligo", "OPC", "Excit", "Inhib", "Astro")
-map_k = TRUE
-
-cellType.target <- NULL
-cellType <- NULL
-ratio <- NULL
-
-cell_types <- unique(sce[[cellType_col]])
-names(cell_types) <- cell_types
-# exclude neurons
-# cell_types <- cell_types[!cell_types %in% c("Inhib", "Excit")]
-
-# get the logcounts
-sce_assay <- SummarizedExperiment::assays(sce)[[assay_name]]
-# sce_assay <- as.matrix(SummarizedExperiment::assays(sce)[[assay_name]])
-#cell_means <- purrr::map(cell_types, ~as.data.frame(
-#  base::rowMeans(as.matrix(sce_assay[,sce[[cellType_col]] == .x]))))
-
-cell_means <- do.call(rbind, lapply(cell_types, function(cti){
-  message(cti)
-  as.data.frame(rowMeans(sce_assay[,sce[[cellType_col]] == cti]))
-}))
-colnames(cell_means) <- "mean"
-# save cell_means
-save(cell_means, file = "/users/smaden/cell-means_dlpfc-ro1.rda")
-
-# append info cols
-cell_means$cellType <- rep(cell_types, each = nrow(sce))
-cell_means$gene <- rep(rownames(sce), length(cell_types))
-
-
-ratio_tables <- lapply()
-
-
-ratio_tables <- lapply(cell_types, function(ki){
-  get_ratio_table(ki,sce,sce_assay,cellType_col,cell_means)})
-
-ratio_tables <- purrr::map(cell_types, 
-                           ~get_ratio_table(.x, sce, sce_assay, 
-                                            cellType_col, cell_means))
-
-ratio_tables <- do.call("rbind", ratio_tables)
-if (add_symbol) {
-  ratio_tables$Symbol <- SummarizedExperiment::rowData(sce)[ratio_tables$gene, 
-  ]$Symbol
-}
-ratio_tables <- ratio_tables %>% dplyr::mutate(anno_ratio = paste0(cellType.target, 
-                                                                   "/", cellType, ": ", 
-                                                                   base::round(ratio, 3)))
+rt_fpath <- "/users/smaden/ratio-table_dlpfc-ro1.rda"
+y <- get_mean_ratio2_lapply(sce, "cellType_broad_k", save_fpath = rt_fpath)
