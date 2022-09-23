@@ -113,10 +113,6 @@ head(dt)
 # 7814 TNRC6B    8
 # 7813 TNRC6A    8
 
-# 
-
-
-
 #--------------------------------------
 # get top marker genes from ratio table
 #--------------------------------------
@@ -125,21 +121,3 @@ head(dt)
 # get a series of marker gene sets for 6 cell types
 
 # save series of marker gene sets
-
-
-#--------------------------------------------
-# summarize top marker genes from ratio table
-#--------------------------------------------
-
-#---------------------------------------------------
-# go back and show counts gene expr for marker genes
-#---------------------------------------------------
-
-
-
-
-
-
-
-
-
