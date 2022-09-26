@@ -13,14 +13,18 @@ library(SingleCellExperiment)
 #----------
 # sce data path
 base.path <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/"
-sce.fpath <- file.path(base.path, "DLPFC_snRNAseq", "processed-data", 
-                       "sce", "sce_DLPFC.Rdata")
+sce.fpath <- file.path(base.path, "DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata")
 
 # marker genes fpath
-save.dpath <- paste0("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/",
-    "Human_DLPFC_Deconvolution/processed-data/004_marker-gene-expr")
-mg.fname <- "marker-genes_get-mean-ratio2_dlpfc-ro1.rda"
-mg.fpath <- file.path(save.dpath, mg.fname)
+#save.dpath <- paste0("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/",
+#    "Human_DLPFC_Deconvolution/processed-data/004_marker-gene-expr")
+save.dpath <- "Human_DLPFC_Deconvolution/processed-data/004_marker-gene-expr"
+# markers including drop
+markers.withdrop.fname <- "marker-genes_snrnaseq-gmr2_with-drop_dlpfc-ro1.rda"
+markers.withdrop.fpath <- file.path(save.dpath, markers.withdrop.fname)
+# markers excluding drop
+markers.nodrop.fname <- "marker-genes_snrnaseq-gmr2_no-drop_dlpfc-ro1.rda"
+markers.nodrop.fpath <- file.path(save.dpath, markers.nodrop.fname)
 
 #-----
 # load
@@ -31,16 +35,40 @@ sce <- get(load(sce.fpath))
 #-------
 # params
 #-------
-# varname of cell type labels in snrnaseq data
-celltype.varname <- "cellType_broad_k" 
+# variable name for cell types
+celltype.varname <- "cellType_broad_k"
 
-#----------------
-# get_mean_ratio2
-#----------------
-mg.gmr2 <- get_mean_ratio2(sce, cellType_col = celltype.varname, 
+#---------------------
+# summarize cell types
+#---------------------
+table(sce[[celltype.varname]])
+# Astro       drop  EndoMural      Excit      Inhib MicroOligo      Oligo
+#  3557         23       1330      21233      10413       5541      33716
+#     OPC
+#    1791
+
+#-------------------------------
+# get markers --- including drop
+#-------------------------------
+# get marker genes
+markers.withdrop <- get_mean_ratio2(sce, cellType_col = celltype.varname, 
     assay_name = "logcounts", add_symbol = TRUE)
 # save results
-save(mg.gmr2, file = mg.fpath)
+save(markers.withdrop, file = markers.withdrop.fpath)
+
+#------------------------
+# get markers --- no drop
+#------------------------
+# filter drop category
+exclude.drop <- !sce[[celltype.varname]]=="drop"
+scef <- sce[,exclude.drop]
+
+# get marker genes
+markers.nodrop <- get_mean_ratio2(scef, cellType_col = celltype.varname, 
+    assay_name = "logcounts", add_symbol = TRUE)
+
+# save results
+save(markers.nodrop, file = markers.nodrop.fpath)
 
 #----------------------
 # marker gene summaries
