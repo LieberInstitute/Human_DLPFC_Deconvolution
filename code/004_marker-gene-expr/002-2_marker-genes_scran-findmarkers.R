@@ -1,6 +1,5 @@
 #!/usr/bin/env R
 
-# Author: Sean Maden
 #
 # Get marker genes from snRNAseq data. Uses scran::findMarkers to find marker 
 # genes for clusters (e.g. cell types).
@@ -18,10 +17,11 @@ celltype.varname <- "cellType_broad_k"
 #----------
 # set paths
 #----------
+# sce object path
+sce.fpath <- file.path("DLPFC_snRNAseq", "processed-data", "sce", "sce_DLPFC.Rdata")
+
 # path to save new files
 save.dpath <- "Human_DLPFC_Deconvolution/processed-data/004_marker-gene-expr"
-# load sce object
-sce.fpath <- file.path("DLPFC_snRNAseq", "processed-data", "sce", "sce_DLPFC.Rdata")
 # gene markers results
 # markers, inc drop category
 markers.withdrop.fname <- "marker-genes_snrnaseq-fm_with-drop_dlpfc-ro1.rda"
@@ -48,25 +48,26 @@ table(sce[[celltype.varname]])
 #------------------------------
 # get markers -- including drop
 #------------------------------
-markers <- findMarkers(counts(sce), groups = sce$cellType_broad_k)
+# get gene markers
+markers.withdrop <- findMarkers(counts(sce), groups = sce[[celltype.varname]])
 # save
-save(markers, file = markers.fpath)
+save(markers.withdrop, file = markers.withdrop.fpath)
 
 #------------------------------
 # get markers -- excluding drop
 #------------------------------
-scef <- sce[,!sce$cellType_broad_k=="drop"]
-scef$cellType_broad_k <- droplevels(scef$cellType_broad_k)
-markers <- findMarkers(counts(scef), groups = scef$cellType_broad_k)
+exclude.drop <- !sce[[celltype.varname]]=="drop"
+scef <- sce[,exclude.drop]
+scef[[celltype.varname]] <- droplevels(scef[[celltype.varname]])
+
+# get gene markers
+markers.nodrop <- findMarkers(counts(scef), groups = scef[[celltype.varname]])
+
 # save
-save(markers, file = markers.fpath)
+save(markers.nodrop, file = markers.nodrop.fpath)
 
 #----------------------
 # marker gene summaries
 #----------------------
 # number of unique marker genes
-
 # top repeated marker genes
-dt <- as.data.frame(table(rt$gene))
-dt <- dt[rev(order(dt[,2])),]
-head(dt)
