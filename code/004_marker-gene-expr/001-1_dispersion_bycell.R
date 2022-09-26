@@ -6,6 +6,22 @@
 
 library(SingleCellExperiment)
 
+#----------
+# set paths
+#----------
+sce.fpath <- file.path("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030",
+                       "DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata")
+
+# cell type dispersion plot paths
+# plot.fpath <- get_fpath(new.fnstr, expt.str = expt.str, extension = "png", type = "plot")
+
+# facet plot save path
+# plot.fpath <- get_fpath(newobj="ggpt-dispersion_facet-grid",extension="png",type="plot")
+plot.fpath <- paste0("ggpt-dispersion_facet-grid", "_", expt.str, ".png")
+
+#-----------
+# set params
+#-----------
 expt.str.sub <- "dispersion-bycell"
 expt.str.main <- "dlpfc-ro1"
 save.fpath.rds <- save.fpath.plot <- "/users/smaden/"
@@ -15,8 +31,6 @@ lds.fname <- "dispersion-results-list"
 # load
 #-----
 # load snrnaseq
-sce.fpath <- file.path("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030",
-                       "DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata")
 sce <- get(load(sce.fpath))
 
 #-----------------
@@ -147,6 +161,4 @@ for(cti in names(lds$lgg)){
 }
 
 # facet
-# plot.fpath <- get_fpath(newobj="ggpt-dispersion_facet-grid",extension="png",type="plot")
-plot.fpath <- paste0("ggpt-dispersion_facet-grid", "_", expt.str, ".png")
 png(plot.fpath,width=20,height=10,units="in",res=400);ggplot(lds$dfp);dev.off()

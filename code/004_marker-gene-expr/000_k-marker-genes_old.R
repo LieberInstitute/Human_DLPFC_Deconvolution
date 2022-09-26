@@ -13,7 +13,8 @@ library(SingleCellExperiment)
 #-----
 # load snrnaseq sce
 base.path <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/"
-sce.fpath <- file.path(base.path, "DLPFC_snRNAseq", "processed-data", 
+sce.fpath <- file.path(base.path, "DLPFC_snRNAseq", 
+                       "processed-data", 
                        "sce", "sce_DLPFC.Rdata")
 sce <- get(load(sce.fpath))
 
@@ -87,6 +88,9 @@ get_mean_ratio2_lapply <- function (sce, cellType_col = "cellType",
 #--------------------
 rt_fpath <- "/users/smaden/ratio-table_dlpfc-ro1.rda"
 y <- get_mean_ratio2_lapply(sce, "cellType_broad_k", save_fpath = rt_fpath)
+
+y <- get_mean_ratio2(sce, cellType_col = "cellType", 
+                     assay_name = "logcounts", add_symbol = TRUE)
 
 #----------------
 # get ratio table
