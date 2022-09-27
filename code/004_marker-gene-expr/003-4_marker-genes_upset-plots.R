@@ -48,7 +48,7 @@ upsetdata.nodrop.fpath <- file.path(save.dpath,
 # with drop
 upset.withdrop.fpath <- file.path(save.dpath, "upsetr_gm2-fm-withdrop_dlpfc-ro1.png")
 # without drop
-upset.withdrop.fpath <- file.path(save.dpath, "upsetr_gm2-fm-nodrop_dlpfc-ro1.png")
+upset.nodrop.fpath <- file.path(save.dpath, "upsetr_gm2-fm-nodrop_dlpfc-ro1.png")
 
 #-----
 # load
@@ -133,7 +133,10 @@ save(lnodrop, file = upsetdata.nodrop.fpath)
 # save upset plot
 #----------------
 # with drop
-png(file = upset.withdrop.fpath, width = 5, 
-	height = 3, units = "in", res = 400)
-upset(fromList(ldrop))
-dev.off()
+ldat <- ldrop
+png(file = upset.withdrop.fpath, width = 12, height = 7, units = "in", res = 400)
+upset(fromList(ldat), nsets = length(ldat), order.by = "freq"); dev.off()
+# without drop
+ldat <- lnodrop
+png(file = upset.nodrop.fpath, width = 12, height = 7, units = "in", res = 400)
+upset(fromList(ldat), nsets = length(ldat), order.by = "freq"); dev.off()
