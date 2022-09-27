@@ -25,10 +25,10 @@ save.dpath <- "Human_DLPFC_Deconvolution/processed-data/004_marker-gene-expr"
 # gene markers results
 # markers, inc drop category
 markers.withdrop.fname <- "marker-genes_snrnaseq-fm_with-drop_dlpfc-ro1.rda"
-markers.fpath <- file.path(save.dpath, markers.withdrop.fname)
+markers.withdrop.fpath <- file.path(save.dpath, markers.withdrop.fname)
 # markers, excluding drop category
 markers.nodrop.fname <- "marker-genes_snrnaseq-fm_no-drop_dlpfc-ro1.rda"
-markers.fpath <- file.path(save.dpath, markers.nodrop.fname)
+markers.nodrop.fpath <- file.path(save.dpath, markers.nodrop.fname)
 
 #-----
 # load
@@ -69,5 +69,13 @@ save(markers.nodrop, file = markers.nodrop.fpath)
 #----------------------
 # marker gene summaries
 #----------------------
+lv <- list(markers.withdrop, markers.nodrop)
 # number of unique marker genes
+length(unique(markers.withdrop$gene)) # 8845
+length(unique(markers.nodrop$gene)) # 5789
+
 # top repeated marker genes
+lapply(lv, function(ii){
+    dt <- as.data.frame(table(ii$gene))
+    dt <- dt[rev(order(dt[,2])),]
+    print(head(dt))})

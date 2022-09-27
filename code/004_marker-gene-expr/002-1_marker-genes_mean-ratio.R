@@ -73,13 +73,16 @@ save(markers.nodrop, file = markers.nodrop.fpath)
 #----------------------
 # marker gene summaries
 #----------------------
+lv <- list(markers.withdrop, markers.nodrop)
 # number of unique marker genes
-length(unique(rt$gene)) # 8845
+length(unique(markers.withdrop$gene)) # 8845
+length(unique(markers.nodrop$gene)) # 5789
 
 # top repeated marker genes
-dt <- as.data.frame(table(rt$gene))
-dt <- dt[rev(order(dt[,2])),]
-head(dt)
+lapply(lv, function(ii){
+    dt <- as.data.frame(table(ii$gene))
+    dt <- dt[rev(order(dt[,2])),]
+    print(head(dt))})
 #        Var1 Freq
 # 8757 ZNF638    8
 # 8491 ZBTB20    8
@@ -87,3 +90,10 @@ head(dt)
 # 7986   TTC3    8
 # 7814 TNRC6B    8
 # 7813 TNRC6A    8
+#        Var1 Freq
+# 5746 ZNF638    7
+# 5616 ZBTB20    7
+# 5562   WWOX    7
+# 5274   TTC3    7
+# 5163 TNRC6B    7
+# 5162 TNRC6A    7
