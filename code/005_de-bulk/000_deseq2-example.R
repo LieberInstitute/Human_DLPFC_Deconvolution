@@ -1,13 +1,23 @@
-#BiocManager::install("DESeq2")
+#!/usr/bin/env R
+
+#
+# Learning DESeq2 analysis and formatting scripts to do evaluation of
+# DE results, figure generation, etc.
+#
+
+# BiocManager::install("DESeq2")
 BiocManager::install("airway")
 library(DESeq2)
+# indep hyp weighting
+library(IHW) 
+# example datasets
 library(airway)
 library(GEOquery)
 library(tximport)
 library("readr")
 library("tximportData")
 library(tximeta)
-
+library("ggplot2")
 
 ####################
 # deseq example data
@@ -19,6 +29,13 @@ dispersionFunction(dds)
 
 # de
 dds <- DESeq(dds)
+
+#----------------
+# using results()
+#----------------
+# notes:
+# this function does limited behind scenes filtering (mean of norm ct.)
+# alpha default = 0.1, can set as arg (e.g. results(dds, alpha = num))
 res <- results(dds)
 summary(res)
 # out of 985 with nonzero total read count
@@ -31,7 +48,73 @@ summary(res)
 # [1] see 'cooksCutoff' argument of ?results
 # [2] see 'independentFiltering' argument of ?results
 
+#---------------------
+# hypothesis weighting
+#---------------------
+# notes:
+# objective to weight independent hypotheses to maximize overall 
+# expt power
+# independent hypo weighting (IHW) can be used to weight pvalues similar
+# to multiple test adj, only weighting by the hypothesis tested
+res.ihw <- results(dds, filterFun = ihw)
+# Only 1 bin; IHW reduces to Benjamini Hochberg (uniform weights)
+metadata(res.ihw)$ihwResult
+# ihwResult object with 1000 hypothesis tests 
+# Nominal FDR control level: 0.1 
+# Split into 1 bins, based on an ordinal covariate
 
+#--------
+# ma plot
+#--------
+# axes: mean norm. counts (all samples) vs. lfc
+png("ma_test.png", width = 5, height = 5, units = "in", res = 400)
+plotMA(res, ylim = c(-2,2))
+dev.off()
+
+#----------------------
+# scaled counts by gene
+#----------------------
+# specify gene
+genei <- which.min(res$padj)
+# varname of groups to compare
+varname <- "condition"
+# with deseq2 
+plotCounts(dds, gene = genei, intgroup = varname)
+
+# or just get the dfp to plot with ggplot
+dfpi <- plotCounts(dds, gene = genei, 
+                intgroup="condition", 
+                returnData=TRUE)
+
+# make new ggplot
+ggplot(dfpi, aes(x=condition, y=count)) + 
+  geom_point(position=position_jitter(w=0.1,h=0)) + 
+  scale_y_log10(breaks=c(25,100,400))
+
+#------------------------------
+# scaled counts for gene vector
+#------------------------------
+
+# get gene vector
+resf <- res[!is.na(res$padj),]
+resf <- resf[order(resf$padj),]
+genev <- rownames(resf)[seq(10)]
+# get dfp
+dfpv <- do.call(rbind, lapply(genev, function(genei){
+  dfpi <- plotCounts(dds, gene = genei, 
+                     intgroup="condition", returnData=TRUE)
+  dfpi$sample <- rownames(dfpi)
+  return(dfpi)
+}))
+
+# use pipes to aggregate across genes
+dfp %>% group_by(sample) %>% 
+  summarize_all(groups = sample, funs(median))
+
+
+#--------------------------------
+# multi-factor experiment designs
+#--------------------------------
 
 #############
 # airway data
