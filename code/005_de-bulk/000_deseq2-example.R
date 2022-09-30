@@ -19,6 +19,21 @@ library("tximportData")
 library(tximeta)
 library("ggplot2")
 
+#----------------------
+# make some random data
+#----------------------
+# note: this is meant to simulate incoming bulk rnaseq data
+num.cond <- 6; num.rep <- 5
+lab <- 
+dds <- makeExampleDESeqDataSet(n = 1000, m = num.cond*num.rep)
+dds$
+
+
+
+
+
+
+
 ####################
 # deseq example data
 ####################
