@@ -14,7 +14,9 @@ library("ggplot2")
 
 random_bulkdata <- function(design.str, num.lib = 2, num.prep = 3, 
                             num.rep = 19, num.genes = 1000, 
-                            seed.val = 0, verbose = TRUE){
+                            seed.val = 0, verbose = TRUE,
+                            mdi = list("deseq" = "results of de analysis",
+                                       "results" = "de results from results()")){
   # note: this is meant to simulate incoming bulk rnaseq data
   # 
   # design.str: this is the string of the variable for the design of 
@@ -50,28 +52,40 @@ random_bulkdata <- function(design.str, num.lib = 2, num.prep = 3,
   return(dds)
 }
 
-get_de_expt <- function(dds){
+get_de_expt <- function(obj, design.str = NULL){
   # get a list of de experiment objects from deseq2 outputs
   # dds: a DESeqDataSet, inc. design attribute for de experiment
-  dei <- DESeq(dds)
-  resi <- results(dei)
-  # handle se object (versus dds)
-  ## convert se -> deseqdataset
-  #ddsSE <- DESeqDataSet(se, design = ~ cell + dex)
-  ## check results
-  #dds <- DESeq(ddsSE)
+  # mdi: results object metadata returned
+  #
+  check.class <- "DESeqDataSet"
+  check.se.cond <- is(obj, "SummarizedExperiment")|
+    is(dds, "RangedSummarizedExperiment")
+  if(check.se.cond){
+    dds <- DESeqDataSet(se)
+    dds$design <- eval(parse(text = paste0("~", design.str)))
+  } else{dds <- obj}
+  if(is(dds, "DESeqDataSet")){
+    dei <- DESeq(dds)
+    resi <- results(dei)
+  } else{
+    stop("didn't recognize ", check.class, 
+         ". Did class conversion fail?")
+  }
+  lr <- list(deseq = dei, results = resi, metadata = mdi)
+  return(lr)
 }
 
 compare_geneset <- function(){
   # compare normalized counts across groups for a set of genes
+  #
   # get gene vector
   resf <- res[!is.na(res$padj),]
   resf <- resf[order(resf$padj),]
   genev <- rownames(resf)[seq(10)]
   # get dfp
   dfpv <- do.call(rbind, lapply(genev, function(genei){
-    dfpi <- plotCounts(dds, gene = genei, 
-                       intgroup="condition", returnData=TRUE)
+    dfpi <- plotCounts(dds, gene = genei, intgroup="condition", 
+                       returnData=TRUE)
     dfpi$sample <- rownames(dfpi)
     return(dfpi)
   }))
