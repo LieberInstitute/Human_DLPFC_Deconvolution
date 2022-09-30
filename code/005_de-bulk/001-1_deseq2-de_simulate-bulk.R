@@ -103,6 +103,18 @@ sim_expt_series <- function(ldesign){
   return(lr)
 }
 
+res_from_series <- function(lseries){
+  # get results table from series of experiments
+  # lseries: list of de expt objects; output from `sim_expt_series()`
+  # returns: single table of results from an expt series
+  do.call(rbind, lapply(seq(length(lseries)), function(ii){
+    dati <- lseries[[ii]]; resi <- dati$lri$results
+    design.str <- gsub(" ","",dati$metadata)
+    resi$expt <- paste0(names(lseries)[ii],";",design.str)
+    return(resi)
+  }))
+}
+
 #------------------------------------------
 # do simulated de, design: prep + lib + rep
 #------------------------------------------
@@ -125,7 +137,20 @@ lde <- get_de_expt(dds.rand)
 #---------------
 # do expt series
 #---------------
-lseries <- sim_expt_series(list("exptA" = "prep+lib+rep",
-                                "exptB" = "prep+lib",
+lseries <- sim_expt_series(list("exptA" = "prep+lib+rep", "exptB" = "prep+lib",
                                 "exptC" = "prep"))
 
+#----------------------------------
+# extract results table from series
+#----------------------------------
+# append all results into single table
+res.all <- do.call(rbind, lapply(seq(length(lseries)), function(ii){
+  dati <- lseries[[ii]]; resi <- dati$lri$results
+  design.str <- gsub(" ","",dati$metadata)
+  resi$expt <- paste0(names(lseries)[ii],";",design.str)
+  return(resi)
+}))
+# check expt var
+table(res.all$expt)
+# exptA;design:prep+lib+rep     exptB;design:prep+lib         exptC;design:prep 
+#                     1000                      1000                      1000 
