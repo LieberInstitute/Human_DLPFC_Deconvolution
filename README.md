@@ -34,7 +34,7 @@ Image data is generated for RNAscope slides by analysis with HALO and outputting
 
 `Human_DLPFC_Deconvolution/raw-data/HALO/Deconvolution_HALO_analysis/`
 
-Note, this contains one subdirectory for each of the RNAscope experiments, called `Circle` and `Square`, respectively, These experiments are distinct in that they each comprise of an analysis of an independent, albeit adjacent, tissue and each includes a different set of molecular markers (see table below).
+Note, this contains one subdirectory for each of the RNAscope experiments, called `Circle` and `Star`, respectively, These experiments are distinct in that they each comprise of an analysis of an independent, albeit adjacent, tissue and each includes a different set of molecular markers (see table below).
 
 ## Variables and data dictionaries
 
@@ -52,7 +52,7 @@ Cell type labels aren't available for the bulk RNA-seq and other datasets produc
 
 ### RNAscope labels and marker types
 
-The molecular markers for the `Circle` and `Square` RNAscope experiments are as follows:
+The molecular markers for the `Circle` and `Star` RNAscope experiments are as follows:
 
 ```
 # rnascope markers/expts
