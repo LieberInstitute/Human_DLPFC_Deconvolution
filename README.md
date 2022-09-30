@@ -28,6 +28,14 @@ These bulk RNA-seq data are currently being QC'd, but they will be accessible as
 
 `Human_DLPFC_Deconvolution/processed-data/01_SPEAQeasy/`
 
+### Image datasets
+
+Image data is generated for RNAscope slides by analysis with HALO and outputting the analysis results as `.csv` tables. These tables are read from the file tree located at the subdirectory:
+
+`Human_DLPFC_Deconvolution/raw-data/HALO/Deconvolution_HALO_analysis/`
+
+Note, this contains one subdirectory for each of the RNAscope experiments, called `Circle` and `Square`, respectively, These experiments are distinct in that they each comprise of an analysis of an independent, albeit adjacent, tissue and each includes a different set of molecular markers (see table below).
+
 ## Variables and data dictionaries
 
 The deconvolution project makes use of a number of metadata attributes and variables in the results files mentioned about. This section describes the key terms and definitions of these attributes and variables for the deconvolution method paper.
@@ -41,6 +49,8 @@ Cell type labels for RNAscope experiments are obtained from the image analysis o
 Cell type labels aren't available for the bulk RNA-seq and other datasets produced for this project.
 
 ### Data dictionaries for marker tables, results, etc.
+
+### RNAscope labels and marker types
 
 ## Terminology
 
