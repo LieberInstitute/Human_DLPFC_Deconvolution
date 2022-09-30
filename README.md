@@ -22,7 +22,9 @@ The snRNA-seq datasets for this project currently include 9 donors and 10 sample
 
 ### Bulk RNA-seq datasets
 
-The bulk RNA-seq datasets include 6 samples groups comprised of mRNA isolated from either nucleus or cytoplasm and prepped with either polyA selection or rRNA depletion strategies. Data for this samples is currently being QC'd, but it will be accessible as a `SummarizedExperiment` object located at the subdirectory:
+The bulk RNA-seq datasets include 6 samples groups comprised of mRNA isolated from either nucleus, cytoplasm, or bulk, and prepped with either polyA selection or rRNA depletion strategies. Data come from 19 samples, meaning 113 total data points. 
+
+These bulk RNA-seq data are currently being QC'd, but they will be accessible as a `SummarizedExperiment` object located at the subdirectory:
 
 `Human_DLPFC_Deconvolution/processed-data/01_SPEAQeasy/`
 
