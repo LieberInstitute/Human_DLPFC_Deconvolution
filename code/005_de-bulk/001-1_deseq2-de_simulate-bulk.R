@@ -83,11 +83,32 @@ compare_geneset <- function(){
     summarize_all(groups = sample, funs(median))
 }
 
+sim_expt_series <- function(ldesign){
+  # takes a series of designs and returns a series of de results objects
+  #
+  # ldesign: list of design.str args for function `random_bulkdata`.
+  # returns: list having names == names(ldesign)
+  #
+  message("Detected ", length(ldesign), " experiments.")
+  lr <- lapply(seq(length(ldesign)), function(ii){
+    design.str <- ldesign[[ii]]; expt.name <- names(ldesign)[ii]
+    message("Working on experiment '", expt.name, 
+            "'\ndesign:", design.str)
+    dds <- random_bulkdata(design.str)
+    list(lri = suppressMessages(get_de_expt(dds)), 
+         metadata = paste0("design: ", design.str))
+  })
+  message("Finished with all expt. Returning.")
+  names(lr) <- names(ldesign)
+  return(lr)
+}
+
 #------------------------------------------
 # do simulated de, design: prep + lib + rep
 #------------------------------------------
 design.str <- "prep + lib + rep"
 dds.rand <- random_bulkdata(design.str = design.str)
+dim(dds.rand) # [1] 1000  114
 dds.rand
 # class: DESeqDataSet 
 # dim: 1000 114 
@@ -98,7 +119,13 @@ dds.rand
 # colnames(114): sample1 sample2 ... sample113 sample114
 # colData names(5): condition prep lib rep label
 
-dim(dds.rand) # [1] 1000  114
-
 # get de results outputs
 lde <- get_de_expt(dds.rand)
+
+#---------------
+# do expt series
+#---------------
+lseries <- sim_expt_series(list("exptA" = "prep+lib+rep",
+                                "exptB" = "prep+lib",
+                                "exptC" = "prep"))
+
