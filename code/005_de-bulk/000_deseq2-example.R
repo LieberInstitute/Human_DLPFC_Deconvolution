@@ -8,20 +8,28 @@
 # BiocManager::install("DESeq2")
 BiocManager::install("airway")
 library(DESeq2)
-# indep hyp weighting
-library(IHW) 
-# example datasets
-library(airway)
-library(GEOquery)
-library(tximport)
-library("readr")
-library("tximportData")
-library(tximeta)
+## indep hyp weighting
+#library(IHW) 
+## example datasets
+#library(airway)
+#library(GEOquery)
+#library(tximport)
+#library("readr")
+#library("tximportData")
+#library(tximeta)
 library("ggplot2")
 
-#----------------------
-# make some random data
-#----------------------
+#-----------------
+# helper functions
+#-----------------
+
+get_de_expt <- function(){
+  # get a list of de experiment objects from deseq2 outputs
+}
+
+#-----------------------------
+# simulate bulk rnaseq dataset
+#-----------------------------
 # note: this is meant to simulate incoming bulk rnaseq data
 num.lib <- 2 # this is polya or ribozero
 num.prep <- 3 # this is cyt, nuc, or bulk
@@ -36,13 +44,17 @@ label.final <- paste0(label.prep, "_", label.lib, "_", label.rep)
 num.genes <- 1000
 num.dat <- length(label.final)
 dds <- makeExampleDESeqDataSet(n = num.genes, m = num.dat)
+
 # append coldata
 dds$prep <- label.prep
 dds$lib <- label.lib
 dds$rep <- label.rep
 dds$label <- label.final
 
-
+#---------------
+# do de analysis
+#---------------
+lde <- list()
 
 
 
