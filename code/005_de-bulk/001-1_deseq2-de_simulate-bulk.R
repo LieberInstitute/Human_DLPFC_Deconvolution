@@ -11,12 +11,9 @@ library("ggplot2")
 #-----------------
 # helper functions
 #-----------------
-
 random_bulkdata <- function(design.str, num.lib = 2, num.prep = 3, 
                             num.rep = 19, num.genes = 1000, 
-                            seed.val = 0, verbose = TRUE,
-                            mdi = list("deseq" = "results of de analysis",
-                                       "results" = "de results from results()")){
+                            seed.val = 0, verbose = TRUE){
   # note: this is meant to simulate incoming bulk rnaseq data
   # 
   # design.str: this is the string of the variable for the design of 
@@ -32,9 +29,9 @@ random_bulkdata <- function(design.str, num.lib = 2, num.prep = 3,
   vprep <- rep(c("cyt", "nuc", "bulk"), each = num.rep*num.lib)
   vlib <- rep(c("polya", "rrna"), each = num.rep*num.prep)
   vrep <- rep(seq(num.rep), each = num.prep*num.lib)
-  vfinal <- paste0(label.prep, "_", label.lib, "_", label.rep)
+  vfinal <- paste0(vprep, "_", vlib, "_", vrep)
   # get random data
-  num.dat <- length(label.final)
+  num.dat <- length(vfinal)
   # make dds with design default
   dds <- makeExampleDESeqDataSet(n = num.genes, m = num.dat)
   # append coldata
@@ -42,31 +39,23 @@ random_bulkdata <- function(design.str, num.lib = 2, num.prep = 3,
   dds$rep <- factor(vrep);dds$label <- factor(vfinal)
   # define design
   design(dds) <- eval(parse(text=paste0("~",design.str)))
-  eval.str <- paste0("makeExampleDESeqDataSet(n = num.genes, ",
-                     "m = num.dat, design = ",design,")")
-  dds <- eval(parse(text = eval.str))
-  
-  if(verbose){message("evaluating the following for dds: ")}
-  
-  
   return(dds)
 }
 
-get_de_expt <- function(obj, design.str = NULL){
+get_de_expt <- function(obj, design.str = NULL,
+                        mdi = list("deseq" = "results of de analysis",
+                                   "results" = "de results from results()")){
   # get a list of de experiment objects from deseq2 outputs
   # dds: a DESeqDataSet, inc. design attribute for de experiment
   # mdi: results object metadata returned
   #
   check.class <- "DESeqDataSet"
-  check.se.cond <- is(obj, "SummarizedExperiment")|
-    is(dds, "RangedSummarizedExperiment")
-  if(check.se.cond){
-    dds <- DESeqDataSet(se)
+  if(!is(obj, check.class)){
+    dds <- DESeqDataSet(obj)
     dds$design <- eval(parse(text = paste0("~", design.str)))
   } else{dds <- obj}
   if(is(dds, "DESeqDataSet")){
-    dei <- DESeq(dds)
-    resi <- results(dei)
+    dei <- DESeq(dds); resi <- results(dei)
   } else{
     stop("didn't recognize ", check.class, 
          ". Did class conversion fail?")
@@ -94,9 +83,22 @@ compare_geneset <- function(){
     summarize_all(groups = sample, funs(median))
 }
 
-#----------------
-# do simulated de
-#----------------
-dds.rand <- random_bulkdata()
+#------------------------------------------
+# do simulated de, design: prep + lib + rep
+#------------------------------------------
+design.str <- "prep + lib + rep"
+dds.rand <- random_bulkdata(design.str = design.str)
+dds.rand
+# class: DESeqDataSet 
+# dim: 1000 114 
+# metadata(1): version
+# assays(1): counts
+# rownames(1000): gene1 gene2 ... gene999 gene1000
+# rowData names(3): trueIntercept trueBeta trueDisp
+# colnames(114): sample1 sample2 ... sample113 sample114
+# colData names(5): condition prep lib rep label
+
+dim(dds.rand) # [1] 1000  114
+
 # get de results outputs
-lde <- list()
+lde <- get_de_expt(dds.rand)
