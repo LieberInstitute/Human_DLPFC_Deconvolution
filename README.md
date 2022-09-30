@@ -6,7 +6,7 @@ JHPCE location: `/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 
 ## File locations
 
-This is an integrative, multi-assay project including data generated from the RNAscope, 10X Chromium, and Illumina HiSeq platforms. 
+This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using the RNAscope, 10X Chromium, and Illumina HiSeq platforms. 
 
 The main directory path on JHPCE is located at:
 
@@ -51,7 +51,7 @@ We take deconvolution to be the prediction of cell type amounts in a mixed sampl
 
 $Y = \pi * Z$
 
-Where $Y$ is a matrix of mixed signals having dimensions $[G,J]$, $\pi$ is a vector of cell type amounts (proportions or abundances), and $Z$ is a matrix of non-mixed signals having dimensions $[G,K]$.
+Where $Y$ is a matrix of mixed signals having dimensions $[G,J]$, $\pi$ is a vector of cell type amounts (proportions or abundances), and $Z$ is a matrix of non-mixed signals having dimensions $[G,K]$. The dimensions of these objects include the $G$ marker gene set, $J$ samples with mixed signal, and $K$ cell types.
 
 ### Strict deconvolution
 
@@ -63,12 +63,16 @@ This simply refers to steps taken to prepare $Y$ and $Z$ prior to performing dec
 
 ### Marker genes
 
-The $G$ marker genes represent markers of cell types which we can use in deconvolution. Note, this is the "column" dimension in the matrices $Y$ and $Z$.
+The $G$ marker genes represent markers of cell types which we can use in deconvolution. Note, this is the "row" dimension in the $Y$ and $Z$ matrices.
 
 ### Samples
 
-The $J$ samples are the samples having mixed signal, for which we predict cell type amounts. Note, this is the "row" dimension in the matrix $Y$.
+The $J$ samples are the samples having mixed signal, for which we predict cell type amounts. Note, this is the "column" dimension in the matrix $Y$.
 
 ### Cell types
 
 The $K$ cell types represent the cell types for which we deconvolute signal and obtain amount estimates. Note, this is the "column" dimension in matrix $Y$ and the length of the vector represented by $\pi$.
+
+## Funding sources
+
+* 1R01MH123183-01 ([grantome_link](https://grantome.com/grant/NIH/R01-MH123183-01))
