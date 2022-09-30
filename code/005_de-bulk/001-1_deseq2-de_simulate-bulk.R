@@ -137,7 +137,8 @@ lde <- get_de_expt(dds.rand)
 #---------------
 # do expt series
 #---------------
-lseries <- sim_expt_series(list("exptA" = "prep+lib+rep", "exptB" = "prep+lib",
+lseries <- sim_expt_series(list("exptA" = "prep+lib+rep", 
+                                "exptB" = "prep+lib",
                                 "exptC" = "prep"))
 
 #----------------------------------
@@ -154,3 +155,25 @@ res.all <- do.call(rbind, lapply(seq(length(lseries)), function(ii){
 table(res.all$expt)
 # exptA;design:prep+lib+rep     exptB;design:prep+lib         exptC;design:prep 
 #                     1000                      1000                      1000 
+
+#-------------
+# make qqplots
+#-------------
+# note: see -- http://www.sthda.com/english/wiki/qq-plots-quantile-quantile-plots-r-base-graphs
+qqnorm(res.all$pvalue)
+qqline(res.all$pvalue, col = "red", lwd = 5)
+
+# facet/ggplot2 version
+dfp <- res.all
+qqnormi <- qqnorm(res.all$pvalue, plot.it = F)
+dfp$theoretical <- qqnormi$x
+dfp$sample <- qqnormi$y
+ggpt <- ggplot(as.data.frame(dfp), aes(sample = pvalue)) +
+  stat_qq() + stat_qq_line()
+ggpt + facet_wrap(~expt)
+
+  
+
+
+
+
