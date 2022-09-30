@@ -23,10 +23,24 @@ library("ggplot2")
 # make some random data
 #----------------------
 # note: this is meant to simulate incoming bulk rnaseq data
-num.cond <- 6; num.rep <- 5
-lab <- 
-dds <- makeExampleDESeqDataSet(n = 1000, m = num.cond*num.rep)
-dds$
+num.lib <- 2 # this is polya or ribozero
+num.prep <- 3 # this is cyt, nuc, or bulk
+num.rep <- 19 # this is num samples
+total.sample <- num.rep*num.prep*num.lib
+label.prep <- rep(c("cyt", "nuc", "bulk"), each = num.rep*num.lib)
+label.lib <- rep(c("polya", "rrna"), each = num.rep*num.prep)
+label.rep <- rep(seq(num.rep), each = num.prep*num.lib)
+label.final <- paste0(label.prep, "_", label.lib, "_", label.rep)
+
+# get random data
+num.genes <- 1000
+num.dat <- length(label.final)
+dds <- makeExampleDESeqDataSet(n = num.genes, m = num.dat)
+# append coldata
+dds$prep <- label.prep
+dds$lib <- label.lib
+dds$rep <- label.rep
+dds$label <- label.final
 
 
 
