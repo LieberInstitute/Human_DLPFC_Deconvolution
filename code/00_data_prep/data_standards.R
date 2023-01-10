@@ -2,6 +2,14 @@ library("SummarizedExperiment")
 library("here")
 library("tidyverse")
 
+#### Plot Setup ####
+plot_dir = here("plots","00_data_prep","data_standards")
+if(!dir.exists(plot_dir)) dir.create(plot_dir)
+
+
+pos_df <- tibble(Position = c("Anterior", "Middle", "Posterior"), 
+                pos = c("ant", "mid", "post"))
+
 #### Review terms in snRNA-seq ####
 sn_samples <- read.csv("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/sample_info.csv")
 head(sn_samples)
@@ -16,7 +24,16 @@ head(sn_samples)
 ## need to fix:
 # round -> Round (?)
 # subject -> BrNum
-# region -> Position & capatlize first letter
+# region -> Position & capitalize first letter
+
+## temp fix 
+sn_samples <- sn_samples |>
+  rename(Position = region, BrNum = subject) |>
+  mutate(Position = str_to_title(Position))
+
+sn_n_samp <- sn_samples |>
+  count(Sample, Position, BrNum) |>
+  mutate(data_type = "snRNA-seq")
 
 #### Bulk info ####
 bulk_samples <- read.csv(here("processed-data","01_SPEAQeasy","data_info.csv"))
@@ -29,9 +46,25 @@ head(bulk_samples)
 # 5  2107UNHS-0291_Br6432_Ant_Nuc 2107UNHS-0291 Br6432      Ant          Nuc        polyA     1
 # 6      2107UNHS-0291_Br6432_Ant 2107UNHS-0291 Br6432      Ant         Bulk        polyA     1
 
+bulk_samples |> count(location)
+
 ## Add Sample(?) BrXXXX_mid to match other data - how to handle Library prep?
 # round -> Round (?)
 # location -> Position & full name
+
+## temp fix 
+bulk_samples <- bulk_samples |>
+  mutate(pos = tolower(location), 
+         Sample = paste0(BrNum, "_", pos)) |>
+  left_join(pos_df)
+
+bulk_samples |> count(library_prep, library_type)
+
+bulk_n_samp <- bulk_samples |>
+  count(Sample, Position, BrNum, library_type) |>
+  mutate(data_type = paste("Bulk RNA-seq", library_type)) |>
+  select(-library_type)
+
 
 #### HALO Info ####
 halo_info <- read.csv(here("processed-data","03_HALO","HALO_metadata.csv"))
@@ -44,6 +77,15 @@ head(halo_info)
 # 5 R1_6471A_Circle    R1   6471A Br6471   A Circle  Anterior Br6471_ant     5        C 1        C1 43790
 # 6 R2_6471M_Circle    R2   6471M Br6471   M Circle    Middle Br6471_mid     4        C 1        C1 59392
 
+halo_samp <- halo_info |> 
+  select(SAMPLE_ID, BrNum, Position, Combo) |>
+  left_join(pos_df) |>
+  mutate(Sample = paste0(BrNum, "_", pos))
+
+halo_n_samp <- halo_samp |>
+  count(Sample, Position, BrNum) |>
+  mutate(data_type = "RNA Scope")
+
 #### Use these colnames ####
 ## SAMPLE_ID - unique sample identifier
 ## Sample - BrXXXX_mid - identifies tissue ... hmm maybe call tissue?
@@ -51,4 +93,21 @@ head(halo_info)
 ## Position - Anterior, Middle, Posterior
 ## pos - short lowercase Position?
 
+#### ALL DLPFC SAMPLES ####
 
+all_dlpfc <- do.call("rbind", list(sn_n_samp, bulk_n_samp, halo_n_samp))
+
+## Do we have 4 matched assays for each sample?
+all_dlpfc <- all_dlpfc |> 
+  left_join(all_dlpfc |> count(Sample)|> mutate(Matched = n ==4) |> select(-n)) 
+
+experiment_tile <- all_dlpfc |> 
+  mutate(n = as.factor(n)) |>
+  ggplot(aes(Position, BrNum, fill = n))+
+  geom_tile()+
+  geom_text(aes(label = n, color = Matched))+
+  scale_color_manual(values =c(`FALSE` = "red", `TRUE` = "black")) +
+  facet_wrap(~data_type, nrow = 1) +
+  theme_bw()
+
+ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), width = 10)
