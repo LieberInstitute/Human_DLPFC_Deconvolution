@@ -11,64 +11,65 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir)
 load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
 
-## Halo files 
-halo_files_prelim <- list.files(path = here("raw-data","HALO","prelim"), full.names = TRUE, recursive = TRUE)
-halo_files <- list.files(path = here("raw-data","HALO","Deconvolution_HALO_analysis"), full.names = TRUE, recursive = TRUE)
-names(halo_files) <- gsub("HA_|_Final|.csv","",basename(halo_files))
-
-## All prelim data in final analysis csv
-all(basename(halo_files_prelim) %in% basename(halo_files))
-# [1] TRUE
-
-kelsey_notes <- read.csv(here("processed-data", "03_HALO","Deconvolution_HALO_Analysis_kelsey_googlesheet.csv")) %>%
+#### Metadata ####
+kelsey_notes <- read.csv(here("processed-data", "03_HALO","Deconvolution_HALO_Analysis_kelsey_googlesheet.csv")) |>
   mutate(Glare = grepl("GLARE", Comments.Issues))
 
-slide_tab <- kelsey_notes %>% 
-  select(Section, Slide, Combo = Combination, Glare) %>%
-  separate(Slide, into = c("Slide","subslide"), sep = ', ') %>%
-  group_by(Slide, subslide, Combo) %>%
+slide_tab <- kelsey_notes |> 
+  select(Section, Slide, Combo = Combination, Glare) |>
+  separate(Slide, into = c("Slide","subslide"), sep = ', ') |>
+  group_by(Slide, subslide, Combo) |>
   mutate(i = row_number(),
          subslide2 = factor(paste0(subslide, i)),
-         Slide = factor(Slide)) %>%
+         Slide = factor(Slide)) |>
   ungroup()
   
-slide_tab %>% count(Slide, Combo)
-slide_tab %>% count(Combo, Slide, subslide2)
+slide_tab |> count(Slide, Combo)
+slide_tab |> count(Combo, Slide, subslide2)
 
 ## Position Names
 position_codes <- data.frame(Pos = c("A","M","P"),
+                             pos = c("ant", "mid", "post"),
                              Position = factor(c("Anterior","Middle","Posterior")))
 
-metadata <- tibble(SAMPLE_ID = names(halo_files)) %>%
-  separate(SAMPLE_ID, into = c("Round","Section", "Combo"), sep = "_", remove = FALSE)%>%
-  separate(Section, into = c("BrNum", "Pos"), sep = "(?<=[0-9])(?=[A-Z])", remove = FALSE) %>%
-  left_join(position_codes) %>%
-  mutate(BrNum = paste0("Br", BrNum),
-         Sample = paste0(BrNum, "_", tolower(substr(Position, 1, 3)))) %>%
+#         SAMPLE_ID Round Section  BrNum Pos  Combo  Position     Sample Slide subslide i subslide2 n_nuc
+# 1 R1_2720M_Circle    R1   2720M Br2720   M Circle    Middle Br2720_mid     5        A 1        A1 28239
+
+metadata <- kelsey_notes |> 
+  separate(Section, into = c("BrNum", "Pos"), sep = "(?<=[0-9])(?=[A-Z])", remove = FALSE) |>
+  left_join(position_codes) |>
+  mutate(
+    BrNum = paste0("Br", BrNum),
+    Sample = paste0(BrNum, "_", pos),
+    combo = toupper(Combination),
+    SAMPLE_ID = paste0(BrNum, Pos,"_", combo)) |>
+  as_tibble() |>
+  select(SAMPLE_ID, Sample, BrNum, Position, Pos, pos, Section, Round, Combo = Combination) |> 
   left_join(slide_tab)
+  
+# SAMPLE_ID    Sample      BrNum  Position  Pos   pos   Section Round Combo Slide subslide Glare     i subslide2
+# 1 Br6432A_STAR Br6432_ant  Br6432 Anterior  A     ant   6432A       1 Star  6     D        FALSE     1 D1       
+# 2 Br2720M_STAR Br2720_mid  Br2720 Middle    M     mid   2720M       1 Star  6     A        FALSE     1 A1       
+# 3 Br6432P_STAR Br6432_post Br6432 Posterior P     post  6432P       1 Star  6     B        FALSE     1 B1       
+# 4 Br6471A_STAR Br6471_ant  Br6471 Anterior  A     ant   6471A       1 Star  6     C        FALSE     1 C1       
+# 5 Br6432M_STAR Br6432_mid  Br6432 Middle    M     mid   6432M       1 Star  2     B        TRUE      1 B1       
+# 6 Br8325A_STAR Br8325_ant  Br8325 Anterior  A     ant   8325A       5 Star  7     A        FALSE     1 A1       
+# 7 Br8325M_STAR Br8325_mid  Br8325 Middle    M     mid   8325M       5 Star  7     B        FALSE     1 B1       
+# 8 Br8667A_STAR Br8667_ant  Br8667 Anterior  A     ant   8667A       5 Star  7     C        FALSE     1 C1       
+# 9 Br6522M_STAR Br6522_mid  Br6522 Middle    M     mid   6522M       2 Star  5     A        FALSE     1 A1       
+# 10 Br6522P_STAR Br6522_post Br6522 Posterior P     post  6522P       2 Star  5     B        FALSE     1 B1 
 
-head(metadata)
-# SAMPLE_ID    Round Section BrNum  Pos   Combo  Position  Sample     Slide subslide     i subslide2
-# <chr>           <chr> <chr>   <chr>  <chr> <chr>  <fct>     <chr>      <fct> <chr>    <int> <fct>    
-#   1 R1_2720M_Circle R1    2720M   Br2720 M     Circle Middle    Br2720_mid 5     A            1 A1       
-# 2 R1_6432A_Circle R1    6432A   Br6432 A     Circle Anterior  Br6432_ant 5     D            1 D1       
-# 3 R1_6432M_Circle R1    6432M   Br6432 M     Circle Middle    Br6432_mid 2     A            1 A1       
-# 4 R1_6432P_Circle R1    6432P   Br6432 P     Circle Posterior Br6432_pos 5     B            1 B1       
-# 5 R1_6471A_Circle R1    6471A   Br6471 A     Circle Anterior  Br6471_ant 5     C            1 C1       
-# 6 R2_6471M_Circle R2    6471M   Br6471 M     Circle Middle    Br6471_mid 4     C            1 C1  
-
-
-metadata %>% count(Round)
-metadata %>% count(Combo)
+metadata |> count(Round)
+metadata |> count(Combo)
 # Combo     n
 # <chr>      <int>
 # 1 Circle        21
 # 2 Star          21
-metadata %>% count(BrNum)
+metadata |> count(BrNum)
 # BrNum      n
 # <chr>  <int>
 # 1 Br2720     4
-# 2 Br2723     2
+# 2 Br2723     2 # error - probably Br2743
 # 3 Br3942     6
 # 4 Br6423     4
 # 5 Br6432     6
@@ -78,14 +79,49 @@ metadata %>% count(BrNum)
 # 9 Br8492     4
 # 10 Br8667    4
 
-metadata %>% count(Position)
+metadata |> count(Position)
 # Position      n
 # <fct>     <int>
 # 1 Anterior     14
 # 2 Middle       16
 # 3 Posterior    12
 
-metadata %>% count(Combo, Slide, subslide2)
+metadata |> count(Combo, Slide, subslide2)
+
+## Halo files 
+
+halo_runs <- c("prelim","Deconvolution_HALO_analysis","Algorithm_Check_20220914", "Algorithm_Check_20220920", "Algorithm_Check_20221020")
+names(halo_runs) <- c("prelim","Aug10", "Sep14", "Sep20", "Oct20")
+
+halo_files <- map(halo_runs, function(dir){
+  hf <- list.files(path = here("raw-data","HALO",dir), full.names = TRUE, recursive = TRUE, pattern = ".csv")
+  
+  sample <- gsub("^.*(\\d\\d\\d\\d[APM])_.*$","\\1",basename(hf))
+  combo <- gsub("^.*(Star|Circle|STAR|CIRCLE).*$","\\1",basename(hf))
+  names(hf) <- paste0("Br", sample, "_" ,toupper(combo))
+  return(hf)
+})
+
+map(halo_files, names)
+
+## maybe delete in files? 
+halo_files$Sep20$`BrHALO_Allsections_round4_AKT3_Circle_Fused.tif_object_Data.csv_CIRCLE` <- NULL
+
+map(halo_files, length)
+
+## any mismatches?
+map(halo_files, ~all(names(.x) %in% metadata$SAMPLE_ID))
+map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID])
+
+unlist(map(halo_files, ~.x[grepl("2723", .x)]))
+
+#### Br8667 typos?
+# $Sep20
+# [1] "Br8776M_CIRCLE"
+# 
+# $Oct20
+# [1] "Br8776M_CIRCLE" "Br8876M_STAR"
+
 
 #### Read csv files ####
 halo_tables <- map(halo_files, read.csv)
@@ -108,7 +144,7 @@ colnames(halo_tables$R1_2720M_Star)
 # [15] "TMEM119"                                "SLC17A7..Opal.520..Positive"     
 
 
-metadata <- metadata %>% add_column(n_nuc = map_int(halo_tables, nrow))
+metadata <- metadata |> add_column(n_nuc = map_int(halo_tables, nrow))
 sum(metadata$n_nuc)
 # [1] 1936064
 
@@ -161,7 +197,7 @@ n_nuc_box_pos <- ggplot(metadata, aes(x = Position, y = n_nuc, fill = Position))
 ggsave(n_nuc_box_pos, filename = here(plot_dir, "n_nuc_box_position.png"))
 
 ## Explore Slide + Splide postion of Samples
-slide_tile_nuc <-  metadata %>%
+slide_tile_nuc <-  metadata |>
   ggplot(aes(x = Slide, y = subslide2, fill = n_nuc)) +
   geom_tile() +
   geom_text(aes(label = Sample), size = 2.5)+
@@ -172,7 +208,7 @@ slide_tile_nuc <-  metadata %>%
 ggsave(slide_tile_nuc, filename = here(plot_dir, "n_nuc_slide_tile.png"), width = 10)
 
 
-slide_tile_round <-  metadata %>%
+slide_tile_round <-  metadata |>
   ggplot(aes(x = Slide, y = subslide2, fill = Round)) +
   geom_tile() +
   geom_text(aes(label = Sample), size = 2.5)+
@@ -202,7 +238,7 @@ halo_circle <- do.call("rbind", halo_tables[grep("Circle", names(halo_tables))])
 dim(halo_circle)
 # [1] 1011916      45
 
-halo_circle %>% count(GAD1,GFAP,CLDN5)
+halo_circle |> count(GAD1,GFAP,CLDN5)
 # GAD1 GFAP CLDN5      n
 # 1    0    0     0 683079
 # 2    0    0     1  38385
@@ -210,9 +246,9 @@ halo_circle %>% count(GAD1,GFAP,CLDN5)
 # 4    1    0     0 102252
 
 ## cell cell types
-halo_circle <- halo_circle %>% 
-  rownames_to_column("Sample") %>%
-  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") %>%
+halo_circle <- halo_circle |> 
+  rownames_to_column("Sample") |>
+  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") |>
   mutate(n_marker = GAD1 + GFAP + CLDN5,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -240,25 +276,25 @@ head(halo_circle[,grep("Copies", colnames(halo_circle))])
 # GFAP..Alexa.594..Copies AKT3..Opal.570..Copies CLDN5..Alexa.488..Copies
 
 
-halo_circle %>% count(cell_type)
+halo_circle |> count(cell_type)
 # cell_type      n
 # 1     Astro 188200
 # 2      Endo  38385
 # 3     Inhib 102252
 # 4     Other 683079
 
-circle_n_nuc <- halo_circle %>%
-  group_by(SAMPLE_ID) %>%
+circle_n_nuc <- halo_circle |>
+  group_by(SAMPLE_ID) |>
   summarize(n_nuc = n())
 
-circle_prop <- halo_circle %>% 
-  count(SAMPLE_ID, cell_type) %>%
-  right_join(metadata, .) %>% 
+circle_prop <- halo_circle |> 
+  count(SAMPLE_ID, cell_type) |>
+  right_join(metadata, .) |> 
   mutate(prop = n/n_nuc)
 
-circle_prop_wide <- circle_prop %>%
-  mutate(prop = round(prop, 2)) %>%
-  select(SAMPLE_ID, cell_type, prop) %>%
+circle_prop_wide <- circle_prop |>
+  mutate(prop = round(prop, 2)) |>
+  select(SAMPLE_ID, cell_type, prop) |>
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
 #### Star combo ####
@@ -278,16 +314,16 @@ map_lgl(halo_tables[grep("Star", names(halo_tables))], ~all(colnames(.x) == cn))
 ## rbind all star tables
 halo_star <- do.call("rbind", halo_tables[grep("Star", names(halo_tables))])
 dim(halo_star)
-halo_star %>% count(SLC17A7,TMEM119,OLIG2)
+halo_star |> count(SLC17A7,TMEM119,OLIG2)
 # SLC17A7 TMEM119 OLIG2      n
 # 1       0       0     0 578505
 # 2       0       0     1  75834
 # 3       0       1     0  40497
 # 4       1       0     0 229312
 
-halo_star <- halo_star %>% 
-  rownames_to_column("Sample") %>%
-  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") %>%
+halo_star <- halo_star |> 
+  rownames_to_column("Sample") |>
+  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") |>
   mutate(n_marker = SLC17A7 + TMEM119 + OLIG2,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -297,8 +333,8 @@ halo_star <- halo_star %>%
            TRUE ~ "Other"
          )) 
 
-halo_star %>% count(cell_type)
-halo_star %>% count(SAMPLE_ID, cell_type)
+halo_star |> count(cell_type)
+halo_star |> count(SAMPLE_ID, cell_type)
 # cell_type      n
 # 1     Excit 199546
 # 2     Micro  34504
@@ -306,27 +342,27 @@ halo_star %>% count(SAMPLE_ID, cell_type)
 # 4     Other 623519
 
 
-halo_tables$R5_8325A_Star %>% count(SLC17A7,TMEM119,OLIG2)
+halo_tables$R5_8325A_Star |> count(SLC17A7,TMEM119,OLIG2)
 #   SLC17A7 TMEM119 OLIG2     n
 # 1       0       0     0 22267
 # 2       0       1     0  1563
 # 3       1       0     0 10949
 
-halo_tables$R5_8325A_Star %>% count(SLC17A7..Opal.520..Positive.Cytoplasm)
+halo_tables$R5_8325A_Star |> count(SLC17A7..Opal.520..Positive.Cytoplasm)
 
-halo_star %>% count(SAMPLE_ID)
+halo_star |> count(SAMPLE_ID)
 
-star_prop <- halo_star %>% 
-  count(SAMPLE_ID, cell_type) %>%
-  right_join(metadata, .) %>% 
+star_prop <- halo_star |> 
+  count(SAMPLE_ID, cell_type) |>
+  right_join(metadata, .) |> 
   mutate(prop = n/n_nuc)
 
-star_prop_wide <- star_prop %>%
-  mutate(prop = round(prop, 2)) %>%
-  select(SAMPLE_ID, cell_type, prop) %>%
+star_prop_wide <- star_prop |>
+  mutate(prop = round(prop, 2)) |>
+  select(SAMPLE_ID, cell_type, prop) |>
   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
-star_prop %>% filter(cell_type == 'Other', prop == 1) %>% select(Sample, SAMPLE_ID, Round)
+star_prop |> filter(cell_type == 'Other', prop == 1) |> select(Sample, SAMPLE_ID, Round)
 
 save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
 
@@ -348,8 +384,8 @@ circle_prop_bar <- plot_composition_bar(circle_prop, sample_col = "Sample",x_col
 
 ggsave(circle_prop_bar, filename = here(plot_dir, "prop_bar_circle.png"), width = 12)
 
-circle_count_bar <- halo_circle %>% 
-  count(SAMPLE_ID, cell_type) %>%
+circle_count_bar <- halo_circle |> 
+  count(SAMPLE_ID, cell_type) |>
   ggplot(aes(x = SAMPLE_ID, y = n,fill = cell_type))+
   geom_col()+
   scale_fill_manual(values = circle_colors) +
@@ -368,8 +404,8 @@ star_prop_bar <- plot_composition_bar(star_prop, sample_col = "Sample", x_col = 
 
 ggsave(star_prop_bar, filename = here(plot_dir, "prop_bar_star.png"), width = 12)
 
-star_count_bar <- halo_star %>% 
-  count(SAMPLE_ID, cell_type) %>%
+star_count_bar <- halo_star |> 
+  count(SAMPLE_ID, cell_type) |>
   ggplot(aes(x = SAMPLE_ID, y = n,fill = cell_type))+
   geom_col()+
   scale_fill_manual(values = star_colors) +
@@ -380,8 +416,8 @@ star_count_bar <- halo_star %>%
 ggsave(star_count_bar, filename = here(plot_dir, "count_bar_star.png"), width = 12)
 
 ## 
-all_count_bar <- halo_all %>% 
-  count(Sample, Combo, cell_type) %>%
+all_count_bar <- halo_all |> 
+  count(Sample, Combo, cell_type) |>
   ggplot(aes(x = Sample, y = n,fill = cell_type))+
   geom_col()+
   scale_fill_manual(values = cell_type_colors_halo) +
@@ -395,7 +431,7 @@ ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL.png"), width = 12
 ## Combine ##
 prop_all <- rbind(circle_prop, star_prop)
 
-prop_boxplots <- prop_all %>%
+prop_boxplots <- prop_all |>
   ggplot(aes(x = Round, y  = prop, color = cell_type)) +
   geom_boxplot() +
   scale_color_manual(values = cell_type_colors_halo) +
@@ -403,8 +439,8 @@ prop_boxplots <- prop_all %>%
 
 ggsave(prop_boxplots, filename = here(plot_dir, "prop_boxplots.png"))
 
-prop_boxplots <- prop_all %>%
-  filter(cell_type != "Other") %>%
+prop_boxplots <- prop_all |>
+  filter(cell_type != "Other") |>
   ggplot(aes(x = cell_type, y  = prop, fill = cell_type)) +
   geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
   geom_jitter(width = 0.2, colour="black",pch=21) +
@@ -417,7 +453,7 @@ prop_boxplots <- prop_all %>%
 ggsave(prop_boxplots, filename = here(plot_dir, "prop_boxplots.png"))
 
 
-prop_boxplot_position <- prop_all %>%
+prop_boxplot_position <- prop_all |>
   ggplot(aes(x = Position, y = prop, fill = cell_type)) +
   geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
   geom_jitter(width = 0.2, colour="black",pch=21) +
@@ -430,18 +466,18 @@ prop_boxplot_position <- prop_all %>%
 ggsave(prop_boxplot_position, filename = here(plot_dir, "prop_boxplot_position.png"))
 
 
-prop_other_adj <- prop_all %>%
-  filter(cell_type != "Other") %>%
-  group_by(Sample) %>%
+prop_other_adj <- prop_all |>
+  filter(cell_type != "Other") |>
+  group_by(Sample) |>
   summarize(cell_type = "Other_est", 
             prop = 1 - sum(prop)) 
 
-prop_all_adj <- prop_all %>%
-  filter(cell_type != "Other") %>%
-  select(Sample, cell_type, prop) %>%
+prop_all_adj <- prop_all |>
+  filter(cell_type != "Other") |>
+  select(Sample, cell_type, prop) |>
   rbind(prop_other_adj)
 
-prop_all_adj %>% group_by(Sample) %>% summarize(sum(prop))
+prop_all_adj |> group_by(Sample) |> summarize(sum(prop))
 
 adj_prop_bar <- plot_composition_bar(prop_all_adj, sample_col = "Sample",x_col = "Sample",min_prop_text = .01) +
   scale_fill_manual(values = cell_type_colors_halo) +
@@ -452,9 +488,9 @@ adj_prop_bar <- plot_composition_bar(prop_all_adj, sample_col = "Sample",x_col =
 ggsave(adj_prop_bar, filename = here(plot_dir, "prop_bar_adj.png"), width = 12)
 
 
-prop_all %>% 
-  filter(prop != 1) %>%
-  group_by(Combo, cell_type) %>% 
+prop_all |> 
+  filter(prop != 1) |>
+  group_by(Combo, cell_type) |> 
   summarize(min = min(prop),
             mean = mean(prop),
             median = median(prop),
