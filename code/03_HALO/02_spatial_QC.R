@@ -30,9 +30,9 @@ metadata <- read.csv(here("processed-data","03_HALO","HALO_metadata.csv"))
 prop_all <- read.csv(here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
 load(here("processed-data","03_HALO","HALO_Data.Rdata"), verbose = TRUE)
 
-common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
-
-halo_all <- rbind(halo_star[,common_cols], halo_circle[,common_cols]) |> left_join(metadata)
+# common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
+# 
+# halo_all <- rbind(halo_star[,common_cols], halo_circle[,common_cols]) |> left_join(metadata)
 
 dim(halo_all)
 # [1] 1936064      34
