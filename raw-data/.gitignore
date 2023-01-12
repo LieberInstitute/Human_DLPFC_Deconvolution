@@ -4,9 +4,9 @@ bulkRNA/2107UNHS-0293/
 bulkRNA/AN00000904/
 bulkRNA/AN00000906/
 HALO/Deconvolution_HALO_analysis/
-HALO/Algorithm_Check_20220914/HALO_CSV/*
-HALO/Algorithm_Check_20220920/HALO_csv/*
-HALO/Algorithm_Check_20221020/HALO_CSV/*
+HALO/Algorithm_Check_20220914/HALO_CSV/
+HALO/Algorithm_Check_20220920/HALO_csv/
+HALO/Algorithm_Check_20221020/HALO_CSV/
 HALO/prelim/
 HALO/Exclude/
 HALO/Re-export/
