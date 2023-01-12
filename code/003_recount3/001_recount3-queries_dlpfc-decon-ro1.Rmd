@@ -1,0 +1,642 @@
+---
+title: "recount3 queries for DLPFC deconvolution project"
+output: html_notebook
+---
+
+# Overview
+
+This notebook shows by example how to query `recount3` for datasets of interest 
+for the deconvolution RO1 project.
+
+# Setup
+
+Manage dependencies.
+
+```{r}
+# BiocManager::install("recount3")
+library(recount3)
+```
+
+Manage file paths.
+
+```{r}
+#---------------
+# read filenames
+#---------------
+# name of the csv from querying the recount3 website
+csv.fpath <- "recount3_selection_2022-09-06 18_10_31.csv"
+#-----------------
+# output filenames
+#-----------------
+# list of metadata
+lmd.fname <- "list-metadata_dorsolateral-human_recount3.rda"
+# list of rse objects
+lrse.fname <- "list-rse_dorsolateral-human_recount3.rda"
+# list of coldata
+lcd.fname <- "list-coldata_dorsolateral-human_recount3.rda"
+# df containing mapped metadata
+dfall.fname <- "df-md-mapped_lib-prep-harmonized_dorsolateral-human_recount3"
+# final list of mapped and mined metadata, inc. intermed. objects, query details
+lmd.write.fname <- "list-metadata-mapped-all_dorsolateral-human_recount3.rda"
+```
+
+# recount3 basics
+
+This section shows some basic functions for working with `recount3` datasets.
+
+## Get human project info
+
+Download info about human expression datasets, projects.
+
+```{r}
+human_projects <- available_projects()
+```
+
+## Get all available samples
+
+Get sample summaries.
+
+```{r, run = F}
+dfs <- available_samples()
+```
+
+Summarize available samples.
+
+```{r, run = F}
+table(dfs$file_source)
+```
+
+## Download metadata for a single project
+
+Get the metadata for a single project id.
+ 
+```{r, run = F}
+SRP009615_meta <- read_metadata(
+  metadata_files = file_retrieve(locate_url("SRP009615","data_sources/sra")))
+```
+
+# Query SRA metadata
+
+Navigate to `https://jhubiostatistics.shinyapps.io/recount3-study-explorer/` and
+search for "dorsolateral" and "human". Download the resulting `.csv` and load 
+it into the session.
+
+```{r}
+csv <- read.csv(csv.fpath)
+```
+
+# Download and unpack project data
+
+This section describes how to download and unpack the expression data and 
+metadata for projects of interest from SRA.
+
+First, get all unique project ids.
+
+```{r}
+srpv <- unique(csv$project)
+```
+
+There are `r length(srpv)` unique projects contained in the query `.csv` file.
+
+## Download RangedSummarizedExperiment data for query results
+
+Download expression data in `RangedSummarizedExperiment` format for each of the
+projects from the query.
+
+First, get subsets of project info.
+
+```{r}
+lsubsets <- lapply(srpv, function(srpi){subset(human_projects, 
+                                               project == srpi & 
+                                                 project_type == "data_sources")})
+```
+
+Items in `lsubsets` look like:
+
+```{r}
+lsubsets[[1]]
+```
+
+Next, download the `rse` datasets.
+
+```{r}
+lrse <- lapply(lsubsets, function(subi){create_rse(subi)})
+names(lrse) <- srpv
+```
+
+Save the `lrse` object.
+
+```{r}
+# save the rse data
+save(lrse, file=file.path(dir.name, lrse.fname))
+```
+
+Summarize the resulting datasets.
+
+```{r}
+# summary
+for(ri in lrse){print(dim(ri))}
+# [1] 63856    82
+# [1] 63856    62
+# [1] 63856    52
+# [1] 63856    52
+# [1] 63856    40
+# [1] 63856    39
+# [1] 63856    36
+# [1] 63856    24
+# [1] 63856    20
+# [1] 63856    12
+# [1] 63856     5
+```
+
+## Extract and unpack project metadata
+
+The project metadata contains important details about methods, library prep, 
+samples, etc. at both the sample-specific and study-specific levels. We can 
+access these metadata from the `colData` contained in the rse objects. 
+
+```{r}
+# coldata
+lcd <- lapply(lrse, function(rsei){
+  dfi <- as.data.frame(colData(rsei));dfi$srp <- srpi; dfi
+})
+names(lcd) <- srpv
+```
+
+Now summarize the `colData` metadata. 
+
+```{r}
+
+# summary
+for(ci in lcd){print(dim(ci))}
+# [1]  82 176
+# [1]  62 176
+# [1]  52 176
+# [1]  52 176
+# [1]  40 176
+# [1]  39 176
+# [1]  36 169
+# [1]  24 176
+# [1]  20 169
+# [1]  12 176
+# [1]   5 176
+```
+
+We can also unpack condensed metadata from the rse objects with 
+`expand_sra_attributes()`.
+
+```{r}
+# expanded sra attributes
+lsr <- lapply(lrse, function(rsei){
+  dfi <- as.data.frame(colData(expand_sra_attributes(rsei)))
+  dfi$srp <- srpi; dfi
+})
+names(lsr) <- srpv
+```
+
+Now summarize the expanded SRA metadata.
+
+```{r}
+# summary
+for(ci in lsr){print(dim(ci))}
+# [1]  82 180
+# [1]  62 179
+# [1]  52 188
+# [1]  52 181
+# [1]  40 190
+# [1]  39 181
+# [1]  36 178
+# [1]  24 180
+# [1]  20 173
+# [1]  12 182
+# [1]   5 180
+```
+
+We can save the extracted metadata.
+
+```{r}
+# save
+# save coldata
+save(lcd, file = file.path(dir.name, lcd.fname))
+# save coldata csv
+# cd.fname <- "coldata_dorsolateral-human_recount3.csv"
+# save(do.call(rbind, lcd), file = cd.fname)
+```
+
+## Map sample metadata
+
+To effectively summarize available data across projects, we need to perform some
+kind of harmonization. The first step for harmonization is to summarize the 
+different variables available across studies. This sets the stage for use to be
+able to map equivalent but differently labeled categories to the same harmonized
+variable.
+
+First, view all unique `sra_attribute` column names.
+
+```{r}
+# view unique sra attribute variables
+unique(as.character(unlist(lapply(lsr, function(ci){
+  colnames(ci)[grepl("sra_attribute", colnames(ci))]
+}))))
+# [1] "sra_attribute.brain_region"         "sra_attribute.disease_stage"        "sra_attribute.source_name"         
+# [4] "sra_attribute.tissue"               "sra_attribute.disease_state"        "sra_attribute.age"                 
+# [7] "sra_attribute.brainid"              "sra_attribute.disease_status"       "sra_attribute.percentexonicmapping"
+# [10] "sra_attribute.ph"                   "sra_attribute.race"                 "sra_attribute.rin"                 
+# [13] "sra_attribute.Sex"                  "sra_attribute.totalnummappedreads"  "sra_attribute.totalnumreads"       
+# [16] "sra_attribute.identifier"           "sra_attribute.biomaterial_provider" "sra_attribute.BioSampleModel"      
+# [19] "sra_attribute.brain_number"         "sra_attribute.cell_subtype"         "sra_attribute.degradation_time"    
+# [22] "sra_attribute.disease"              "sra_attribute.ethnicity"            "sra_attribute.flowcell"            
+# [25] "sra_attribute.isolate"              "sra_attribute.library_type"         "sra_attribute.RIN"                 
+# [28] "sra_attribute.sex"                  "sra_attribute.individual_id"        "sra_attribute.processing_date"     
+# [31] "sra_attribute.case.control"         "sra_attribute.Cause_of_death"       "sra_attribute.manner_of_death"     
+# [34] "sra_attribute.germinal_zone"        "sra_attribute.cell_type"            "sra_attribute.cell_line"           
+# [37] "sra_attribute.differentiation_day"  "sra_attribute.gender"               "sra_attribute.genotype"            
+# [40] "sra_attribute.pathology"
+```
+
+Next, let's define the mappings. Here, we declare the regular expressions strings
+that will catch the various encountered variables and aggregate them under a 
+single harmonized variable. In this case, we organize mappings as a `list` where
+the names correspond to the harmonized variable names, and the values correspond
+to the encountered variable names which we aggregate under these new variables.
+
+```{r}
+lvar <- list(cell_info = c("cell"),
+             disease_info = c("disease","pathology","case"),
+             sex = c("sex","gender"), tissue = c("tissue","region"),
+             demographics = c("race","ethnicity"), age = c("age"),
+             identifier = c("id", "ID"), death_details = c("death"),
+             library = c("library"))
+```
+
+We iterate on the mappings in `lvar` to make the new regular expressions patterns
+that will match to the various encountered metadata variables.
+
+```{r}
+# get regex patterns
+start.str <- ".*"; end.str <- ".*"
+lgrep <- lapply(lvar, function(li){
+  paste0(unlist(lapply(li, function(ii){
+    charv <- unlist(strsplit(ii, "")); letter <- charv[1] # get first letter
+    which.letter <- paste0("(", letter, "|", toupper(letter), ")") # 1st chr cap
+    notfirst.str <- paste0(charv[2:length(charv)], collapse = "") # chr remain
+    char.str <- paste0(which.letter, notfirst.str) # new str
+    start.str <- ifelse(ii == "age", paste0(start.str, "(^|\\_|!s)"), start.str)
+    paste0(start.str, char.str, end.str, collapse = "")
+  })), collapse = "|")
+})
+```
+
+The resulting patterns look like:
+
+```{r}
+lgrep
+```
+
+Next, we perform mappings.
+
+```{r}
+# get mappings
+# get colname mappings by srp
+lmap <- lapply(lsr, function(sri){
+  df.sri <- sri[,grepl("^sra_attribute.*",colnames(sri))]
+  cnv <- colnames(df.sri)
+  lmapi <- lapply(seq(length(lgrep)), function(ii){
+    message(ii)
+    varname <- names(lgrep)[ii]; patti <- lgrep[[ii]]
+    valuev <- rep("NA", nrow(df.sri)) # default variable values
+    cnv[grepl(patti, cnv)]
+  })
+  names(lmapi) <- names(lgrep)
+  lmapi
+})
+names(lmap) <- names(lsr)
+```
+
+Finally, we have the mapped values under each of the colnames
+
+```{r}
+# get mapped values by matched colnames
+dfmap <- do.call(rbind, lapply(seq(length(lsr)), function(ii){
+  srpi <- names(lsr)[ii]; sri <- lsr[[ii]]
+  df.sri <- sri[,grepl("^sra_attribute.*",colnames(sri))]
+  cnv <- colnames(df.sri)
+  dfmapi <- do.call(cbind, lapply(seq(length(lgrep)), function(ii){
+    varname <- names(lgrep)[ii]; patti <- lgrep[[ii]]
+    valuev <- rep("NA", nrow(df.sri)) # default variable values
+    which.cn <- grepl(patti, cnv)
+    # replace valuev if any matching colnames
+    if(length(which.cn) > 0){ 
+      # uniform formatting of matching values
+      valuev <- as.character(apply(df.sri[,which.cn,drop=F], 1, function(ri){
+        paste0(gsub("'", "", 
+                    gsub(" ", "_", tolower(ri))),
+               collapse = ";")
+        }))
+    }
+    dfi <- data.frame(var=valuev); colnames(dfi) <- varname; dfi
+  }))
+  dfmapi$srp <- srpi; dfmapi$run_id <- sri$external_id; dfmapi
+}))
+```
+
+Finally, we save the mapped metadata.
+
+```{r}
+# save mappings
+lmd <- list(varname.mappings = lmap, dfmap = dfmap)
+save(lmd, file = file.path(dir.name, lmd.fname))
+```
+
+## Map project metadata
+
+This section describes mapping of the project-level metadata (as opposed to the
+sample-level metadata mapping above). We wish to identify any terms which 
+indicate if library preparation used either poly(A) selection or rRNA depletion.
+
+We first define the function `map_libprep()` to catch library prep terms in the
+project metadata.
+
+```{r}
+map_libprep <- function(cdi, 
+                        libprep.cnv = c("sra.library_construction_protocol", 
+                                        "sra.study_abstract"), 
+                        grepl.vectors = c(grepl.pattv, 
+                                          grepl.pattv.polya, 
+                                          grepl.pattv.ribozero), 
+                        cnv = c("libprep.available", "pa.true", "rz.true")){
+  # map_libprep
+  # 
+  # Gets the libprep condition outcome from srp coldata.
+  # 
+  # arguments:
+  # cdi : coldata from rse
+  # libprep.cnv : vector of variables, colnames in cdi to inspect
+  # grepl.vectors : grepl pattern vectors corresponding to cnv items
+  # cnv : new variable names corresponding to grepl.vectors items
+  # 
+  # returns:
+  # dfi, data.frame of condition outcomes
+  # 
+  dfi <- do.call(cbind, lapply(grepl.vectors, function(gi){
+    apply(do.call(cbind, lapply(libprep.cnv, function(ci){
+      grepl(gi, cdi[,ci])
+    })), 1, function(ri){
+      ifelse(length(which(ri))>0, TRUE, FALSE)
+    })
+  }))
+  colnames(dfi) <- cnv
+  return(dfi)
+}
+```
+
+```{r}
+# pattern to search library prep
+# get library prep grepl patterns
+get_grepl <- function(strv){
+  paste0(unlist(lapply(strv, function(ii){
+    paste0(".*", ii, ".*")})), collapse = "|")
+}
+grepl.strv.polya <- c("poly\\(A\\)", "polyA", "poly-A", "poly A")
+grepl.strv.ribozero <- c("ribo z", "riboz", "riboZ", "RiboZ")
+grepl.strv <- c(grepl.strv.polya, grepl.strv.ribozero)
+grepl.pattv <- get_grepl(c(grepl.strv.polya, grepl.strv.ribozero))
+grepl.pattv.polya <- get_grepl(grepl.strv.polya)
+grepl.pattv.ribozero <- get_grepl(grepl.strv.ribozero)
+# table(grepl(grepl.pattv, cd[,libprep.cnv]))
+# map library prep info
+libprep.cnv <- c("sra.library_construction_protocol", "sra.study_abstract")
+df.prep <- do.call(rbind, lapply(seq(length(lcd)), function(ii){
+  cdi <- lcd[[ii]]; dfi <- as.data.frame(map_libprep(cdi))
+  dfi$project_id <- cdi$study; dfi$run_id <- cdi$external_id
+  dfi}))
+```
+
+We summarize the results of these project-level mappings as follows.
+
+```{r}
+table(df.prep$libprep.available)
+# FALSE  TRUE 
+# 250   174
+
+table(df.prep$pa.true)
+# FALSE  TRUE 
+# 302   122
+
+table(df.prep$rz.true)
+# FALSE  TRUE 
+# 332    92
+
+table(df.prep$pa.true, df.prep$rz.true)
+#       FALSE TRUE
+# FALSE   250   52
+# TRUE     82   40
+```
+
+Next, harmonize the available library information.
+
+```{r}
+identical(df.prep$run_id, dfmap$run_id) # [1] TRUE
+dfall <- cbind(dfmap, df.prep)[,c(1:9,12:16)]
+
+# summarize lib prep variables
+table(dfall$library, dfall$pa.true)
+#           FALSE TRUE
+#             302   82
+# polya+       0   20
+# ribozero     0   20
+table(dfall$library, dfall$rz.true)
+#           FALSE TRUE
+#             332   52
+# polya+       0   20
+# ribozero     0   20
+
+# use conditional to get final lib prep info
+libvar <- ifelse(dfall$library=="polya"|dfall$pa.true, "polya",
+                 ifelse(dfall$library=="ribozero"|dfall$rz.true, 
+                        "ribozero", "NA"))
+dfall$lib.prep.harmonized <- libvar
+table(dfall$lib.prep.harmonized)
+# NA    polya ribozero 
+# 250      122       52
+```
+
+Finally, we save the mapped project metadata.
+
+```{r}
+# save metadata
+# dfall
+save(dfall, file = file.path(dir.name, paste0(dfall.fname, ".rda")))
+write.csv(dfall, file = file.path(dir.name, paste0(dfall.fname, ".csv")))
+# lmd, including info
+lmd.write <- list(lcoldata = lcd, lsra.attr = lsr, lmap.colnames = lmap, 
+                  dfmap = dfmap, dfprep = df.prep, dfall = dfall,
+                  metadata = list(script.fname = "recount3_dataset_properties.R",
+                                  lcoldata = "Data by SRP ID, from coldata(rse)",
+                                  lsra.attr = "Data by SRP ID, from expand_sra_attributes(rse)",
+                                  lmap.colnames = "Colname mappings for sra.attr, by SRP ID",
+                                  dfmap = "df from mapping sra.attr metadata",
+                                  dfprep = "df from mapping sra.* colData variables",
+                                  dfall = "final metadata harmonizing library prep from dfmap, dfprep"))
+save(lmd.write, file = file.path(dir.name, lmd.write.fname))
+```
+
+# Dataset summaries
+
+This section delves into the available datasets and summaries of metadata which
+was mapped in the above sections.
+
+## Studies with mined prep information
+
+First, we summarize studies with available mined library prep information.
+
+```{r}
+# studies with mined lib prep info
+unique(dfall[!dfall$lib.prep.harmonized=="NA",]$project_id)
+# [1] "SRP071203" "SRP115571" "SRP108559"
+```
+
+```{r}
+# study: SRP108559
+# samples with polya+/ribozero status from dfall$library variable
+unique(dfall[!dfall$library=="",]$project_id)
+# [1] "SRP108559"
+# e.g. https://www.ncbi.nlm.nih.gov/sra/SRX2881744[accn]
+# this is a study of tissue degradation
+# abstract:
+# These RNA-seq data are from dorsolateral prefrontal cortex (DLPFC) tissue 
+# from 5 individuals left off ice at room temperature for 0, 15, 30, and 60 
+# minutes. Resulting RNA was extracted and sequenced with both polyA+ and 
+# RiboZero protocols.
+
+# check studies with polya in methods description
+unique(dfall[which(dfall$pa.true),]$project_id)
+# [1] "SRP071203" "SRP108559"
+# study: SRP071203
+# e.g.: https://www.ncbi.nlm.nih.gov/sra/SRX1615742[accn]
+# title: Systematically characterizing dysfunctional long intergenic non-coding 
+# RNAs in multiple brain regions of major psychosis
+# 
+
+# check studies with ribozero in methods
+unique(dfall[which(dfall$rz.true),]$project_id)
+# study: SRP115571
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX3098290[accn]
+# title: RiboZero Gold paired-end RNA-seq data from postmortem tissue of the 
+# dorsolateral prefrontal cortex of autism spectrum disorder samples and healthy 
+# control samples
+# methods: Methods: RNA-Seq was performed using strand-specific Ribosomal RNA 
+# depletion (RiboZero) library preparation and the TruSeq RNA Sample Preparation 
+# v2 kit from Illumina. One hundred base pair paired-end sequencing was run on 
+# the HiSeq 2000. 
+```
+
+## Studies lacking mined library prep information
+
+```{r}
+# check remaining studies
+unique(dfall[dfall$lib.prep.harmonized=="NA",]$project_id)
+# [1] "SRP033725" "SRP043364" "SRP111096" "SRP108120" "SRP013825" "SRP101890" "SRP143388" "SRP021924"
+```
+
+```{r}
+# study: SRP033725
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX390456[accn]
+# paper: https://www.nature.com/articles/mp2013170#Sec28
+# title: RNA-sequencing of the brain transcriptome implicates dysregulation of 
+# neuroplasticity, circadian rhythms, and GTPase binding in bipolar disorder
+# methods: 
+# We used RNA-seq to survey the brain transcriptome in high-quality post-mortem 
+# dorsolateral prefrontal cortex from 11 individuals diagnosed with bipolar 
+# disorder (BD) and from 11 age- and gender-matched controls.
+# notes: 
+# includes psychiatrically healthy controls
+# cases/controls matched on age, sex
+
+# study: SRP043364
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX610320[accn]
+# title: Human cortical transcriptome informs brain imaging
+# methods: All RNA samples were examined for quantity and quality by NanoDrop 
+# and Bioanalyzer (Agilent). Samples were randomized for RNA extractions and 
+# sequencing. 5ug of total RNA were treated with a Ribominus column according 
+# to the manufacturer’s instructions to remove ribosomal RNA. Libraries were 
+# prepared using an Illumina TruSeq kit according to the manufacturer’s 
+# instructions.
+# notes: 
+# rrna depletion
+# ribominus (not ribozero)
+# only males included
+
+# study: SRP111096
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX2983729[accn]
+# title: Human-specific features of special gene expression and regulation in eight brain regions
+# methods: 
+# notes:
+# uncertain what type of rna filtering used (if any)
+# paper quantifies polyA, so likely not using polya filtering
+
+
+# study: SRP108120
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX2862592[accn]
+# title: Gene Network Dysregulation in Dorsolateral Prefrontal Cortex Neurons of 
+# Humans with Cocaine Use Disorder
+# methods: 
+# ~100mg of flash frozen tissue was pulverized prior to FACs using NeuN-antibody. 
+# Clontech SMARTer Standed RNA-seq kit (634839): No ribosomal depletion was 
+# performed as nuclear RNA was sequenced, which contains low abundance of rRNA
+# notes:
+# only nuclear RNA sequenced
+# no rrna depletion etc. performed
+
+# study: SRP013825
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX155069[accn]
+# title: Transcriptomes of germinal zones of human and mouse fetal neocortex 
+# suggest a role of extracellular matrix in progenitor self-renewal.
+# methods: 
+# notes:
+# study is 10 years old
+# no mention in records of polya/rrna depletion
+
+# study: SRP101890
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX2640572[accn]
+# title: Neuronal brain region-specific DNA methylation and chromatin 
+# accessibility are associated with neuropsychiatric trait heritability [RNA-Seq]
+# methods: 
+# we measured gene expression (RNA-seq) and chromatin accessibility (ATAC-seq) 
+# in neuronal and non-neuronal nuclei from the nucleus accumbens and 
+# dorsolateral prefrontal cortex from six more individuals. 
+# notes:
+# both sorted nuclei and bulk samples processed
+
+# study: SRP143388
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX4002039[accn]
+# title:  Loss of the Chr16p11.2 candidate gene QPRT leads to aberrant neuronal differentiation
+# methods: 
+# RNA of three biological replicates was extracted using the GeneJet RNA 
+# Purification Kit (Thermo Fisher Scientific) including DNase treatment. 
+# RNA integrity number (RIN) was analyzed using the LabChip GX system and 
+# only samples with RINs above 9.7 underwent further analysis. MACE-Seq 
+# libraries were prepared by GenXPro GmbH Frankfurt am Main, Germany, using 
+# the “MACE-Seq Kit” and the provided software tool (http://tools.genxpro.net). 
+# Briefly, mRNA was captured by modified poly-T primers, cDNA was generated and 
+# fragmented to an average size of 350 bps. Adapters were ligated and the 3' 
+# Ends amplified by PCR.
+# notes:
+# single, not paired-end reads
+# study in cell lines/cultured primary cells rather than frozen tissues???
+
+# study: SRP021924
+# link: https://www.ncbi.nlm.nih.gov/sra/SRX272967[accn]
+# title: Whole transcriptome RNA-seq of undiseased human prefrontal cortex
+# methods: 
+# RNA was harvested from frozen brain tissue using Trizol reagent. Illumina 
+# small RNA Sample Prep kit (#FC-102-1009) was used to construct libraries from 
+# 30ug total RNA. Instead of initial size fractionation, rRNAs were depleted by 
+# one round of Ribominus (Invitrogen).
+# notes:
+# uses ribominus for rrna depletion
+
+```
+
+
+# recount3 predicted metadata terms
