@@ -15,6 +15,14 @@ load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 kelsey_notes <- read.csv(here("processed-data", "03_HALO","Deconvolution_HALO_Analysis_kelsey_googlesheet.csv")) |>
   mutate(Glare = grepl("GLARE", Comments.Issues))
 
+## Br2723 -> Br2743 Fix may result in some mismatches with server files 
+kelsey_notes <- kelsey_notes |> 
+  mutate(Section = gsub("2723", "2743", Section)) |> 
+  mutate(typo = !Vectorize(grepl)(Section, `Path.to..Final..csv.File`))
+
+kelsey_notes |> count(typo)
+
+## Refine details about slides 
 slide_tab <- kelsey_notes |> 
   select(Section, Slide, Combo = Combination, Glare) |>
   separate(Slide, into = c("Slide","subslide"), sep = ', ') |>
@@ -32,8 +40,6 @@ position_codes <- data.frame(Pos = c("A","M","P"),
                              pos = c("ant", "mid", "post"),
                              Position = factor(c("Anterior","Middle","Posterior")))
 
-#         SAMPLE_ID Round Section  BrNum Pos  Combo  Position     Sample Slide subslide i subslide2 n_nuc
-# 1 R1_2720M_Circle    R1   2720M Br2720   M Circle    Middle Br2720_mid     5        A 1        A1 28239
 
 metadata <- kelsey_notes |> 
   separate(Section, into = c("BrNum", "Pos"), sep = "(?<=[0-9])(?=[A-Z])", remove = FALSE) |>
@@ -88,8 +94,10 @@ metadata |> count(Position)
 
 metadata |> count(Combo, Slide, subslide2)
 
-## Halo files 
+## Write metadata
+write_csv(metadata, file = here("processed-data","03_HALO","HALO_metadata.csv"))
 
+#### Halo files ####
 halo_runs <- c("prelim","Deconvolution_HALO_analysis","Algorithm_Check_20220914", "Algorithm_Check_20220920", "Algorithm_Check_20221020")
 names(halo_runs) <- c("prelim","Aug10", "Sep14", "Sep20", "Oct20")
 
@@ -113,109 +121,131 @@ map(halo_files, length)
 map(halo_files, ~all(names(.x) %in% metadata$SAMPLE_ID))
 map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID])
 
-unlist(map(halo_files, ~.x[grepl("2723", .x)]))
+## Mismatches resolved
+# mismatch_files <- unlist(map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID]))
 
-#### Br8667 typos?
-# $Sep20
-# [1] "Br8776M_CIRCLE"
+#### Rename files ####
+## renamed files
+# rename_files <- gsub("2723", "2743", mismatch_files)
+# rename_files <- gsub("8776M", "8667M", rename_files)
+# rename_files <- gsub("8876M", "8667M", rename_files)
 # 
-# $Oct20
-# [1] "Br8776M_CIRCLE" "Br8876M_STAR"
+# write.csv(data.frame(oldname = mismatch_files,
+#            newname = rename_files), 
+#           file = here("processed-data", "03_HALO", "rename_log.csv"))
 
+# file.rename(mismatch_files, rename_files)
+
+# mismatch_files[mismatch_files == rename_files]
+
+halo_file_table <- tibble(name = names(unlist(halo_files)), 
+                          JHPCE_path = unlist(halo_files)) |>
+  separate(name, into = c("HALO_run", "SAMPLE_ID"), sep = "\\.") |>
+  mutate(basename = basename(JHPCE_path),
+         rescan = grepl("RESCAN", JHPCE_path))
+# |>
+#   pivot_wider(names_from = "HALO_run", values_from = JHPCE_path)
+
+## Duplicate data?
+halo_file_table |> count(SAMPLE_ID, HALO_run) |> filter(n > 1)
+
+# SAMPLE_ID    HALO_run     n
+# <chr>        <chr>    <int>
+# 1 Br6432A_STAR Oct20        3
+# 2 Br6432A_STAR Sep20        2
+
+halo_file_table |> 
+  group_by(SAMPLE_ID, HALO_run) |> 
+  filter(n() > 1) |>
+  select(-JHPCE_path)
+
+# HALO_run SAMPLE_ID    basename                                                        
+# <chr>    <chr>        <chr>                                                           
+# 1 Sep20    Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv 
+# 2 Sep20    Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv ## Use rescan?
+
+# 3 Oct20    Br6432A_STAR STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv ## Two SAMPLE_IDs?
+# 4 Oct20    Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv 
+# 5 Oct20    Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv ## Use rescan?
 
 #### Read csv files ####
-halo_tables <- map(halo_files, read.csv)
-map_int(halo_tables, nrow)
 
-colnames(halo_tables$R1_2720M_Circle)
-# [1] "Image.Location"                      "Analysis.Region"                     "Algorithm.Name"                     
-# [4] "Object.Id"                           "XMin"                                "XMax"                               
-# [7] "YMin"                                "YMax"                                "DAPI.AKT3"                          
-# [10] "GAD1.AKT3"                           "GFAP.AKT3"                           "CLDN5.AKT3"                         
-# [13] "GAD1"                                "GFAP"                                "CLDN5" 
-colnames(halo_tables$R1_2720M_Star)
-# [1] "Image.Location"                         "Analysis.Region"                       
-# [3] "Algorithm.Name"                         "Object.Id"                             
-# [5] "XMin"                                   "XMax"                                  
-# [7] "YMin"                                   "YMax"                                  
-# [9] "DAPI.AKT3"                              "OLIG2.AKT3"                            
-# [11] "SLC17A7.AKT3"                           "TMEM119.AKT3"                          
-# [13] "OLIG2"                                  "SLC17A7"                               
-# [15] "TMEM119"                                "SLC17A7..Opal.520..Positive"     
+read_halo <- function(fn){
+  halo_data <- data.table::fread(fn)
+  halo_data$JHPCE_path <- fn
+  return(halo_data)
+}
 
+## Eventually run all of the HALO runs
+halo_tables <- map(halo_files$Oct20, read_halo)
 
-metadata <- metadata |> add_column(n_nuc = map_int(halo_tables, nrow))
-sum(metadata$n_nuc)
-# [1] 1936064
-
-write_csv(metadata, file = here("processed-data","03_HALO","HALO_metadata.csv"))
-
-#### Exploratory n nuc plots ####
-summary(metadata$n_nuc)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 22677   40586   46286   46097   53010   63293 
-sd(metadata$n_nuc)
-# [1] 9953.509
-
-n_nuc_col <- ggplot(metadata, aes(x = Sample, y = n_nuc, fill = Combo)) +
-  geom_col(position = "dodge") +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 45, hjust=1))
-
-ggsave(n_nuc_col, filename = here(plot_dir, "n_nuc_col.png"), width = 10)
-
-
-n_nuc_box <- ggplot(metadata, aes(x = Slide, y = n_nuc, fill = Combo)) +
-  geom_boxplot(position = "dodge") + 
-  theme_bw()
-
-ggsave(n_nuc_box, filename = here(plot_dir, "n_nuc_box.png"))
-
-## checkout distribution by combo
-n_nuc_box_combo <- ggplot(metadata, aes(x = Combo, y = n_nuc, fill = Combo)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_jitter(width = 0.2)+
-  theme_bw() +
-  theme(legend.position = "None")
-
-ggsave(n_nuc_box_combo, filename = here(plot_dir, "n_nuc_box_combo.png"))
-
-n_nuc_box_round <- ggplot(metadata, aes(x = Round, y = n_nuc, fill = Combo)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.5) +
-  geom_point(aes(color = Glare), position=position_jitterdodge(jitter.width = 0.2))+
-  theme_bw() 
-
-ggsave(n_nuc_box_round, filename = here(plot_dir, "n_nuc_box_round.png"))
-
-n_nuc_box_pos <- ggplot(metadata, aes(x = Position, y = n_nuc, fill = Position)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_jitter(width = 0.2)+
-  facet_wrap(~Combo) +
-  theme_bw() +
-  theme(legend.position = "None")
-
-ggsave(n_nuc_box_pos, filename = here(plot_dir, "n_nuc_box_position.png"))
-
-## Explore Slide + Splide postion of Samples
-slide_tile_nuc <-  metadata |>
-  ggplot(aes(x = Slide, y = subslide2, fill = n_nuc)) +
-  geom_tile() +
-  geom_text(aes(label = Sample), size = 2.5)+
-  facet_wrap(~Combo) +
-  scale_fill_viridis()+
-  theme_bw()
-
-ggsave(slide_tile_nuc, filename = here(plot_dir, "n_nuc_slide_tile.png"), width = 10)
-
-
-slide_tile_round <-  metadata |>
-  ggplot(aes(x = Slide, y = subslide2, fill = Round)) +
-  geom_tile() +
-  geom_text(aes(label = Sample), size = 2.5)+
-  facet_wrap(~Combo) +
-  theme_bw()
-
-ggsave(slide_tile_round, filename = here(plot_dir, "round_slide_tile.png"), width = 10)
+## TODO move when git is fixed
+# #### Exploratory n nuc plots ####
+# summary(metadata$n_nuc)
+# # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# # 22677   40586   46286   46097   53010   63293 
+# sd(metadata$n_nuc)
+# # [1] 9953.509
+# 
+# n_nuc_col <- ggplot(metadata, aes(x = Sample, y = n_nuc, fill = Combo)) +
+#   geom_col(position = "dodge") +
+#   theme_bw()+
+#   theme(axis.text.x = element_text(angle = 45, hjust=1))
+# 
+# ggsave(n_nuc_col, filename = here(plot_dir, "n_nuc_col.png"), width = 10)
+# 
+# 
+# n_nuc_box <- ggplot(metadata, aes(x = Slide, y = n_nuc, fill = Combo)) +
+#   geom_boxplot(position = "dodge") + 
+#   theme_bw()
+# 
+# ggsave(n_nuc_box, filename = here(plot_dir, "n_nuc_box.png"))
+# 
+# ## checkout distribution by combo
+# n_nuc_box_combo <- ggplot(metadata, aes(x = Combo, y = n_nuc, fill = Combo)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   geom_jitter(width = 0.2)+
+#   theme_bw() +
+#   theme(legend.position = "None")
+# 
+# ggsave(n_nuc_box_combo, filename = here(plot_dir, "n_nuc_box_combo.png"))
+# 
+# n_nuc_box_round <- ggplot(metadata, aes(x = Round, y = n_nuc, fill = Combo)) +
+#   geom_boxplot(outlier.shape = NA, alpha = 0.5) +
+#   geom_point(aes(color = Glare), position=position_jitterdodge(jitter.width = 0.2))+
+#   theme_bw() 
+# 
+# ggsave(n_nuc_box_round, filename = here(plot_dir, "n_nuc_box_round.png"))
+# 
+# n_nuc_box_pos <- ggplot(metadata, aes(x = Position, y = n_nuc, fill = Position)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   geom_jitter(width = 0.2)+
+#   facet_wrap(~Combo) +
+#   theme_bw() +
+#   theme(legend.position = "None")
+# 
+# ggsave(n_nuc_box_pos, filename = here(plot_dir, "n_nuc_box_position.png"))
+# 
+# ## Explore Slide + Splide postion of Samples
+# slide_tile_nuc <-  metadata |>
+#   ggplot(aes(x = Slide, y = subslide2, fill = n_nuc)) +
+#   geom_tile() +
+#   geom_text(aes(label = Sample), size = 2.5)+
+#   facet_wrap(~Combo) +
+#   scale_fill_viridis()+
+#   theme_bw()
+# 
+# ggsave(slide_tile_nuc, filename = here(plot_dir, "n_nuc_slide_tile.png"), width = 10)
+# 
+# 
+# slide_tile_round <-  metadata |>
+#   ggplot(aes(x = Slide, y = subslide2, fill = Round)) +
+#   geom_tile() +
+#   geom_text(aes(label = Sample), size = 2.5)+
+#   facet_wrap(~Combo) +
+#   theme_bw()
+# 
+# ggsave(slide_tile_round, filename = here(plot_dir, "round_slide_tile.png"), width = 10)
 
 #### Cell Type Annotation ####
 
@@ -234,21 +264,19 @@ write_csv(ct_markers, here("processed-data","03_HALO","CellType_markers.csv"))
 # 6 Oligo    OLIG2   Star
 
 ## CIRCLE COMBO
-halo_circle <- do.call("rbind", halo_tables[grep("Circle", names(halo_tables))])
+halo_circle <- do.call("rbind", halo_tables[grep("CIRCLE", names(halo_tables))])
 dim(halo_circle)
-# [1] 1011916      45
+# [1] 1011916      46
 
 halo_circle |> count(GAD1,GFAP,CLDN5)
-# GAD1 GFAP CLDN5      n
-# 1    0    0     0 683079
-# 2    0    0     1  38385
-# 3    0    1     0 188200
-# 4    1    0     0 102252
+#    GAD1 GFAP CLDN5      n
+# 1:    0    0     0 616882
+# 2:    0    0     1  59853
+# 3:    0    1     0 240751
+# 4:    1    0     0  94430
 
 ## cell cell types
 halo_circle <- halo_circle |> 
-  rownames_to_column("Sample") |>
-  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") |>
   mutate(n_marker = GAD1 + GFAP + CLDN5,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -260,13 +288,7 @@ halo_circle <- halo_circle |>
 
 head(halo_circle)
 
-## ct marker copies
-table(halo_circle$CLDN5..Alexa.488..Copies == 0)
-summary(halo_circle$CLDN5..Alexa.488..Copies)
-summary(halo_circle$GFAP..Alexa.594..Copies)
-
-## TREG copies
-summary(halo_circle$AKT3..Opal.570..Copies)
+summary(halo_circle$`AKT3 (Opal 570) Copies`)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 0.000   2.000   4.000   6.017   8.000  64.000 
 
@@ -278,52 +300,54 @@ head(halo_circle[,grep("Copies", colnames(halo_circle))])
 
 halo_circle |> count(cell_type)
 # cell_type      n
-# 1     Astro 188200
-# 2      Endo  38385
-# 3     Inhib 102252
-# 4     Other 683079
+# 1:     Astro 240751
+# 2:      Endo  59853
+# 3:     Inhib  94430
+# 4:     Other 616882
 
-circle_n_nuc <- halo_circle |>
-  group_by(SAMPLE_ID) |>
-  summarize(n_nuc = n())
-
-circle_prop <- halo_circle |> 
-  count(SAMPLE_ID, cell_type) |>
-  right_join(metadata, .) |> 
-  mutate(prop = n/n_nuc)
-
-circle_prop_wide <- circle_prop |>
-  mutate(prop = round(prop, 2)) |>
-  select(SAMPLE_ID, cell_type, prop) |>
-  pivot_wider(names_from = "cell_type", values_from = "prop") 
+# circle_n_nuc <- halo_circle |>
+#   group_by(SAMPLE_ID) |>
+#   summarize(n_nuc = n())
+# 
+# circle_prop <- halo_circle |> 
+#   count(SAMPLE_ID, cell_type) |>
+#   right_join(metadata, .) |> 
+#   mutate(prop = n/n_nuc)
+# 
+# circle_prop_wide <- circle_prop |>
+#   mutate(prop = round(prop, 2)) |>
+#   select(SAMPLE_ID, cell_type, prop) |>
+#   pivot_wider(names_from = "cell_type", values_from = "prop") 
 
 #### Star combo ####
 
 ## need to fix R5 colnames SLC17A -> SLC17A7
-cn <- colnames(halo_tables$R1_2720M_Star)
+# cn <- colnames(halo_tables$R1_2720M_Star)
+cn <- colnames(halo_tables$Br6432A_STAR)
 
-map(halo_tables[grep("R5.*Star",names(halo_tables))], colnames)
+map(halo_tables[grep("STAR",names(halo_tables))], colnames)
+
+map(halo_tables[grep("STAR", names(halo_tables))], ~setdiff(colnames(.x), cn))
 
 ## fix typos
-colnames(halo_tables$R5_8325A_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325A_Star))
-colnames(halo_tables$R5_8325M_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8325M_Star))
-colnames(halo_tables$R5_8667A_Star) <- gsub("SLC17A\\.","SLC17A7",colnames(halo_tables$R5_8667A_Star))
+colnames(halo_tables$Br8325A_STAR) <- gsub("SLC17A\\&","SLC17A7",colnames(halo_tables$Br8325A_STAR))
+colnames(halo_tables$Br8325M_STAR) <- gsub("SLC17A\\&","SLC17A7",colnames(halo_tables$Br8325M_STAR))
+colnames(halo_tables$Br8667A_STAR) <- gsub("SLC17A\\&","SLC17A7",colnames(halo_tables$Br8667A_STAR))
 
-map_lgl(halo_tables[grep("Star", names(halo_tables))], ~all(colnames(.x) == cn))
+
+all(map_lgl(halo_tables[grep("STAR", names(halo_tables))], ~all(colnames(.x) == cn)))
 
 ## rbind all star tables
-halo_star <- do.call("rbind", halo_tables[grep("Star", names(halo_tables))])
+halo_star <- do.call("rbind", halo_tables[grep("STAR", names(halo_tables))])
 dim(halo_star)
 halo_star |> count(SLC17A7,TMEM119,OLIG2)
-# SLC17A7 TMEM119 OLIG2      n
-# 1       0       0     0 578505
-# 2       0       0     1  75834
-# 3       0       1     0  40497
-# 4       1       0     0 229312
+#   SLC17A7 TMEM119 OLIG2      n
+# 1:       0       0     0 473785
+# 2:       0       0     1 111398
+# 3:       0       1     0  39152
+# 4:       1       0     0 157718
 
 halo_star <- halo_star |> 
-  rownames_to_column("Sample") |>
-  separate(Sample, into = c("SAMPLE_ID",NA), sep = "\\.") |>
   mutate(n_marker = SLC17A7 + TMEM119 + OLIG2,
          cell_type = case_when(
            n_marker > 1 ~ "Multi",
@@ -334,7 +358,6 @@ halo_star <- halo_star |>
          )) 
 
 halo_star |> count(cell_type)
-halo_star |> count(SAMPLE_ID, cell_type)
 # cell_type      n
 # 1     Excit 199546
 # 2     Micro  34504
@@ -342,39 +365,47 @@ halo_star |> count(SAMPLE_ID, cell_type)
 # 4     Other 623519
 
 
-halo_tables$R5_8325A_Star |> count(SLC17A7,TMEM119,OLIG2)
-#   SLC17A7 TMEM119 OLIG2     n
-# 1       0       0     0 22267
-# 2       0       1     0  1563
-# 3       1       0     0 10949
-
-halo_tables$R5_8325A_Star |> count(SLC17A7..Opal.520..Positive.Cytoplasm)
-
-halo_star |> count(SAMPLE_ID)
-
-star_prop <- halo_star |> 
-  count(SAMPLE_ID, cell_type) |>
-  right_join(metadata, .) |> 
-  mutate(prop = n/n_nuc)
-
-star_prop_wide <- star_prop |>
-  mutate(prop = round(prop, 2)) |>
-  select(SAMPLE_ID, cell_type, prop) |>
-  pivot_wider(names_from = "cell_type", values_from = "prop") 
-
-star_prop |> filter(cell_type == 'Other', prop == 1) |> select(Sample, SAMPLE_ID, Round)
+halo_star |> count(JHPCE_fn)
+# 
+# star_prop <- halo_star |> 
+#   count(SAMPLE_ID, cell_type) |>
+#   right_join(metadata, .) |> 
+#   mutate(prop = n/n_nuc)
+# 
+# star_prop_wide <- star_prop |>
+#   mutate(prop = round(prop, 2)) |>
+#   select(SAMPLE_ID, cell_type, prop) |>
+#   pivot_wider(names_from = "cell_type", values_from = "prop") 
+# 
+# star_prop |> filter(cell_type == 'Other', prop == 1) |> select(Sample, SAMPLE_ID, Round)
 
 save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
 
 #### Build HALO ALL ####
 common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
-halo_all <- rbind(halo_star[,common_cols], halo_circle[,common_cols]) |> left_join(metadata)
+halo_all <- rbind(halo_star[,..common_cols], halo_circle[,..common_cols]) |> 
+  rename(JHPCE_path = JHPCE_fn) |>
+  left_join(halo_file_table) |> 
+  left_join(metadata)
 
 save(halo_all, file = here("processed-data","03_HALO","halo_all.Rdata"))
 
+## TODO move when git is fixed, end previous script at exporting HALO_all
 #### Composition Plots ####
 circle_colors <- cell_type_colors_halo[c("Astro", "Endo", "Inhib", "Other")]
 star_colors <- cell_type_colors_halo[c("Excit", "Micro", "Oligo", "Other")]
+
+exclude_data <- c("STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv",
+                  "STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv")
+
+cell_type_prop <- halo_all |> 
+  filter(!basename %in% exclude_data) |>
+  group_by(basename, SAMPLE_ID, Sample, Combo, rescan, cell_type) |>
+  count() |>
+  group_by(basename, SAMPLE_ID, Sample, Combo, rescan) |>
+  mutate(prop = n/sum(n))
+
+cell_type_prop |> filter(Sample == "Br8667_mid")
 
 circle_prop_bar <- plot_composition_bar(circle_prop, sample_col = "Sample",x_col = "Sample") +
   scale_fill_manual(values = circle_colors) +
@@ -416,20 +447,32 @@ star_count_bar <- halo_star |>
 ggsave(star_count_bar, filename = here(plot_dir, "count_bar_star.png"), width = 12)
 
 ## 
-all_count_bar <- halo_all |> 
-  count(Sample, Combo, cell_type) |>
+# all_count_bar <- halo_all |> 
+#   count(Sample, Combo, cell_type) |>
+#   ggplot(aes(x = Sample, y = n,fill = cell_type))+
+#   geom_col()+
+#   scale_fill_manual(values = cell_type_colors_halo) +
+#   facet_wrap(~Combo, ncol = 1) +
+#   theme_bw() +
+#   theme(axis.text.x = element_text(angle = 45, hjust=1))
+# 
+# ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL.png"), width = 12)
+
+all_count_bar <- cell_type_prop |>
   ggplot(aes(x = Sample, y = n,fill = cell_type))+
   geom_col()+
   scale_fill_manual(values = cell_type_colors_halo) +
   facet_wrap(~Combo, ncol = 1) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+  labs(y = "Number of Cells")
 
-ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL.png"), width = 12)
+ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL_Oct20.png"), width = 12)
+ggsave(all_count_bar, filename = here(plot_dir, "count_bar_ALL_Oct20_small.png"), width = 6, height = 5)
 
 
 ## Combine ##
-prop_all <- rbind(circle_prop, star_prop)
+# prop_all <- rbind(circle_prop, star_prop)
 
 prop_boxplots <- prop_all |>
   ggplot(aes(x = Round, y  = prop, color = cell_type)) +
