@@ -359,7 +359,7 @@ halo_all |>
 
 save(halo_all, file = here("processed-data","03_HALO","halo_all.Rdata"))
 
-# sgejobs::job_single('06_PEC_correlation_annotation_Dx', create_shell = TRUE, memory = '10G', command = "Rscript 06_PEC_correlation_annotation_Dx.R")
+# sgejobs::job_single('01_import_HALO_data', create_shell = TRUE, memory = '10G', command = "Rscript 01_import_HALO_data.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
