@@ -1,3 +1,4 @@
+
 library("tidyverse") 
 library("scales")
 library("here")
@@ -119,7 +120,7 @@ map(halo_files, length)
 
 ## any mismatches?
 map(halo_files, ~all(names(.x) %in% metadata$SAMPLE_ID))
-map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID])
+# map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID])
 
 ## Mismatches resolved
 # mismatch_files <- unlist(map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID]))
@@ -251,7 +252,8 @@ halo_tables <- map(halo_files$Oct20, read_halo)
 
 ct_markers <- tibble(cellType = c('Endo',"Astro", "Inhib", "Excit", "Micro", "Oligo"),
        marker = c('CLDN5','GFAP','GAD1','SLC17A7','TMEM119','OLIG2'),
-       Combo = rep(c("Circle", "Star"), each = 3))
+       Combo = rep(c("CIRCLE", "STAR"), each = 3))
+
 write_csv(ct_markers, here("processed-data","03_HALO","CellType_markers.csv"))
 
 # cellType marker  Combo 
@@ -294,7 +296,8 @@ summary(halo_circle$`AKT3 (Opal 570) Copies`)
 
 
 ## no GAD1 copies?
-head(halo_circle[,grep("Copies", colnames(halo_circle))])
+head(halo_circle[,1:5])
+head(halo_circle[,grepl("Copies", colnames(halo_circle))])
 # GFAP..Alexa.594..Copies AKT3..Opal.570..Copies CLDN5..Alexa.488..Copies
 
 
@@ -365,7 +368,7 @@ halo_star |> count(cell_type)
 # 4     Other 623519
 
 
-halo_star |> count(JHPCE_fn)
+halo_star |> count(JHPCE_path)
 # 
 # star_prop <- halo_star |> 
 #   count(SAMPLE_ID, cell_type) |>
@@ -382,11 +385,44 @@ halo_star |> count(JHPCE_fn)
 save(halo_star, halo_circle, file = here("processed-data","03_HALO","HALO_Data.Rdata"))
 
 #### Build HALO ALL ####
-common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
-halo_all <- rbind(halo_star[,..common_cols], halo_circle[,..common_cols]) |> 
-  rename(JHPCE_path = JHPCE_fn) |>
+
+# "AKT3 (Opal 620) Copies"
+colnames(halo_star)[grepl("AKT3.*Copies", colnames(halo_star))] <- "AKT3_Copies"
+# "AKT3 (Opal 570) Copies"
+colnames(halo_circle)[grepl("AKT3.*Copies", colnames(halo_circle))] <- "AKT3_Copies"
+
+# find common columns
+(common_cols <- intersect(colnames(halo_star), colnames(halo_circle)))
+
+## make more usable
+common_cols_rename <- gsub(" \\(.*\\)","",common_cols)
+common_cols_rename <- gsub("/| ","_",common_cols_rename)
+
+## subset & rename
+halo_star <- halo_star[,..common_cols]
+colnames(halo_star) <- common_cols_rename
+
+halo_circle <- halo_circle[,..common_cols]
+colnames(halo_circle) <- common_cols_rename
+
+## Exclude data from these files
+exclude_data <- c("STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv",
+                  "STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv")
+
+halo_all <- rbind(halo_star, halo_circle) |> 
   left_join(halo_file_table) |> 
-  left_join(metadata)
+  left_join(metadata) |>
+  relocate(SAMPLE_ID, Sample, BrNum, Position, Object_Id, cell_type, AKT3_Copies, Nucleus_Area, XMin ,XMax, YMin, YMax)|> 
+  filter(!basename %in% exclude_data)
+
+halo_all |>
+  group_by(SAMPLE_ID, basename) |>
+  summarize(n = n())
+
+halo_all |>
+  distinct(SAMPLE_ID, basename) |>
+  count(SAMPLE_ID) |>
+  filter(n > 1)
 
 save(halo_all, file = here("processed-data","03_HALO","halo_all.Rdata"))
 
@@ -395,8 +431,6 @@ save(halo_all, file = here("processed-data","03_HALO","halo_all.Rdata"))
 circle_colors <- cell_type_colors_halo[c("Astro", "Endo", "Inhib", "Other")]
 star_colors <- cell_type_colors_halo[c("Excit", "Micro", "Oligo", "Other")]
 
-exclude_data <- c("STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv",
-                  "STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv")
 
 cell_type_prop <- halo_all |> 
   filter(!basename %in% exclude_data) |>
