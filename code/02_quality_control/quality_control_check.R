@@ -152,31 +152,41 @@ qc_boxplots_lt <- pd_new_qc_long |>
 ggsave(qc_boxplots_lt[[1]]/ qc_boxplots_lt[[2]], filename = here(plot_dir, "qc_boxplots.png"), width = 24, height = 12)
 
 
-#### ERCC data
+#### ERCC data ####
 ercc_boxplot <- pd_new |>
   ggplot(aes(x = Dataset, y = ERCCsumLogErr, fill = library_type)) +
   geom_boxplot(outlier.shape = NULL) +
   geom_jitter(width = .2) +
   facet_wrap(~round, scales = "free")+ 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(subtitle = "No ERCC spike in for Round 1")
 
 ggsave(ercc_boxplot, filename = here(plot_dir, "ERCCsumLogErr_boxplot.png"))
 
-pd_new |>
-  group_by(libary_type) +
+## there was no ERCC spike in for round1 so those values are not 
+pd_new <- pd_new |>
+  mutate(ERCCsumLogErr = ifelse(round == 1, NA, ERCCsumLogErr))
   
+
 ## RIN
   "RIN" %in% colnames(pd_new)
 
 
 library("GGally")
 
-pd_qc <- pd_new |> 
-  select(SAMPLE_ID, library_type, numReads, numMapped, mitoRate, rRNA_rate, totalAssignedGene, ERCCsumLogErr) |>
-  filter(library_type == "polyA")
+pd_new |> 
+  select(SAMPLE_ID, library_type, numReads, numMapped, mitoRate, rRNA_rate, totalAssignedGene) |>
+  group_by(library_type) |>
+  group_map(~{
+    
+    qc_ggpair <- ggpairs(.x, columns = 2:6) + 
+      theme_bw() +
+      labs(title = .y)
+    
+    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,".png")), width = 10, height = 10) 
+  })
   
-qc_ggpair <- ggpairs(pd_qc, columns = 3:8) + theme_bw()
-ggsave(qc_ggpair, filename = here(plot_dir, "qc_ggpairs.png"), width = 10, height = 10)  
+
   
 
 #### Just New data plotly boxplots ####
