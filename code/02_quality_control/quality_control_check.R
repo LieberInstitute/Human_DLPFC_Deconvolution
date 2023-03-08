@@ -7,6 +7,9 @@ library("ggrepel")
 library("jaffelab")
 library("plotly")
 
+## prep dirs ##
+plot_dir <- here(plot_dir)
+
 #### Load Big Data ####
 load("/dcl01/ajaffe/data/lab/brain_swap/count_data/RNAseq_Collection_postQC_n5761_12dataset_2021-06_geneRSE.Rdata", verbose = TRUE)
 dim(rse_gene)
@@ -51,7 +54,7 @@ load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","rse","rse_gen
 pd_new <- as.data.frame(colData(rse_gene))
 
 pd_new |>
-  count(Dataset, library_type)
+  count(Dataset, round, library_type)
 #         Dataset library_type  n
 # 1 2107UNHS-0291        polyA 12
 # 2 2107UNHS-0293 RiboZeroGold 12
@@ -88,9 +91,9 @@ pass_fail |> group_by(Dataset, Test) |>
 pass_fail_plot <- ggplot(pass_fail, aes(x = Test, y = SAMPLE_ID)) +
   geom_tile(aes(fill = value)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  facet_grid(library_type~Dataset, scales = "free_y")
+  facet_wrap(~library_type+Dataset, scales = "free_y")
 
-ggsave(pass_fail_plot, filename = here("plots","02_quality_control","pass_fail_tile.png"), height = 10, width = 10)
+ggsave(pass_fail_plot, filename = here(plot_dir,"pass_fail_tile.png"), height = 10, width = 10)
 
 ## Subset and QC data
 qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
@@ -106,18 +109,77 @@ pd_new_qc_long <- pd_new |>
   pivot_longer(!c(SAMPLE_ID, Dataset, library_type), names_to = "qc_var") |>
   mutate(`Data Status` = "new")
 
+## compare other LIBD datasets
 pd_qc_long <- rbind(pd_new_qc_long, pd_big_qc_long)
 
-qc_boxplots <- ggplot(data = pd_qc_long, aes(x = Dataset, y = value)) +
-  geom_boxplot(aes(fill = `library_type`)) +
+qc_boxplots_LIBD_exp <- ggplot(data = pd_qc_long, aes(x = Dataset, y = value)) +
+  geom_boxplot(aes(fill = `library_type`, color = `Data Status`)) +
   facet_wrap(~qc_var, scales = "free_y", ncol = 5 ) +
+  scale_color_manual(values = c(new = "black", old = "grey50"))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         text = element_text(size = 17))
 
-ggsave(qc_boxplots, filename = here("plots", "02_quality_control", "qc_boxplots.png"), width = 24, height = 12)
+ggsave(qc_boxplots_LIBD_exp , filename = here(plot_dir, "qc_boxplots_LIBD_experiment.png"), width = 24, height = 12)
 
 
-#### Just New data plotly boxplots###
+qc_boxplots_LIBD_lt <- ggplot(data = pd_qc_long, aes(x = library_type, y = value)) +
+  geom_boxplot(aes(fill = `library_type`, color = `Data Status`)) +
+  facet_wrap(~qc_var, scales = "free_y", ncol = 5 ) +
+  scale_color_manual(values = c(new = "black", old = "grey50"))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text = element_text(size = 17))
+
+ggsave(qc_boxplots_LIBD_lt, filename = here(plot_dir, "qc_boxplots_LIBD_library-type.png"), width = 24, height = 12)
+
+
+#### New Data Only Boxplots ####
+
+library(patchwork)
+
+qc_boxplots_lt <- pd_new_qc_long |>
+  group_by(library_type) |>
+  group_map(
+    ~ggplot(.x, aes(x = Dataset, y = value)) +
+      geom_boxplot(outlier.shape = NULL) +
+      geom_jitter(width = .2) +
+      facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
+      scale_color_manual(values = c(new = "black", old = "grey50"))+
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            text = element_text(size = 17)) +
+      labs(title = .y)
+    )
+
+ggsave(qc_boxplots_lt[[1]]/ qc_boxplots_lt[[2]], filename = here(plot_dir, "qc_boxplots.png"), width = 24, height = 12)
+
+
+#### ERCC data
+ercc_boxplot <- pd_new |>
+  ggplot(aes(x = Dataset, y = ERCCsumLogErr, fill = library_type)) +
+  geom_boxplot(outlier.shape = NULL) +
+  geom_jitter(width = .2) +
+  facet_wrap(~round, scales = "free")+ 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(ercc_boxplot, filename = here(plot_dir, "ERCCsumLogErr_boxplot.png"))
+
+pd_new |>
+  group_by(libary_type) +
+  
+## RIN
+  "RIN" %in% colnames(pd_new)
+
+
+library("GGally")
+
+pd_qc <- pd_new |> 
+  select(SAMPLE_ID, library_type, numReads, numMapped, mitoRate, rRNA_rate, totalAssignedGene, ERCCsumLogErr) |>
+  filter(library_type == "polyA")
+  
+qc_ggpair <- ggpairs(pd_qc, columns = 3:8) + theme_bw()
+ggsave(qc_ggpair, filename = here(plot_dir, "qc_ggpairs.png"), width = 10, height = 10)  
+  
+
+#### Just New data plotly boxplots ####
 pd_new_qc_key <- pd_new_qc_long |>
   mutate(anno = ss(SAMPLE_ID, "-", 3)) |>
   highlight_key(~anno)
@@ -131,7 +193,7 @@ qc_new_boxplots <-  pd_new_qc_key |>
         text = element_text(size = 17)) +
   labs(title = "Human DLPFC Deconvolution", subtitle = "Bulk Round 1 + 2")
 
-ggsave(qc_new_boxplots, filename = here("plots", "02_quality_control", "qc_new_boxplots.png"), width = 20, height = 12)
+ggsave(qc_new_boxplots, filename = here(plot_dir, "qc_new_boxplots.png"), width = 20, height = 12)
 
 qc_new_boxplots_plotly <- ggplotly(qc_new_boxplots, tooltip = c("colour","text"))
 
@@ -142,7 +204,7 @@ htmlwidgets::saveWidget(highlight(qc_new_boxplots_plotly,
                                   dynamic = TRUE,
                                   persistent = FALSE,),
                         selfcontained = FALSE,
-                        file = here("plots", "02_quality_control", "qc_new_boxplots.html"))
+                        file = here(plot_dir, "qc_new_boxplots.html"))
 
 
 pd_new |> filter(totalMapped < 5e7)
