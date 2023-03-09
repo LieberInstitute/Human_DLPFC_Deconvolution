@@ -2,6 +2,7 @@ library("SummarizedExperiment")
 library("here")
 library("tidyverse")
 library("SingleCellExperiment")
+library("sessioninfo")
 
 #### Plot Setup ####
 plot_dir = here("plots","00_data_prep","data_standards")
@@ -128,3 +129,11 @@ ggsave(experiment_tile, filename = here(plot_dir, "experiment_tile.png"), width 
 ggsave(experiment_tile + 
          theme(axis.text.x=element_text(angle=45, hjust=1)),
        filename = here(plot_dir, "experiment_tile_small.png"), height = 5)
+
+# sgejobs::job_single('data_standards', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript data_standards.R")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
