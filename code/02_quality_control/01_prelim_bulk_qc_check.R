@@ -5,6 +5,7 @@ library("here")
 library("readxl")
 library("ggrepel")
 library("jaffelab")
+library("GGally")
 
 ## prep dirs ##
 plot_dir <- here("plots", "02_quality_control", "01_prelim_bulk_qc_check")
@@ -49,8 +50,7 @@ colnames(pd_big)
 # [21] "bamFile"           "rna_preSwap_BrNum" "library_type" 
 
 #### Load New Data ####
-# load(here("processed-data","01_SPEAQeasy","round1_2022-07-06","rse_gene.Rdata"), verbose = TRUE)
-load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","rse","rse_gene.Rdata"), verbose = TRUE)
+load(here("processed-data","rse","preQC","rse_gene_preQC.Rdata"), verbose = TRUE)
 pd_new <- as.data.frame(colData(rse_gene)) |>
   mutate(Dataset = seq_set) ## eval as dataset here - but keep as seq_set in rse_gene
 
@@ -169,24 +169,60 @@ pd_new <- pd_new |>
   mutate(ERCCsumLogErr = ifelse(round == 1, NA, ERCCsumLogErr))
   
 
-## RIN
-  "RIN" %in% colnames(pd_new)
+## no RIN?
+"RIN" %in% colnames(pd_new)
 
 
-library("GGally")
+
+## plot w/o ERCC 
+key_qc_metrics <- c("numReads", 
+                "numMapped",
+                "mitoRate", 
+                "rRNA_rate",
+                "totalAssignedGene")
 
 pd_new |> 
-  select(SAMPLE_ID, library_type, numReads, numMapped, mitoRate, rRNA_rate, totalAssignedGene) |>
   group_by(library_type) |>
   group_map(~{
     
-    qc_ggpair <- ggpairs(.x, columns = 2:6) + 
+    qc_ggpair <- ggpairs(.x, 
+                         columns = key_qc_metrics,
+                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
       theme_bw() +
       labs(title = .y)
     
-    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,".png")), width = 10, height = 10) 
+    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,".png")), width = 11, height = 11) 
+  })
+
+#### Metrics vs. ERCC ###
+
+# cutoffs <- tibble(key_qc_metrics,
+#                   
+#                   )
+
+ercc_check <- pd_new |>
+  select(SAMPLE_ID, ERCCsumLogErr, library_prep, round) |>
+  # filter(!is.na(ERCCsumLogErr)) |>
+  replace_na(list(ERCCsumLogErr = Inf)) |>
+  left_join(pd_new_qc_long |>
+              filter(qc_var %in% key_qc_metrics),
+            multiple = "all")
+  
+
+ercc_check |>
+  group_by(library_type) |>
+  group_map(~{
+    
+    ercc_scatter <- ggplot(.x, aes(x = ERCCsumLogErr, y = value, color = library_prep, shape = factor(round))) +
+      geom_point() +
+      facet_wrap(~qc_var, scales = "free_y", nrow = 1) +
+      labs(title = .y)
+    
+    ggsave(ercc_scatter, filename = here(plot_dir, paste0("ERCC_scatter_", .y,".png")), width = 14, height = 5)
+    
   })
   
+
 
 # sgejobs::job_single('01_prelim_bulk_qc_check', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 01_prelim_bulk_qc_check.R")
 ## Reproducibility information
