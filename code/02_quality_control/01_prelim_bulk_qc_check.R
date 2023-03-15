@@ -5,7 +5,6 @@ library("here")
 library("readxl")
 library("ggrepel")
 library("jaffelab")
-library("plotly")
 
 ## prep dirs ##
 plot_dir <- here("plots", "02_quality_control", "01_prelim_bulk_qc_check")
@@ -52,7 +51,8 @@ colnames(pd_big)
 #### Load New Data ####
 # load(here("processed-data","01_SPEAQeasy","round1_2022-07-06","rse_gene.Rdata"), verbose = TRUE)
 load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","rse","rse_gene.Rdata"), verbose = TRUE)
-pd_new <- as.data.frame(colData(rse_gene))
+pd_new <- as.data.frame(colData(rse_gene)) |>
+  mutate(Dataset = seq_set) ## eval as dataset here - but keep as seq_set in rse_gene
 
 pd_new |>
   count(Dataset, round, library_type)
