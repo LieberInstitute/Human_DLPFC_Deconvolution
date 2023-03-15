@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
+#$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -N add_colData
 #$ -o logs/03_add_colData.txt
 #$ -e logs/03_add_colData.txt
