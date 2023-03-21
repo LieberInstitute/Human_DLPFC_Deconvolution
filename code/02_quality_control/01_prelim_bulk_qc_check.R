@@ -6,6 +6,7 @@ library("readxl")
 library("ggrepel")
 library("jaffelab")
 library("GGally")
+library("patchwork")
 
 ## prep dirs ##
 plot_dir <- here("plots", "02_quality_control", "01_prelim_bulk_qc_check")
@@ -106,12 +107,13 @@ pd_big_qc_long <- pd_big |>
 
 
 pd_new_qc_long <- pd_new |>
-  select(SAMPLE_ID, Dataset, library_type, all_of(qc_variables)) |>
-  pivot_longer(!c(SAMPLE_ID, Dataset, library_type), names_to = "qc_var") |>
+  select(SAMPLE_ID, Dataset, library_type, library_prep, all_of(qc_variables)) |>
+  pivot_longer(!c(SAMPLE_ID, Dataset, library_type, library_prep), names_to = "qc_var") |>
   mutate(`Data Status` = "new")
 
 ## compare other LIBD datasets
-pd_qc_long <- rbind(pd_new_qc_long, pd_big_qc_long)
+pd_qc_long <- rbind(pd_new_qc_long |> select(-library_prep), 
+                    pd_big_qc_long)
 
 qc_boxplots_LIBD_exp <- ggplot(data = pd_qc_long, aes(x = Dataset, y = value)) +
   geom_boxplot(aes(fill = `library_type`, color = `Data Status`)) +
@@ -135,22 +137,67 @@ ggsave(qc_boxplots_LIBD_lt, filename = here(plot_dir, "qc_boxplots_LIBD_library-
 
 #### New Data Only Boxplots ####
 
-library(patchwork)
+mdd_cutoffs <- tibble(qc_var = c("overallMapRate","totalAssignedGene","numReads","rRNA_rate"),
+                      cutoff = c(0.5, 0.3, 10^7.25, 1e-3)
+                  )
+
 
 qc_boxplots_lt <- pd_new_qc_long |>
   group_by(library_type) |>
   group_map(
-    ~ggplot(.x, aes(x = Dataset, y = value)) +
+    ~{qc_boxplot <- ggplot(.x, aes(x = Dataset, y = value)) +
       geom_boxplot(outlier.shape = NULL) +
       geom_jitter(width = .2) +
       facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
       scale_color_manual(values = c(new = "black", old = "grey50"))+
-      theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            text = element_text(size = 17)) +
-      labs(title = .y)
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(title = .y) +
+      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
+    
+    ggsave(qc_boxplot, filename = here(plot_dir, paste0("qc_boxplots_",.y,".png")), width = 12)
+    return(qc_boxplot)
+    }
     )
 
 ggsave(qc_boxplots_lt[[1]]/ qc_boxplots_lt[[2]], filename = here(plot_dir, "qc_boxplots.png"), width = 24, height = 12)
+
+## color by library_prep
+pd_new_qc_long |>
+  group_by(library_type) |>
+  group_map(
+    ~{qc_boxplot <- ggplot(.x, aes(x = Dataset, y = value)) +
+      geom_boxplot(aes(fill = library_prep), outlier.shape = NA, alpha = 0.5) +
+      geom_point(aes(color = library_prep), position = position_jitterdodge()) +
+      facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(title = .y) +
+      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
+    
+    ggsave(qc_boxplot, filename = here(plot_dir, paste0("qc_boxplots_",.y,".png")), width = 12)
+    # return(qc_boxplot)
+    }
+  )
+
+#### gg pairs ####
+key_qc_metrics <- c("numReads", 
+                    "numMapped",
+                    "overallMapRate",
+                    "totalAssignedGene",
+                    "mitoRate", 
+                    "rRNA_rate")
+
+pd_new |> 
+  group_by(library_type) |>
+  group_map(~{
+    
+    qc_ggpair <- ggpairs(.x, 
+                         columns = key_qc_metrics,
+                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
+      theme_bw() +
+      labs(title = .y)
+    
+    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,".png")), width = 11, height = 11) 
+  })
 
 
 #### ERCC data ####
@@ -172,34 +219,7 @@ pd_new <- pd_new |>
 ## no RIN?
 "RIN" %in% colnames(pd_new)
 
-
-
-## plot w/o ERCC 
-key_qc_metrics <- c("numReads", 
-                "numMapped",
-                "mitoRate", 
-                "rRNA_rate",
-                "totalAssignedGene")
-
-pd_new |> 
-  group_by(library_type) |>
-  group_map(~{
-    
-    qc_ggpair <- ggpairs(.x, 
-                         columns = key_qc_metrics,
-                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
-      theme_bw() +
-      labs(title = .y)
-    
-    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,".png")), width = 11, height = 11) 
-  })
-
 #### Metrics vs. ERCC ###
-
-# cutoffs <- tibble(key_qc_metrics,
-#                   
-#                   )
-
 ercc_check <- pd_new |>
   select(SAMPLE_ID, ERCCsumLogErr, library_prep, round) |>
   # filter(!is.na(ERCCsumLogErr)) |>
@@ -216,7 +236,8 @@ ercc_check |>
     ercc_scatter <- ggplot(.x, aes(x = ERCCsumLogErr, y = value, color = library_prep, shape = factor(round))) +
       geom_point() +
       facet_wrap(~qc_var, scales = "free_y", nrow = 1) +
-      labs(title = .y)
+      labs(title = .y)+
+      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
     
     ggsave(ercc_scatter, filename = here(plot_dir, paste0("ERCC_scatter_", .y,".png")), width = 14, height = 5)
     
