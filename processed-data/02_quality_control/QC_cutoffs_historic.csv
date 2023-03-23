@@ -1,0 +1,10 @@
+"library_type","qc_var","type","Median"
+"RiboZeroGold","concordMapRate","min",0.5216
+"RiboZeroGold","mitoMapped","max",11899410
+"RiboZeroGold","mitoRate","max",0.0996461667803374
+"RiboZeroGold","numMapped","min",49284276
+"RiboZeroGold","numReads","min",67480718
+"RiboZeroGold","overallMapRate","min",0.5471
+"RiboZeroGold","rRNA_rate","max",0.000370326330804076
+"RiboZeroGold","totalAssignedGene","min",0.294010171519919
+"RiboZeroGold","totalMapped","min",46636567

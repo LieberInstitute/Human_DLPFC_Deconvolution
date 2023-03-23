@@ -80,10 +80,13 @@ ggsave(historic_cutoff_box, filename = here(plot_dir, "historic_cutoff_boxplot.p
 ## sanity check numbers
 historic_cutoff_median <- historic_cutoff_long |>
   filter(library_type == "RiboZeroGold") |>
-  group_by(cutoff) |>
+  group_by(library_type, cutoff) |>
   summarise(Median = median(value)) |>
   separate(cutoff, into = c("qc_var", "type"), sep = "_") |>
   mutate(qc_var = gsub("rRNArate", "rRNA_rate", qc_var))
+
+write.csv(historic_cutoff_median, file = here("processed-data", "02_quality_control","QC_cutoffs_historic.csv"),
+          row.names = FALSE)
 
 # qc_var            type   Median
 # <chr>             <chr>   <dbl>
@@ -110,6 +113,8 @@ pd_new |>
 # 3    AN00000904        polyA 44
 # 4    AN00000906 RiboZeroGold 45
 
+colnames(pd_new)
+
 ## pass fail matrix
 pass_fail <- pd_new |>
   select(SAMPLE_ID,library_type, Dataset, basic_statistics:adapter_content) |>
@@ -117,7 +122,6 @@ pass_fail <- pd_new |>
 
 pass_fail |> group_by(Test) |>
   count(value)
-
 
 pass_fail |> group_by(Dataset, Test) |>
   count(value) |>
@@ -198,31 +202,35 @@ ggsave(qc_boxplots_LIBD_lt, filename = here(plot_dir, "qc_boxplots_LIBD_library-
 
 
 #### Combined Data automatic outliers ####
-library(scuttle)
-
-focused_qc_metrics <- c("numReads",
+focused_qc_metrics <- c("concordMapRate",
+                        "mitoRate", # looks for for RiboZero - need to look at for polyA
                         "numMapped",
-                        "overallMapRate", ## high cor with concordMapRate, -numUnmapped
+                        "numReads",
+                        "overallMapRate",
                         "totalAssignedGene",
-                        "mitoRate", # cor with mitoMapped
-                        "rRNA_rate")
+                        "totalMapped")
+
 
 names(focused_qc_metrics) <- focused_qc_metrics
-tail <- c(numReads = "lower", 
+tail <- c(concordMapRate = "lower",
+          mitoRate = "higher",
           numMapped = "lower",
+          numReads = "lower", 
           overallMapRate = "lower",
           totalAssignedGene = "lower",
-          mitoRate = "higher",
-          rRNA_rate = "higher")
+          totalMapped = "lower",
+          mitoRate = "higher")
+
+tail <- tail[names(focused_qc_metrics)]
 
 ## apply isOutlier
-auto_outliers <- map2(focused_qc_metrics, tail, ~isOutlier(rse_gene[[.x]], type = .y, nmads = 4))
+auto_outliers <- map2(focused_qc_metrics, tail, ~isOutlier(rse_gene[[.x]], type = .y, nmads = 3))
 
 ## find MAD cutoffs
 auto_cutoff <- map_dfr(auto_outliers, ~attr(.x,"thresholds")) |>
   add_column(qc_var = focused_qc_metrics, .before = 1)
 
-map(auto_outlier, table)
+map(auto_outliers, table)
 
 auto_outliers_combine <- Reduce("|", auto_outliers)
 table(auto_outliers_combine)
@@ -240,15 +248,98 @@ qc_boxplot_isOutlier <- pd_new_qc_long |>
       geom_jitter(aes(color = auto_outlier)) +
       facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      labs(title = "isOutlier cutoff - 4 MADs") +
+      labs(title = "isOutlier cutoff - 3 MADs") +
       scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "grey50")) +
       geom_hline(data = auto_cutoff, aes(yintercept = lower), color = "red", linetype = "dashed") +
       geom_hline(data = auto_cutoff, aes(yintercept = higher), color = "blue", linetype = "dashed")+
-  geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "purple", linetype = "dotted")
+  geom_hline(data = historic_cutoff_median |> filter(qc_var %in% focused_qc_metrics), 
+             aes(yintercept = Median), color = "darkgreen")
 #     
 ggsave(qc_boxplot_isOutlier, filename = here(plot_dir, paste0("qc_boxplots_isOutlier.png")), width = 12)
 
-## by library prep?
+## refine for metrics that work well
+
+focused_qc_metrics2 <- focused_qc_metrics[c("numMapped","numReads")]
+auto_outliers2 <- map2(focused_qc_metrics2, tail[names(focused_qc_metrics2)], ~isOutlier(rse_gene[[.x]], type = .y, nmads = 3))
+## Use only polyA to QC mitoRate
+auto_outliers2$mitoRate <- isOutlier(rse_gene[["mitoRate"]], subset = rse_gene$library_type == "polyA", type = "higher")
+## Use only RiboZero ti QC totalAssignedGene & totalMapped
+auto_outliers2$totalMapped <- isOutlier(rse_gene[["totalMapped"]], subset = rse_gene$library_type == "RiboZeroGold", type = "lower")
+auto_outliers2$totalAssignedGene <- isOutlier(rse_gene[["totalAssignedGene"]], subset = rse_gene$library_type == "RiboZeroGold", type = "lower")
+
+auto_outliers_combine2 <- Reduce("|", auto_outliers2)
+table(auto_outliers_combine2)
+# FALSE  TRUE 
+# 106     7
+
+auto_cutoff2 <- map_dfr(auto_outliers2, ~attr(.x,"thresholds")) |>
+  add_column(qc_var = names(auto_outliers2), .before = 1)
+
+auto_outlier_tb2 <- tibble(SAMPLE_ID = pd_new$SAMPLE_ID, auto_outlier = auto_outliers_combine2)
+
+### boxplot for global isOutlier cutoffs
+qc_boxplot_isOutlier2 <- pd_new_qc_long |>
+  left_join(auto_outlier_tb2) |>
+  filter(qc_var %in% focused_qc_metrics) |>
+  ggplot(aes(x = library_type, y = value)) +
+  geom_boxplot(aes(fill = library_type), outlier.shape = NA, alpha = 0.5) +
+  geom_jitter(aes(color = auto_outlier)) +
+  facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "isOutlier cutoff refined metrics- 3 MADs") +
+  scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "grey50")) +
+  geom_hline(data = auto_cutoff2, aes(yintercept = lower), color = "red", linetype = "dashed") +
+  geom_hline(data = auto_cutoff2, aes(yintercept = higher), color = "blue", linetype = "dashed")+
+  geom_hline(data = historic_cutoff_median |> filter(qc_var %in% focused_qc_metrics), 
+             aes(yintercept = Median), color = "darkgreen")
+#     
+ggsave(qc_boxplot_isOutlier2, filename = here(plot_dir, paste0("qc_boxplots_isOutlier2.png")), width = 12)
+
+## Add to data
+pd_new <- pd_new |> left_join(auto_outlier_tb2)
+
+pd_new |>
+  filter(auto_outlier) |>
+  select(SAMPLE_ID, Sample, library_type, library_prep)
+  # select(SAMPLE_ID, Sample, library_type, library_prep, mitoRate, numMapped, numReads, totalAssignedGene, totalMapped)
+# SAMPLE_ID     Sample library_type library_prep
+# 1 2107UNHS-0293_Br2720_Mid_Nuc Br2720_mid RiboZeroGold          Nuc
+# 2   AN00000904_Br2743_Ant_Cyto Br2743_ant        polyA         Cyto
+# 3    AN00000904_Br2743_Ant_Nuc Br2743_ant        polyA          Nuc
+# 4        AN00000906_Br2743_Ant Br2743_ant RiboZeroGold         Bulk
+# 5   AN00000906_Br2743_Ant_Cyto Br2743_ant RiboZeroGold         Cyto
+# 6    AN00000906_Br8325_Mid_Nuc Br8325_mid RiboZeroGold          Nuc
+# 7    AN00000906_Br8492_Mid_Nuc Br8492_mid RiboZeroGold          Nuc
+
+pd_new_qc_long <- pd_new_qc_long |> left_join(auto_outlier_tb2)
+
+#### gg pairs ####
+## how do the varaibles relate
+pd_new |> 
+  group_by(library_type) |>
+  group_map(~{
+    
+    qc_ggpair <- ggpairs(.x, 
+                         columns = qc_variables,
+                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
+      theme_bw() +
+      labs(title = .y)
+    
+    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,"_all.png")), width = 14, height = 14) 
+  })
+
+pd_new |> 
+  group_by(library_type) |>
+  group_map(~{
+    
+    qc_ggpair <- ggpairs(.x, 
+                         columns = focused_qc_metrics,
+                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
+      theme_bw() +
+      labs(title = .y)
+    
+    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,"_focus.png")), width = 10, height = 10) 
+  })
 
 #### New Data Only Boxplots ####
 mdd_cutoffs <- tibble(qc_var = c("overallMapRate","totalAssignedGene","numReads","rRNA_rate"),
@@ -266,7 +357,8 @@ qc_boxplots_lt <- pd_new_qc_long |>
       scale_color_manual(values = c(new = "black", old = "grey50"))+
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       labs(title = .y) +
-      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
+      geom_hline(data = historic_cutoff_median |> filter(qc_var %in% focused_qc_metrics), 
+                 aes(yintercept = Median), color = "darkgreen")
     
     ggsave(qc_boxplot, filename = here(plot_dir, paste0("qc_boxplots_",.y,".png")), width = 12)
     return(qc_boxplot)
@@ -285,106 +377,62 @@ pd_new_qc_long |>
       facet_wrap(~qc_var, scales = "free_y", nrow = 2) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       labs(title = .y) +
-      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
+      geom_hline(data = auto_cutoff2, aes(yintercept = lower), color = "red", linetype = "dashed") +
+      geom_hline(data = auto_cutoff2, aes(yintercept = higher), color = "blue", linetype = "dashed")
     
     ggsave(qc_boxplot, filename = here(plot_dir, paste0("qc_boxplots_",.y,".png")), width = 12)
     # return(qc_boxplot)
     }
   )
 
-#### gg pairs ####
-pd_new |> 
-  group_by(library_type) |>
-  group_map(~{
-    
-    qc_ggpair <- ggpairs(.x, 
-                         columns = qc_variables,
-                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
-      theme_bw() +
-      labs(title = .y)
-    
-    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,"_all.png")), width = 14, height = 14) 
-  })
-
-
-pd_new |>
-  filter(numMapped < 5e7) |>
-  select(SAMPLE_ID,library_type, numMapped)
-
-pd_new |>
-  filter(library_type == "polyA",
-         totalAssignedGene < 0.3) |>
-  select(SAMPLE_ID, totalAssignedGene)
-
-pd_new |>
-  filter(library_type == "RiboZeroGold",
-         totalAssignedGene < 0.2) |>
-  select(SAMPLE_ID, totalAssignedGene)
-
-#### Hand picked samples 
-bad_samples <- c("2107UNHS-0293_Br2720_Mid_Nuc", #low mapped
-                 "AN00000904_Br2743_Ant_Cyto", ## low mapped, low totalAssignedGene
-                 "AN00000906_Br2743_Ant_Cyto",
-                 "AN00000906_Br2743_Ant",
-                 "AN00000904_Br2743_Ant",
-                 "AN00000906_Br8325_Mid_Nuc",
-                 "AN00000906_Br8492_Mid_Nuc"
-                 )
-
-pd_new |> 
-  group_by(library_type) |>
-  mutate(drop = SAMPLE_ID %in% bad_samples) |>
-  count(drop)
-
-pd_new |> 
-  group_by(library_type) |>
-  mutate(drop = SAMPLE_ID %in% bad_samples) |>
-  group_map(~{
-    
-    qc_ggpair <- ggpairs(.x, 
-                         columns = qc_variables,
-                         ggplot2::aes(colour=drop, alpha = .6)) + 
-      theme_bw() +
-      labs(title = .y)
-    
-    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,"_drop.png")), width = 14, height = 14) 
-  })
-
-
-
-
-pd_new |> 
-  group_by(library_type) |>
-  group_map(~{
-    
-    qc_ggpair <- ggpairs(.x, 
-                         columns = focused_qc_metrics,
-                         ggplot2::aes(colour=library_prep, alpha = .6)) + 
-      theme_bw() +
-      labs(title = .y)
-    
-    ggsave(qc_ggpair, filename = here(plot_dir, paste0("qc_ggpairs_",.y,"_focus.png")), width = 10, height = 10) 
-  })
-
 
 #### ERCC data ####
 ercc_boxplot <- pd_new |>
   ggplot(aes(x = Dataset, y = ERCCsumLogErr, fill = library_type)) +
-  geom_boxplot(outlier.shape = NULL) +
-  geom_jitter(width = .2) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5) +
+  geom_jitter(aes(color = auto_outlier), width = .2) +
+  scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "red"))+
   facet_wrap(~round, scales = "free")+ 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(subtitle = "No ERCC spike in for Round 1")
 
 ggsave(ercc_boxplot, filename = here(plot_dir, "ERCCsumLogErr_boxplot.png"))
 
-## there was no ERCC spike in for round1 so those values are not 
+## there was no ERCC spike in for round1 so those values are not "real" repalce with NA
 pd_new <- pd_new |>
   mutate(ERCCsumLogErr = ifelse(round == 1, NA, ERCCsumLogErr))
-  
 
-## no RIN?
-"RIN" %in% colnames(pd_new)
+## trend over libary_prep
+ercc_boxplot_prep <- pd_new |>
+  filter(round == 2) |>
+  ggplot(aes(x = library_prep, y = ERCCsumLogErr, fill = library_prep)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5) +
+  geom_jitter(aes(color = auto_outlier), width = .2) +
+  scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "red"))+
+  facet_wrap(~library_type)
+
+ggsave(ercc_boxplot_prep, filename = here(plot_dir, "ERCCsumLogErr_boxplot_prep.png"))
+
+
+## isOutlier for ERCC ?
+ercc_mad <- mad(pd_new$ERCCsumLogErr, na.rm = TRUE)
+# [1] 6.148316
+ercc_mad_abs <- mad(abs(pd_new$ERCCsumLogErr), na.rm = TRUE)
+# [1] 5.477725
+
+ercc_mad_tab <- tibble(n_mads = 1:6, 
+                       cutoff_high = n_mads * ercc_mad,
+                       cutoff_low = -n_mads * ercc_mad)
+
+# n_mads cutoff_high cutoff_low
+# <int>       <dbl>      <dbl>
+# 1      1        6.15      -6.15
+# 2      2       12.3      -12.3 
+# 3      3       18.4      -18.4 
+# 4      4       24.6      -24.6 
+# 5      5       30.7      -30.7 
+# 6      6       36.9      -36.9 
+
 
 #### Metrics vs. ERCC ###
 ercc_check <- pd_new |>
@@ -400,11 +448,13 @@ ercc_check |>
   group_by(library_type) |>
   group_map(~{
     
-    ercc_scatter <- ggplot(.x, aes(x = ERCCsumLogErr, y = value, color = library_prep, shape = factor(round))) +
-      geom_point() +
+    ercc_scatter <- ggplot(.x, aes(x = ERCCsumLogErr, y = value, color = library_prep)) +
+      geom_point(aes(shape = auto_outlier)) +
+      # scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "red"))+
       facet_wrap(~qc_var, scales = "free_y", nrow = 1) +
       labs(title = .y)+
-      geom_hline(data = mdd_cutoffs, aes(yintercept = cutoff), color = "red", linetype = "dashed")
+      geom_hline(data = auto_cutoff2, aes(yintercept = lower), color = "red", linetype = "dashed") +
+      geom_hline(data = auto_cutoff2, aes(yintercept = higher), color = "blue", linetype = "dashed")
     
     ggsave(ercc_scatter, filename = here(plot_dir, paste0("ERCC_scatter_", .y,".png")), width = 14, height = 5)
     
