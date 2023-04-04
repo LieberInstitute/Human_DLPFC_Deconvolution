@@ -80,6 +80,45 @@ dev.off()
 
 #### Mean Ratio Cartoon ####
 
+example_expression <- tibble(gene = "specific marker",
+                        cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
+                        cell_type_2 = abs(rnorm(n = 1000)),
+                        cell_type_3 = abs(rnorm(n = 1000)),
+                        cell_type_4 = abs(rnorm(n = 1000))
+                        ) |>
+  bind_rows(tibble(gene = "unspecific marker",
+                   cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
+                   cell_type_2 = abs(rnorm(n = 1000, mean = 4, sd = .5)),
+                   cell_type_3 = abs(rnorm(n = 1000)),
+                   cell_type_4 = abs(rnorm(n = 1000))) ) |>
+  pivot_longer(!gene, names_to = "cell_type", values_to = "expression")
+
+
+# g1_expression <- tibble(gene = "specific marker",
+#                         cell_type_1 = floor(rnorm(n = 1000, mean = 10^5, sd = 1000)),
+#                         cell_type_2 = floor(rnorm(n = 1000, sd = 1000))
+# ) |>
+#   pivot_longer(!gene, names_to = "cell_type", values_to = "counts") |>
+#   mutate(counts = ifelse(counts < 0, 0, counts),
+#          logcounts = log10(counts + 1))
+
+example_violin <- example_expression |>
+  ggplot(aes(x = cell_type, y = expression, fill = cell_type)) +
+  geom_violin(scale = "width") +
+  stat_summary(
+    fun = mean,
+    geom = "crossbar",
+    width = 0.3
+  ) +
+  facet_wrap(~gene) +
+  scale_fill_manual(values = example_colors) +
+  theme_bw() +
+  theme(legend.position = "None")
+
+ggsave(example_violin, filename = here(plot_dir, "example_expression_violin.png"), height = 5)
+
+#### Check fave markers for example distributions ####
+
 
 # sgejobs::job_single('01_example_plots', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 01_example_plots.R")
 ## Reproducibility information
