@@ -203,7 +203,7 @@ ggsave(qc_boxplots_LIBD_lt, filename = here(plot_dir, "qc_boxplots_LIBD_library-
 
 #### Combined Data automatic outliers ####
 focused_qc_metrics <- c("concordMapRate",
-                        "mitoRate", # looks for for RiboZero - need to look at for polyA
+                        "mitoRate", 
                         "numMapped",
                         "numReads",
                         "overallMapRate",
@@ -224,11 +224,36 @@ tail <- c(concordMapRate = "lower",
 tail <- tail[names(focused_qc_metrics)]
 
 ## apply isOutlier
-auto_outliers <- map2(focused_qc_metrics, tail, ~isOutlier(rse_gene[[.x]], type = .y, nmads = 3))
+auto_outliers <- map2(focused_qc_metrics, tail, ~isOutlier(rse_gene[[.x]], batch =rse_gene$library_type, type = .y, nmads = 3))
 
 ## find MAD cutoffs
-auto_cutoff <- map_dfr(auto_outliers, ~attr(.x,"thresholds")) |>
-  add_column(qc_var = focused_qc_metrics, .before = 1)
+auto_cutoff <- do.call("rbind",
+                       map2(auto_outliers, names(auto_outliers), ~attr(.x,"thresholds") |>
+                              as.data.frame() |>
+                              rownames_to_column("cutoff_type") |>
+                              add_column(qc_var = .y, .before = 1))) |>
+  pivot_longer(!c(qc_var, cutoff_type), names_to = "library_type", values_to = "cutoff")
+
+auto_cutoff |> 
+  filter(abs(cutoff) != Inf)
+
+# qc_var            cutoff_type library_type        cutoff
+# <chr>             <chr>       <chr>                <dbl>
+#   1 concordMapRate    lower       polyA               0.953 
+# 2 concordMapRate    lower       RiboZeroGold        0.908 
+# 3 mitoRate          higher      polyA               0.340 
+# 4 mitoRate          higher      RiboZeroGold        0.0247
+# 5 numMapped         lower       polyA        61280789.    
+# 6 numMapped         lower       RiboZeroGold 48838795.    
+# 7 numReads          lower       polyA        65036118.    
+# 8 numReads          lower       RiboZeroGold 51168785.    
+# 9 overallMapRate    lower       polyA               0.955 
+# 10 overallMapRate    lower       RiboZeroGold        0.931 
+# 11 totalAssignedGene lower       polyA               0.548 
+# 12 totalAssignedGene lower       RiboZeroGold        0.166 
+# 13 totalMapped       lower       polyA        45653338.    
+# 14 totalMapped       lower       RiboZeroGold 50556432. 
+
 
 map(auto_outliers, table)
 
