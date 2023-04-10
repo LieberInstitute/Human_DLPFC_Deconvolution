@@ -1,12 +1,18 @@
 
 library(here)
+library(SummarizedExperiment)
 library(tidyverse)
 
 #### confirm issue in SPEAQeasy output ####
-rse <- get(load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE))
+load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
+# load(here("processed-data","01_SPEAQeasy","round2_v25_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
+
+## issue exists in v40 + v25 data
 
 rse_cyto <- rse_gene[,grepl("Cyto",rse_gene$SAMPLE_ID)]
 colnames(rse_cyto) <- gsub("_Cyto","",colnames(rse_cyto))
+
+assays(rse_cyto)$counts[1:5,1:5]
 
 rse_bulk <- rse_gene[,!grepl("Cyto|Nuc",rse_gene$SAMPLE_ID)]
 identical(colnames(rse_bulk), colnames(rse_cyto))
@@ -44,6 +50,8 @@ all.equal(colData(rse_bulk), colData(rse_cyto))
 # [23] "Attributes: < Component “listData”: Component “mitoRate”: Mean relative difference: 0.2811975 >"
 
 
+
+
 #### Check manifest ####
 manifest_check <- read.table(here("raw-data", "bulkRNA", "samples.manifest"))
 head(manifest_check)
@@ -60,6 +68,13 @@ manifest_check |>
 #### Are fastq's identical ? ####
 # diff "raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant_Cyto/2107UNHS-0291_Br6471_Ant_Cyto_1.fastq.gz" "raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant/2107UNHS-0291_Br6471_Ant_1.fastq.gz"
 # Binary files raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant_Cyto/2107UNHS-0291_Br6471_Ant_Cyto_1.fastq.gz and raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant/2107UNHS-0291_Br6471_Ant_1.fastq.gz differ
+
+
+## md5sum
+# md5sum "raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant/2107UNHS-0291_Br6471_Ant_1.fastq.gz"
+# af05a12e5dd96823faf85bc57bfde77a  raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant/2107UNHS-0291_Br6471_Ant_1.fastq.gz
+# md5sum "raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant_Cyto/2107UNHS-0291_Br6471_Ant_Cyto_1.fastq.gz"
+# 620291afd86798f6b523650c97a131bb  raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant_Cyto/2107UNHS-0291_Br6471_Ant_Cyto_1.fastq.gz
 
 # ls -l raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant*
 #   raw-data/bulkRNA/2107UNHS-0291/Br6471_Ant:
