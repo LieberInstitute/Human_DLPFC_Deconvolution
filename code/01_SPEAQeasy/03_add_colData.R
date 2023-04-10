@@ -19,16 +19,24 @@ basename(rse_fn_v40)
 
 rse <- get(load(rse_fn_v40[['gene']], verbose = TRUE))
 
+#### bug check ####
+rse_test <- rse_gene[,grepl("Br6471_Ant", rse$SAMPLE_ID)]
+test <- assays(rse_test)$counts
+
+head(test)
+identical(test[,"2107UNHS-0291_Br6471_Ant"],test[,"2107UNHS-0291_Br6471_Ant_Cyto"])
+
 #### Load sample data ####
 pos_df <- data.frame(Position = c("Anterior", "Middle", "Posterior"), 
                  pos = c("ant", "mid", "post"))
 
 data_info <- read.csv(here("processed-data","01_SPEAQeasy", "data_info.csv")) |>
   mutate(pos = tolower(location),
-         Sample = paste0(BrNum,"_", pos)) |>
+         Sample = paste0(BrNum,"_", pos),
+         library_combo = paste0(library_type,"_",library_prep)) |>
   left_join(pos_df) |>
   column_to_rownames("SAMPLE_ID")|>
-  select(Sample, BrNum, pos, Position, library_prep, library_type, seq_set = Dataset, round, fastq1, fastq2)
+  select(Sample, BrNum, pos, Position, library_prep, library_type, library_combo, seq_set = Dataset, round, fastq1, fastq2)
 
 #### add to rse objects ####
 
