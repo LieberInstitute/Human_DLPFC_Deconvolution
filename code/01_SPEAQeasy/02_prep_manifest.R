@@ -86,11 +86,11 @@ write.table(manifest, file = here("raw-data", "bulkRNA", "samples.manifest"), qu
 # any(duplicated(manifest_check$V3))
 # any(duplicated(manifest_check$V5))
 
-# sgejobs::job_single('03_add_colData', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_add_colData.R")
+# sgejobs::job_single('02_prep_manifest', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 02_prep_manifest.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_info()
+sessioninfo::session_info()

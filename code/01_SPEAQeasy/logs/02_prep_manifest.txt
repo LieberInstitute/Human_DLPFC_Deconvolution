@@ -1,0 +1,91 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2.x
+**** Job starts ****
+Mon Apr 10 14:51:33 EDT 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 3112151
+Job name: prep_manifest
+Hostname: compute-093.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2.x
+Loading conda_R/4.2.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.1     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Loading required package: rafalib
+Joining with `by = join_by(Dataset)`
+[1] FALSE
+[1] FALSE
+[1] FALSE
+# A tibble: 4 × 2
+  Dataset           n
+  <chr>         <int>
+1 2107UNHS-0291    12
+2 2107UNHS-0293    12
+3 AN00000904       44
+4 AN00000906       45
+# A tibble: 2 × 2
+  library_type     n
+  <chr>        <int>
+1 RiboZeroGold    57
+2 polyA           56
+# A tibble: 3 × 2
+  library_prep     n
+  <chr>        <int>
+1 Bulk            38
+2 Cyto            38
+3 Nuc             37
+# A tibble: 6 × 3
+  library_type library_prep     n
+  <chr>        <chr>        <int>
+1 RiboZeroGold Bulk            19
+2 RiboZeroGold Cyto            19
+3 RiboZeroGold Nuc             19
+4 polyA        Bulk            19
+5 polyA        Cyto            19
+6 polyA        Nuc             18
+# A tibble: 10 × 2
+   BrNum      n
+   <chr>  <int>
+ 1 Br2720    12
+ 2 Br2743     6
+ 3 Br3942    12
+ 4 Br6423    12
+ 5 Br6432    12
+ 6 Br6471    12
+ 7 Br6522    12
+ 8 Br8325    11
+ 9 Br8492    12
+10 Br8667    12
+[1] "Reproducibility information:"
+[1] "2023-04-10 14:51:49 EDT"
+   user  system elapsed 
+  8.881   0.768  13.892 
+Error in session_info() : could not find function "session_info"
+Execution halted
+**** Job ends ****
+Mon Apr 10 14:51:49 EDT 2023
