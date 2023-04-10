@@ -18,6 +18,11 @@ data_info <- tibble(fastq = fastq, fastq1 = fastq1_fn, fastq2 = fastq2_fn) %>%
   left_join(library_type) %>%
   select(SAMPLE_ID, Dataset, BrNum, location, library_prep, library_type, round,fastq1, fastq2)
 
+#### bug check ####
+any(duplicated(data_info$SAMPLE_ID))
+any(duplicated(data_info$fastq1))
+any(duplicated(data_info$fastq2))
+
 ## need all unique basenames
 data_info %>% count(Dataset)
 # Dataset           n
@@ -73,3 +78,10 @@ manifest <- data_info %>%
   select(fastq1, zeros, fastq2, zeros2, SAMPLE_ID)
 
 write.table(manifest, file = here("raw-data", "bulkRNA", "samples.manifest"), quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
+
+#### bug check ####
+# manifest_check <- read.table(here("raw-data", "bulkRNA", "samples.manifest"))
+# head(manifest_check)
+# any(duplicated(manifest_check$V1))
+# any(duplicated(manifest_check$V3))
+# any(duplicated(manifest_check$V5))
