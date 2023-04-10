@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
 #$ -N find_markers_broad
 #$ -o logs/03_find_markers_broad.txt
 #$ -e logs/03_find_markers_broad.txt
