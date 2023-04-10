@@ -31,7 +31,7 @@ fix_br_name <- function(path){
 }
 
 message("Changing these names:")
-sapply(raw_data_files, fix_br_name)
+# sapply(raw_data_files, fix_br_name) ## fixed 7/6/22
 
 new_data_files <- list.files(file_dir, recursive = TRUE)
 
@@ -46,6 +46,20 @@ file.rename(cyt_dirs, paste0(cyt_dirs,"o"))
 ## fix filenames
 (cyt_data_files <- list.files(file_dir, pattern = "Cyt_", recursive = TRUE, full.names = TRUE))
 file.rename(cyt_data_files, gsub("Cyt_","Cyto_", cyt_data_files))
+
+#### add _Bulk sufix  ####
+# psrt of SPEAQeasy de-bug 4/10/23
+bulk_dirs <- all_dirs[grepl("Mid$|Ant$|Post$", all_dirs)]
+length(bulk_dirs)
+file.rename(bulk_dirs, paste0(bulk_dirs,"_Bulk"))
+
+data_files <- list.files(file_dir, recursive = TRUE, full.names = TRUE)
+bulk_data_files <- data_files[grepl("Bulk",data_files)]
+
+file.rename(bulk_data_files, gsub("(_\\d.fastq)","_Bulk\\1",bulk_data_files))
+
+bulk_md5 <- bulk_data_files[grepl(".md5$",bulk_data_files)]
+file.rename(bulk_md5, gsub("(.md5)","_Bulk\\1",bulk_md5))
 
 # sgejobs::job_single('01_fix_filenames', create_shell = TRUE, memory = '5G', command = "Rscript 01_fix_filenames.R")
 ## Reproducibility information
