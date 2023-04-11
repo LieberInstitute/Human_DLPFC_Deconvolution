@@ -26,6 +26,29 @@ names(cell_type_colors_halo) <- cell_types_halo
 
 save(cell_type_colors_halo, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
 
+### Bulk data colors ####
+
+library_type_colors <- c(polyA = "#735290", RiboZeroGold = "#d4af35")
+library_prep_colors <- c(Nuc = "#274754", Bulk = "#40768c", Cyto = "#73a9bf")
+
+## other colors for cyto/bulk/nuc
+# c("#FFB2E6","#D972FF","#8447FF")
+# c("#3a6b7e","#2a9d8f","#b8cd65")
+
+library_combo_colors <- c(polyA_Nuc  = "#363457", 
+                          polyA_Bulk = "#735290", 
+                          polyA_Cyto = "#c0a5cc",
+                          RiboZeroGold_Nuc = "#785318",
+                          RiboZeroGold_Bulk = "#d4af35",
+                          RiboZeroGold_Cyto = "#e2d878")
+
+# gold purple 
+# c("#363457","#735290","#c0a5cc","#785318","#d4af35","#e2d878")
+
+# pink green
+# c("#AF4D98","#D66BA0","#DDA7B4","#337357","#06D6A0","#74FBD7")
+
+
 ## Define plotting theme
 
 
