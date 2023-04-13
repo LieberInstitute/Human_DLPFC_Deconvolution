@@ -6,7 +6,7 @@ library("jaffelab")
 library("sessioninfo")
 
 #### Round 2 version 40 ####
-output_dir <- here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06")
+output_dir <- here("processed-data","01_SPEAQeasy","round2_v40_2023-04-05")
 
 rse_fn_v40 <- list.files(here(output_dir,"count_objects"),
                      pattern = "rse*", full.names = TRUE)
@@ -18,13 +18,6 @@ basename(rse_fn_v40)
 # [3] "rse_jx_Human_DLPFC_Deconvolution_n113.Rdata"   "rse_tx_Human_DLPFC_Deconvolution_n113.Rdata"
 
 rse <- get(load(rse_fn_v40[['gene']], verbose = TRUE))
-
-#### bug check ####
-rse_test <- rse_gene[,grepl("Br6471_Ant", rse$SAMPLE_ID)]
-test <- assays(rse_test)$counts
-
-head(test)
-identical(test[,"2107UNHS-0291_Br6471_Ant"],test[,"2107UNHS-0291_Br6471_Ant_Cyto"])
 
 #### Load sample data ####
 pos_df <- data.frame(Position = c("Anterior", "Middle", "Posterior"), 
@@ -39,15 +32,14 @@ data_info <- read.csv(here("processed-data","01_SPEAQeasy", "data_info.csv")) |>
   select(Sample, BrNum, pos, Position, library_prep, library_type, library_combo, seq_set = Dataset, round, fastq1, fastq2)
 
 #### add to rse objects ####
+dim(data_info)
+data_info <- data_info[colnames(rse_gene),]
+identical(rownames(data_info),colnames(rse_gene))
 
-# dim(data_info)
-# data_info <- data_info[colnames(rse_gene),]
-# identical(rownames(data_info),colnames(rse_gene))
-# 
-# colData(rse_gene) <- cbind(data_info, colData(rse_gene)) %>%
-#   select(SAMPLE_ID, everything()) %>%
-#            DataFrame()
-# 
+colData(rse_gene) <- cbind(data_info, colData(rse_gene)) %>%
+  select(SAMPLE_ID, everything()) %>%
+           DataFrame()
+
 table(rse_gene$seq_set)
 # # 2107UNHS-0291 2107UNHS-0293    AN00000904    AN00000906 
 # #            12            12            44            45
