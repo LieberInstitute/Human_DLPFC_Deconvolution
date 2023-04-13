@@ -408,10 +408,13 @@ pd_new_qc_long |>
   )
 
 #### ERCC data ####
+pd_new <-  pd_new |>
+  left_join(auto_outlier_tb)
+
 ercc_boxplot <- pd_new |>
   ggplot(aes(x = Dataset, y = ERCCsumLogErr, fill = library_type)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.5) +
-  geom_jitter(aes(color = auto_outlier), width = .2) +
+  geom_jitter(aes(color = qc_class), width = .2) +
   scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "red"))+
   facet_wrap(~round, scales = "free")+ 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -428,7 +431,7 @@ ercc_boxplot_prep <- pd_new |>
   filter(round == 2) |>
   ggplot(aes(x = library_prep, y = ERCCsumLogErr, fill = library_prep)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.5) +
-  geom_jitter(aes(color = auto_outlier), width = .2) +
+  geom_jitter(aes(color = qc_class), width = .2) +
   scale_color_manual(values = c(`FALSE` = "black", `TRUE` = "red"))+
   facet_wrap(~library_type)
 
@@ -437,7 +440,7 @@ ggsave(ercc_boxplot_prep, filename = here(plot_dir, "ERCCsumLogErr_boxplot_prep.
 
 #### Metrics vs. ERCC ###
 ercc_check <- pd_new |>
-  select(SAMPLE_ID, ERCCsumLogErr, library_prep, round) |>
+  select(SAMPLE_ID, ERCCsumLogErr, library_prep, round, qc_class) |>
   # filter(!is.na(ERCCsumLogErr)) |>
   replace_na(list(ERCCsumLogErr = Inf)) |>
   left_join(pd_new_qc_long |>
@@ -456,7 +459,7 @@ ercc_check |>
       labs(title = .y)+
       geom_hline(data = auto_cutoff_select|>
                    filter(library_type == as.character(.y)), 
-                 aes(yintercept = cutoff, color = library_type, linetype = qc_class))
+                 aes(yintercept = cutoff, linetype = qc_class))
     
     ggsave(ercc_scatter, filename = here(plot_dir, paste0("ERCC_scatter_", .y,".png")), width = 14, height = 5)
     
