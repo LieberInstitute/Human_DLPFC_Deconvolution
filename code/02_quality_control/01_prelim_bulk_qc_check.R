@@ -10,7 +10,7 @@ library("GGally")
 library("patchwork")
 
 ## prep dirs ##
-plot_dir <- here("plots", "02_quality_control", "01_prelim_bulk_qc_check")
+plot_dir <- here("plots", "02_quality_control", "01_check_bulk_qc_metrics")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### Load Big Data ####
@@ -105,7 +105,7 @@ write.csv(historic_cutoff_median, file = here("processed-data", "02_quality_cont
 #### Load New Data ####
 load(here("processed-data","rse","preQC","rse_gene_preQC.Rdata"), verbose = TRUE)
 pd_new <- as.data.frame(colData(rse_gene)) |>
-  mutate(Dataset = seq_set) ## eval as dataset here - but keep as seq_set in rse_gene
+  mutate(Dataset = batch) ## eval as dataset here - but keep as batch in rse_gene
 
 pd_new |>
   count(Dataset, round, library_type)
@@ -165,7 +165,7 @@ pd_new_qc_long <- pd_new |>
   mutate(`Data Status` = "new")
 
 ## compare other LIBD datasets
-pd_qc_long <- rbind(pd_new_qc_long |> select(-library_prep), 
+pd_qc_long <- bind_rows(pd_new_qc_long |> select(-library_prep), 
                     pd_big_qc_long)
 
 qc_boxplots_LIBD_exp <- ggplot(data = pd_qc_long, aes(x = Dataset, y = value)) +
@@ -204,6 +204,14 @@ ggsave(qc_boxplots_LIBD_lt, filename = here(plot_dir, "qc_boxplots_LIBD_library-
 
 #### gg pairs ####
 ## how do the variables relate
+focused_qc_metrics <- c("concordMapRate",
+                        "mitoRate", 
+                        "numMapped",
+                        "numReads",
+                        "overallMapRate",
+                        "totalAssignedGene",
+                        "totalMapped")
+
 pd_new |> 
   group_by(library_type) |>
   group_map(~{
@@ -231,14 +239,6 @@ pd_new |>
   })
 
 #### Combined Data automatic outliers ####
-focused_qc_metrics <- c("concordMapRate",
-                        "mitoRate", 
-                        "numMapped",
-                        "numReads",
-                        "overallMapRate",
-                        "totalAssignedGene",
-                        "totalMapped")
-
 
 names(focused_qc_metrics) <- focused_qc_metrics
 tail <- c(concordMapRate = "lower",
@@ -463,7 +463,7 @@ ercc_check |>
   })
   
 
-# sgejobs::job_single('01_prelim_bulk_qc_check', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 01_prelim_bulk_qc_check.R")
+# sgejobs::job_single('01_check_bulk_qc_metrics', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 01_check_bulk_qc_metrics.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
