@@ -66,30 +66,33 @@ add_colData <- function(rse_fn){
   return(rse)
 }
 
-## add colData to all 4 rse objects
-rse_gene <- add_colData(rse_fn_v40[["gene"]])
-dim(rse_gene) 
-# [1] 61544   113
+#### add colData to all 4 rse objects & save ####
 
-rse_exon <- add_colData(rse_fn_v40[["exon"]])
-dim(rse_exon) 
-# [1] 657702    113
-
-rse_jx <- add_colData(rse_fn_v40[["jx"]])
-dim(rse_jx) 
-# [1] 5275646     113
-
-rse_tx <- add_colData(rse_fn_v40[["tx"]])
-dim(rse_tx) 
-# [1] 246624    113
-
-#### Save Data ####
 (new_rse_dir <- here("processed-data","rse","preQC"))
 if(!dir.exists(new_rse_dir)) dir.create(new_rse_dir)
 
+message(Sys.time(), "- Gene")
+rse_gene <- add_colData(rse_fn_v40[["gene"]])
+dim(rse_gene) 
+# [1] 61544   113
 save(rse_gene, file = here(new_rse_dir,"rse_gene_preQC.Rdata"))
+
+message(Sys.time(), "- Exon")
+rse_exon <- add_colData(rse_fn_v40[["exon"]])
+dim(rse_exon) 
+# [1] 657702    113
 save(rse_exon, file = here(new_rse_dir,"rse_exon_preQC.Rdata"))
+
+message(Sys.time(), "- Jx")
+rse_jx <- add_colData(rse_fn_v40[["jx"]])
+dim(rse_jx) 
+# [1] 5275646     113
 save(rse_jx, file = here(new_rse_dir,"rse_jx_preQC.Rdata"))
+
+message(Sys.time(), "- Tx")
+rse_tx <- add_colData(rse_fn_v40[["tx"]])
+dim(rse_tx) 
+# [1] 246624    113
 save(rse_tx, file = here(new_rse_dir,"rse_tx_preQC.Rdata"))
 
 # sgejobs::job_single('03_add_colData', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_add_colData.R")
