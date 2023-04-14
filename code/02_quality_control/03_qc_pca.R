@@ -5,6 +5,8 @@ library("here")
 library("jaffelab")
 library("recount")
 library("viridis")
+library("ggrepel")
+library("GGally")
 
 ## prep dirs ##
 plot_dir <- here("plots", "02_quality_control", "03_qc_pca")
@@ -12,6 +14,9 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## load colors
 load(here("processed-data","00_data_prep","bulk_colors.Rdata"), verbose = TRUE)
+# library_combo_colors
+# library_prep_colors
+# library_type_colors
 
 #### Load Data ####
 load(here("processed-data","rse","preQC","rse_gene_preQC.Rdata"), verbose = TRUE)
@@ -36,8 +41,16 @@ rse_gene <- rse_gene[,rse_gene$qc_class != "drop"]
 
 pd <- as.data.frame(colData(rse_gene))
 
+focused_qc_metrics <- c("concordMapRate",
+                        "mitoRate", 
+                        "numMapped",
+                        "numReads",
+                        "overallMapRate",
+                        "totalAssignedGene",
+                        "totalMapped")
+
 # qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
-pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, mitoRate,totalAssignedGene)
+pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, all_of(focused_qc_metrics))
 
 #### filter genes by Expression ####
 gene_rpkm <- getRPKM(rse_gene,"Length")
@@ -49,6 +62,7 @@ table(droplevels(seqnames(rse_gene_filter)))
 geneExprs_filter <- log2(gene_rpkm_filter+1)
 assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter+1) ## check 
 
+## calc PCA and vars
 pca = prcomp(t(geneExprs_filter))
 pca_vars = getPcaVars(pca)
 pca_vars_lab = paste0("PC", seq(along=pca_vars), ": ",
@@ -57,9 +71,28 @@ pca_vars_lab = paste0("PC", seq(along=pca_vars), ": ",
 names(pca_vars)
 names(pca)
 
-pca$x[,1:5]
+# pca$x[,1:5]
 
+## create table with groups and some QC metrics
 pca_tab <- pd_simple |> cbind(pca$x[,1:5])
+
+#### ggpairs for pca ####
+gg_pca <- ggpairs(pca_tab, 
+                  mapping = aes(color = library_combo), 
+                  columns = paste0("PC",1:5),
+                  upper = "blank") +
+  scale_color_manual(values = library_combo_colors)+
+  scale_fill_manual(values = library_combo_colors)
+
+ggsave(gg_pca, filename = here(plot_dir, "ggpairs_pca.png"), height = 10, width = 10)
+
+gg_pca_position <- ggpairs(pca_tab, 
+                           mapping = aes(color = Position), 
+                           columns = paste0("PC",1:5),
+                           upper = "blank") 
+
+ggsave(gg_pca_position, filename = here(plot_dir, "ggpairs_position.png"), height = 10, width = 10)
+
 
 # missing bulk points?
 pc_test <- pca_tab |>
@@ -67,10 +100,35 @@ pc_test <- pca_tab |>
   geom_point()+
   theme_bw() +
   scale_color_manual(values = library_combo_colors) +
-  labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[2]]) 
+  labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[2]]) +
+  coord_equal()
 
 ggsave(pc_test, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo.png"))
 
+pc1v2_lab <- pca_tab |>
+  ggplot(aes(x = PC1, y = PC2, color = library_combo, shape = qc_class)) +
+  geom_point()+
+  geom_text_repel(aes(label = Sample), color = "black", size = 2) +
+  theme_bw() +
+  scale_color_manual(values = library_combo_colors) +
+  labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[2]]) +
+  coord_equal()
+
+ggsave(pc1v2_lab, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_label.png"))
+
+pc2v5_lab <- pca_tab |>
+  ggplot(aes(x = PC2, y = PC5, color = library_combo, shape = qc_class)) +
+  geom_point()+
+  geom_text_repel(aes(label = Sample), color = "black", size = 2) +
+  theme_bw() +
+  scale_color_manual(values = library_combo_colors) +
+  labs(x = pca_vars_lab[[2]], y = pca_vars_lab[[5]]) +
+  coord_equal()
+
+ggsave(pc2v5_lab, filename = here(plot_dir, "Bulk_PC2vPC5_library_combo_label.png"))
+
+pca_tab |>
+  filter(PC5 < -50)
 
 pc_test <- pca_tab |>
   ggplot(aes(x = PC1, y = PC2, color = BrNum, shape = qc_class)) +
@@ -91,4 +149,68 @@ pc_test <- pca_tab |>
 ggsave(pc_test, filename = here(plot_dir, "Bulk_PC1vPC2_mitoRate.png"))
 
 
+## outlier AN00000906_Br8492_Mid_Nuc
 
+#### compare directly to PD variables ####
+
+pca_long <- pca$x[,1:6] |>
+  as.data.frame() |>
+  rownames_to_column("SAMPLE_ID") |> 
+  pivot_longer(!SAMPLE_ID, names_to = "PC_name", values_to = "PC_val") |>
+  right_join(pd) |>
+  left_join(tibble(PC_lab = pca_vars_lab,
+                   PC_name = paste0("PC", seq(along=pca_vars)))
+  )
+
+pca_long
+
+
+# Position, library_type, library_prep, qc_class
+
+pdf(here(plot_dir, "PCs_vs_groups.pdf"), width = 10)
+walk(c("Position", "library_type", "library_prep", "library_combo", "batch", "qc_class"), ~{
+  
+  pca_v_cat <- pca_long |>
+    ggplot(aes(y = PC_val, x=.data[[.x]], color = .data[[.x]])) +
+    geom_boxplot() +
+    # geom_text_repel(aes(label = ifelse(qc_class == "warn", Sample,"")), size = 2, color = "black") +
+    facet_wrap(~PC_lab) + 
+    labs(title = .x) +
+    theme_bw()
+  
+  # ggsave(pca_v_con, filename = here(plot_dir, paste0("pca_v_",.x,".png")), width = 10)
+  
+  print(pca_v_cat)
+  
+})
+dev.off()
+
+
+# mitoRate,totalAssignedGene
+
+pdf(here(plot_dir, "PCs_vs_QC_metrics.pdf"), width = 10)
+walk(focused_qc_metrics, ~{
+  
+  pca_v_con <- pca_long |>
+    ggplot(aes(x = PC_val, y=.data[[.x]], shape = qc_class, color = library_combo)) +
+    geom_point() +
+    geom_text_repel(aes(label = ifelse(qc_class == "warn", Sample,"")), size = 2, color = "black") +
+    facet_wrap(~PC_lab) + 
+    scale_color_manual(values = library_combo_colors) +
+    labs(title = .x) +
+    theme_bw()
+  
+  # ggsave(pca_v_con, filename = here(plot_dir, paste0("pca_v_",.x,".png")), width = 10)
+  
+  print(pca_v_con)
+  
+})
+dev.off()
+
+# sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
