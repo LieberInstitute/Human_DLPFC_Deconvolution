@@ -422,11 +422,9 @@ ercc_boxplot <- pd_new |>
 
 ggsave(ercc_boxplot, filename = here(plot_dir, "ERCCsumLogErr_boxplot.png"))
 
-## there was no ERCC spike in for round1 so those values are not "real" repalce with NA
-pd_new <- pd_new |>
-  mutate(ERCCsumLogErr = ifelse(round == 1, NA, ERCCsumLogErr))
+## there was no ERCC spike in for round1 so those values are NA
 
-## trend over libary_prep
+## trend over library_prep
 ercc_boxplot_prep <- pd_new |>
   filter(round == 2) |>
   ggplot(aes(x = library_prep, y = ERCCsumLogErr, fill = library_prep)) +
