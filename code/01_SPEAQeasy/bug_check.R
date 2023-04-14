@@ -4,7 +4,8 @@ library(SummarizedExperiment)
 library(tidyverse)
 
 #### confirm issue in SPEAQeasy output ####
-load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
+load(here("processed-data","01_SPEAQeasy","round2_v40_2023-04-05","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
+# load(here("processed-data","01_SPEAQeasy","round2_v40_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
 # load(here("processed-data","01_SPEAQeasy","round2_v25_2022-07-06","count_objects","rse_gene_Human_DLPFC_Deconvolution_n113.Rdata" ), verbose = TRUE)
 
 ## issue exists in v40 + v25 data
@@ -14,12 +15,17 @@ colnames(rse_cyto) <- gsub("_Cyto","",colnames(rse_cyto))
 
 assays(rse_cyto)$counts[1:5,1:5]
 
-rse_bulk <- rse_gene[,!grepl("Cyto|Nuc",rse_gene$SAMPLE_ID)]
+rse_bulk <- rse_gene[,grepl("Bulk",rse_gene$SAMPLE_ID)]
+# rse_bulk <- rse_gene[,!grepl("Cyto|Nuc",rse_gene$SAMPLE_ID)]
+colnames(rse_bulk) <- gsub("_Bulk","",colnames(rse_bulk))
 identical(colnames(rse_bulk), colnames(rse_cyto))
 
 ## counts are identical !!!
 identical(assays(rse_bulk)$counts,assays(rse_cyto)$counts)
 # [1] TRUE
+
+## Fixed in 2023-04-05 run :)
+# [1] FALSE
 
 ## colData is not
 identical(colData(rse_bulk), colData(rse_cyto))
