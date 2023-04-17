@@ -11,12 +11,12 @@ fastq2_fn <- list.files(here("raw-data", "bulkRNA"), recursive = TRUE, pattern =
 library_type <- read.csv(here("processed-data", "01_SPEAQeasy", "library_type.csv"))
 
 data_info <- tibble(fastq = fastq, fastq1 = fastq1_fn, fastq2 = fastq2_fn) %>%
-  separate(fastq, into = c("Dataset", "sample", NA), extra = "drop", sep = "/") %>%
-  mutate(SAMPLE_ID = paste0(Dataset, "_",sample)) %>%
-  separate(sample, into = c("BrNum", "location", "library_prep"), sep = "_") %>%
-  replace_na(list(library_prep = "Bulk")) %>%
-  left_join(library_type) %>%
-  select(SAMPLE_ID, Dataset, BrNum, location, library_prep, library_type, round,fastq1, fastq2)
+    separate(fastq, into = c("Dataset", "sample", NA), extra = "drop", sep = "/") %>%
+    mutate(SAMPLE_ID = paste0(Dataset, "_", sample)) %>%
+    separate(sample, into = c("BrNum", "location", "library_prep"), sep = "_") %>%
+    replace_na(list(library_prep = "Bulk")) %>%
+    left_join(library_type) %>%
+    select(SAMPLE_ID, Dataset, BrNum, location, library_prep, library_type, round, fastq1, fastq2)
 
 #### bug check ####
 any(duplicated(data_info$SAMPLE_ID))
@@ -45,7 +45,7 @@ data_info %>% count(library_prep)
 # 2 Cyto            38
 # 3 Nuc             37
 
-data_info %>% count(library_type,library_prep)
+data_info %>% count(library_type, library_prep)
 # library_type library_prep     n
 # <chr>        <chr>        <int>
 # 1 polyA        Bulk            19
@@ -73,9 +73,9 @@ data_info %>% count(BrNum)
 write_csv(data_info, file = here("processed-data", "01_SPEAQeasy", "data_info.csv"))
 
 #### Create Manifest ####
-manifest <- data_info %>% 
-  mutate(zeros = 0, zeros2 = 0) %>%
-  select(fastq1, zeros, fastq2, zeros2, SAMPLE_ID)
+manifest <- data_info %>%
+    mutate(zeros = 0, zeros2 = 0) %>%
+    select(fastq1, zeros, fastq2, zeros2, SAMPLE_ID)
 
 write.table(manifest, file = here("raw-data", "bulkRNA", "samples.manifest"), quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
 
