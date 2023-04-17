@@ -1,4 +1,3 @@
-
 library("SummarizedExperiment")
 library("tidyverse")
 library("ComplexHeatmap")
@@ -7,7 +6,7 @@ library("here")
 
 ## prep dirs ##
 plot_dir <- here("plots", "06_marker_genes", "01_example_plots")
-if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 set.seed(3042023)
 
@@ -17,7 +16,7 @@ cell_types <- factor(paste0("cell_type_", 1:n_ct)) ## add 0 pad if over 10
 
 ## prep colors
 # c("#f2efea", "#fc7753", "#66d7d1", "#403d58", "#dbd56e","#1f271b")
-example_colors <- c("#540d6e","#ee4266","#ffd23f","#619B8A", "#1f271b")[1:n_ct]
+example_colors <- c("#540d6e", "#ee4266", "#ffd23f", "#619B8A", "#1f271b")[1:n_ct]
 names(example_colors) <- cell_types
 
 #### Ideal Heatmap ####
@@ -25,9 +24,9 @@ names(example_colors) <- cell_types
 # number of marker genes for each cell type
 n_gene <- 4
 n_total_gene <- n_gene * n_ct
-  
-marker_matrix <- matrix(rep(cell_types, each = n_total_gene), nrow =  n_total_gene) ==
-  matrix(rep(cell_types, each = n_total_gene), nrow =  n_total_gene, byrow = TRUE)
+
+marker_matrix <- matrix(rep(cell_types, each = n_total_gene), nrow = n_total_gene) ==
+    matrix(rep(cell_types, each = n_total_gene), nrow = n_total_gene, byrow = TRUE)
 
 mode(marker_matrix) <- "integer"
 
@@ -36,62 +35,66 @@ gene_names <- paste0("gene_", str_pad(1:n_total_gene, nchar(n_total_gene), "left
 colnames(marker_matrix) <- cell_types
 rownames(marker_matrix) <- gene_names
 
-marker_matrix_var <- marker_matrix + abs(rnorm(n = n_total_gene*n_ct, sd = 0.1))
+marker_matrix_var <- marker_matrix + abs(rnorm(n = n_total_gene * n_ct, sd = 0.1))
 
 ## annotations
 column_ha <- HeatmapAnnotation(
-  cell_type = cell_types,
-  col = list(cell_type = example_colors),
-  show_legend = FALSE
+    cell_type = cell_types,
+    col = list(cell_type = example_colors),
+    show_legend = FALSE
 )
 
 row_ha <- rowAnnotation(
-  cell_type = rep(cell_types, each = n_gene),
-  col = list(cell_type = example_colors),
-  show_legend = FALSE
+    cell_type = rep(cell_types, each = n_gene),
+    col = list(cell_type = example_colors),
+    show_legend = FALSE
 )
 
 ## plot heatmap
 pdf(here(plot_dir, "ideal_heatmap.pdf"))
 Heatmap(marker_matrix,
-        name = "Expression",
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
-        top_annotation = column_ha,
-        right_annotation = row_ha, 
-        rect_gp = gpar(col = "grey25", lwd = 1))
+    name = "Expression",
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    top_annotation = column_ha,
+    right_annotation = row_ha,
+    rect_gp = gpar(col = "grey25", lwd = 1)
+)
 dev.off()
 
 
 pdf(here(plot_dir, "ideal_heatmap_split.pdf"))
 Heatmap(marker_matrix_var,
-        name = "Expression",
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
-        top_annotation = column_ha,
-        left_annotation = row_ha,
-        column_split = cell_types,
-        row_split = paste0("markers\n",rep(cell_types, each = n_gene)),
-        rect_gp = gpar(col = "grey50", lwd = 1),
-        show_row_names = TRUE,
-        show_column_names = FALSE
-        )
+    name = "Expression",
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    top_annotation = column_ha,
+    left_annotation = row_ha,
+    column_split = cell_types,
+    row_split = paste0("markers\n", rep(cell_types, each = n_gene)),
+    rect_gp = gpar(col = "grey50", lwd = 1),
+    show_row_names = TRUE,
+    show_column_names = FALSE
+)
 dev.off()
 
 #### Mean Ratio Cartoon ####
 
-example_expression <- tibble(gene = "specific marker",
-                        cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
-                        cell_type_2 = abs(rnorm(n = 1000)),
-                        cell_type_3 = abs(rnorm(n = 1000)),
-                        cell_type_4 = abs(rnorm(n = 1000))
-                        ) |>
-  bind_rows(tibble(gene = "unspecific marker",
-                   cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
-                   cell_type_2 = abs(rnorm(n = 1000, mean = 4, sd = .5)),
-                   cell_type_3 = abs(rnorm(n = 1000)),
-                   cell_type_4 = abs(rnorm(n = 1000))) ) |>
-  pivot_longer(!gene, names_to = "cell_type", values_to = "expression")
+example_expression <- tibble(
+    gene = "specific marker",
+    cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
+    cell_type_2 = abs(rnorm(n = 1000)),
+    cell_type_3 = abs(rnorm(n = 1000)),
+    cell_type_4 = abs(rnorm(n = 1000))
+) |>
+    bind_rows(tibble(
+        gene = "unspecific marker",
+        cell_type_1 = abs(rnorm(n = 1000, mean = 5, sd = .5)),
+        cell_type_2 = abs(rnorm(n = 1000, mean = 4, sd = .5)),
+        cell_type_3 = abs(rnorm(n = 1000)),
+        cell_type_4 = abs(rnorm(n = 1000))
+    )) |>
+    pivot_longer(!gene, names_to = "cell_type", values_to = "expression")
 
 
 # g1_expression <- tibble(gene = "specific marker",
@@ -103,17 +106,17 @@ example_expression <- tibble(gene = "specific marker",
 #          logcounts = log10(counts + 1))
 
 example_violin <- example_expression |>
-  ggplot(aes(x = cell_type, y = expression, fill = cell_type)) +
-  geom_violin(scale = "width") +
-  stat_summary(
-    fun = mean,
-    geom = "crossbar",
-    width = 0.3
-  ) +
-  facet_wrap(~gene) +
-  scale_fill_manual(values = example_colors) +
-  theme_bw() +
-  theme(legend.position = "None")
+    ggplot(aes(x = cell_type, y = expression, fill = cell_type)) +
+    geom_violin(scale = "width") +
+    stat_summary(
+        fun = mean,
+        geom = "crossbar",
+        width = 0.3
+    ) +
+    facet_wrap(~gene) +
+    scale_fill_manual(values = example_colors) +
+    theme_bw() +
+    theme(legend.position = "None")
 
 ggsave(example_violin, filename = here(plot_dir, "example_expression_violin.png"), height = 5)
 
