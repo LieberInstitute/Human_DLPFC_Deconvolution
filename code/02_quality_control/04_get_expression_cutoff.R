@@ -42,6 +42,10 @@ map_int(rse_list, ncol)
 
 #### check meanExprs ####
 #### get expression cutoff ####
+
+## set jxn to length to 100
+rowData(rse$jx)$Length <- 100 
+
 message(Sys.time(), " - Get RPKM")
 exprs <- map(rse_list[c('gene',"exon","jx")], ~recount::getRPKM(.x, "Length"))
 exprs["tx"] <- assays(rse_list$tx)$tpm
