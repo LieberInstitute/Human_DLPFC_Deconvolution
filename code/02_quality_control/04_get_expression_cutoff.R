@@ -15,7 +15,7 @@ features <- c("gene", "exon", "jx", "tx")
 preQC_paths <- here("processed-data","rse","preQC", paste0("rse_", features, "_preQC.Rdata"))
 names(preQC_paths) <- features
 
-rse_list <- lapply(preQC_paths,function(x) get(load(x)))
+rse_list <- lapply(preQC_paths, function(x) get(load(x)))
 
 message("Original Dimesions")
 map(rse_list, dim)
@@ -44,11 +44,11 @@ map_int(rse_list, ncol)
 #### get expression cutoff ####
 
 ## set jxn to length to 100
-rowData(rse$jx)$Length <- 100 
+rowData(rse_list$jx)$Length <- 100 
 
 message(Sys.time(), " - Get RPKM")
 exprs <- map(rse_list[c('gene',"exon","jx")], ~recount::getRPKM(.x, "Length"))
-exprs["tx"] <- assays(rse_list$tx)$tpm
+exprs[["tx"]] <- assays(rse_list$tx)$tpm
 
 seed <- 20230417
 seeds <- seed + 0:3
@@ -70,7 +70,7 @@ cutoffs <- map2(exprs, names(exprs), function(expr, type){
 })
 
 ### Filter features in RSEs ####
-message(Sys.time(), " - Filter RSE")
+message(Sys.time(), " - Drop features below cutoff")
 
 # means <- lapply(exprs, rowMeans)
 rse_list <- pmap(list(rse = rse_list, cutoff = cutoffs, expr = exprs, n = names(rse_list)), function(rse, cutoff, expr, n){
