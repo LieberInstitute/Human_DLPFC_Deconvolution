@@ -54,15 +54,46 @@ focused_qc_metrics <- c(
 # qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
 pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, all_of(focused_qc_metrics))
 
+#### check out dispersion patterns ####
+library("vsn")
+
+pdf(here(plot_dir, "mean_vs_sd_counts.pdf"))
+meanSdPlot(assays(rse_gene)$counts, ranks = FALSE)
+dev.off()
+
+gene_mean <- tibble(gene = rowData(rse_gene)$Symbol,
+                    mean = rowMeans(assays(rse_gene)$counts),
+                    sd = apply(assays(rse_gene)$counts, 1, sd))
+
+gene_mean |> arrange(-mean)
+
+mean_v_sd <- gene_mean |>
+  ggplot(aes(mean, sd)) +
+  geom_point(alpha = 0.2) +
+  geom_abline() +
+  geom_smooth(color = "red") +
+  geom_text_repel(aes(label = ifelse(mean > 2e5, gene, "")), size = 2)
+
+ggsave(mean_v_sd, filename = here(plot_dir, "my_mean_vs_sd_counts.png"))
+
 #### filter genes by Expression ####
 gene_rpkm <- getRPKM(rse_gene, "Length")
 rse_gene_filter <- rse_gene[rowMeans(gene_rpkm) > 0.1, ]
 gene_rpkm_filter <- gene_rpkm[rowMeans(gene_rpkm) > 0.1, ]
 table(droplevels(seqnames(rse_gene_filter)))
 
+pdf(here(plot_dir, "mean_vs_sd_rpkm.pdf"))
+meanSdPlot(gene_rpkm, ranks = FALSE)
+dev.off()
+
 ## get expression
 geneExprs_filter <- log2(gene_rpkm_filter + 1)
 assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter + 1) ## check
+
+
+pdf(here(plot_dir, "mean_vs_sd_logrpkm.pdf"))
+meanSdPlot(geneExprs_filter, ranks = FALSE)
+dev.off()
 
 ## calc PCA and vars
 pca <- prcomp(t(geneExprs_filter))
