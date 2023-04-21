@@ -13,11 +13,14 @@ pos_df <- tibble(Position = c("Anterior", "Middle", "Posterior"),
                 pos = c("ant", "mid", "post"))
 
 #### Review terms in snRNA-seq ####
-
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
 
-sn_samples <- colData(sce) |>
-  as.data.frame() |> 
+sce_pd <- colData(sce) |> as.data.frame()
+
+## save colData for eazy access
+save(sce_pd, file = here("processed-data", "sce", "sce_pd.Rdata"))
+
+sn_samples <- sce_pd |>
   count(Sample, SAMPLE_ID, Position, pos, round, BrNum, age, sex) 
 
 #         Sample SAMPLE_ID  Position  pos  round  BrNum   age sex    n
