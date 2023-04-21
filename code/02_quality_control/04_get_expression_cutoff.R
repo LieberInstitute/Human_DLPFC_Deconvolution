@@ -90,10 +90,20 @@ walk(rse_list, ~print(object.size(.x),units = "auto"))
 
 message(Sys.time(), " - Save Data")
 
-walk2(rse_list, names(rse_list), ~{
-  message(Sys.time(), " - Save ", .y)
-  save(.x, file = here("processed-data","rse", paste0("rse_", .y, ".Rdata")))
-})
+# walk2(rse_list, names(rse_list), ~{
+#   message(Sys.time(), " - Save ", .y)
+#   save(rse=.x, file = here("processed-data","rse", paste0("rse_", .y, ".Rdata")))
+# })
+
+rse_gene <- res_list$gene
+rse_exon <- res_list$exon
+rse_jx <- res_list$jx
+rse_tx <- res_list$tx
+
+save(rse_gene, file = here("processed-data","rse", "rse_gene.Rdata"))
+save(rse_exon, file = here("processed-data","rse", "rse_exon.Rdata"))
+save(rse_jxn, file = here("processed-data","rse", "rse_jx.Rdata"))
+save(rse_tx, file = here("processed-data","rse", "rse_tx.Rdata"))
 
 # sgejobs::job_single('04_get_expression_cutoff', create_shell = TRUE, queue= 'bluejay', memory = '50G', command = "Rscript 04_get_expression_cutoff.R")
 
