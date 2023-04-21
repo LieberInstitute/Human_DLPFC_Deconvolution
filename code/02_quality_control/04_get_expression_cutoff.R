@@ -95,10 +95,10 @@ message(Sys.time(), " - Save Data")
 #   save(rse=.x, file = here("processed-data","rse", paste0("rse_", .y, ".Rdata")))
 # })
 
-rse_gene <- res_list$gene
-rse_exon <- res_list$exon
-rse_jx <- res_list$jx
-rse_tx <- res_list$tx
+rse_gene <- rse_list$gene
+rse_exon <- rse_list$exon
+rse_jx <- rse_list$jx
+rse_tx <- rse_list$tx
 
 save(rse_gene, file = here("processed-data","rse", "rse_gene.Rdata"))
 save(rse_exon, file = here("processed-data","rse", "rse_exon.Rdata"))
