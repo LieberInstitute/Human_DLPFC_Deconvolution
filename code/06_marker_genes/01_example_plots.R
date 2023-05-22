@@ -78,6 +78,74 @@ Heatmap(marker_matrix_var,
 )
 dev.off()
 
+## (Neuron) Excit, Oligo, Astro Example
+
+marker_matrix_ct_example <- marker_matrix_var[1:12,1:3]
+example_ct <- c("Neuron","Oligo","Astro")
+colnames(marker_matrix_ct_example) <- example_ct
+
+example_colors2 <- c(Neuron = "#DB77BA", Oligo = "#E7872B", Astro = "#5AAA46")
+
+column_ha_ct <- HeatmapAnnotation(
+  cell_type = example_ct,
+  col = list(cell_type = example_colors2),
+  show_legend = FALSE
+)
+
+row_ha_ct <- rowAnnotation(
+  cell_type = rep(example_ct, each = n_gene),
+  col = list(cell_type = example_colors2),
+  show_legend = FALSE
+)
+
+pdf(here(plot_dir, "heatmap_ct_example.pdf"), height = 5, width = 3)
+# png(here(plot_dir, "heatmap_ct_example.png"), height = 500, width = 300)
+Heatmap(marker_matrix_ct_example,
+        name = "Expression",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        # top_annotation = column_ha_ct,
+        left_annotation = row_ha_ct,
+        # column_split = example_ct,
+        # row_split = paste0("markers\n", rep(example_ct, each = n_gene)),
+        # rect_gp = gpar(col = "grey50", lwd = 1),
+        show_row_names = FALSE,
+        show_column_names = TRUE
+)
+dev.off()
+
+## est prop
+set.seed(512)
+example_prop <- matrix(data = rep(c(6,3), 4), nrow = 4, byrow = TRUE) - matrix(rnorm(8), nrow = 4)
+example_prop[1,1] <- example_prop[1,1] -1
+example_prop <- cbind(example_prop, 10 - rowSums(example_prop))/10
+rowSums(example_prop)
+
+colnames(example_prop) <- c("Neuron", "Astro","Oligo")
+rownames(example_prop) <- paste0("sample_", 1:nrow(example_prop))
+example_prop
+
+#          Neuron     Astro      Oligo
+# sample_1 0.5291505 0.4182825 0.05256700
+# sample_2 0.6108602 0.2917233 0.09741658
+# sample_3 0.5631502 0.3516663 0.08518346
+# sample_4 0.4060879 0.3460245 0.24788759
+
+example_prop_long <- reshape2::melt(example_prop) |>
+  rename(Sample = Var1, cell_type = Var2, prop = value) |>
+  mutate(cell_type = factor(cell_type, levels = c("Oligo", "Astro", "Neuron")))
+
+example_prop_plot <- DeconvoBuddies::plot_composition_bar(example_prop_long, 
+                                                          sample_col = "Sample",
+                                                          x_col = "Sample",
+                                                          add_text = FALSE) +
+  scale_fill_manual(values = example_colors2) +
+  theme_void()
+
+ggsave(example_prop_plot, filename = here(plot_dir, "example_composition.png"), width = 5)
+
+print(example_prop_plot)
+
 #### Mean Ratio Cartoon ####
 
 example_expression <- tibble(
