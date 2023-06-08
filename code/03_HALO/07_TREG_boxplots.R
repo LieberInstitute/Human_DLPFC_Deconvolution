@@ -138,7 +138,7 @@ sn_sum_boxplot_main <- sum_data_main |>
   labs(x = "Cell Type", y = "Total RNA Expression") +
   theme(text = element_text(size = 15), legend.position = "None")
 
-ggsave(sn_sum_boxplot_main, filename = here(plot_dir, "sn_sum_boxplot_main.png"))
+ggsave(sn_sum_boxplot_main, filename = here(plot_dir, "sn_sum_boxplot_main.png"), height = 5, width = 5)
 
 
 
