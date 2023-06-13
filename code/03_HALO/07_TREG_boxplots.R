@@ -30,12 +30,20 @@ if (!dir.exists(data_dir)) dir.create(data_dir)
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
 
 #### Load Data ###
+# spatialDLPFC sce
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
-
+# sce
 sce <- sce[, sce$cellType_hc != "Ambiguous"]
 sce[, sce$cellType_hc != "Ambiguous"]
+dim(sce)
+
+## pan brain data from TREG paper
+load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/TREG_paper/raw-data/sce_pan.v2.Rdata", verbose = TRUE)
+
 
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
+
+treg_list <- c("MALAT1", "AKT3", "ARID1B")
 
 #### calc slope and plot boxplot for sce object ####
 #takes a min
@@ -54,11 +62,9 @@ table(sce$cellType_hc)
 sum_data <- colData(sce) |>
   as_tibble() |>
   select(Sample, key, cellType = cellType_broad_hc, sum) |>
-  mutate(
-    cellType = fct_reorder(gsub("Mural","",cellType), sum, .desc = TRUE),
-    sum_adj = sum / sd(sum)
-  ) |>
-  mutate(label = "snRNA-seq") ## adjust for beta calc
+  mutate(cellType = ordered(fct_reorder(gsub("Mural","",cellType), sum, .desc = TRUE))) |>
+  mutate(datatype = "snRNA-seq",
+         dataset = "spatialDLPFC")
 
 sum_data |>
   group_by(cellType) |>
@@ -67,26 +73,92 @@ sum_data |>
 # A tibble: 7 × 2
 # cellType  median_sum
 # <fct>          <dbl>
-#   1 Excit          21758
+# 1 Excit          21758
 # 2 Inhib          16278
 # 3 OPC             5951
-# 4 EndoMural       3760
+# 4 Endo           3760
 # 5 Oligo           3448
 # 6 Astro           3280
 # 7 Micro           2633
 
-## with all cell types
-sn_fit <- lm(sum ~ cellType, data = sum_data)
-slope_anno(sn_fit, 2)
-# [1] "-9799.89 (-10230.54,-9369.23)"
+sum_data_10x <- colData(sce_pan)|>
+  as_tibble() |>
+  select(Sample, key = uniqueID, cellType = cellType.Broad, sum) |>
+  filter(cellType %in% levels(sum_data$cellType)) |>
+  # mutate(cellType = fct_reorder(cellType, sum, .desc = TRUE)) |>
+  mutate(cellType = ordered(cellType, levels = levels(sum_data$cellType))) |>
+  mutate(datatype = "snRNA-seq",
+         dataset = "10x")
 
-## use sum adj
-sn_fit_adj <- lm(sum_adj ~ cellType, data = sum_data)
-slope_anno(sn_fit_adj, 2)
-# [1] "-0.45 (-0.47,-0.43)"
+sum_data_10x |>
+  group_by(cellType) |>
+  summarize(median_sum = median(sum))
+
+# cellType median_sum
+# <fct>         <dbl>
+# 1 Excit        38609 
+# 2 Inhib        24990 
+# 3 OPC          10752 
+# 4 Endo          4584 
+# 5 Oligo         6229 
+# 6 Astro         8350.
+# 7 Micro         4769
+
+#### Plot with 7 main cell types ####
+
+dataset_colors = c(`spatialDLPFC` = "black", `10x` = "grey50")
+
+sn_sum_boxplot_datasets <- sum_data |>
+  bind_rows(sum_data_10x) |>
+  ggplot(aes(x = cellType, y = sum, fill = cellType, color = dataset)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(cell_type_colors_halo, metadata(sce)$cell_type_colors["OPC"])) +
+  scale_color_manual(values = dataset_colors) +
+  theme_bw() +
+  labs(x = "Cell Type", y = "Total RNA Expression") 
+
+ggsave(sn_sum_boxplot_datasets, filename = here(plot_dir, "sn_sum_boxplot_dataset.png"), width = 10)
+
+ct3 <- c("Excit", "Inhib", "Oligo")
+ct6 <- c("Excit", "Inhib", "Endo", "Oligo","Astro","Micro")
+
+sum_data_expand <-
+  sum_data |>
+  filter(cellType %in% ct6) |>
+  mutate(cellType = droplevels(cellType),
+         set_ct = "ct6") |>
+  # bind_rows(sum_data |>
+  #             filter(cellType %in% ct3) |>
+  #             mutate(cellType = droplevels(cellType),
+  #                    set_ct = "ct3"))|>
+  bind_rows(sum_data_10x |>
+              filter(cellType %in% ct6) |>
+              mutate(cellType = droplevels(cellType),
+                     set_ct = "ct6"))|>
+  # bind_rows(sum_data_10x |>
+  #             filter(cellType %in% ct3) |>
+  #             mutate(cellType = droplevels(cellType),
+  #                    set_ct = "ct3"))
+
+snRNA_details <- sum_data_expand |>
+  group_by(dataset, set_ct) |>
+  summarize(sd = sd(sum), n = n())
+
+snRNAseq_beta <- sum_data_expand %>%
+  group_by(dataset, set_ct) %>%
+  do(fit = tidy(lm(sum ~ cellType, data = .), conf.int = TRUE)) %>%
+  unnest(fit) %>%
+  filter(term == "cellType.L") %>%
+  mutate(beta = paste0(
+    round(estimate, 2), " (",
+    round(conf.low, 2), ",",
+    round(conf.high, 2), ")"
+  ))
+
+
+lm(sum ~ cellType, data = sum_data_10x |> filter(cellType %in% ct3))
 
 ## filtered to RNAscope cell types
-
 sum_data_main <- sum_data |>
   filter(cellType != "OPC") |>
   mutate(cellType = droplevels(cellType),
