@@ -5,22 +5,8 @@ library("sessioninfo")
 library("here")
 library("broom")
 
-slope_anno <- function(lm_fit, digits = 1) {
-  ci <- confint(lm_fit)
-  ## check that coef "cellType.RNAscope.L"
-  anno_vals <- c(
-    beta = lm_fit$coefficients[[2]],
-    ci_low = ci[2, 1],
-    ci_high = ci[2, 2]
-  )
-  
-  anno_vals <- map_chr(anno_vals, ~ as.character(round(.x, digits)))
-  
-  slope_anno <- paste0(anno_vals[["beta"]], " (", anno_vals[["ci_low"]], ",", anno_vals[["ci_high"]], ")")
-  return(slope_anno)
-}
 
-#### Plot Set-up ####
+#### Set-up ####
 plot_dir <- here("plots", "03_HALO", "07_TREG_boxplot")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
