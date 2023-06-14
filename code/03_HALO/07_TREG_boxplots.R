@@ -42,8 +42,6 @@ table(sce_pan$region, sce_pan$cellType.Broad)
 ## filter to just DLPFC
 sce_pan <- sce_pan[,sce_pan$region == "dlpfc"]
 
-load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
-
 #### Check metrics ####
 treg_list <- c("MALAT1", "AKT3", "ARID1B")
 #takes a min
@@ -181,6 +179,7 @@ sn_sum_boxplot_datasets <- sum_data |>
 
 ggsave(sn_sum_boxplot_datasets, filename = here(plot_dir, "sn_sum_boxplot_dataset.png"), width = 10)
 
+## scale with log
 sn_sum_boxplot_log <- sum_data |>
   ggplot(aes(x = cellType, y = log10(sum), fill = cellType)) +
   geom_boxplot() +
@@ -191,61 +190,103 @@ sn_sum_boxplot_log <- sum_data |>
 ggsave(sn_sum_boxplot_log, filename = here(plot_dir, "sn_sum_boxplot_log.png"))
 
 ## ct3
-sn_sum_boxplot_main <- sum_data_expand |>
+sn_sum_boxplot_ct3_dataset <- sum_data_expand |>
   filter(set_ct == "ct3") |>
   ggplot(aes(x = cellType, y = sum, fill = cellType, color = dataset)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(cell_type_colors_halo, metadata(sce)$cell_type_colors["OPC"]), guide = "none") +
+  scale_color_manual(values = dataset_colors) +
+  theme_bw() +
+  labs(x = "Cell Type", y = "Total RNA Expression") +
+  theme(text = element_text(size = 15), legend.position = "None")
+
+ggsave(sn_sum_boxplot_ct3_dataset, filename = here(plot_dir, "sn_sum_boxplot_ct3_dataset.png"), height = 5, width = 5)
+
+sn_sum_boxplot_ct6 <- sum_data |>
+  filter(cellType %in% ct6) |>
+  ggplot(aes(x = cellType, y = sum, fill = cellType)) +
   geom_boxplot() +
   scale_fill_manual(values = cell_type_colors_halo) +
   theme_bw() +
   labs(x = "Cell Type", y = "Total RNA Expression") +
   theme(text = element_text(size = 15), legend.position = "None")
 
-ggsave(sn_sum_boxplot_main, filename = here(plot_dir, "sn_sum_boxplot_main.png"), height = 5, width = 5)
+ggsave(sn_sum_boxplot_ct6, filename = here(plot_dir, "sn_sum_boxplot_ct6.png"), height = 5, width = 5)
 
 
+#### Load RNAscope data ####
+load(here("processed-data", "external_data_links", "TREG_halo_all.rda"), verbose = TRUE)
+# halo_all
+table(halo_all$cell_type)
+table(halo_all$RI_gene)
+
+halo_treg <- halo_all |>
+  filter(RI_gene == "AKT3", 
+         !region_filter) |>
+  select(Sample, cellType = cell_type, AKT3_Copies =  n_puncta, Nucleus_Area = nucleus_area) |>
+  mutate(datatype = "RNAScope",
+         dataset = "TREG")
+
+halo_treg |> dplyr::count(cellType)
+
+load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
+
+halo_all <- halo_all |>
+  select(Sample, cellType = cell_type, AKT3_Copies, Nucleus_Area) |>
+  mutate(datatype = "RNAScope",
+         dataset = "newDLPFC") |>
+  mutate(cellType = factor(cellType, levels = c(levels(sum_data_expand$cellType), "Other")))
+
+halo_all |> dplyr::count(cellType)
 
 #### calc slope ###
 
-halo_all <- halo_all |>
-  mutate(cell_type = factor(cell_type, levels = c(levels(sum_data_main$cellType), "Other")))
+halo_expand <- halo_all |>
+  filter(cellType %in% ct6) |>
+  mutate(set_ct = "ct6") |>
+  rbind(halo_all |>
+          filter(cellType %in% ct3) |>
+          mutate(set_ct = "ct3"))|>
+  rbind(halo_treg |>
+          filter(cellType %in% ct3) |>
+          mutate(set_ct = "ct3"))
 
-halo_all |> dplyr::count(cell_type)
+RNAscope_metrics <- halo_expand |>
+  group_by(datatype, dataset, set_ct) |>
+  summarize(sd = sd(AKT3_Copies), n = n())
 
-puncta_fit <- lm(AKT3_Copies ~ cell_type, data = halo_all)
-slope_anno(puncta_fit , 2)
-# [1] "-4.14 (-4.18,-4.09)"
-
-## TREG box plot
-
-treg_box_plot <- halo_all |>
-  ggplot(aes(x = cell_type, y = AKT3_Copies)) +
-  geom_boxplot(aes(fill = cell_type)) +
-  scale_fill_manual(values = cell_type_colors_halo)
-
-ggsave(treg_box_plot, filename = here(plot_dir, "TREG_boxplot.png"))
-
-## drop "Other"
-
-halo_all <- halo_all |>
-  filter(cell_type != "Other") |>
-  mutate(cell_type = droplevels(cell_type))
-
-
-puncta_beta <- halo_all |>
-  ungroup() |>
-  do(fit = tidy(lm(AKT3_Copies ~ cell_type, data = .), conf.int = TRUE)) |>
+## calc slope
+RNAscope_beta <- halo_expand |>
+  filter(set_ct == "ct6") |>
+  mutate(cellType = ordered(cellType)) |>
+  group_by(dataset, set_ct) |>
+  do(fit = tidy(lm(AKT3_Copies ~ cellType, data = .), conf.int = TRUE)) |>
   unnest(fit) |>
-  filter(term == "cell_typeInhib") |>
+  rbind(halo_expand |>
+          filter(set_ct == "ct3") |>
+          mutate(cellType = ordered(droplevels(cellType))) |>
+          group_by(dataset, set_ct) |>
+          do(fit = tidy(lm(AKT3_Copies ~ cellType, data = .), conf.int = TRUE)) |>
+          unnest(fit)) |>
+  filter(term == "cellType.L") |>
   mutate(beta = paste0(
     round(estimate, 2), " (",
     round(conf.low, 2), ",",
     round(conf.high, 2), ")"
-  )) 
+  ))
 
-puncta_sd <- sd(halo_all$AKT3_Copies)
+# dataset  set_ct term       estimate std.error statistic p.value conf.low conf.high beta               
+# <chr>    <chr>  <chr>         <dbl>     <dbl>     <dbl>   <dbl>    <dbl>     <dbl> <chr>              
+# 1 newDLPFC ct6    cellType.L    -6.82    0.0229     -298.       0    -6.87     -6.78 -6.82 (-6.87,-6.78)
+# 2 TREG     ct3    cellType.L    -5.52    0.0159     -346.       0    -5.55     -5.49 -5.52 (-5.55,-5.49) ## match paper
+# 3 newDLPFC ct3    cellType.L    -6.22    0.0180     -346.       0    -6.26     -6.19 -6.22 (-6.26,-6.19)
 
-puncta_beta_summary <- puncta_beta |>
-  add_column(sd = puncta_sd) |>
+#### Beta summary table ####
+
+beta_summary <- snRNAseq_beta |>
+  left_join(snRNA_metrics) |>
+  rbind(RNAscope_beta |>
+          left_join(RNAscope_metrics)) |>
   mutate(
     estimate_adj = estimate / sd,
     conf.low_adj = conf.low / sd,
@@ -256,39 +297,48 @@ puncta_beta_summary <- puncta_beta |>
       round(conf.high_adj, 2), ")"
     )
   ) |>
-  select(beta, sd, beta_adj) |>
-  mutate(data = "RNAscope_puncta", .before = 1) 
-  
+  select(datatype, dataset, set_ct,n, beta, sd, beta_adj) 
 
-puncta_fit_main <- lm(AKT3_Copies ~ cell_type, data = halo_all)
-slope_anno(puncta_fit_main , 2)
-# [1] "-4.14 (-4.18,-4.09)"
+write.csv(beta_summary, file = here(data_dir, "beta_summary.csv"), row.names = FALSE)
 
-beta_summary <- bind_rows(sn_beta_summary, puncta_beta_summary)
+#### RNAScope box plots ####
 
-write.csv(beta_summary, file = here(data_dir, "beta_summary.csv"))
-
-#### TREG box plot ####
-
-treg_box_plot_main <- halo_all |>
+treg_box_plot <- halo_all |>
   ggplot(aes(x = cell_type, y = AKT3_Copies)) +
   geom_boxplot(aes(fill = cell_type)) +
+  scale_fill_manual(values = cell_type_colors_halo)
+
+ggsave(treg_box_plot, filename = here(plot_dir, "TREG_boxplot.png"))
+
+treg_box_plot_ct6 <- halo_all |>
+  filter(cellType %in% ct6) |>
+  ggplot(aes(x = cellType, y = AKT3_Copies)) +
+  geom_boxplot(aes(fill = cellType)) +
   scale_fill_manual(values = cell_type_colors_halo) +
   labs(x = "Cell Type", y = "Number of AKT3 Puncta") +
   theme_bw() +
   theme(text = element_text(size = 15), legend.position = "None")
 
-ggsave(treg_box_plot_main, filename = here(plot_dir, "TREG_boxplot_main.png"), height = 5, width = 5)
+ggsave(treg_box_plot_ct6, filename = here(plot_dir, "TREG_boxplot_ct6.png"), height = 5, width = 5)
+
+treg_box_plot_ct6_trend <- treg_box_plot_ct6 +
+  geom_abline(slope = -6.82, intercept = 5.89)
+
+ggsave(treg_box_plot_ct6_trend, filename = here(plot_dir, "TREG_boxplot_ct6_trend.png"), height = 5, width = 5)
 
 
-treg_scatter_smooth <- halo_all |>
-  ggplot(aes(x = cell_type, y = AKT3_Copies)) +
-  geom_point(aes(color = cell_type), alpha = 0.1) +
-  geom_smooth(method = "lm") +
-  scale_fill_manual(values = cell_type_colors_halo) +
-  labs(x = "Cell Type", y = "Number of AKT3 Puncta")
+treg_box_plot_ct3_dataset <- halo_expand |>
+  filter(set_ct == "ct3") |>
+  ggplot(aes(x = cellType, y = AKT3_Copies)) +
+  geom_boxplot(aes(fill = cellType, color = dataset)) +
+  scale_fill_manual(values = cell_type_colors_halo, guide = "none") +
+  scale_color_manual(values = dataset_colors) +
+  labs(x = "Cell Type", y = "Number of AKT3 Puncta") +
+  theme_bw() +
+  theme(text = element_text(size = 15))
 
-ggsave(treg_scatter_smooth, filename = here(plot_dir, "TREG_scatter_smooth.png"))
+ggsave(treg_box_plot_ct3_dataset, filename = here(plot_dir, "TREG_boxplot_ct3_dataset.png"), height = 5, width = 5)
+
 
 # sgejobs::job_single('07_TREG_boxplots', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 07_TREG_boxplots.R")
 ## Reproducibility information
