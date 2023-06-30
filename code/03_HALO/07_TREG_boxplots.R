@@ -304,7 +304,7 @@ write.csv(beta_summary, file = here(data_dir, "beta_summary.csv"), row.names = F
 #### RNAScope box plots ####
 
 treg_box_plot <- halo_all |>
-  ggplot(aes(x = cell_type, y = AKT3_Copies)) +
+  ggplot(aes(x = cellType, y = AKT3_Copies)) +
   geom_boxplot(aes(fill = cell_type)) +
   scale_fill_manual(values = cell_type_colors_halo)
 
