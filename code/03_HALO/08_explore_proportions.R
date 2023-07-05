@@ -18,7 +18,14 @@ if (!dir.exists(data_dir)) dir.create(data_dir)
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
 
-halo_ct <- halo_ct
+halo_ct <- names(cell_type_colors_halo)
+
+halo_ct_tb <- tibble(
+  cell_type = c("Endo", "Astro", "Inhib", "Excit", "Micro", "Oligo"),
+  Other = rep(c("Other_Star", "Other_Circle"), each = 3),
+  # marker = c("CLDN5", "GFAP", "GAD1", "SLC17A7", "TMEM119", "OLIG2"),
+  Combo = rep(c("Circle", "Star"), each = 3)
+)
 
 #### Load SCE Data ###
 # spatialDLPFC sce
@@ -31,41 +38,55 @@ dim(sce)
 sn_pd <- as.data.frame(colData(sce)) |>
   mutate(cell_type = factor(ifelse(gsub("Mural","",cellType_broad_hc) %in% halo_ct, 
                             as.character(gsub("Mural","",cellType_broad_hc)),
-                            "Other"),
+                            "Oligo"), ## OPC to Oligo
                             levels = halo_ct))
-sn_pd |>
-  dplyr::count(cell_type)
-#   cell_type     n
-# 1     Astro  3979
-# 2      Endo  2157
-# 3     Micro  1601
-# 4     Oligo 10894
-# 5     Excit 24809
-# 6     Inhib 11067
-# 7     Other  1940
 
 sn_pd |>
-  dplyr::count(cellType_broad_hc) |> 
-  mutate(halo_ct = cellType_broad_hc %in% halo_ct)
-# cellType_broad_hc     n halo_ct
-# 1             Astro  3979    TRUE
-# 2         EndoMural  2157   FALSE * corrected to Endo
-# 3             Micro  1601    TRUE
-# 4             Oligo 10894    TRUE
-# 5               OPC  1940   FALSE
-# 6             Excit 24809    TRUE
-# 7             Inhib 11067    TRUE
+  dplyr::count(cellType_broad_hc, cell_type)
+# cellType_broad_hc cell_type     n
+# 1             Astro     Astro  3979
+# 2         EndoMural      Endo  2157
+# 3             Micro     Micro  1601
+# 4             Oligo     Oligo 10894
+# 5               OPC     Oligo  1940
+# 6             Excit     Excit 24809
+# 7             Inhib     Inhib 11067
+
+sn_ct <- sn_pd |> 
+  select(Sample, cell_type) |> 
+  left_join(halo_ct_tb) |>
+  select(-Combo) |>
+  pivot_longer(!Sample, names_to = "cell_type_class", values_to = "cell_type")
+
+head(sn_ct)
+
+sn_ct |> dplyr::count(cell_type)
 
 ## calculate prop for halo cell types
-sn_ct_prop <- sn_pd |>
+sn_ct_prop <- sn_ct |>
   group_by(Sample, cell_type) |>
   summarize(n_cell_sn = n()) |>
   group_by(Sample) |>
-  mutate(prop_sn = n_cell_sn / sum(n_cell_sn))
+  mutate(prop_sn = n_cell_sn / sum(n_cell_sn)) |>
+  left_join(halo_ct_tb |> select(-Other)) |>
+  separate(cell_type, into = c("cell_type", "Combo2")) |>
+  mutate(Combo = gsub("NA","",paste0(Combo, Combo2))) |>
+  select(-Combo2)
 
 sn_n_cells <- sn_pd |>
   group_by(Sample)|>
   summarize(total_n_cells_sn = n())
+
+
+## prop plot with other
+sn_prop_bar_other <- sn_ct_prop |>
+  ggplot(aes(x = Sample, y = prop_sn, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~Combo, ncol = 1)  +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(sn_prop_bar_other, filename = here(plot_dir,"sn_prop_bar_other.png"))
 
 #### Load RNAscope Data ####
 
@@ -130,7 +151,7 @@ ggsave(prop_boxplot, filename = here(plot_dir, "prop_boxplot.png"))
 
 
 halo_v_sn_prop <- cell_type_prop  |>
-  ggplot(aes(x = prop, y = prop_sn, color = cell_type)) +
+  ggplot(aes(x = prop, y = prop_sn, color = cell_type, shape = Combo)) +
   geom_point() +
   scale_color_manual(values = cell_type_colors_halo) +
   labs(x = "Prop RNAscope", y= "Prop snRNA-seq") +
