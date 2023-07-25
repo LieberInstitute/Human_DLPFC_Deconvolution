@@ -4,9 +4,12 @@ library("here")
 library("sessioninfo")
 library("DeconvoBuddies")
 
-#### Plot Set-up ####
-plot_dir <- here("plots", "03_HALO", "01_explore_data")
+#### Set-up ####
+plot_dir <- here("plots", "03_HALO", "01_import_HALO_data")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
+
+data_dir <- here("plots", "03_HALO", "01_import_HALO_data")
+if (!dir.exists(data_dir)) dir.create(data_dir)
 
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
@@ -100,7 +103,7 @@ metadata |> count(Position)
 metadata |> count(Combo, Slide, subslide2)
 
 ## Write metadata
-write_csv(metadata, file = here("processed-data", "03_HALO", "HALO_metadata.csv"))
+write_csv(metadata, file = here(data_dir, "HALO_metadata.csv"))
 
 #### Halo files ####
 halo_runs <- c("prelim", "Deconvolution_HALO_analysis", "Algorithm_Check_20220914", "Algorithm_Check_20220920", "Algorithm_Check_20221020")
@@ -331,7 +334,7 @@ halo_star |> count(JHPCE_path)
 # star_prop |> filter(cell_type == 'Other', prop == 1) |> select(Sample, SAMPLE_ID, Round)
 
 ## save raw out put with more columns from HALO
-save(halo_star, halo_circle, file = here("processed-data", "03_HALO", "HALO_Data.Rdata"))
+save(halo_star, halo_circle, file = here(data_dir, "HALO_Data.Rdata"))
 
 #### Build HALO ALL ####
 
