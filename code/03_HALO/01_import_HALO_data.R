@@ -8,7 +8,7 @@ library("DeconvoBuddies")
 plot_dir <- here("plots", "03_HALO", "01_import_HALO_data")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("plots", "03_HALO", "01_import_HALO_data")
+data_dir <- here("processed-data", "03_HALO", "01_import_HALO_data")
 if (!dir.exists(data_dir)) dir.create(data_dir)
 
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
