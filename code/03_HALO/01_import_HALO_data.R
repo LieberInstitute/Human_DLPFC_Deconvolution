@@ -361,10 +361,12 @@ exclude_data <- c(
 )
 
 halo_all <- rbind(halo_star, halo_circle) |>
-    left_join(halo_file_table) |>
-    left_join(metadata) |>
-    relocate(SAMPLE_ID, Sample, BrNum, Position, Object_Id, cell_type, AKT3_Copies, Nucleus_Area, XMin, XMax, YMin, YMax) |>
-    filter(!basename %in% exclude_data)
+  left_join(halo_file_table) |>
+  left_join(metadata) |>
+  relocate(SAMPLE_ID, Sample, BrNum, Position, Object_Id, cell_type, AKT3_Copies, Nucleus_Area, XMin, XMax, YMin, YMax) |>
+  filter(!basename %in% exclude_data) |>
+  as_tibble()
+
 
 halo_all |>
     group_by(SAMPLE_ID, basename) |>
