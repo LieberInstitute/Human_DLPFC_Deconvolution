@@ -6,10 +6,14 @@ library("here")
 library("sessioninfo")
 # library("DeconvoBuddies")
 
-#### Plot Set-up ####
+#### Dir Set-up ####
 plot_dir <- here("plots", "03_HALO", "02_spatial_QC")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
+data_dir <- here("processed-data", "03_HALO", "02_spatial_QC")
+if (!dir.exists(data_dir)) dir.create(data_dir)
+
+#### Plot Set-up ####
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
 
 halo_theme <- theme_bw() +
@@ -24,7 +28,7 @@ blank_axis <- theme(
     axis.ticks.y = element_blank()
 )
 
-#### Load Data ###
+#### Load Data ####
 metadata <- read.csv(here("processed-data", "03_HALO", "HALO_metadata.csv"))
 # prop_all <- read.csv(here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
@@ -182,7 +186,27 @@ all_samples_ct <- halo_all |>
     )
 
 ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.pdf"), height = 12, width = 16)
+ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.png"), height = 12, width = 16)
 
+#### nuc plots by sample ####
+unique(halo_all$Sample)
+
+plot_dir_sample <- here("plots", "03_HALO", "02_spatial_QC", "Sample_Nuc_plots")
+if (!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample)
+
+walk(unique(halo_all$Sample)[1], function(s){
+  nuc_plot <- halo_all |>
+    dplyr::filter(Sample == s)|>
+    ggplot() +
+    geom_rect(aes(
+      xmin = XMin, xmax = XMax,
+      ymin = YMin, ymax = YMax,
+      fill = Combo
+    )) +
+    facet_wrap(~Combo)
+  
+  ggsave(nuc_plot, filename = here(plot_dir_sample, "nuc_",sample,".png"))
+})
 
 
 #### Hex Plots ####
@@ -227,6 +251,7 @@ ggsave(circle_nuc_area_hex, filename = here(plot_dir, "circle_hex_nuc_area.png")
 
 #### print each with grid ####
 halo_all$SAMPLE_ID <- factor(halo_all$SAMPLE_ID)
+halo_all$Sample_Combo <- factor(halo_all$Sample_Combo)
 
 walk(levels(halo_all$Sample_Combo), function(s) {
     message(s)
