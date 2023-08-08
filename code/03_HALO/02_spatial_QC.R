@@ -326,6 +326,35 @@ nuc_area_violin_sample <- halo_all |>
 ggsave(nuc_area_violin_sample, filename = here(plot_dir, "Nucleus_Area_violin_Sample.png"))
 
 
+## What samples have the most large nuclei?
+halo_all |> count(large_nuc)
+# large_nuc       n
+# 1 FALSE     1631474
+# 2 TRUE        54333
+
+
+filter_n_cells <- halo_all |>
+  count(Sample, Combo)|>
+  pivot_wider(names_from = "Combo", values_from = "n") |>
+  mutate(filter = "All Nuc") |>
+  bind_rows(halo_all |>
+              filter(!large_nuc) |>
+              count(Sample, Combo)|>
+              pivot_wider(names_from = "Combo", values_from = "n") |>
+              mutate(filter = "NA < 78")) |>
+  mutate(error = abs(Star - Circle)/Circle) 
+
+combo_n_cells_scatter_filter <- filter_n_cells |>
+  ggplot(aes(Circle, Star)) +
+  geom_line(aes(group = Sample), color = "grey50") +
+  geom_point(aes(color = filter)) +
+  geom_text_repel(aes(label = ifelse(filter == "All Nuc",Sample,"")), size = 2) +
+  geom_abline(linetype = "dashed", color = "red") +
+  theme_bw() 
+
+ggsave(combo_n_cells_scatter_filter, filename = here(plot_dir, "halo_combo_n_cells_scatter_filter.png"))
+
+
 #### Puncta vs. Nuc Area ####
 
 puncta_v_size <- halo_all %>%
@@ -354,6 +383,7 @@ puncta_v_size_anno <- puncta_v_size %>%
   ))
 
 
+## plot
 puncta_NucArea_scater <- halo_all |>
   ggplot(aes(Nucleus_Area, AKT3_Copies, color = cell_type)) +
   geom_point(aes(color = cell_type), size = 0.2, alpha = 0.2) +
@@ -372,5 +402,43 @@ puncta_NucArea_scater <- halo_all |>
   )
 
 ggsave(puncta_NucArea_scater, filename = here(plot_dir, "puncta_NucArea_scater.png"))
+
+
+puncta_NucArea_hex <- halo_all |>
+  filter(cell_type != "Other") |>
+  ggplot(aes(Nucleus_Area, AKT3_Copies)) +
+  geom_hex() +
+  scale_fill_continuous(type = "viridis", trans = "log") +
+  geom_smooth(method = "lm", color = "black") +
+  # geom_text(data = puncta_v_size_anno, aes(label = anno), parse = TRUE, x = 45, y = 60, size = 3) +
+  facet_wrap(~cell_type, nrow = 2) +
+  # scale_color_manual(values = cell_type_colors_halo) +
+  labs(
+    x = bquote("Nucleus Area µm"^2),
+    y = "Number of Puncta"
+  ) +
+  theme_bw() 
+
+ggsave(puncta_NucArea_hex, filename = here(plot_dir, "puncta_NucArea_hex.png"))
+
+puncta_NucArea_hex_filter <- halo_all |>
+  filter(cell_type != "Other", !large_nuc) |>
+  ggplot(aes(Nucleus_Area, AKT3_Copies)) +
+  geom_hex() +
+  scale_fill_continuous(type = "viridis", trans = "log") +
+  geom_smooth(method = "lm", color = "black") +
+  # geom_text(data = puncta_v_size_anno, aes(label = anno), parse = TRUE, x = 45, y = 60, size = 3) +
+  facet_wrap(~cell_type, nrow = 2) +
+  # scale_color_manual(values = cell_type_colors_halo) +
+  labs(
+    x = bquote("Nucleus Area µm"^2),
+    y = "Number of Puncta"
+  ) +
+  theme_bw() 
+
+ggsave(puncta_NucArea_hex_filter, filename = here(plot_dir, "puncta_NucArea_hex_filter.png"))
+
+
+
 
 
