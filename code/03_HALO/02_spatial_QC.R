@@ -2,6 +2,7 @@ library("tidyverse")
 library("scales")
 library("ggrepel")
 library("patchwork")
+library("broom")
 library("here")
 library("sessioninfo")
 # library("DeconvoBuddies")
@@ -15,6 +16,7 @@ if (!dir.exists(data_dir)) dir.create(data_dir)
 
 #### Plot Set-up ####
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
+# cell_type_colors_halo
 
 halo_theme <- theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -33,13 +35,10 @@ metadata <- read.csv(here("processed-data", "03_HALO", "HALO_metadata.csv"))
 # prop_all <- read.csv(here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
 
-# common_cols <- intersect(colnames(halo_star), colnames(halo_circle))
-#
-# halo_all <- rbind(halo_star[,common_cols], halo_circle[,common_cols]) |> left_join(metadata)
-
 dim(halo_all)
 # [1] 1685807      40
 
+halo_all <- halo_all |> mutate(large_nuc = Nucleus_Area > pi * 5^2) ## larger 5µm radius
 
 ## get important coordinates for each sample
 slide_position <- halo_all |>
@@ -166,7 +165,7 @@ ggsave(circle_samples_ct, filename = here(plot_dir, "nuc_ct_samples_circle.png")
 ggsave(circle_samples_ct, filename = here(plot_dir, "nuc_ct_samples_circle.pdf"), height = 10, width = 16)
 
 
-## ALL Samples - need to normalize data
+## ALL Samples
 all_samples_ct <- halo_all |>
     # filter(cell_type != 'Other')|>
     ggplot() +
@@ -194,18 +193,22 @@ unique(halo_all$Sample)
 plot_dir_sample <- here("plots", "03_HALO", "02_spatial_QC", "Sample_Nuc_plots")
 if (!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample)
 
-walk(unique(halo_all$Sample)[1], function(s){
+walk(unique(halo_all$Sample), function(s){
+  message(s)
   nuc_plot <- halo_all |>
     dplyr::filter(Sample == s)|>
     ggplot() +
     geom_rect(aes(
       xmin = XMin, xmax = XMax,
       ymin = YMin, ymax = YMax,
-      fill = Combo
+      fill = large_nuc
     )) +
-    facet_wrap(~Combo)
+    facet_wrap(~Combo) +
+    scale_fill_manual(values = c(`TRUE` = "red", `FALSE` = "black")) +
+    coord_equal() +
+    theme_bw()
   
-  ggsave(nuc_plot, filename = here(plot_dir_sample, "nuc_",sample,".png"))
+  ggsave(nuc_plot, filename = here(plot_dir_sample, paste0("nuc_",s,".png")), width = 10)
 })
 
 
@@ -222,59 +225,152 @@ star_nuc_area_hex <- ggplot(halo_star) +
 
 ggsave(star_nuc_area_hex, filename = here(plot_dir, "star_hex_nuc_area.png"), height = 10, width = 18)
 
-star_puncta_hex <-
-    # halo_all |>
-    # filter(Combo == "Star") |>
-    ggplot(halo_star) +
-    stat_summary_hex(aes(x = XMax, y = YMax, z = `AKT3..Opal.620..Copies`),
-        fun = mean, bins = 100
-    ) +
-    scale_fill_continuous(type = "viridis") +
-    facet_wrap(~Sample_Combo, scales = "free_y") +
-    theme_bw() +
-    labs(title = "Star Combo", subtitle = "Mean Number Puncta")
-
-ggsave(star_puncta_hex, filename = here(plot_dir, "star_hex_puncta.png"), height = 10, width = 18)
-
-
-
-circle_nuc_area_hex <- ggplot(halo_circle) +
-    stat_summary_hex(aes(x = XMax, y = YMax, z = `Nucleus.Area..µm..`),
-        fun = mean, bins = 100
-    ) +
-    scale_fill_continuous(type = "viridis") +
-    facet_wrap(~Sample, scales = "free_y") +
-    theme_bw() +
-    labs(title = "Circle Combo", subtitle = "Mean Nucleus Area µm")
-
-ggsave(circle_nuc_area_hex, filename = here(plot_dir, "circle_hex_nuc_area.png"), height = 10, width = 18)
-
 #### print each with grid ####
+plot_dir_hex <- here("plots", "03_HALO", "02_spatial_QC", "QC_hex")
+if (!dir.exists(plot_dir_hex)) dir.create(plot_dir_hex)
+
 halo_all$SAMPLE_ID <- factor(halo_all$SAMPLE_ID)
-halo_all$Sample_Combo <- factor(halo_all$Sample_Combo)
 
-walk(levels(halo_all$Sample_Combo), function(s) {
+walk(unique(halo_all$Sample), function(s) {
     message(s)
-    halo_s <- halo_all %>% filter(Sample_Combo == s)
+    halo_s <- halo_all %>% filter(Sample == s)
 
-    grid_hex <- ggplot(halo_s) +
-        stat_summary_hex(aes(x = XMax, y = YMax, z = `Nucleus.Area..µm..`),
+    area_hex <- ggplot(halo_s) +
+        stat_summary_hex(aes(x = XMax, y = YMax, z = `Nucleus_Area`),
             fun = mean, bins = 100
         ) +
-        scale_fill_continuous(type = "viridis") +
+        scale_fill_continuous(type = "viridis", limits = c(5,100), "Mean Nuc Area\n(max 100)") + ## top value of 100 for visualization 
         coord_equal() +
         theme_bw() +
-        theme(
-            panel.background = element_rect(fill = NA),
-            panel.ontop = TRUE,
-            panel.grid.major.x = element_line(color = "grey60"),
-            panel.grid.major.y = element_line(color = "grey60")
-        ) +
-        scale_x_continuous(minor_breaks = seq(0, 40000, 1000)) +
-        scale_y_continuous(minor_breaks = seq(90000, 0, -1000), trans = "reverse") +
+        # theme(
+        #     panel.background = element_rect(fill = NA),
+        #     panel.ontop = TRUE,
+        #     panel.grid.major.x = element_line(color = "grey60"),
+        #     panel.grid.major.y = element_line(color = "grey60")
+        # ) +
+        # scale_x_continuous(minor_breaks = seq(0, 40000, 1000)) +
+        # scale_y_continuous(minor_breaks = seq(90000, 0, -1000), trans = "reverse") +
+        facet_wrap(~Combo) +
         labs(title = s)
 
-    s <- gsub("/", "", s)
+    # s <- gsub("/", "", s)
 
-    ggsave(grid_hex, filename = here(plot_dir, "QC_hex", paste0("grid_hex_", s, ".png")))
+    ggsave(area_hex, filename = here(plot_dir_hex,  paste0("hex_MeanNucArea_", s, ".png")), width = 10)
 })
+
+## plot mean number of puncta
+walk(unique(halo_all$Sample), function(s) {
+  message(s)
+  halo_s <- halo_all %>% filter(Sample == s)
+  
+  puncta_hex <- ggplot(halo_s) +
+    stat_summary_hex(aes(x = XMax, y = YMax, z = AKT3_Copies),
+                     fun = mean, bins = 100
+    ) +
+    scale_fill_continuous(type = "viridis", name = "Mean AKT3 Copies") + 
+    coord_equal() +
+    theme_bw() +
+    facet_wrap(~Combo) +
+    labs(title = s)
+  
+  # s <- gsub("/", "", s)
+  
+  ggsave(puncta_hex, filename = here(plot_dir_hex,  paste0("hex_MeanPuncta_", s, ".png")), width = 10)
+})
+
+
+#### Density plots for Nucleus_Area by cell type ####
+
+nuc_area_density <- halo_all |>
+  ggplot(aes(x= Nucleus_Area, color = cell_type)) +
+  geom_density() +
+  theme_bw() +
+  scale_color_manual(values = cell_type_colors_halo)
+
+ggsave(nuc_area_density, filename = here(plot_dir, "Nucleus_Area_density.png"), width = 10)
+
+
+nuc_area_density_sample <- halo_all |>
+  ggplot(aes(x= Nucleus_Area, color = Sample)) +
+  geom_density() +
+  theme_bw() +
+  # scale_color_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, ncol = 1) +
+  guides(color=guide_legend(ncol =1))
+
+ggsave(nuc_area_density_sample, filename = here(plot_dir, "Nucleus_Area_density_Sample.png"), width = 12, height = 10)
+
+## violin 
+nuc_area_violin <- halo_all |>
+  ggplot(aes(x= cell_type, y= Nucleus_Area, fill = cell_type)) +
+  geom_violin(draw_quantiles = c(.25,.50,.75)) +
+  theme_bw() +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  theme(legend.position = "None") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "blue") + ##minimum size
+  geom_text(label = "Global Min: 5 µm2", y = 1, x = "Astro", color = "blue") +
+  geom_hline(yintercept = pi * 5^2, linetype = "dashed", color = "red") + ## max size
+  geom_text(label = "Reasonable Area: 78 µm2\n(radius = 5µm)", y = 85, x = "Astro", color = "red") +
+  labs(y = "Nucleus Area µm2", x = "Cell Type")
+
+ggsave(nuc_area_violin, filename = here(plot_dir, "Nucleus_Area_violin.png"))
+
+nuc_area_violin_sample <- halo_all |>
+  ggplot(aes(x= Sample, y= Nucleus_Area, fill = Sample)) +
+  geom_violin(draw_quantiles = c(.25,.50,.75)) +
+  theme_bw() +
+  facet_wrap(~cell_type, ncol = 1) +
+  theme(legend.position = "None", 
+        axis.text.x = element_text(angle = 90)) 
+
+ggsave(nuc_area_violin_sample, filename = here(plot_dir, "Nucleus_Area_violin_Sample.png"))
+
+
+#### Puncta vs. Nuc Area ####
+
+puncta_v_size <- halo_all %>%
+  ungroup() %>%
+  group_by(cell_type) %>%
+  do(fitPuncta = tidy(lm(AKT3_Copies ~ Nucleus_Area, data = .))) %>%
+  unnest(fitPuncta) %>%
+  filter(term == "Nucleus_Area") %>%
+  mutate(
+    p.bonf = p.adjust(p.value, "bonf"),
+    p.bonf.sig = p.bonf < 0.05,
+    p.bonf.cat = cut(p.bonf,
+                     breaks = c(1, 0.05, 0.01, 0.005, 0),
+                     labels = c("<= 0.005", "<= 0.01", "<= 0.05", "> 0.05"),
+                     include.lowest = TRUE
+    ),
+    p.fdr = p.adjust(p.value, "fdr"),
+    log.p.bonf = -log10(p.bonf)
+  )
+
+puncta_v_size_anno <- puncta_v_size %>%
+  select(cell_type, estimate, std.error) %>%
+  mutate(anno = paste(
+    "beta ==", round(estimate, 3)
+    # ,"\nse ==", formatC(std.error, format = "e", digits = 1)
+  ))
+
+
+puncta_NucArea_scater <- halo_all |>
+  ggplot(aes(Nucleus_Area, AKT3_Copies, color = cell_type)) +
+  geom_point(aes(color = cell_type), size = 0.2, alpha = 0.2) +
+  geom_smooth(method = "lm", color = "black") +
+  geom_text(data = puncta_v_size_anno, aes(label = anno), parse = TRUE, x = 45, y = 60, size = 3) +
+  facet_wrap(~cell_type, nrow = 2) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  labs(
+    x = bquote("Nucleus Area µm"^2),
+    y = "Number of Puncta"
+  ) +
+  theme_bw() +
+  theme(
+    text = element_text(size = 15),
+    legend.position = "none"
+  )
+
+ggsave(puncta_NucArea_scater, filename = here(plot_dir, "puncta_NucArea_scater.png"))
+
+
