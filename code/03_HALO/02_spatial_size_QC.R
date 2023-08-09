@@ -38,8 +38,6 @@ load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
 dim(halo_all)
 # [1] 1685807      40
 
-halo_all <- halo_all |> mutate(large_nuc = Nucleus_Area > pi * 5^2) ## larger 5µm radius
-
 ## get important coordinates for each sample
 slide_position <- halo_all |>
     group_by(Sample, SAMPLE_ID, Combo, subslide, i, Slide) |>
@@ -188,7 +186,9 @@ ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.pdf"), height 
 ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.png"), height = 12, width = 16)
 
 #### nuc plots by sample ####
-unique(halo_all$Sample)
+
+## annotate nuclei bigger than biologically reasonable 
+halo_all <- halo_all |> mutate(large_nuc = Nucleus_Area > pi * 5^2) ## larger 5µm radius
 
 plot_dir_sample <- here("plots", "03_HALO", "02_spatial_QC", "Sample_Nuc_plots")
 if (!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample)
@@ -440,5 +440,11 @@ ggsave(puncta_NucArea_hex_filter, filename = here(plot_dir, "puncta_NucArea_hex_
 
 
 
-
+# sgejobs::job_single('07_TREG_boxplots', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 07_TREG_boxplots.R")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
