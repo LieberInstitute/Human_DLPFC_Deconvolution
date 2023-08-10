@@ -9,10 +9,10 @@ library("broom")
 
 
 #### Set-up ####
-plot_dir <- here("plots", "03_HALO", "08_explore_proportions2")
+plot_dir <- here("plots", "03_HALO", "08_explore_proportions")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "03_HALO", "08_explore_proportions2")
+data_dir <- here("processed-data", "03_HALO", "08_explore_proportions")
 if (!dir.exists(data_dir)) dir.create(data_dir)
 
 ## colors
@@ -153,7 +153,7 @@ cell_type_prop <- halo_all |>
   left_join(sn_ct_prop) |>
   mutate(cell_type = factor(cell_type, levels = halo_ct))
 
-write_csv(cell_type_prop_adj, file = here(data_dir,"HALO_cell_type_proportions.csv"))
+write_csv(cell_type_prop, file = here(data_dir,"HALO_cell_type_proportions.csv"))
 
 ## Adjusted cell type proportions
 
