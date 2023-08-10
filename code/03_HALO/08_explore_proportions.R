@@ -132,6 +132,9 @@ summary(sn_other_prop)
 #### Load RNAscope Data ####
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
 
+## filter out large nuclei
+halo_all <- halo_all |> filter(!large_nuc)
+
 halo_all |>
   dplyr::count(cell_type)
 

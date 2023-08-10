@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.3
 **** Job starts ****
-Thu Aug 10 13:39:06 EDT 2023
+Thu Aug 10 15:09:33 EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3673528
+Job id: 3673605
 Job name: explore_proportions
-Hostname: compute-093.cm.cluster
+Hostname: compute-100.cm.cluster
 Task id: undefined
 Unloading conda_R/4.3
 Loading conda_R/4.3
@@ -270,13 +270,13 @@ Loading objects:
 # A tibble: 7 × 2
   cell_type       n
   <chr>       <int>
-1 Astro      240751
-2 Endo        59853
-3 Excit      141542
-4 Inhib       94430
-5 Micro       30016
-6 Oligo       87534
-7 Other     1031681
+1 Astro      233049
+2 Endo        57739
+3 Excit      133184
+4 Inhib       89839
+5 Micro       29756
+6 Oligo       86245
+7 Other     1001662
 `summarise()` has grouped output by 'SAMPLE_ID', 'Sample', 'Combo'. You can
 override using the `.groups` argument.
 Joining with `by = join_by(Sample, Combo, cell_type)`
@@ -293,24 +293,24 @@ Joining with `by = join_by(Sample, cell_type)`
 # A tibble: 2 × 4
   Combo    min median   max
   <chr>  <int>  <int> <int>
-1 Circle 28239  48252 63293
-2 Star   31633  44055 60968
+1 Circle 26793  46576 62729
+2 Star   30607  42649 60268
 Joining with `by = join_by(Sample)`
     Sample              Circle           Star        mean_n_cells  
- Length:21          Min.   :28239   Min.   :31633   Min.   :28239  
- Class :character   1st Qu.:40858   1st Qu.:39956   1st Qu.:40124  
- Mode  :character   Median :48252   Median :44055   Median :48025  
-                    Mean   :48186   Mean   :44926   Mean   :46964  
-                    3rd Qu.:53184   3rd Qu.:48998   3rd Qu.:53184  
-                    Max.   :63293   Max.   :60968   Max.   :61286  
+ Length:21          Min.   :26793   Min.   :30607   Min.   :26793  
+ Class :character   1st Qu.:40076   1st Qu.:38950   1st Qu.:38542  
+ Mode  :character   Median :46576   Median :42649   Median :45799  
+                    Mean   :46340   Mean   :43889   Mean   :45431  
+                    3rd Qu.:51511   3rd Qu.:47988   3rd Qu.:51511  
+                    Max.   :62729   Max.   :60268   Max.   :60276  
                                     NA's   :6                      
  total_n_cells    only_circle         error         
- Min.   : 28239   Mode :logical   Min.   :0.006229  
- 1st Qu.: 58398   FALSE:15        1st Qu.:0.036461  
- Median : 80247   TRUE :6         Median :0.055903  
- Mean   : 80277                   Mean   :0.093294  
- 3rd Qu.: 96050                   3rd Qu.:0.128946  
- Max.   :122572                   Max.   :0.340306  
+ Min.   : 26793   Mode :logical   Min.   :0.000249  
+ 1st Qu.: 55674   FALSE:15        1st Qu.:0.010678  
+ Median : 77083   TRUE :6         Median :0.064122  
+ Mean   : 77689                   Mean   :0.084332  
+ 3rd Qu.: 91598                   3rd Qu.:0.117233  
+ Max.   :120551                   Max.   :0.339997  
                                   NA's   :6         
 Saving 7 x 7 in image
 Warning messages:
@@ -328,6 +328,8 @@ Warning messages:
 2: Removed 6 rows containing missing values (`geom_point()`). 
 3: Removed 6 rows containing missing values (`geom_text_repel()`). 
 Saving 7 x 7 in image
+Warning message:
+ggrepel: 1 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
@@ -352,29 +354,29 @@ There were 15 warnings (use warnings() to see them)
 # A tibble: 2 × 6
   method   term    estimate std.error statistic  p.value
   <chr>    <chr>      <dbl>     <dbl>     <dbl>    <dbl>
-1 Adjusted prop_sn    0.669    0.0558      12.0 6.45e-21
-2 Simple   prop_sn    0.758    0.0499      15.2 2.94e-30
+1 Adjusted prop_sn    0.666    0.0559      11.9 9.96e-21
+2 Simple   prop_sn    0.757    0.0504      15.0 7.66e-30
 # A tibble: 14 × 7
    method   cell_type term    estimate std.error statistic  p.value
    <chr>    <fct>     <chr>      <dbl>     <dbl>     <dbl>    <dbl>
- 1 Adjusted Astro     prop_sn    3.22     0.453       7.10 1.77e- 6
- 2 Adjusted Endo      prop_sn    1.37     0.249       5.50 3.92e- 5
- 3 Adjusted Micro     prop_sn    1.27     0.450       2.83 1.53e- 2
- 4 Adjusted Oligo     prop_sn    0.458    0.121       3.77 2.34e- 3
- 5 Adjusted Excit     prop_sn    0.649    0.0603     10.8  7.63e- 8
- 6 Adjusted Inhib     prop_sn    0.311    0.0796      3.90 1.15e- 3
- 7 Adjusted Other     prop_sn    0.903    0.128       7.06 5.83e- 3
- 8 Simple   Astro     prop_sn    2.76     0.424       6.50 5.41e- 6
- 9 Simple   Endo      prop_sn    1.16     0.205       5.65 2.86e- 5
-10 Simple   Micro     prop_sn    1.06     0.340       3.11 9.06e- 3
-11 Simple   Oligo     prop_sn    0.397    0.0902      4.40 7.13e- 4
-12 Simple   Excit     prop_sn    0.480    0.0396     12.1  1.85e- 8
-13 Simple   Inhib     prop_sn    0.247    0.0604      4.09 7.55e- 4
-14 Simple   Other     prop_sn    0.912    0.0940      9.70 6.61e-11
+ 1 Adjusted Astro     prop_sn    3.23     0.445       7.27 1.32e- 6
+ 2 Adjusted Endo      prop_sn    1.37     0.250       5.48 4.08e- 5
+ 3 Adjusted Micro     prop_sn    1.31     0.464       2.82 1.53e- 2
+ 4 Adjusted Oligo     prop_sn    0.469    0.124       3.76 2.36e- 3
+ 5 Adjusted Excit     prop_sn    0.640    0.0598     10.7  8.10e- 8
+ 6 Adjusted Inhib     prop_sn    0.305    0.0796      3.83 1.35e- 3
+ 7 Adjusted Other     prop_sn    0.900    0.133       6.79 6.52e- 3
+ 8 Simple   Astro     prop_sn    2.77     0.417       6.64 4.14e- 6
+ 9 Simple   Endo      prop_sn    1.16     0.206       5.62 3.07e- 5
+10 Simple   Micro     prop_sn    1.07     0.345       3.10 9.24e- 3
+11 Simple   Oligo     prop_sn    0.400    0.0908      4.41 7.11e- 4
+12 Simple   Excit     prop_sn    0.461    0.0381     12.1  1.90e- 8
+13 Simple   Inhib     prop_sn    0.244    0.0604      4.04 8.42e- 4
+14 Simple   Other     prop_sn    0.915    0.0951      9.62 8.02e-11
 [1] "Reproducibility information:"
-[1] "2023-08-10 13:40:18 EDT"
+[1] "2023-08-10 15:11:03 EDT"
    user  system elapsed 
- 66.456   2.281  69.923 
+ 77.494   3.443  88.238 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.1 Patched (2023-08-09 r84918)
@@ -482,4 +484,4 @@ There were 15 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Aug 10 13:40:18 EDT 2023
+Thu Aug 10 15:11:06 EDT 2023
