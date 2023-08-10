@@ -196,6 +196,7 @@ halo_all |>
   group_by(cell_type) |>
   summarize(n_large = sum(large_nuc),
             prop_large = n_large/n()) |>
+  arrange(-prop_large) |>
   as.data.frame()
 
 message("Large Nuc over Samples")
@@ -203,6 +204,7 @@ halo_all |>
   group_by(SAMPLE_ID) |>
   summarize(n_large = sum(large_nuc),
             prop_large = n_large/n()) |>
+  arrange(-prop_large) |>
   as.data.frame()
 
 ## How are the large nuclei distributed 
@@ -228,25 +230,13 @@ walk(unique(halo_all$Sample), function(s){
 })
 
 
-#### Hex Plots ####
-
-star_nuc_area_hex <- ggplot(halo_star) +
-    stat_summary_hex(aes(x = XMax, y = YMax, z = `Nucleus.Area..µm..`),
-        fun = mean, bins = 100
-    ) +
-    scale_fill_continuous(type = "viridis") +
-    facet_wrap(~Sample, scales = "free_y") +
-    theme_bw() +
-    labs(title = "Star Combo", subtitle = "Mean Nucleus Area µm")
-
-ggsave(star_nuc_area_hex, filename = here(plot_dir, "star_hex_nuc_area.png"), height = 10, width = 18)
-
 #### print each with grid ####
 plot_dir_hex <- here("plots", "03_HALO", "02_spatial_QC", "QC_hex")
 if (!dir.exists(plot_dir_hex)) dir.create(plot_dir_hex)
 
 halo_all$SAMPLE_ID <- factor(halo_all$SAMPLE_ID)
 
+message("Plot nuclei over XY coords")
 walk(unique(halo_all$Sample), function(s) {
     message(s)
     halo_s <- halo_all %>% filter(Sample == s)
@@ -372,7 +362,6 @@ ggsave(combo_n_cells_scatter_filter, filename = here(plot_dir, "halo_combo_n_cel
 
 
 #### Puncta vs. Nuc Area ####
-
 puncta_v_size <- halo_all %>%
   ungroup() %>%
   group_by(cell_type) %>%
