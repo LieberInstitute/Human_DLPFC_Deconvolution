@@ -190,6 +190,22 @@ ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.png"), height 
 ## annotate nuclei bigger than biologically reasonable 
 halo_all <- halo_all |> mutate(large_nuc = Nucleus_Area > pi * 5^2) ## larger 5µm radius
 
+## distribution over cell types & sample
+message("Large Nuc over cell types")
+halo_all |>
+  group_by(cell_type) |>
+  summarize(n_large = sum(large_nuc),
+            prop_large = n_large/n()) |>
+  as.data.frame()
+
+message("Large Nuc over Samples")
+halo_all |>
+  group_by(SAMPLE_ID) |>
+  summarize(n_large = sum(large_nuc),
+            prop_large = n_large/n()) |>
+  as.data.frame()
+
+## How are the large nuclei distributed 
 plot_dir_sample <- here("plots", "03_HALO", "02_spatial_QC", "Sample_Nuc_plots")
 if (!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample)
 
@@ -440,7 +456,7 @@ ggsave(puncta_NucArea_hex_filter, filename = here(plot_dir, "puncta_NucArea_hex_
 
 
 
-# sgejobs::job_single('07_TREG_boxplots', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 07_TREG_boxplots.R")
+# sgejobs::job_single('02_spatial_size_QC', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 02_spatial_size_QC.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()

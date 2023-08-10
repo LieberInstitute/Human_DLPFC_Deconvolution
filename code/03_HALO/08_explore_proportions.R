@@ -153,6 +153,8 @@ cell_type_prop <- halo_all |>
   left_join(sn_ct_prop) |>
   mutate(cell_type = factor(cell_type, levels = halo_ct))
 
+write_csv(cell_type_prop_adj, file = here(data_dir,"HALO_cell_type_proportions.csv"))
+
 ## Adjusted cell type proportions
 
 sn_ct_prop_adj <- sn_ct_prop |>
@@ -176,6 +178,8 @@ cell_type_prop_adj |>
   group_by(Sample) |>
   summarize(s = sum(prop)) |>
   summary()
+
+write_csv(cell_type_prop_adj, file = here(data_dir,"HALO_cell_type_proportions_adj.csv"))
 
 #### Number of cells ####
 
@@ -442,3 +446,10 @@ cell_type_prop_compare_long |>
 # 13 Simple   Inhib     prop_sn    0.247    0.0604      4.09 7.55e- 4
 # 14 Simple   Other     prop_sn    0.912    0.0940      9.70 6.61e-11
 
+# sgejobs::job_single('08_explore_proportions', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 08_explore_proportions.R")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
