@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
 #$ -N explore_proportions
 #$ -o logs/08_explore_proportions.txt
 #$ -e logs/08_explore_proportions.txt

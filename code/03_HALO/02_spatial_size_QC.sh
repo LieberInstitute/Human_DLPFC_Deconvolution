@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
 #$ -N spatial_size_QC
 #$ -o logs/02_spatial_size_QC.txt
 #$ -e logs/02_spatial_size_QC.txt
