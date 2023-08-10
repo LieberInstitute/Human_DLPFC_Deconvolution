@@ -8,10 +8,10 @@ library("sessioninfo")
 # library("DeconvoBuddies")
 
 #### Dir Set-up ####
-plot_dir <- here("plots", "03_HALO", "02_spatial_QC")
+plot_dir <- here("plots", "03_HALO", "02_spatial_size_QC")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
-data_dir <- here("processed-data", "03_HALO", "02_spatial_QC")
+data_dir <- here("processed-data", "03_HALO", "02_spatial_size_QC")
 if (!dir.exists(data_dir)) dir.create(data_dir)
 
 #### Plot Set-up ####
@@ -187,9 +187,6 @@ ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.png"), height 
 
 #### nuc plots by sample ####
 
-## annotate nuclei bigger than biologically reasonable 
-halo_all <- halo_all |> mutate(large_nuc = Nucleus_Area > pi * 5^2) ## larger 5µm radius
-
 ## distribution over cell types & sample
 message("Large Nuc over cell types")
 halo_all |>
@@ -208,7 +205,7 @@ halo_all |>
   as.data.frame()
 
 ## How are the large nuclei distributed 
-plot_dir_sample <- here("plots", "03_HALO", "02_spatial_QC", "Sample_Nuc_plots")
+plot_dir_sample <- here("plots", "03_HALO", "02_spatial_size_QC", "Sample_Nuc_plots")
 if (!dir.exists(plot_dir_sample)) dir.create(plot_dir_sample)
 
 walk(unique(halo_all$Sample), function(s){
@@ -231,7 +228,7 @@ walk(unique(halo_all$Sample), function(s){
 
 
 #### print each with grid ####
-plot_dir_hex <- here("plots", "03_HALO", "02_spatial_QC", "QC_hex")
+plot_dir_hex <- here("plots", "03_HALO", "02_spatial_size_QC", "QC_hex")
 if (!dir.exists(plot_dir_hex)) dir.create(plot_dir_hex)
 
 halo_all$SAMPLE_ID <- factor(halo_all$SAMPLE_ID)

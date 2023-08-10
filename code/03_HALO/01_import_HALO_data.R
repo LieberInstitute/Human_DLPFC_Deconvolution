@@ -368,6 +368,7 @@ halo_all <- rbind(halo_star, halo_circle) |>
   left_join(metadata) |>
   relocate(SAMPLE_ID, Sample, BrNum, Position, Object_Id, cell_type, AKT3_Copies, Nucleus_Area, XMin, XMax, YMin, YMax) |>
   filter(!basename %in% exclude_data) |>
+  mutate(large_nuc = Nucleus_Area > pi * 5^2) |>
   as_tibble()
 
 
