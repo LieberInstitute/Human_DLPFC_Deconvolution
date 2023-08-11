@@ -5,6 +5,7 @@ library("ggrepel")
 library("here")
 library("sessioninfo")
 library("here")
+library(ggExtra)
 # library("broom")
 
 
@@ -15,20 +16,90 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir)
 # data_dir <- here("processed-data", "03_HALO", "09_compare_proportions")
 # if (!dir.exists(data_dir)) dir.create(data_dir)
 
+load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
+
 #### read in proportion data ####
 
-cell_type_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "HALO_cell_type_proportions_prefilter.csv")) |> as_tibble()
+prop_data_dir <- here("processed-data", "03_HALO", "08_explore_proportions")
 
+list.files(prop_data_dir)
+
+cell_type_prop_compare <- read.csv(here(prop_data_dir, "HALO_cell_type_proportions_prefilter.csv")) |> 
+  as_tibble() |> 
+  dplyr::rename(prop_simple_prefilter = prop) |>
+  left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions_adj_prefilter.csv")) |> 
+              as_tibble() |> 
+              dplyr::rename(prop_adj_prefilter = prop)) |>
+  left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions.csv")) |> 
+              as_tibble() |> 
+              dplyr::rename(prop_simple_filter = prop, n_cell_filter = n_cell)) |>
+  left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions_adj.csv")) |> 
+              as_tibble() |> 
+              dplyr::rename(prop_adj_filter = prop, n_cell_filter = n_cell))
+
+dim(cell_type_prop_compare)
 
 halo_samples <- cell_type_prop |>
   dplyr::count(SAMPLE_ID, Sample) |>
   group_by(Sample) |>
   dplyr::summarize(n_combo = n()) |>
-  mutate(both_combo = n_combo ==2 )
+  mutate(both_combo = n_combo == 2 )
 
 samples_both <- halo_samples |> filter(both_combo) |> pull(Sample) 
 
+## Scatter of n_cells prefilter and filtered 
+n_cells_filter_scatter <- cell_type_prop_compare |>
+  ggplot(aes(n_cell, n_cell_filter, color = cell_type, shape = Combo)) +
+  geom_point() +
+  geom_abline(linetype = "dashed", color = "red")+
+  scale_color_manual(values = cell_type_colors_halo) +
+  theme_bw() 
+
+ggsave(n_cells_filter_scatter, filename = here(plot_dir, "n_cells_filter_scatter.png"))
+
+#### ggpairs the four proportion estimates ###
+
+library("GGally")
+
+prop_cols <- c("prop_sn", 
+               "prop_simple_prefilter", 
+               "prop_adj_prefilter", 
+               "prop_simple_filter", 
+               "prop_adj_filter")
+
+## with other
+ggpair_prop <- ggpairs(cell_type_prop_compare, 
+                       columns = prop_cols) 
+
+ggsave(ggpair_prop, filename = here(plot_dir, "ggpair_prop.png"), height = 10, width = 10)
+
+ggpair_prop_ct <- ggpairs(cell_type_prop_compare, 
+                       columns = prop_cols, 
+                       ggplot2::aes(colour = cell_type, fill = cell_type, shape = Combo)) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  scale_fill_manual(values = cell_type_colors_halo) 
+
+ggsave(ggpair_prop_ct, filename = here(plot_dir, "ggpair_prop_ct.png"), height = 10, width = 10)
+
+## no other
+ggpair_prop_noOther <- ggpairs(cell_type_prop_compare |> filter(cell_type != "Other"), 
+                       columns = prop_cols) 
+
+ggsave(ggpair_prop_noOther, filename = here(plot_dir, "ggpair_prop_noOther.png"), height = 10, width = 10)
+
+ggpair_prop_ct_noOther <- ggpairs(cell_type_prop_compare |> filter(cell_type != "Other"), 
+                          columns = prop_cols, 
+                          ggplot2::aes(colour = cell_type, shape = Combo)) +
+  scale_color_manual(values = cell_type_colors_halo) 
+
+ggsave(ggpair_prop_ct_noOther, filename = here(plot_dir, "ggpair_prop_ct_noOther.png"), height = 10, width = 10)
+
+
 #### Compare with Spatial Data ####
+
+cell_type_prop_long <- cell_type_prop_compare |>
+  select(-n_cell, -n_cell_filter, -SAMPLE_ID) |>
+  pivot_longer()
 
 spe_pseudo_k02 <- readRDS("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/sce_pseudo_BayesSpace_k02.rds")
 pb_k02 <- colData(spe_pseudo_k02) |> as.data.frame()
@@ -113,6 +184,5 @@ prop_bar_ordered_k02 <- cell_type_prop_k02 |>
 
 ggsave(prop_bar_ordered_k02, filename = here(plot_dir, "prop_bar_ordered_k02.png"))
 
-## accadential  
 
 
