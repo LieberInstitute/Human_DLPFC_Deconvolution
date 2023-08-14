@@ -187,6 +187,15 @@ ggsave(all_samples_ct, filename = here(plot_dir, "nuc_samples_all.png"), height 
 
 #### nuc plots by sample ####
 
+halo_all |>
+  group_by(Combo) |>
+  summarize(n_large = sum(large_nuc),
+            prop_large = n_large/n()) 
+
+# n_large prop_large
+# <int>      <dbl>
+#1   54333     0.0322
+
 ## distribution over cell types & sample
 message("Large Nuc over cell types")
 halo_all |>
@@ -197,12 +206,21 @@ halo_all |>
   as.data.frame()
 
 message("Large Nuc over Samples")
-halo_all |>
-  group_by(SAMPLE_ID) |>
+(sample_large_nuc <- halo_all |>
+  group_by(Sample, Combo) |>
   summarize(n_large = sum(large_nuc),
             prop_large = n_large/n()) |>
   arrange(-prop_large) |>
-  as.data.frame()
+  as.data.frame())
+
+sample_large_nuc_boxplot <- sample_large_nuc |>
+  ggplot(aes(x = Combo, y = prop_large)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point() +
+  geom_text_repel(aes(label = Sample), size = 3) +
+  theme_bw()
+
+ggsave(sample_large_nuc_boxplot, filename = here(plot_dir, "sample_large_nuc_boxplot.png"))
 
 ## How are the large nuclei distributed 
 plot_dir_sample <- here("plots", "03_HALO", "02_spatial_size_QC", "Sample_Nuc_plots")
@@ -221,7 +239,8 @@ walk(unique(halo_all$Sample), function(s){
     facet_wrap(~Combo) +
     scale_fill_manual(values = c(`TRUE` = "red", `FALSE` = "black")) +
     coord_equal() +
-    theme_bw()
+    theme_bw() +
+    labs(title = s)
   
   ggsave(nuc_plot, filename = here(plot_dir_sample, paste0("nuc_",s,".png")), width = 10)
 })
