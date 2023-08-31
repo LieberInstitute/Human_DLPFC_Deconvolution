@@ -1,6 +1,5 @@
 
 library("SingleCellExperiment")
-library("xbioc")
 library("BisqueRNA")
 library("here")
 library("sessioninfo")
@@ -76,7 +75,7 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
 
 save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"))
 
-# sgejobs::job_single('01_GTEx_deconvolution', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_deconvolution.R")
+# sgejobs::job_single('01_deconvolution_Bisque', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
