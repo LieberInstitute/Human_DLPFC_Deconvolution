@@ -69,6 +69,11 @@ GTEx_pd <- colData(rse_gene_brain_gtex) |> as.data.frame() |> as_tibble()
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
 # sce
 
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
+
+dim(sce)
+table(sce$cellType_broad_hc)
 rowData(sce)
 
 common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene_brain_gtex)$ensembl)
