@@ -1,14 +1,10 @@
 
 library("recount3")
-# library(jaffelab)
-# library(SummarizedExperiment)
 library("SingleCellExperiment")
 library("xbioc")
 library("MuSiC")
 library("BisqueRNA")
 library("tidyverse")
-# library(reshape2)
-# library(compositions)
 library("here")
 library("sessioninfo")
 # library(DeconvoBuddies)
@@ -67,6 +63,8 @@ length(unique(rowData(rse_gene_brain_gtex)$ensembl))
 
 rownames(rse_gene_brain_gtex) <- rowData(rse_gene_brain_gtex)$ensembl
 
+GTEx_pd <- colData(rse_gene_brain_gtex) |> as.data.frame() |> as_tibble()
+
 #### sce data ####
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
 # sce
@@ -114,21 +112,38 @@ exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,])
 
 
 #### Run MuSiC ####
-
+message(Sys.time(), " - MuSiC deconvolution")
 est_prop_music <- music_prop(bulk.mtx = assays(rse_gene_brain_gtex)$counts,
                              sc.sce = sce,
                              markers = markers,
                              clusters = "cellType_broad_hc",
                              samples = "Sample")
 
+names(est_prop_music)
+# [1] "Est.prop.weighted" "Est.prop.allgene"  "Weight.gene"       "r.squared.full"    "Var.prop"
+head(est_prop_music$Est.prop.weighted)
+
 ### run Bisque ####
-exp_set_sce_temp <- exp_set_sce[,]
+message(Sys.time(), " - Bisque Prep")
+exp_set_sce_temp <- exp_set_sce[markers,]
 zero_cell_filter <- colSums(exprs(exp_set_sce_temp)) != 0
 message("Exclude ",sum(!zero_cell_filter), " cells")
 exp_set_sce_temp <- exp_set_sce_temp[,zero_cell_filter]
-  
-  est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[m,],
-                                                 sc.eset = exp_set_sce_temp,
-                                                 cell.types = "cellType.Broad",
-                                                 subject.names = "donor",
-                                                 use.overlap = FALSE)
+
+message(Sys.time(), " - Bisque deconvolution")
+est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,],
+                                               sc.eset = exp_set_sce_temp,
+                                               cell.types = "cellType_broad_hc",
+                                               subject.names = "Sample",
+                                               use.overlap = FALSE)
+
+save(est_prop_bisque, est_prop_music, GTEx_pd, file = here("processed-data","07_GTEx","01_GTEx_deconvolution.Rdata"))
+
+# sgejobs::job_single('01_GTEx_deconvolution', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_deconvolution.R")
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
