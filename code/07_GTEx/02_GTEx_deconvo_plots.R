@@ -53,18 +53,12 @@ PFC_samples <- unique(prop_long_PFC$Sample)
 length(PFC_samples)
 # [1] 209
 
-prop_bar_pfc_sample <- plot_composition_bar(prop_long_PFC, x_col = "Sample", sample_col = "Sample",min_prop_text = 1) +
+prop_bar_pfc_sample <- plot_composition_bar(prop_long_PFC, 
+                                            x_col = "Sample", 
+                                            sample_col = "Sample",
+                                            min_prop_text = 1) +
   scale_fill_manual(values = cell_type_colors_broad) +
   theme(text = element_text(size=4))
 
 ggsave(prop_bar_pfc_sample, filename = here(plot_dir, "GTEx_prop_pfc_sample.png"), width = 12)
-
-prop_bar_pfc_sample50 <- plot_composition_bar(prop_long_PFC, 
-                                            x_col = "Sample", 
-                                            sample_col = "Sample",
-                                            min_prop_text = 1) +
-  scale_fill_manual(values = cell_type_colors_broad)
-
-ggsave(prop_bar_pfc_sample50, filename = here(plot_dir, "GTEx_prop_pfc_sample50.png"), width = 12)
-
 
