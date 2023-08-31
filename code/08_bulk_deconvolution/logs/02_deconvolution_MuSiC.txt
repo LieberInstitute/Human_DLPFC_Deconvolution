@@ -1,0 +1,410 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.3
+**** Job starts ****
+Thu Aug 31 15:33:26 EDT 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 3699895
+Job name: deconvolution_MuSiC
+Hostname: compute-122.cm.cluster
+Task id: undefined
+Unloading conda_R/4.3
+Loading conda_R/4.3
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.3
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: nnls
+Loading required package: ggplot2
+Loading required package: TOAST
+Loading required package: EpiDISH
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading required package: quadprog
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+MuSiC v1.0.0 support SingleCellExperiment! See Tutorial: https://xuranw.github.io/MuSiC/articles/MuSiC.html
+MuSiC2 for multi-condition bulk RNA-seq data is also available!
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Loading objects:
+  rse_gene
+Loading objects:
+  sce
+Loading required package: HDF5Array
+Loading required package: DelayedArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+[1] 17804
+Loading objects:
+  marker_stats
+# A tibble: 7 × 2
+  cellType.target     n
+  <fct>           <int>
+1 Astro              24
+2 EndoMural          24
+3 Micro              17
+4 Oligo              25
+5 OPC                18
+6 Excit              23
+7 Inhib              20
+2023-08-31 15:34:03.526755 - MuSiC deconvolution
+Creating Relative Abudance Matrix...
+Creating Variance Matrix...
+Creating Library Size Matrix...
+Used 151 common genes...
+Used 7 cell types in deconvolution...
+2107UNHS-0291_Br2720_Mid_Bulk has common genes 151 ...
+2107UNHS-0291_Br2720_Mid_Cyto has common genes 151 ...
+2107UNHS-0291_Br2720_Mid_Nuc has common genes 151 ...
+2107UNHS-0291_Br6432_Ant_Bulk has common genes 151 ...
+2107UNHS-0291_Br6432_Ant_Cyto has common genes 150 ...
+2107UNHS-0291_Br6432_Ant_Nuc has common genes 151 ...
+2107UNHS-0291_Br6432_Mid_Bulk has common genes 151 ...
+2107UNHS-0291_Br6432_Mid_Cyto has common genes 150 ...
+2107UNHS-0291_Br6432_Mid_Nuc has common genes 151 ...
+2107UNHS-0291_Br6471_Ant_Bulk has common genes 151 ...
+2107UNHS-0291_Br6471_Ant_Cyto has common genes 151 ...
+2107UNHS-0291_Br6471_Ant_Nuc has common genes 151 ...
+2107UNHS-0293_Br2720_Mid_Bulk has common genes 151 ...
+2107UNHS-0293_Br2720_Mid_Cyto has common genes 151 ...
+2107UNHS-0293_Br6432_Ant_Bulk has common genes 151 ...
+2107UNHS-0293_Br6432_Ant_Cyto has common genes 151 ...
+2107UNHS-0293_Br6432_Ant_Nuc has common genes 151 ...
+2107UNHS-0293_Br6432_Mid_Bulk has common genes 151 ...
+2107UNHS-0293_Br6432_Mid_Cyto has common genes 151 ...
+2107UNHS-0293_Br6432_Mid_Nuc has common genes 151 ...
+2107UNHS-0293_Br6471_Ant_Bulk has common genes 151 ...
+2107UNHS-0293_Br6471_Ant_Cyto has common genes 151 ...
+2107UNHS-0293_Br6471_Ant_Nuc has common genes 151 ...
+AN00000904_Br2720_Post_Bulk has common genes 151 ...
+AN00000904_Br2720_Post_Cyto has common genes 150 ...
+AN00000904_Br2720_Post_Nuc has common genes 150 ...
+AN00000904_Br2743_Ant_Bulk has common genes 151 ...
+AN00000904_Br2743_Ant_Nuc has common genes 150 ...
+AN00000904_Br3942_Ant_Bulk has common genes 151 ...
+AN00000904_Br3942_Ant_Cyto has common genes 150 ...
+AN00000904_Br3942_Ant_Nuc has common genes 151 ...
+AN00000904_Br3942_Mid_Bulk has common genes 151 ...
+AN00000904_Br3942_Mid_Cyto has common genes 151 ...
+AN00000904_Br3942_Mid_Nuc has common genes 149 ...
+AN00000904_Br6423_Ant_Bulk has common genes 151 ...
+AN00000904_Br6423_Ant_Cyto has common genes 151 ...
+AN00000904_Br6423_Ant_Nuc has common genes 151 ...
+AN00000904_Br6423_Post_Bulk has common genes 151 ...
+AN00000904_Br6423_Post_Cyto has common genes 151 ...
+AN00000904_Br6423_Post_Nuc has common genes 150 ...
+AN00000904_Br6471_Mid_Bulk has common genes 151 ...
+AN00000904_Br6471_Mid_Cyto has common genes 150 ...
+AN00000904_Br6471_Mid_Nuc has common genes 151 ...
+AN00000904_Br6522_Mid_Bulk has common genes 151 ...
+AN00000904_Br6522_Mid_Cyto has common genes 146 ...
+AN00000904_Br6522_Mid_Nuc has common genes 151 ...
+AN00000904_Br6522_Post_Bulk has common genes 151 ...
+AN00000904_Br6522_Post_Cyto has common genes 151 ...
+AN00000904_Br6522_Post_Nuc has common genes 150 ...
+AN00000904_Br8325_Ant_Bulk has common genes 151 ...
+AN00000904_Br8325_Ant_Cyto has common genes 149 ...
+AN00000904_Br8325_Ant_Nuc has common genes 150 ...
+AN00000904_Br8325_Mid_Bulk has common genes 151 ...
+AN00000904_Br8325_Mid_Cyto has common genes 150 ...
+AN00000904_Br8492_Mid_Bulk has common genes 151 ...
+AN00000904_Br8492_Mid_Cyto has common genes 147 ...
+AN00000904_Br8492_Mid_Nuc has common genes 149 ...
+AN00000904_Br8492_Post_Bulk has common genes 151 ...
+AN00000904_Br8492_Post_Cyto has common genes 150 ...
+AN00000904_Br8492_Post_Nuc has common genes 151 ...
+AN00000904_Br8667_Ant_Bulk has common genes 151 ...
+AN00000904_Br8667_Ant_Cyto has common genes 151 ...
+AN00000904_Br8667_Ant_Nuc has common genes 151 ...
+AN00000904_Br8667_Mid_Bulk has common genes 151 ...
+AN00000904_Br8667_Mid_Cyto has common genes 150 ...
+AN00000904_Br8667_Mid_Nuc has common genes 149 ...
+AN00000906_Br2720_Post_Bulk has common genes 151 ...
+AN00000906_Br2720_Post_Cyto has common genes 151 ...
+AN00000906_Br2720_Post_Nuc has common genes 151 ...
+AN00000906_Br2743_Ant_Bulk has common genes 151 ...
+AN00000906_Br2743_Ant_Cyto has common genes 151 ...
+AN00000906_Br2743_Ant_Nuc has common genes 151 ...
+AN00000906_Br3942_Ant_Bulk has common genes 151 ...
+AN00000906_Br3942_Ant_Cyto has common genes 151 ...
+AN00000906_Br3942_Ant_Nuc has common genes 151 ...
+AN00000906_Br3942_Mid_Bulk has common genes 151 ...
+AN00000906_Br3942_Mid_Cyto has common genes 151 ...
+AN00000906_Br3942_Mid_Nuc has common genes 150 ...
+AN00000906_Br6423_Ant_Bulk has common genes 151 ...
+AN00000906_Br6423_Ant_Cyto has common genes 151 ...
+AN00000906_Br6423_Ant_Nuc has common genes 151 ...
+AN00000906_Br6423_Post_Bulk has common genes 151 ...
+AN00000906_Br6423_Post_Cyto has common genes 151 ...
+AN00000906_Br6423_Post_Nuc has common genes 151 ...
+AN00000906_Br6471_Mid_Bulk has common genes 151 ...
+AN00000906_Br6471_Mid_Cyto has common genes 151 ...
+AN00000906_Br6471_Mid_Nuc has common genes 151 ...
+AN00000906_Br6522_Mid_Bulk has common genes 151 ...
+AN00000906_Br6522_Mid_Cyto has common genes 151 ...
+AN00000906_Br6522_Mid_Nuc has common genes 151 ...
+AN00000906_Br6522_Post_Bulk has common genes 151 ...
+AN00000906_Br6522_Post_Cyto has common genes 151 ...
+AN00000906_Br6522_Post_Nuc has common genes 151 ...
+AN00000906_Br8325_Ant_Bulk has common genes 151 ...
+AN00000906_Br8325_Ant_Cyto has common genes 151 ...
+AN00000906_Br8325_Ant_Nuc has common genes 151 ...
+AN00000906_Br8325_Mid_Bulk has common genes 151 ...
+AN00000906_Br8325_Mid_Cyto has common genes 151 ...
+AN00000906_Br8325_Mid_Nuc has common genes 151 ...
+AN00000906_Br8492_Mid_Bulk has common genes 151 ...
+AN00000906_Br8492_Mid_Cyto has common genes 151 ...
+AN00000906_Br8492_Post_Bulk has common genes 151 ...
+AN00000906_Br8492_Post_Cyto has common genes 151 ...
+AN00000906_Br8492_Post_Nuc has common genes 151 ...
+AN00000906_Br8667_Ant_Bulk has common genes 151 ...
+AN00000906_Br8667_Ant_Cyto has common genes 151 ...
+AN00000906_Br8667_Ant_Nuc has common genes 151 ...
+AN00000906_Br8667_Mid_Bulk has common genes 151 ...
+AN00000906_Br8667_Mid_Cyto has common genes 151 ...
+AN00000906_Br8667_Mid_Nuc has common genes 151 ...
+[1] "Reproducibility information:"
+[1] "2023-08-31 16:44:20 EDT"
+    user   system  elapsed 
+4209.359   24.977 4252.320 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.1 Patched (2023-08-28 r85031)
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2023-08-31
+ pandoc   3.1.1 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                * 1.4-5     2016-07-21 [2] CRAN (R 4.3.0)
+ beachmat               2.16.0    2023-04-25 [2] Bioconductor
+ Biobase              * 2.60.0    2023-04-25 [2] Bioconductor
+ BiocGenerics         * 0.46.0    2023-04-25 [2] Bioconductor
+ BiocParallel           1.34.2    2023-05-22 [2] Bioconductor
+ BiocSingular           1.16.0    2023-04-25 [2] Bioconductor
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.0)
+ class                  7.3-22    2023-05-03 [3] CRAN (R 4.3.1)
+ cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.0)
+ coda                   0.19-4    2020-09-30 [2] CRAN (R 4.3.0)
+ codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.1)
+ colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.0)
+ corpcor                1.6.10    2021-09-16 [2] CRAN (R 4.3.0)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.0)
+ DelayedArray         * 0.26.7    2023-07-28 [2] Bioconductor
+ DelayedMatrixStats     1.22.6    2023-08-28 [2] Bioconductor
+ doParallel             1.0.17    2022-02-07 [2] CRAN (R 4.3.0)
+ dplyr                  1.1.2     2023-04-20 [2] CRAN (R 4.3.0)
+ e1071                  1.7-13    2023-02-01 [2] CRAN (R 4.3.0)
+ EpiDISH              * 2.16.0    2023-04-25 [1] Bioconductor
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.0)
+ foreach                1.5.2     2022-02-02 [2] CRAN (R 4.3.0)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.0)
+ GenomeInfoDb         * 1.36.2    2023-08-25 [2] Bioconductor
+ GenomeInfoDbData       1.2.10    2023-04-11 [2] Bioconductor
+ GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
+ GGally                 2.1.2     2021-06-21 [2] CRAN (R 4.3.0)
+ ggplot2              * 3.4.3     2023-08-14 [2] CRAN (R 4.3.1)
+ glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.0)
+ gtable                 0.3.4     2023-08-21 [2] CRAN (R 4.3.1)
+ HDF5Array            * 1.28.1    2023-05-01 [2] Bioconductor
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.0)
+ IRanges              * 2.34.1    2023-06-22 [2] Bioconductor
+ irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.0)
+ iterators              1.0.14    2022-02-05 [2] CRAN (R 4.3.0)
+ lattice                0.21-8    2023-04-05 [3] CRAN (R 4.3.1)
+ lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.0)
+ limma                * 3.56.2    2023-06-04 [2] Bioconductor
+ locfdr                 1.1-8     2015-07-15 [1] CRAN (R 4.3.1)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.0)
+ MASS                   7.3-60    2023-05-04 [3] CRAN (R 4.3.1)
+ Matrix               * 1.6-1     2023-08-14 [3] CRAN (R 4.3.1)
+ MatrixGenerics       * 1.12.3    2023-07-30 [2] Bioconductor
+ MatrixModels           0.5-2     2023-07-10 [2] CRAN (R 4.3.1)
+ matrixStats          * 1.0.0     2023-06-02 [2] CRAN (R 4.3.0)
+ mcmc                   0.9-7     2020-03-21 [2] CRAN (R 4.3.0)
+ MCMCpack               1.6-3     2022-04-13 [2] CRAN (R 4.3.0)
+ munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.0)
+ MuSiC                * 1.0.0     2023-08-30 [1] Github (xuranw/MuSiC@0a3e3af)
+ nnls                 * 1.4       2012-03-19 [1] CRAN (R 4.3.0)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.0)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.0)
+ plyr                   1.8.8     2022-11-11 [2] CRAN (R 4.3.0)
+ proxy                  0.4-27    2022-06-09 [2] CRAN (R 4.3.0)
+ purrr                  1.0.2     2023-08-10 [2] CRAN (R 4.3.1)
+ quadprog             * 1.5-8     2019-11-20 [2] CRAN (R 4.3.0)
+ quantreg               5.97      2023-08-19 [2] CRAN (R 4.3.1)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.3.0)
+ Rcpp                   1.0.11    2023-07-06 [2] CRAN (R 4.3.1)
+ RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.0)
+ reshape                0.8.9     2022-04-12 [2] CRAN (R 4.3.0)
+ rhdf5                * 2.44.0    2023-04-25 [2] Bioconductor
+ rhdf5filters           1.12.1    2023-04-30 [2] Bioconductor
+ Rhdf5lib               1.22.0    2023-04-25 [2] Bioconductor
+ rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.0)
+ rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.0)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.0)
+ S4Arrays             * 1.0.5     2023-07-24 [2] Bioconductor
+ S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
+ ScaledMatrix           1.8.1     2023-05-03 [2] Bioconductor
+ scales                 1.2.1     2022-08-20 [2] CRAN (R 4.3.0)
+ scry                   1.12.0    2023-04-25 [2] Bioconductor
+ scuttle                1.10.2    2023-08-03 [2] Bioconductor
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.0)
+ SingleCellExperiment * 1.22.0    2023-04-25 [2] Bioconductor
+ SparseM                1.81      2021-02-18 [2] CRAN (R 4.3.0)
+ sparseMatrixStats      1.12.2    2023-07-02 [2] Bioconductor
+ stringi                1.7.12    2023-01-11 [2] CRAN (R 4.3.0)
+ stringr                1.5.0     2022-12-02 [2] CRAN (R 4.3.0)
+ SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
+ survival               3.5-7     2023-08-14 [3] CRAN (R 4.3.1)
+ tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.0)
+ tidyr                  1.3.0     2023-01-24 [2] CRAN (R 4.3.0)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.0)
+ TOAST                * 1.14.0    2023-04-25 [1] Bioconductor
+ utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.0)
+ vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
+ withr                  2.5.0     2022-03-03 [2] CRAN (R 4.3.0)
+ XVector                0.40.0    2023-04-25 [2] Bioconductor
+ zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
+
+ [1] /users/lhuuki/R/4.3
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Aug 31 16:44:21 EDT 2023
