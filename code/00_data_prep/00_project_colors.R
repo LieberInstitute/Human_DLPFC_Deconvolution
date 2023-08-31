@@ -24,7 +24,9 @@ length(cell_types_halo)
 cell_type_colors_halo <- cell_type_colors_broad[cell_types_halo_temp]
 names(cell_type_colors_halo) <- cell_types_halo
 
-save(cell_type_colors_halo, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
+cell_type_colors_broad <- cell_type_colors_broad[c("Astro", "EndoMural", "Micro", "Oligo","OPC", "Excit", "Inhib", "Other")]
+
+save(cell_type_colors_halo, cell_type_colors_broad, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
 
 ### Bulk data colors ####
 
