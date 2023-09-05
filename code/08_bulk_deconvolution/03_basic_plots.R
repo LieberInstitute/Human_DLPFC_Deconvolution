@@ -78,6 +78,7 @@ prop_bar_Nuc_RiboZero <- prop_long |>
   
 
 ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.png"))
+ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.pdf"))
 
 
 
