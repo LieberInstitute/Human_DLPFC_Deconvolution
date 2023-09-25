@@ -1,12 +1,14 @@
+
 library("tidyverse")
 library("scales")
 library("here")
 library("sessioninfo")
 library("DeconvoBuddies")
+library("readxl")
 
 #### Set-up ####
-plot_dir <- here("plots", "03_HALO", "01_import_HALO_data")
-if (!dir.exists(plot_dir)) dir.create(plot_dir)
+# plot_dir <- here("plots", "03_HALO", "01_import_HALO_data")
+# if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
 data_dir <- here("processed-data", "03_HALO", "01_import_HALO_data")
 if (!dir.exists(data_dir)) dir.create(data_dir)
@@ -15,19 +17,25 @@ load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE
 # cell_type_colors_halo
 
 #### Metadata ####
-kelsey_notes <- read.csv(here("processed-data", "03_HALO", "Deconvolution_HALO_Analysis_kelsey_googlesheet.csv")) |>
-    mutate(Glare = grepl("GLARE", Comments.Issues))
+kelsey_notes <- read_excel(here("raw-data", "HALO", "Annotation_refinement_20230922", "Deconvolution_HALO_Analysis_Refined_Annotations.xlsx"),
+                           sheet = 2) |>
+  mutate(Glare = grepl("GLARE", `Comments_Issues`))
+
+colnames(kelsey_notes)
+
+# kelsey_notes |> filter(grepl("2723", Section))
 
 ## Br2723 -> Br2743 Fix may result in some mismatches with server files
 kelsey_notes <- kelsey_notes |>
     mutate(Section = gsub("2723", "2743", Section)) |>
-    mutate(typo = !Vectorize(grepl)(Section, `Path.to..Final..csv.File`))
+    mutate(typo = !Vectorize(grepl)(Section, `Path to Final csv File`))
 
 kelsey_notes |> count(typo)
+kelsey_notes |> count(`Confidence in overall quality`)
 
 ## Refine details about slides
 slide_tab <- kelsey_notes |>
-    select(Section, Slide, Combo = Combination, Glare) |>
+    select(Section, Slide, Combo = Combination, Glare, Excluded, Confidence = `Confidence in overall quality`) |>
     separate(Slide, into = c("Slide", "subslide"), sep = ", ") |>
     group_by(Slide, subslide, Combo) |>
     mutate(
@@ -39,6 +47,15 @@ slide_tab <- kelsey_notes |>
 
 slide_tab |> count(Slide, Combo)
 slide_tab |> count(Combo, Slide, subslide2)
+
+slide_tab |> count(Excluded, Confidence)
+# Excluded Confidence     n
+# <chr>    <chr>      <int>
+# 1 Maybe    Low            1
+# 2 No       High          13
+# 3 No       Low            7
+# 4 No       OK            13
+# 5 Yes      Excluded       8
 
 ## Position Names
 position_codes <- data.frame(
@@ -59,7 +76,8 @@ metadata <- kelsey_notes |>
     ) |>
     as_tibble() |>
     select(SAMPLE_ID, Sample, BrNum, Position, Pos, pos, Section, Round, Combo = Combination) |>
-    left_join(slide_tab)
+    left_join(slide_tab) |>
+  mutate(Confidence = factor(Confidence, levels = c("High", "OK", "Low", "Excluded")))
 
 # SAMPLE_ID    Sample      BrNum  Position  Pos   pos   Section Round Combo Slide subslide Glare     i subslide2
 # 1 Br6432A_STAR Br6432_ant  Br6432 Anterior  A     ant   6432A       1 Star  6     D        FALSE     1 D1
@@ -80,10 +98,11 @@ metadata |> count(Combo)
 # 1 Circle        21
 # 2 Star          21
 metadata |> count(BrNum)
+# # A tibble: 10 × 2
 # BrNum      n
 # <chr>  <int>
 # 1 Br2720     4
-# 2 Br2723     2 # error - probably Br2743
+# 2 Br2743     2
 # 3 Br3942     6
 # 4 Br6423     4
 # 5 Br6432     6
@@ -91,7 +110,7 @@ metadata |> count(BrNum)
 # 7 Br6522     4
 # 8 Br8325     4
 # 9 Br8492     4
-# 10 Br8667    4
+# 10 Br8667     4
 
 metadata |> count(Position)
 # Position      n
@@ -106,8 +125,9 @@ metadata |> count(Combo, Slide, subslide2)
 write_csv(metadata, file = here(data_dir, "HALO_metadata.csv"))
 
 #### Halo files ####
+## file system from Sophia 2022 work
 halo_runs <- c("prelim", "Deconvolution_HALO_analysis", "Algorithm_Check_20220914", "Algorithm_Check_20220920", "Algorithm_Check_20221020")
-names(halo_runs) <- c("prelim", "Aug10", "Sep14", "Sep20", "Oct20")
+names(halo_runs) <- c("prelim", "Aug10_2022", "Sep14_20222", "Sep20_2022", "Oct20_2022")
 
 halo_files <- map(halo_runs, function(dir) {
     hf <- list.files(path = here("raw-data", "HALO", dir), full.names = TRUE, recursive = TRUE, pattern = ".csv")
@@ -121,13 +141,21 @@ halo_files <- map(halo_runs, function(dir) {
 map(halo_files, names)
 
 ## maybe delete in files?
-halo_files$Sep20$`BrHALO_Allsections_round4_AKT3_Circle_Fused.tif_object_Data.csv_CIRCLE` <- NULL
+halo_files$Sep20_2022$`BrHALO_Allsections_round4_AKT3_Circle_Fused.tif_object_Data.csv_CIRCLE` <- NULL
 
-map(halo_files, length)
+## Add 2023 Refined annotations 
+Sep22_2023 <- list.files(here("raw-data", "HALO", "Annotation_refinement_20230922"), recursive = TRUE, pattern = "object_results.csv")
+names(Sep22_2023) <- gsub("tar","TAR", gsub("ircle","IRCLE",map_chr(strsplit(Sep22_2023, split = "/"),2)))
+Sep22_2023 <- map(Sep22_2023, ~here("raw-data", "HALO", "Annotation_refinement_20230922", .x))
+all(file.exists(unlist(Sep22_2023)))
+
+halo_files$Sep22_2023 <- Sep22_2023
 
 ## any mismatches?
 map(halo_files, ~ all(names(.x) %in% metadata$SAMPLE_ID))
 # map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID])
+
+map_int(halo_files, length)
 
 ## Mismatches resolved
 # mismatch_files <- unlist(map(halo_files, ~.x[!names(.x) %in% metadata$SAMPLE_ID]))
@@ -190,8 +218,8 @@ read_halo <- function(fn) {
     return(halo_data)
 }
 
-## Eventually run all of the HALO runs
-halo_tables <- map(halo_files$Oct20, read_halo)
+## Read Annotation refinement files from Sep 2023
+halo_tables <- map(halo_files$Sep22_2023, read_halo)
 
 #### Cell Type Annotation ####
 
@@ -201,7 +229,7 @@ ct_markers <- tibble(
     Combo = rep(c("CIRCLE", "STAR"), each = 3)
 )
 
-write_csv(ct_markers, here("processed-data", "03_HALO", "CellType_markers.csv"))
+write_csv(ct_markers, here(data_dir, "CellType_markers.csv"))
 
 # cellType marker  Combo
 # <chr>    <chr>   <chr>
@@ -215,14 +243,14 @@ write_csv(ct_markers, here("processed-data", "03_HALO", "CellType_markers.csv"))
 ## CIRCLE COMBO
 halo_circle <- do.call("rbind", halo_tables[grep("CIRCLE", names(halo_tables))])
 dim(halo_circle)
-# [1] 1011916      46
+# [1] 767393     46
 
 halo_circle |> count(GAD1, GFAP, CLDN5)
-#    GAD1 GFAP CLDN5      n
-# 1:    0    0     0 616882
-# 2:    0    0     1  59853
-# 3:    0    1     0 240751
-# 4:    1    0     0  94430
+# GAD1 GFAP CLDN5      n
+# 1:    0    0     0 474934
+# 2:    0    0     1  47488
+# 3:    0    1     0 167441
+# 4:    1    0     0  77530
 
 ## cell cell types
 halo_circle <- halo_circle |>
@@ -251,11 +279,11 @@ head(halo_circle[, grepl("Copies", colnames(halo_circle))])
 
 
 halo_circle |> count(cell_type)
-# cell_type      n
-# 1:     Astro 240751
-# 2:      Endo  59853
-# 3:     Inhib  94430
-# 4:     Other 616882
+#    cell_type      n
+# 1:     Astro 167441
+# 2:      Endo  47488
+# 3:     Inhib  77530
+# 4:     Other 474934
 
 # circle_n_nuc <- halo_circle |>
 #   group_by(SAMPLE_ID) |>
@@ -275,7 +303,7 @@ halo_circle |> count(cell_type)
 
 ## need to fix R5 colnames SLC17A -> SLC17A7
 # cn <- colnames(halo_tables$R1_2720M_Star)
-cn <- colnames(halo_tables$Br6432A_STAR)
+cn <- colnames(halo_tables$Br2720P_STAR)
 
 map(halo_tables[grep("STAR", names(halo_tables))], colnames)
 
@@ -294,10 +322,10 @@ halo_star <- do.call("rbind", halo_tables[grep("STAR", names(halo_tables))])
 dim(halo_star)
 halo_star |> count(SLC17A7, TMEM119, OLIG2)
 #   SLC17A7 TMEM119 OLIG2      n
-# 1:       0       0     0 473785
-# 2:       0       0     1 111398
-# 3:       0       1     0  39152
-# 4:       1       0     0 157718
+# 1:       0       0     0 355661
+# 2:       0       0     1  68625
+# 3:       0       1     0  25930
+# 4:       1       0     0 144790
 
 halo_star <- halo_star |>
     mutate(
@@ -358,28 +386,31 @@ halo_circle <- halo_circle[, ..common_cols]
 colnames(halo_circle) <- common_cols_rename
 
 ## Exclude data from these files
-exclude_data <- c(
-    "STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv",
-    "STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv"
-)
+# exclude_data <- c(
+#     "STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv",
+#     "STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv"
+# )
 
 halo_all <- rbind(halo_star, halo_circle) |>
   left_join(halo_file_table) |>
   left_join(metadata) |>
   relocate(SAMPLE_ID, Sample, BrNum, Position, Object_Id, cell_type, AKT3_Copies, Nucleus_Area, XMin, XMax, YMin, YMax) |>
-  filter(!basename %in% exclude_data) |>
+  # filter(!basename %in% exclude_data) |>
   mutate(large_nuc = Nucleus_Area > pi * 5^2) |>
   as_tibble()
 
 
 halo_all |>
-    group_by(SAMPLE_ID, basename) |>
+    group_by(SAMPLE_ID, basename, Confidence) |>
     summarize(n = n())
 
 halo_all |>
     distinct(SAMPLE_ID, basename) |>
     count(SAMPLE_ID) |>
     filter(n > 1)
+
+halo_all |> count(Confidence)
+metadata |> count(Confidence)
 
 save(halo_all, file = here("processed-data", "03_HALO", "halo_all.Rdata"))
 
