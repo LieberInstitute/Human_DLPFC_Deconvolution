@@ -129,8 +129,48 @@ sn_other_prop <- sn_ct_prop |>
 
 summary(sn_other_prop)
 
+#### RNAscope Metadata ####
+metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "HALO_metadata.csv"))
+
+metadata |> 
+  select(Sample, Combo, Confidence) |> 
+  mutate(Confidence = ordered(Confidence, levels = c("Excluded", "Low", "OK", "High"))) |>
+  pivot_wider(names_from = "Combo", values_from = "Confidence") |>
+  mutate(both_high = Star == "High" & Circle == "High",
+         both_ok = Star >= "OK" & Circle>= "OK") |>
+  arrange(desc(both_ok), desc(Star), desc(Circle)) |>
+  print(n = 21)
+
+# A tibble: 21 × 5
+# Sample      Star     Circle   both_high both_ok
+# <chr>       <ord>    <ord>    <lgl>     <lgl>  
+#   1 Br8492_post High     High     TRUE      TRUE   
+# 2 Br2720_post High     High     TRUE      TRUE   
+# 3 Br6423_post High     High     TRUE      TRUE   
+# 4 Br2743_ant  High     OK       FALSE     TRUE   
+# 5 Br6471_mid  OK       High     FALSE     TRUE   
+# 6 Br3942_mid  OK       High     FALSE     TRUE   
+# 7 Br8667_mid  OK       High     FALSE     TRUE   
+# 8 Br8325_mid  OK       OK       FALSE     TRUE   
+# 9 Br6522_mid  OK       OK       FALSE     TRUE   
+# 10 Br6423_ant  OK       OK       FALSE     TRUE   
+# 11 Br6432_post OK       Low      FALSE     FALSE  
+# 12 Br8325_ant  OK       Low      FALSE     FALSE  
+# 13 Br6522_post OK       Low      FALSE     FALSE  
+# 14 Br6471_ant  Low      Low      FALSE     FALSE  
+# 15 Br8667_ant  Low      Low      FALSE     FALSE  
+# 16 Br8492_mid  Excluded High     FALSE     FALSE  
+# 17 Br3942_post Excluded High     FALSE     FALSE  
+# 18 Br3942_ant  Excluded High     FALSE     FALSE  
+# 19 Br2720_mid  Excluded Low      FALSE     FALSE  
+# 20 Br6432_ant  Excluded Excluded FALSE     FALSE  
+# 21 Br6432_mid  Excluded Excluded FALSE     FALSE
+
+
 #### Load RNAscope Data ####
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
+
+halo_all |> group_by(Sample, Confidence) |> dplyr::count()
 
 ## filter out large nuclei
 halo_all <- halo_all |> filter(!large_nuc)
@@ -149,7 +189,7 @@ samples_both <- halo_samples |> filter(both_combo) |> pull(Sample)
 
 ## simple cell type proportions
 cell_type_prop <- halo_all |>
-  group_by(SAMPLE_ID, Sample, Combo, cell_type) |>
+  group_by(SAMPLE_ID, Sample, Combo, cell_type, Confidence) |>
   summarize(n_cell = n()) |>
   group_by(SAMPLE_ID, Sample, Combo) |>
   mutate(prop = n_cell / sum(n_cell)) |>
@@ -170,7 +210,7 @@ sn_ct_prop_adj <- sn_ct_prop |>
 
 cell_type_prop_adj <- halo_all |>
   filter((cell_type != "Other" & Sample %in% samples_both) | (!Sample %in% samples_both)) |>
-  group_by(Sample, cell_type) |>
+  group_by(Sample, cell_type, Confidence) |>
   summarize(n_cell = n()) |>
   group_by(Sample) |>
   mutate(prop = n_cell / sum(n_cell)) |>
@@ -197,8 +237,8 @@ halo_n_cells |>
 
 # Combo    min median   max
 # <chr>  <int>  <int> <int>
-# 1 Circle 28239  48252 63293
-# 2 Star   31633  44055 60968
+# 1 Circle 13779  37786 57674
+# 2 Star   28093  36592 53709
 
 halo_n_cell_wide <- halo_n_cells |>
   pivot_wider(names_from = "Combo", values_from = "n") |>
@@ -210,14 +250,14 @@ halo_n_cell_wide <- halo_n_cells |>
   mutate(error = abs(Star - Circle)/Circle)
 
 summary(halo_n_cell_wide)
-# Sample              Circle           Star        mean_n_cells   total_n_cells    only_circle         error         
-# Length:21          Min.   :28239   Min.   :31633   Min.   :28239   Min.   : 28239   Mode :logical   Min.   :0.006229  
-# Class :character   1st Qu.:40858   1st Qu.:39956   1st Qu.:40124   1st Qu.: 58398   FALSE:15        1st Qu.:0.036461  
-# Mode  :character   Median :48252   Median :44055   Median :48025   Median : 80247   TRUE :6         Median :0.055903  
-#                    Mean   :48186   Mean   :44926   Mean   :46964   Mean   : 80277                   Mean   :0.093294  
-#                    3rd Qu.:53184   3rd Qu.:48998   3rd Qu.:53184   3rd Qu.: 96050                   3rd Qu.:0.128946  
-#                    Max.   :63293   Max.   :60968   Max.   :61286   Max.   :122572                   Max.   :0.340306  
-#                    NA's   :6                                                        NA's   :6        
+# Sample              Circle           Star        mean_n_cells   total_n_cells    only_circle         error        
+# Length:19          Min.   :13779   Min.   :28093   Min.   :13779   Min.   : 13779   Mode :logical   Min.   :0.01322  
+# Class :character   1st Qu.:32570   1st Qu.:32394   1st Qu.:32969   1st Qu.: 60568   FALSE:15        1st Qu.:0.03161  
+# Mode  :character   Median :37786   Median :36592   Median :36863   Median : 67386   TRUE :4         Median :0.11180  
+# Mean   :38820      Mean   :38769   Mean   :38887   Mean   : 69427                                   Mean   :0.09656  
+# 3rd Qu.:46456      3rd Qu.:44042   3rd Qu.:47830   3rd Qu.: 79702                                   3rd Qu.:0.14050  
+# Max.   :57674      Max.   :53709   Max.   :53770   Max.   :107540                                   Max.   :0.20891  
+#                                    NA's   :4                                                        NA's   :4          
 
 combo_n_cells_scatter <- halo_n_cell_wide |>
   ggplot(aes(x = Circle, y = Star, color = error)) +
@@ -296,17 +336,44 @@ prop_bar <- cell_type_prop |>
 
 ggsave(prop_bar, filename = here(plot_dir, "halo_prop_bar.png"))
 
+conf_colors <- c(High = "darkgreen", OK = "goldenrod", Low = "red")
+
+prop_bar_conf <- cell_type_prop |>
+  ggplot(aes(x = Sample, y = prop, fill = cell_type, color = Confidence)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  scale_color_manual(values = conf_colors) +
+  facet_wrap(~Combo, ncol = 1)+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(prop_bar_conf, filename = here(plot_dir, "halo_prop_bar_conf.png"))
+
+
+prop_bar_conf2 <- cell_type_prop |>
+  ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  # scale_color_manual(values = conf_colors) +
+  facet_grid(Confidence~Combo)+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(prop_bar_conf2, filename = here(plot_dir, "halo_prop_bar_conf2.png"))
+
 prop_boxplot <- cell_type_prop |>
-  ggplot(aes(x = cell_type, y = prop, fill = cell_type)) +
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
-  geom_jitter(width = 0.2, colour = "black", pch = 21) +
+  ggplot(aes(x = cell_type , y = prop, fill = cell_type, color = Confidence)) +
+  geom_boxplot(alpha = 0.6) +
+  # geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  # geom_jitter(width = 0.2, colour = "black", pch = 21) +
   facet_wrap(~Combo, scales = "free_x")+
   scale_fill_manual(values = cell_type_colors_halo) +
+  scale_color_manual(values = conf_colors) +
   theme_bw() +
   theme(legend.position = "None") +
   labs(title = "RNAscope Cell Type Proportions")
 
-ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"))
+ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), width = 10)
 
 prop_bar_combine <- cell_type_prop |>
   filter(cell_type != "Other") |>
