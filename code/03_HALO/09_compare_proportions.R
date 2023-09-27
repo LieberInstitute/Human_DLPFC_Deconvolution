@@ -22,12 +22,12 @@ prop_data_dir <- here("processed-data", "03_HALO", "08_explore_proportions")
 
 list.files(prop_data_dir)
 
-cell_type_prop_compare <- read.csv(here(prop_data_dir, "HALO_cell_type_proportions_prefilter.csv")) |> 
+cell_type_prop_compare <- read.csv(here(prop_data_dir, "HALO_cell_type_proportions_preReAnno.csv")) |> 
   as_tibble() |> 
-  dplyr::rename(prop_simple_prefilter = prop) |>
-  left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions_adj_prefilter.csv")) |> 
+  dplyr::rename(prop_simple_preReAnno = prop) |>
+  left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions_preReAnno.csv")) |> 
               as_tibble() |> 
-              dplyr::rename(prop_adj_prefilter = prop)) |>
+              dplyr::rename(prop_adj_preReAnno = prop)) |>
   left_join(read.csv(here(prop_data_dir, "HALO_cell_type_proportions.csv")) |> 
               as_tibble() |> 
               dplyr::rename(prop_simple_filter = prop, n_cell_filter = n_cell)) |>
@@ -57,8 +57,8 @@ ggsave(n_cells_filter_scatter, filename = here(plot_dir, "n_cells_filter_scatter
 
 #### ggpairs the four proportion estimates ###
 prop_cols <- c("prop_sn", 
-               "prop_simple_prefilter", 
-               "prop_adj_prefilter", 
+               "prop_simple_preReAnno", 
+               "prop_adj_preReAnno", 
                "prop_simple_filter", 
                "prop_adj_filter")
 
@@ -94,7 +94,7 @@ ggsave(ggpair_prop_ct_noOther, filename = here(plot_dir, "ggpair_prop_ct_noOther
 cell_type_prop_long <- cell_type_prop_compare |>
   select(-n_cell, -n_cell_sn, -n_cell_filter, -SAMPLE_ID) |>
   filter(cell_type != "Other") |>
-  pivot_longer(!c(Sample, Combo, cell_type), values_to = "prop") |>
+  pivot_longer(!c(Sample, Combo, cell_type, Confidence), values_to = "prop") |>
   separate(name, into = c(NA, "prop_type", "size_filter")) |>
   # mutate(size_filter = size_filter == "filter") |>
   replace_na(list(size_filter = "prefilter"))
@@ -380,5 +380,11 @@ spg_scatter <- spg_prop |>
 
 ggsave(spg_scatter, filename = here(plot_dir, "spg_scatter.png"))
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
 

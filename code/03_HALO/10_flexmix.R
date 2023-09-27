@@ -53,8 +53,6 @@ area_flexmix <- map(cell_types, function(ct){
   return(list(model = model, halo_subset = halo_subset))
 })
 
-head(posterior(area_flexmix$Astro))
-
 area_flexmix2 <- list_transpose(area_flexmix)
 names(area_flexmix2)
 
@@ -187,4 +185,11 @@ prop_bar <- cell_type_prop_flexmix |>
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ggsave(prop_bar, filename = here(plot_dir, "flexmix_prop_bar.png"))
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
