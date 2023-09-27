@@ -130,17 +130,21 @@ sn_other_prop <- sn_ct_prop |>
 summary(sn_other_prop)
 
 #### RNAscope Metadata ####
-metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "HALO_metadata.csv"))
+metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "HALO_metadata.csv")) |> 
+  mutate(Confidence = ordered(Confidence, levels = c("Excluded", "Low", "OK", "High")))
 
-metadata |> 
-  select(Sample, Combo, Confidence) |> 
-  mutate(Confidence = ordered(Confidence, levels = c("Excluded", "Low", "OK", "High"))) |>
+metadata |> dplyr::count(Combo, Confidence)
+
+conf_ref <- metadata |> 
+  select(Sample, Combo, Confidence)  |>
   pivot_wider(names_from = "Combo", values_from = "Confidence") |>
   mutate(both_high = Star == "High" & Circle == "High",
-         both_ok = Star >= "OK" & Circle>= "OK") |>
-  arrange(desc(both_ok), desc(Star), desc(Circle)) |>
-  print(n = 21)
+         one_high = Star == "High" | Circle == "High",
+         both_ok = Star >= "OK" & Circle>= "OK",
+         one_ok = Star >= "OK" | Circle>= "OK") |>
+  arrange(desc(both_ok), desc(Star), desc(Circle))
 
+conf_ref |> print(n = 21)      
 # A tibble: 21 × 5
 # Sample      Star     Circle   both_high both_ok
 # <chr>       <ord>    <ord>    <lgl>     <lgl>  
@@ -166,6 +170,14 @@ metadata |>
 # 20 Br6432_ant  Excluded Excluded FALSE     FALSE  
 # 21 Br6432_mid  Excluded Excluded FALSE     FALSE
 
+conf_ref |> dplyr::count(both_ok, one_ok)
+# both_ok one_ok     n
+# <lgl>   <lgl>  <int>
+# 1 FALSE   FALSE      5
+# 2 FALSE   TRUE       6
+# 3 TRUE    TRUE      10
+
+write_csv(conf_ref, file = here(data_dir, "Sample_confidence_reference.csv"))
 
 #### Load RNAscope Data ####
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
@@ -201,7 +213,7 @@ write_csv(cell_type_prop, file = here(data_dir,"HALO_cell_type_proportions.csv")
 ## Adjusted cell type proportions
 
 sn_ct_prop_adj <- sn_ct_prop |>
-  filter((cell_type != "Other" & Sample %in% samples_both) | 
+  filter((cell_type != "Other" & Sample %in% samples_both) |
            (!Sample %in% samples_both & Combo == "Circle"))
 
 # sn_ct_prop_adj |>
@@ -301,23 +313,22 @@ other_v_other_prop_scater <- cell_type_prop |>
   select(Sample, Combo, prop) |>
   pivot_wider(values_from = "prop", names_from = "Combo") |>
   ggplot(aes(Circle, Star)) +
-  geom_point() +
+  geom_point() +  
   geom_text_repel(aes(label = Sample)) +
   geom_smooth(method = "lm") +
   theme_bw() +
   geom_abline(slope = -1, intercept = 1, linetype = "dashed", color = "red") +
   labs(x = "Circle prop Other", y = "Star prop Other")
 
-ggsave(other_v_other_prop_scater, filename  =here(plot_dir, "halo_other_v_other_prop_scater.png"))
+ggsave(other_v_other_prop_scater, filename = here(plot_dir, "halo_other_v_other_prop_scater.png"))
 
 other_prop_boxplot <- cell_type_prop |>
   ungroup() |>
   filter(cell_type == "Other") |>
-  select(Sample, Combo, prop) |>
   ggplot(aes(x = Combo, y = prop, fill = Combo)) +
   geom_boxplot() +
-  geom_point() +
-  geom_text_repel(aes(label = Sample), color = "grey25", size = 2.5) +
+  geom_point(aes(color = Confidence)) +
+  geom_text_repel(aes(label = Sample, color = Confidence), size = 2.5) +
   labs(y = "Prop Other") +
   theme_bw()
 
@@ -362,13 +373,10 @@ prop_bar_conf2 <- cell_type_prop |>
 ggsave(prop_bar_conf2, filename = here(plot_dir, "halo_prop_bar_conf2.png"))
 
 prop_boxplot <- cell_type_prop |>
-  ggplot(aes(x = cell_type , y = prop, fill = cell_type, color = Confidence)) +
+  ggplot(aes(x = cell_type , y = prop, fill = Confidence)) +
   geom_boxplot(alpha = 0.6) +
-  # geom_boxplot(alpha = 0.4, outlier.shape = NA) +
-  # geom_jitter(width = 0.2, colour = "black", pch = 21) +
   facet_wrap(~Combo, scales = "free_x")+
-  scale_fill_manual(values = cell_type_colors_halo) +
-  scale_color_manual(values = conf_colors) +
+  scale_fill_manual(values = conf_colors) +
   theme_bw() +
   theme(legend.position = "None") +
   labs(title = "RNAscope Cell Type Proportions")
@@ -415,7 +423,7 @@ prop_bar_combine <- cell_type_prop |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = cell_type_colors_halo) +
-  # facet_wrap(~Combo, ncol = 1)+
+  # facet_wrap(~Confidence, scales = "free_y") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
@@ -423,17 +431,17 @@ ggsave(prop_bar_combine, filename = here(plot_dir, "halo_prop_bar_combine.png"))
 
 #### compare props ####
 
-cell_type_prop_compare <- cell_type_prop |>
-  left_join(cell_type_prop_adj |> dplyr::rename(prop_adj = prop))
-
-prop_compare_scatter <- cell_type_prop_compare |>
-  ggplot(aes(prop, prop_adj, color = cell_type)) +
-  geom_point() +
-  scale_color_manual(values = cell_type_colors_halo) +
-  theme_bw() +
-  geom_abline()
-
-ggsave(prop_compare_scatter,  filename = here(plot_dir, "halo_prop_compare_scatter.png"))
+# cell_type_prop_compare <- cell_type_prop |>
+#   left_join(cell_type_prop_adj |> dplyr::rename(prop_adj = prop))
+# 
+# prop_compare_scatter <- cell_type_prop_compare |>
+#   ggplot(aes(prop, prop_adj, color = cell_type)) +
+#   geom_point() +
+#   scale_color_manual(values = cell_type_colors_halo) +
+#   theme_bw() +
+#   geom_abline()
+# 
+# ggsave(prop_compare_scatter,  filename = here(plot_dir, "halo_prop_compare_scatter.png"))
 
 #### compare with snRNA-seq prop ####
 
@@ -441,8 +449,6 @@ cell_type_prop_compare_long <- cell_type_prop |>
   mutate(method = "Simple") |>
   bind_rows(cell_type_prop_adj |>
               mutate(method = "Adjusted"))
-
-
 
 
 halo_vs_sn_prop <- cell_type_prop_compare_long |>
@@ -465,6 +471,16 @@ halo_vs_sn_prop_facet <- cell_type_prop_compare_long |>
   geom_abline(linetype = "dashed", color = "red")
 
 ggsave(halo_vs_sn_prop_facet,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_facet.png"), width = 11)
+
+halo_vs_sn_prop_conf_facet <- cell_type_prop_compare_long |>
+  ggplot(aes(x = prop_sn, y = prop, color = cell_type, shape = Combo)) +
+  geom_point() +
+  scale_color_manual(values = cell_type_colors_halo) +
+  facet_grid(Confidence~method, scales = "free") +
+  theme_bw() +
+  geom_abline(linetype = "dashed", color = "red")
+
+ggsave(halo_vs_sn_prop_conf_facet,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_conf_facet.png"), width = 11)
 
 halo_vs_sn_prop_facet_label <- cell_type_prop_compare_long |>
   ggplot(aes(x = prop_sn, y = prop, color = cell_type, shape = Combo)) +

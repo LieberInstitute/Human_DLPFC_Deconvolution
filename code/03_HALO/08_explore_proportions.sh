@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --output=logs/08_explore_proportions.txt
 #SBATCH --error=logs/08_explore_proportions.txt
-#SBATCH --partition=explore_proportions
-#SBATCH --job-name=spatial_size_QC
+#SBATCH --partition=shared
+#SBATCH --job-name=explore_proportions
 #SBATCH --mem=5GB
 
 echo "**** Job starts ****"
