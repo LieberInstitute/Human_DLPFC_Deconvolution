@@ -532,6 +532,35 @@ cell_type_prop_compare_long |>
 # 13 Simple   Inhib     prop_sn    0.247    0.0604      4.09 7.55e- 4
 # 14 Simple   Other     prop_sn    0.912    0.0940      9.70 6.61e-11
 
+#### Compare neurons ###
+
+cell_type_prop_neuron <- cell_type_prop |>
+  ungroup() |>
+  select(Sample, cell_type, prop) |>
+  filter(cell_type %in% c("Inhib", "Excit")) |>
+  pivot_wider(names_from = cell_type, values_from = prop) |>
+  left_join(conf_ref |> select(Sample, Star, Circle))
+
+cell_type_prop_neuron |> mutate(total_nuc =  Excit + Inhib, ratio = Excit/Inhib) |> arrange(total_nuc) |> summary()
+
+# Sample       Inhib  Excit Star     Circle total_nuc
+# <chr>        <dbl>  <dbl> <ord>    <ord>      <dbl>
+# 1 Br6432_post 0.0805  0.115 OK       Low        0.196
+# 2 Br2743_ant  0.0513  0.172 High     OK         0.223
+# 3 Br8325_mid  0.118   0.130 OK       OK         0.248
+# 4 Br6522_mid  0.0187  0.258 OK       OK         0.277
+# 5 Br6471_ant  0.136   0.168 Low      Low        0.304
+
+excit_v_inhib <- cell_type_prop_neuron |>
+  ggplot(aes(Inhib, Excit))+
+  geom_point() +
+  geom_abline() +
+  geom_text_repel(aes(label = Sample)) +
+  facet_grid(Circle ~ Star) +
+  theme_bw()
+
+ggsave(excit_v_inhib, filename = here(plot_dir, "prop_excit_v_inhib.png"))
+
 # sgejobs::job_single('08_explore_proportions', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 08_explore_proportions.R")
 ## Reproducibility information
 print("Reproducibility information:")
