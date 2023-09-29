@@ -1,20 +1,19 @@
-#!/bin/bash
-#$ -cwd
-#$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
-#$ -N get_expression_cutoff
-#$ -o logs/04_get_expression_cutoff.txt
-#$ -e logs/04_get_expression_cutoff.txt
-#$ -m e
+#!/bin/bash -l
+#SBATCH --output=logs/04_get_expression_cutoff.txt
+#SBATCH --error=logs/04_get_expression_cutoff.txt
+#SBATCH --partition=shared
+#SBATCH --job-name=get_expression_cutoff
+#SBATCH --mem=50GB
 
 echo "**** Job starts ****"
 date
 
 echo "**** JHPCE info ****"
 echo "User: ${USER}"
-echo "Job id: ${JOB_ID}"
-echo "Job name: ${JOB_NAME}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Job name: ${SLURM_JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
-echo "Task id: ${SGE_TASK_ID}"
+echo "Task id: ${SLURM_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
 module load conda_R/4.3

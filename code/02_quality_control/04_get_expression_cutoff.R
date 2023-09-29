@@ -20,6 +20,20 @@ rse_list <- lapply(preQC_paths, function(x) get(load(x)))
 message("Original Dimesions")
 map(rse_list, dim)
 
+#### Add missing colData ####
+sample_info <- read.csv(here("processed-data", "00_data_prep", "sample_info.csv"))
+sample_info$sample_id <- gsub("_2","",sample_info$sample_id)
+rownames(sample_info) <- sample_info$sample_id
+
+rse_samples <- unique(rse_list$gene$Sample)
+all(rse_samples %in% sample_info$sample_id)
+
+sample_info_missing <- sample_info[rse_list$gene$Sample, c("sex","age","diagnosis")]
+
+rse_list <- map(rse_list, function(rse){
+  colData(rse) <- cbind(colData(rse), sample_info_missing)
+  return(rse)
+  })
 
 #### drop QC samples ####
 message(Sys.time(), " - Drop Samples identified in QC")
