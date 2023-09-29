@@ -7,9 +7,10 @@ library("recount")
 library("viridis")
 library("ggrepel")
 library("GGally")
+library("vsn")
 
 ## prep dirs ##
-plot_dir <- here("plots", "02_quality_control", "03_qc_pca")
+plot_dir <- here("plots", "09_bulk_DE", "02_bulk_pca")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## load colors
@@ -19,26 +20,10 @@ load(here("processed-data", "00_data_prep", "bulk_colors.Rdata"), verbose = TRUE
 # library_type_colors
 
 #### Load Data ####
-load(here("processed-data", "rse", "preQC", "rse_gene_preQC.Rdata"), verbose = TRUE)
+load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 pd <- as.data.frame(colData(rse_gene))
 
-## Add qc record and drop samples
-qc_tb <- read.csv(file = here("processed-data", "02_quality_control", "QC_record_DLPFC_bulk.csv"))
-qc_tb |> filter(qc_class != "pass")
-
-identical(qc_tb$SAMPLE_ID, colnames(rse_gene))
-rse_gene$qc_class <- qc_tb$qc_class
-table(rse_gene$qc_class)
-# drop pass warn
-# 2  101   10
-
-## drop 2 poor QC samples
-rse_gene <- rse_gene[, rse_gene$qc_class != "drop"]
-
 # move to colData
-# rse_gene$library_combo <- paste0(rse_gene$library_type,"_",rse_gene$library_prep)
-# table(rse_gene$library_combo)
-
 pd <- as.data.frame(colData(rse_gene))
 
 focused_qc_metrics <- c(
@@ -51,12 +36,9 @@ focused_qc_metrics <- c(
     "totalMapped"
 )
 
-# qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
 pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, all_of(focused_qc_metrics))
 
 #### check out dispersion patterns ####
-library("vsn")
-
 pdf(here(plot_dir, "mean_vs_sd_counts.pdf"))
 meanSdPlot(assays(rse_gene)$counts, ranks = FALSE)
 dev.off()
@@ -77,18 +59,18 @@ mean_v_sd <- gene_mean |>
 ggsave(mean_v_sd, filename = here(plot_dir, "my_mean_vs_sd_counts.png"))
 
 #### filter genes by Expression ####
-gene_rpkm <- getRPKM(rse_gene, "Length")
-rse_gene_filter <- rse_gene[rowMeans(gene_rpkm) > 0.1, ]
-gene_rpkm_filter <- gene_rpkm[rowMeans(gene_rpkm) > 0.1, ]
-table(droplevels(seqnames(rse_gene_filter)))
-
-pdf(here(plot_dir, "mean_vs_sd_rpkm.pdf"))
-meanSdPlot(gene_rpkm, ranks = FALSE)
-dev.off()
-
-## get expression
-geneExprs_filter <- log2(gene_rpkm_filter + 1)
-assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter + 1) ## check
+# gene_rpkm <- getRPKM(rse_gene, "Length")
+# rse_gene_filter <- rse_gene[rowMeans(gene_rpkm) > 0.1, ]
+# gene_rpkm_filter <- gene_rpkm[rowMeans(gene_rpkm) > 0.1, ]
+# table(droplevels(seqnames(rse_gene_filter)))
+# 
+# pdf(here(plot_dir, "mean_vs_sd_rpkm.pdf"))
+# meanSdPlot(gene_rpkm, ranks = FALSE)
+# dev.off()
+# 
+# ## get expression
+# geneExprs_filter <- log2(gene_rpkm_filter + 1)
+# assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter + 1) ## check
 
 
 pdf(here(plot_dir, "mean_vs_sd_logrpkm.pdf"))
@@ -103,10 +85,9 @@ pca_vars_lab <- paste0(
     pca_vars, "% Var Expl"
 )
 
-names(pca_vars)
-names(pca)
+pca_vars
 
-# pca$x[,1:5]
+pca$x[1:5,1:5]
 
 ## create table with groups and some QC metrics
 pca_tab <- pd_simple |> cbind(pca$x[, 1:5])
@@ -130,10 +111,9 @@ gg_pca_position <- ggpairs(pca_tab,
 
 ggsave(gg_pca_position, filename = here(plot_dir, "ggpairs_position.png"), height = 10, width = 10)
 
-
-# missing bulk points?
+## PC1 vs. PC2
 pc_test <- pca_tab |>
-    ggplot(aes(x = PC1, y = PC2, color = library_combo, shape = qc_class)) +
+    ggplot(aes(x = PC1, y = PC2, color = library_combo)) +
     geom_point() +
     theme_bw() +
     scale_color_manual(values = library_combo_colors) +
@@ -164,8 +144,6 @@ pc2v5_lab <- pca_tab |>
 
 ggsave(pc2v5_lab, filename = here(plot_dir, "Bulk_PC2vPC5_library_combo_label.png"))
 
-pca_tab |>
-    filter(PC5 < -50)
 
 pc_test <- pca_tab |>
     ggplot(aes(x = PC1, y = PC2, color = BrNum, shape = qc_class)) +
@@ -185,9 +163,6 @@ pc_test <- pca_tab |>
 
 ggsave(pc_test, filename = here(plot_dir, "Bulk_PC1vPC2_mitoRate.png"))
 
-
-## outlier AN00000906_Br8492_Mid_Nuc
-
 #### compare directly to PD variables ####
 
 pca_long <- pca$x[, 1:6] |>
@@ -202,7 +177,7 @@ pca_long <- pca$x[, 1:6] |>
 
 pca_long
 
-
+# TODO Add Sex
 # Position, library_type, library_prep, qc_class
 
 pdf(here(plot_dir, "PCs_vs_groups.pdf"), width = 10)
@@ -213,7 +188,8 @@ walk(c("Position", "library_type", "library_prep", "library_combo", "batch", "qc
         # geom_text_repel(aes(label = ifelse(qc_class == "warn", Sample,"")), size = 2, color = "black") +
         facet_wrap(~PC_lab) +
         labs(title = .x) +
-        theme_bw()
+        theme_bw()  +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
     # ggsave(pca_v_con, filename = here(plot_dir, paste0("pca_v_",.x,".png")), width = 10)
 
@@ -221,7 +197,7 @@ walk(c("Position", "library_type", "library_prep", "library_combo", "batch", "qc
 })
 dev.off()
 
-
+# TODO add Age
 # mitoRate,totalAssignedGene
 
 pdf(here(plot_dir, "PCs_vs_QC_metrics.pdf"), width = 10)
