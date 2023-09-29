@@ -1,5 +1,6 @@
 library("SummarizedExperiment")
 library("purrr")
+library("recount")
 library("sessioninfo")
 library("here")
 library("jaffelab")
@@ -99,10 +100,9 @@ rse_list <- pmap(list(rse = rse_list, cutoff = cutoffs, expr = exprs, n = names(
 message("Dimensions post-filter")
 map(rse_list, dim)
 
+#### Add normalized logcounts & Save ####
 message("Object Sizes:")
 walk(rse_list, ~print(object.size(.x),units = "auto"))
-
-message(Sys.time(), " - Save Data")
 
 # walk2(rse_list, names(rse_list), ~{
 #   message(Sys.time(), " - Save ", .y)
@@ -114,6 +114,14 @@ rse_exon <- rse_list$exon
 rse_jx <- rse_list$jx
 rse_tx <- rse_list$tx
 
+## add logcounts
+message(Sys.time(), " - Calc Logcounts")
+assays(rse_gene)$logcounts <- log2(getRPKM(rse_gene, "Length")+1)
+assays(rse_exon)$logcounts <- log2(getRPKM(rse_exon, "Length")+1)
+assays(rse_jxn)$logcounts <- log2(getRPKM(rse_jxn, "Length")+1)
+assays(rse_tx)$logcounts <- log2(assays(rse_tx)$tpm+1)
+
+message(Sys.time(), " - Save Data")
 save(rse_gene, file = here("processed-data","rse", "rse_gene.Rdata"))
 save(rse_exon, file = here("processed-data","rse", "rse_exon.Rdata"))
 save(rse_jx, file = here("processed-data","rse", "rse_jx.Rdata"))
