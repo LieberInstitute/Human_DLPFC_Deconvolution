@@ -10,7 +10,7 @@ library("sessioninfo")
 #### Set up ####
 
 ## dirs
-data_dir <- here("plots", "09_bulk_DE", "04_DE_library-type")
+data_dir <- here("processed-data", "09_bulk_DE", "04_DE_library-type")
 if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### load data ####
@@ -36,7 +36,7 @@ mod <- map(rse_list$gene, function(rse){
   pd$Sample <- factor(pd$Sample)
   mod <- model.matrix(~Sample + library_type, data = pd)
   return(mod)
-  })
+})
 
 map(mod, dim)
 # $Bulk
@@ -61,7 +61,8 @@ DE_out <- map2(rse_list, names(rse_list), function(rse, feat_name){
     
     outDE <- run_DE(rse = rse_prep, model = mod, coef = "library_typeRiboZeroGold", run_voom = feat_name != "tx")
     
-    write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")))
+    message(Sys.time(), " - Saving")
+    write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
     
     return(outDE)
   })
@@ -77,5 +78,3 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-
-
