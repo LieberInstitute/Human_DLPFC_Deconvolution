@@ -1,0 +1,259 @@
+Refreshing JHPCE_ROCKY9_DEFAULT_ENV
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/JHPCE_ROCKY9_DEFAULT_ENV.lua'
+    Please contact <root@localhost>
+
+Refreshing ruby/3.2.2
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/ruby/3.2.2.lua'
+    Please contact <root@localhost>
+
+Refreshing rmate/1.5.10
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/rmate/1.5.10.lua'
+    Please contact <root@localhost>
+
+Refreshing conda/3-23.3.1
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/conda/3-23.3.1.lua'
+    Please contact <root@localhost>
+
+Refreshing conda_R/4.3
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/community/modulefiles/conda_R/4.3.lua'
+    Please contact <root@localhost>
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
+**** Job starts ****
+Mon Oct  2 05:18:08 PM EDT 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 292811
+Job name: DE_library-type
+Hostname: compute-150.cm.cluster
+Task id: 
+Unloading conda_R/4.3
+Loading conda_R/4.3
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'deactivate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'doctor', 'content-trust', 'env')
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
+
+ 
+
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+
+Attaching package: ‘purrr’
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    reduce
+
+The following object is masked from ‘package:IRanges’:
+
+    reduce
+
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Loading required package: rafalib
+[1] TRUE
+$Bulk
+[1] 38 20
+
+$Cyto
+[1] 37 20
+
+$Nuc
+[1] 35 20
+
+ [1] "(Intercept)"              "SampleBr2720_post"       
+ [3] "SampleBr2743_ant"         "SampleBr3942_ant"        
+ [5] "SampleBr3942_mid"         "SampleBr6423_ant"        
+ [7] "SampleBr6423_post"        "SampleBr6432_ant"        
+ [9] "SampleBr6432_mid"         "SampleBr6471_ant"        
+[11] "SampleBr6471_mid"         "SampleBr6522_mid"        
+[13] "SampleBr6522_post"        "SampleBr8325_ant"        
+[15] "SampleBr8325_mid"         "SampleBr8492_mid"        
+[17] "SampleBr8492_post"        "SampleBr8667_ant"        
+[19] "SampleBr8667_mid"         "library_typeRiboZeroGold"
+2023-10-02 17:18:38.661287 - Running DE gene + Bulk
+2023-10-02 17:18:38.680877 - Calc Norm Factors
+2023-10-02 17:18:39.924131 - Limma
+2023-10-02 17:18:41.841854 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   19222   18371
+2023-10-02 17:18:42.051507 - Saving
+2023-10-02 17:18:42.322604 - Running DE gene + Cyto
+2023-10-02 17:18:42.333214 - Calc Norm Factors
+2023-10-02 17:18:43.987173 - Limma
+2023-10-02 17:18:45.85697 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   19339   18375
+2023-10-02 17:18:46.063967 - Saving
+2023-10-02 17:18:46.376317 - Running DE gene + Nuc
+2023-10-02 17:18:46.37691 - Calc Norm Factors
+2023-10-02 17:18:47.440215 - Limma
+2023-10-02 17:18:49.372024 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   19562   18761
+2023-10-02 17:18:49.601867 - Saving
+2023-10-02 17:18:49.944268 - Running DE exon + Bulk
+2023-10-02 17:18:49.944946 - Calc Norm Factors
+2023-10-02 17:19:15.904165 - Limma
+2023-10-02 17:19:48.81149 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  335987  314689
+2023-10-02 17:19:52.614647 - Saving
+2023-10-02 17:19:58.334558 - Running DE exon + Cyto
+2023-10-02 17:19:58.335228 - Calc Norm Factors
+2023-10-02 17:20:23.008757 - Limma
+2023-10-02 17:20:57.3884 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  326815  303212
+2023-10-02 17:21:01.326099 - Saving
+2023-10-02 17:21:06.671506 - Running DE exon + Nuc
+2023-10-02 17:21:06.672213 - Calc Norm Factors
+2023-10-02 17:21:31.727804 - Limma
+2023-10-02 17:22:05.587232 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  337554  317463
+2023-10-02 17:22:09.642219 - Saving
+2023-10-02 17:22:15.043786 - Running DE jx + Bulk
+2023-10-02 17:22:15.04449 - Calc Norm Factors
+2023-10-02 17:22:33.327955 - Limma
+2023-10-02 17:23:05.82063 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  198077  163512
+2023-10-02 17:23:09.544761 - Saving
+Error in `map2()`:
+ℹ In index: 3.
+ℹ With name: jx.
+Caused by error in `pmap()`:
+ℹ In index: 1.
+ℹ With name: Bulk.
+Caused by error in `utils::write.table()`:
+! unimplemented type 'list' in 'EncodeElement'
+Backtrace:
+     ▆
+  1. ├─purrr::map2(...)
+  2. │ └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
+  3. │   ├─purrr:::with_indexed_errors(...)
+  4. │   │ └─base::withCallingHandlers(...)
+  5. │   ├─purrr:::call_with_cleanup(...)
+  6. │   └─global .f(.x[[i]], .y[[i]], ...)
+  7. │     └─purrr::pmap(...)
+  8. │       └─purrr:::pmap_("list", .l, .f, ..., .progress = .progress)
+  9. │         ├─purrr:::with_indexed_errors(...)
+ 10. │         │ └─base::withCallingHandlers(...)
+ 11. │         ├─purrr:::call_with_cleanup(...)
+ 12. │         └─.f(...)
+ 13. │           ├─utils::write.csv(...)
+ 14. │           │ └─base::eval.parent(Call)
+ 15. │           │   └─base::eval(expr, p)
+ 16. │           │     └─base::eval(expr, p)
+ 17. │           └─utils::write.table(...)
+ 18. └─base::.handleSimpleError(...)
+ 19.   └─purrr (local) h(simpleError(msg, call))
+ 20.     └─cli::cli_abort(...)
+ 21.       └─rlang::abort(...)
+Execution halted
+**** Job ends ****
+Mon Oct  2 05:23:09 PM EDT 2023
