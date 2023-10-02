@@ -118,7 +118,7 @@ rse_tx <- rse_list$tx
 message(Sys.time(), " - Calc Logcounts")
 assays(rse_gene)$logcounts <- log2(getRPKM(rse_gene, "Length")+1)
 assays(rse_exon)$logcounts <- log2(getRPKM(rse_exon, "Length")+1)
-assays(rse_jxn)$logcounts <- log2(getRPKM(rse_jxn, "Length")+1)
+assays(rse_jx)$logcounts <- log2(getRPKM(rse_jx, "Length")+1)
 assays(rse_tx)$logcounts <- log2(assays(rse_tx)$tpm+1)
 
 message(Sys.time(), " - Save Data")
