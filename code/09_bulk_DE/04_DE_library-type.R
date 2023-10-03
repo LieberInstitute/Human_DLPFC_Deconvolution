@@ -19,7 +19,8 @@ features <- c("gene", "exon", "jx", "tx")
 rse_paths <- here("processed-data","rse", paste0("rse_", features, ".Rdata"))
 names(rse_paths) <- features
 
-all(file.exists(rse_paths))
+## for testing
+# rse_paths <- rse_paths["gene"]
 
 rse_list <- lapply(rse_paths, function(x) get(load(x)))
 
@@ -53,7 +54,7 @@ colnames(mod[[1]])
 #### RUN DE ####
 source(here("code", "09_bulk_DE","run_DE.R"))
 
-DE_out <- map2(rse_list, names(rse_list), function(rse, feat_name){
+DE_library-type <- map2(rse_list, names(rse_list), function(rse, feat_name){
   pmap(list(rse_prep = rse, prep_name = names(rse), mod = mod), function(rse_prep, prep_name, mod){
     
     message(Sys.time(), ' - Running DE ', feat_name, " + ", prep_name)
@@ -70,7 +71,7 @@ DE_out <- map2(rse_list, names(rse_list), function(rse, feat_name){
 
 head(DE_out$gene$Bulk)
 
-save(DE_out, file = here(data_dir, "DE_library-type.Rdata"))
+save(DE_library-type, file = here(data_dir, "DE_library-type.Rdata"))
 
 ## Reproducibility information
 print("Reproducibility information:")
