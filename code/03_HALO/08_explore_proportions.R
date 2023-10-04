@@ -561,6 +561,21 @@ excit_v_inhib <- cell_type_prop_neuron |>
 
 ggsave(excit_v_inhib, filename = here(plot_dir, "prop_excit_v_inhib.png"))
 
+#### Area proportions ####
+
+area_prop <- halo_all |>
+  group_by(SAMPLE_ID, Sample, Combo, cell_type, Confidence) |>
+  summarize(sum_area = sum(Nucleus_Area)) |>
+  group_by(SAMPLE_ID, Sample, Combo) |>
+  mutate(area_prop = sum_area / sum(sum_area)) 
+
+write_csv(area_prop, file = here(data_dir,"HALO_cell_type_NucArea_proportions.csv"))
+
+area_prop2 <- area_prop |> left_join(cell_type_prop) |> mutate(ratio = area_prop/prop) |> select(-SAMPLE_ID, -n_cell_sn, -prop_sn)
+
+area_prop2 |> filter(Confidence %in% c("OK", 'High'), cell_type == "Excit") |> arrange(area_prop)
+area_prop2 |> filter(Confidence %in% c("OK", 'High'), cell_type == "Inhib") |> arrange(area_prop)
+
 # sgejobs::job_single('08_explore_proportions', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 08_explore_proportions.R")
 ## Reproducibility information
 print("Reproducibility information:")
