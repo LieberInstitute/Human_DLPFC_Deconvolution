@@ -36,7 +36,7 @@ colnames(mod)
 #### RUN DE ####
 source(here("code", "09_bulk_DE","run_DE.R"))
 
-DE_out <- map2(rse_list, names(rse_list), function(rse, feat_name){
+DE_library_combo <- map2(rse_list, names(rse_list), function(rse, feat_name){
     message(Sys.time(), ' - Running DE ', feat_name)
     
     outDE <- run_DE(rse = rse, model = mod, coef = c("library_typeRiboZeroGold", "library_prepCyto", "library_prepNuc"), run_voom = feat_name != "tx", save_eBayes = TRUE)
@@ -47,9 +47,8 @@ DE_out <- map2(rse_list, names(rse_list), function(rse, feat_name){
     return(outDE)
 })
 
-head(DE_out$gene$topTable)
 
-save(DE_out, file = here(data_dir, "DE_library-combo.Rdata"))
+save(DE_library_combo, file = here(data_dir, "DE_library-combo.Rdata"))
 
 ## Reproducibility information
 print("Reproducibility information:")
