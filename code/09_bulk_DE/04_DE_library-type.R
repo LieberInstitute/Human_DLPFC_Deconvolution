@@ -35,7 +35,7 @@ rse_list <- map(rse_list, function(rse){
 mod <- map(rse_list$gene, function(rse){
   pd <- as.data.frame(colData(rse))
   pd$Sample <- factor(pd$Sample)
-  mod <- model.matrix(~Sample + library_type, data = pd)
+  mod <- model.matrix(~library_type + Sample + mitoRate + rRNA_rate + totalAssignedGene, data = pd)
   return(mod)
 })
 
