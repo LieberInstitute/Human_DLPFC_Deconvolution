@@ -67,7 +67,6 @@ DE_library_prep <- map2(rse_list, names(rse_list), function(rse, feat_name){
   })
 })
 
-head(DE_out$gene$RiboZeroGold$topTable)
 
 save(DE_library_prep, file = here(data_dir, "DE_library-type.Rdata"))
 
