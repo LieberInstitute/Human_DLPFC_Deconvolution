@@ -2,7 +2,7 @@
 #SBATCH --output=logs/05_DE_library-prep.txt
 #SBATCH --error=logs/05_DE_library-prep.txt
 #SBATCH --partition=shared
-#SBATCH --job-name=DE_library-prep
+#SBATCH --job-name=05_DE_library-prep
 #SBATCH --mem=75GB
 
 echo "**** Job starts ****"
