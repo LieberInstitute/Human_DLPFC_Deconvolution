@@ -62,9 +62,11 @@ DE_library-type <- map2(rse_list, names(rse_list), function(rse, feat_name){
     
     outDE <- run_DE(rse = rse_prep, model = mod, coef = "library_typeRiboZeroGold", run_voom = feat_name != "tx")
     
-    message(Sys.time(), " - Saving")
-    write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
-    
+    try(
+      message(Sys.time(), " - Saving")
+      write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
+      )
+   
     return(outDE)
   })
 })
