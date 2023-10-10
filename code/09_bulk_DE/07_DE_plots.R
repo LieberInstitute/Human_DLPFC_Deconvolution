@@ -40,16 +40,10 @@ pval_dist <- DE_library_type$gene$Bulk |>
 
 ggsave(pval_dist, filename = here(plot_dir, "pval_density.png"))
 
-volcano_libray_type <- EnhancedVolcano(DE_library_type_simple$gene$Bulk,
-                                       lab = DE_library_type_simple$gene$Bulk$Symbol,
-                                       x = 'logFC',
-                                       y = 'adj.P.Val',
-                                       title = "RiboZero vs. PolyA - Bulk",
-                                       subtitle = "Model: ~library_type + Sample")
-
-ggsave(volcano_libray_type, filename = here(plot_dir, "Bulk_DE_volcano_library-type_simple.png"), width = 10, height = 10)
 
 load(here("processed-data", "09_bulk_DE", "04_DE_library-type", "DE_library-type.Rdata"), verbose = TRUE)
+names(DE_library_type)
+names(DE_library_type$gene)
 
 ## MA plot
 
@@ -100,16 +94,21 @@ ggsave(volcano_plot, filename = here(plot_dir, "Volcano_test.png"))
 
 ## library type model
 
-DE_library_type <- read.csv(here("processed-data", "09_bulk_DE", "04_DE_library-type", "DE_library-type_gene_Bulk.csv"))
+library_type_gene_volcano <- map2(DE_library_type$gene, names(DE_library_type$gene), function(de, name){
+  
+  volcano_plot  <- volcano_plot_custom(de_out = de,
+                                       title = paste0("RiboZero vs. PolyA - ", name),
+                                       subtitle = "Model: ~library_type + Sample + mitoRate + rRNA_rate + totalAssignedGene")
+  
+  ggsave(volcano_plot, filename = here(plot_dir, paste0("Bulk_DE_volcano_library-type_",name,".png")))
+  
+  return(volcano_plot)
+})
 
+pdf(here(plot_dir, "Bulk_DE_volcano_library-type.pdf"))
+walk(library_type_gene_volcano, print)
+dev.off()
 
-max(DE_library_type$P.Value[DE_library_type$adj.P.Val > 0.05])
-
-volcano_plot  <- volcano_plot_custom(de_out = DE_library_type,
-                                     title = "RiboZero vs. PolyA - Bulk",
-                                     subtitle = "Model: ~library_type + Sample + mitoRate + rRNA_rate + totalAssignedGene")
-
-ggsave(volcano_plot, filename = here(plot_dir, "Bulk_DE_volcano_library-type_bulk.png"))
 
 ma_plot  <- MA_plot_custom(de_out = DE_library_type,
                                      title = "RiboZero vs. PolyA - Bulk",
