@@ -66,9 +66,10 @@ DE_library_prep <- map2(rse_list, names(rse_list), function(rse, feat_name){
                     model = mod, 
                     coef = c("library_prepCyto", "library_prepNuc"), 
                     run_voom = feat_name != "tx", 
-                    save_eBayes = TRUE,
-                    plot_name = here(plot_dir, paste0("DE_library-prep_", feat_name, "_",prep_name,".pdf"))
-                    )
+                    save_eBayes = TRUE
+                    # plot_name = here(plot_dir, paste0("DE_library-prep_", feat_name, "_",prep_name,".pdf")
+                                     )
+    )
     
     message(Sys.time(), " - Saving")
     write.csv(outDE$topTable, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
