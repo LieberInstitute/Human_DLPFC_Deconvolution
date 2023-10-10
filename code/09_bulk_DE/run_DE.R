@@ -1,8 +1,12 @@
 
-run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef){
+run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef, plot_name = NULL){
+  
+  print_plots <- !is.null(plot_name)
+  
+  if(print_plots) pdf(plot_name)
   
   ## limma
-  eBayes_out = get_eBayes(rse = rse, model = model, run_voom = run_voom)
+  eBayes_out = get_eBayes(rse = rse, model = model, run_voom = run_voom, print_plots)
   
   #### because of more than 1 component, computing F statistics instead of t=-statistics
   # message("Calc top tables - coefficents:", paste(coef, collpase = " "))
@@ -13,7 +17,15 @@ run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef){
     coef <- colnames(eBayes_out$design)[[coef]]
   }
   
+  
   topTable_out = topTable(eBayes_out, coef=coef, number=Inf , sort.by = "none")
+  
+  if(print_plots){
+    message("plotting: ", plot_name)
+    plotMA(eBayes_out, coef = coef)
+    hist(topTable_out$P.Value)
+    dev.off()
+  }
   
   if(length(coef == 1)){
     message("1 coef, Return t-stats")
@@ -29,7 +41,6 @@ run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef){
     colnames(qvalMat) = paste0("q_",colnames(qvalMat))
     
     topTable_out = cbind(topTable_out,cbind(pvalMat, qvalMat))
-    
   }
   
   ## print summary
@@ -46,14 +57,14 @@ run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef){
   
 }
 
-get_eBayes <- function(rse, model, run_voom = TRUE){
+get_eBayes <- function(rse, model, run_voom = TRUE, print_plots = FALSE){
   
   if(run_voom){
     message(Sys.time(), " - Calc Norm Factors")
     dge_out = DGEList(counts = assays(rse)$counts,
                       genes = rowData(rse))
     dge_norm = calcNormFactors(dge_out)
-    voom_out = voom(dge_norm, model, plot=FALSE)
+    voom_out = voom(dge_norm, model, plot=print_plots)
     
     message(Sys.time(), " - Limma")
     fit = lmFit(voom_out)
@@ -79,5 +90,4 @@ report_top_pVal <- function(topTable_out, cols){
   n_sig <- map(cutoffs, ~colSums(tt_values < .x))
   sig_table <- t(do.call("rbind", n_sig))
   return(sig_table)
-  
 }

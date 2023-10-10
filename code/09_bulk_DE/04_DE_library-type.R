@@ -39,7 +39,7 @@ mod <- map(rse_list$gene, function(rse){
   pd <- as.data.frame(colData(rse))
   pd$Sample <- factor(pd$Sample)
   mod <- model.matrix(~library_type + Sample + mitoRate + rRNA_rate + totalAssignedGene, data = pd)
-  # mod <- model.matrix(~library_type + Sample, data = pd)
+  # mod <- model.matrix(~library_type + Sample, data = pd) # Simple Model
   return(mod)
 })
 
@@ -67,7 +67,7 @@ DE_library_type <- map2(rse_list, names(rse_list), function(rse, feat_name){
     outDE <- run_DE(rse = rse_prep, model = mod, 
                     coef = "library_typeRiboZeroGold", 
                     run_voom = feat_name != "tx", 
-                    MA_plot_name = here(plot_dir, paste0("MA_library-type_", feat_name, "_",prep_name,"-simple.pdf"))
+                    plot_name = here(plot_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".pdf"))
                     )
     
     message(Sys.time(), " - Saving")

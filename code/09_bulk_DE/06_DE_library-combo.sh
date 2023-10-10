@@ -2,7 +2,7 @@
 #SBATCH --output=logs/06_DE_library-combo.txt
 #SBATCH --error=logs/06_DE_library-combo.txt
 #SBATCH --partition=shared
-#SBATCH --job-name=DE_library-combo
+#SBATCH --job-name=06_DE_library-combo
 # 
 #SBATCH --mem=75GB
 
