@@ -8,6 +8,9 @@ library("jaffelab")
 library("sessioninfo")
 
 #### Set up ####
+## dirs
+plot_dir <- here("plots", "09_bulk_DE", "04_DE_library-type")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## dirs
 data_dir <- here("processed-data", "09_bulk_DE", "04_DE_library-type")
@@ -36,6 +39,7 @@ mod <- map(rse_list$gene, function(rse){
   pd <- as.data.frame(colData(rse))
   pd$Sample <- factor(pd$Sample)
   mod <- model.matrix(~library_type + Sample + mitoRate + rRNA_rate + totalAssignedGene, data = pd)
+  # mod <- model.matrix(~library_type + Sample, data = pd)
   return(mod)
 })
 
@@ -54,26 +58,26 @@ colnames(mod[[1]])
 #### RUN DE ####
 source(here("code", "09_bulk_DE","run_DE.R"))
 
-DE_library-type <- map2(rse_list, names(rse_list), function(rse, feat_name){
+DE_library_type <- map2(rse_list, names(rse_list), function(rse, feat_name){
   pmap(list(rse_prep = rse, prep_name = names(rse), mod = mod), function(rse_prep, prep_name, mod){
     
     message(Sys.time(), ' - Running DE ', feat_name, " + ", prep_name)
     stopifnot(ncol(rse_prep) == nrow(mod))
     
-    outDE <- run_DE(rse = rse_prep, model = mod, coef = "library_typeRiboZeroGold", run_voom = feat_name != "tx")
+    outDE <- run_DE(rse = rse_prep, model = mod, 
+                    coef = "library_typeRiboZeroGold", 
+                    run_voom = feat_name != "tx", 
+                    MA_plot_name = here(plot_dir, paste0("MA_library-type_", feat_name, "_",prep_name,"-simple.pdf"))
+                    )
     
-    try(
-      message(Sys.time(), " - Saving")
-      write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
-      )
-   
+    message(Sys.time(), " - Saving")
+    try(write.csv(outDE, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE))
+      
     return(outDE)
   })
 })
 
-head(DE_out$gene$Bulk)
-
-save(DE_library-type, file = here(data_dir, "DE_library-type.Rdata"))
+save(DE_library_type, file = here(data_dir, "DE_library-type.Rdata"))
 
 ## Reproducibility information
 print("Reproducibility information:")
