@@ -22,8 +22,8 @@ run_DE <- function(rse, model, run_voom = TRUE, save_eBayes = FALSE, coef, plot_
   
   if(print_plots){
     message("plotting: ", plot_name)
-    plotMA(eBayes_out, coef = coef)
-    hist(topTable_out$P.Value)
+    try(plotMA(eBayes_out, coef = coef))
+    try(hist(topTable_out$P.Value))
     dev.off()
   }
   
