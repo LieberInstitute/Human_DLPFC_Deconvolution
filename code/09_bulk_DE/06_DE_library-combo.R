@@ -10,8 +10,8 @@ library("sessioninfo")
 #### Set up ####
 
 ## plot dir
-data_dir <- here("processed-data", "09_bulk_DE", "06_DE_library-combo")
-if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
+plot_dir <- here("processed-data", "09_bulk_DE", "06_DE_library-combo")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## data dir
 data_dir <- here("processed-data", "09_bulk_DE", "06_DE_library-combo")
