@@ -10,7 +10,7 @@ library("sessioninfo")
 #### Set up ####
 
 ## plot dir
-plot_dir <- here("processed-data", "09_bulk_DE", "06_DE_library-combo")
+plot_dir <- here("plots", "09_bulk_DE", "06_DE_library-combo")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## data dir
@@ -41,20 +41,25 @@ colnames(mod)
 source(here("code", "09_bulk_DE","run_DE.R"))
 
 DE_library_combo <- map2(rse_list, names(rse_list), function(rse, feat_name){
-    message(Sys.time(), ' - Running DE ', feat_name)
-    
-    outDE <- run_DE(rse = rse,
-                    model = mod, 
-                    coef = c("library_typeRiboZeroGold", "library_prepCyto", "library_prepNuc"), 
-                    run_voom = feat_name != "tx",
-                    save_eBayes = TRUE
-                    # plot_name = here(plot_dir, paste0("DE_library-combo_", feat_name, ".pdf"))
-                      )
-    
-    message(Sys.time(), " - Saving")
-    try(write.csv(outDE$topTable, file = here(data_dir, paste0("DE_library-combo_", feat_name, ".csv")), row.names = FALSE))
-    
-    return(outDE)
+  message(Sys.time(), ' - Running DE ', feat_name)
+  
+  if(feat_name == "gene"){
+    plot_name <- here(plot_dir, paste0("DE_library-combo_", feat_name, ".pdf"))
+  } else {
+    plot_name <- NULL
+  }
+  
+  outDE <- run_DE(rse = rse,
+                  model = mod, 
+                  coef = c("library_typeRiboZeroGold", "library_prepCyto", "library_prepNuc"), 
+                  run_voom = feat_name != "tx",
+                  save_eBayes = TRUE,
+                  plot_name = plot_name)
+  
+  message(Sys.time(), " - Saving")
+  try(write.csv(outDE$topTable, file = here(data_dir, paste0("DE_library-combo_", feat_name, ".csv")), row.names = FALSE))
+  
+  return(outDE)
 })
 
 

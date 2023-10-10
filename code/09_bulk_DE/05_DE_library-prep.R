@@ -10,7 +10,7 @@ library("sessioninfo")
 #### Set up ####
 
 ## plot dir
-plot_dir <- here("processed-data", "09_bulk_DE", "05_DE_library-prep")
+plot_dir <- here("plots", "09_bulk_DE", "05_DE_library-prep")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## data dirs
@@ -62,17 +62,22 @@ DE_library_prep <- map2(rse_list, names(rse_list), function(rse, feat_name){
     message(Sys.time(), ' - Running DE ', feat_name, " + ", prep_name)
     stopifnot(ncol(rse_prep) == nrow(mod))
     
+    if(feat_name == "gene"){
+      plot_name <- here(plot_dir, paste0("DE_library-prep_", feat_name, "_",prep_name,".pdf"))
+    } else {
+      plot_name <- NULL
+    }
+    
     outDE <- run_DE(rse = rse_prep, 
                     model = mod, 
                     coef = c("library_prepCyto", "library_prepNuc"), 
                     run_voom = feat_name != "tx", 
-                    save_eBayes = TRUE
-                    # plot_name = here(plot_dir, paste0("DE_library-prep_", feat_name, "_",prep_name,".pdf")
-                                     )
+                    save_eBayes = TRUE,
+                    plot_name = plot_name
     )
     
     message(Sys.time(), " - Saving")
-    write.csv(outDE$topTable, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE)
+    try(write.csv(outDE$topTable, file = here(data_dir, paste0("DE_library-type_", feat_name, "_",prep_name,".csv")), row.names = FALSE))
     
     return(outDE)
   })
