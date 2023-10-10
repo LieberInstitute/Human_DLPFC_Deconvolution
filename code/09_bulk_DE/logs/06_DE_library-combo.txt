@@ -1,12 +1,12 @@
 Loading LIBD module for rmate/1.5.10
 Loading LIBD module for ruby/3.2.2
 **** Job starts ****
-Tue Oct 10 12:35:53 PM EDT 2023
+Tue Oct 10 01:03:38 PM EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 348476
-Job name: DE_library-combo
-Hostname: compute-070.cm.cluster
+Job id: 348621
+Job name: 06_DE_library-combo
+Hostname: compute-148.cm.cluster
 Task id: 
 Loading conda_R/4.3
 
@@ -125,30 +125,132 @@ Loading required package: rafalib
 [21] "library_prepCyto"         "library_prepNuc"         
 [23] "mitoRate"                 "rRNA_rate"               
 [25] "totalAssignedGene"       
-2023-10-10 12:36:43.019379 - Running DE gene
-Error in `map2()`:
-ℹ In index: 1.
-ℹ With name: gene.
-Caused by error in `.f()`:
-! object 'plot_dir' not found
-Backtrace:
-     ▆
-  1. ├─purrr::map2(...)
-  2. │ └─purrr:::map2_("list", .x, .y, .f, ..., .progress = .progress)
-  3. │   ├─purrr:::with_indexed_errors(...)
-  4. │   │ └─base::withCallingHandlers(...)
-  5. │   ├─purrr:::call_with_cleanup(...)
-  6. │   └─global .f(.x[[i]], .y[[i]], ...)
-  7. │     ├─global run_DE(...)
-  8. │     └─here::here(...)
-  9. │       └─.root_env$root$f(...)
- 10. │         └─rprojroot:::is_absolute_path(..1)
- 11. │           └─base::grepl("^[/\\\\~]|^[a-zA-Z]:[/\\\\]", x)
- 12. │             └─base::is.factor(x)
- 13. └─base::.handleSimpleError(...)
- 14.   └─purrr (local) h(simpleError(msg, call))
- 15.     └─cli::cli_abort(...)
- 16.       └─rlang::abort(...)
-Execution halted
+2023-10-10 13:04:11.86277 - Running DE gene
+2023-10-10 13:04:12.214761 - Calc Norm Factors
+2023-10-10 13:04:18.016545 - Limma
+2023-10-10 13:04:22.754139 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/06_DE_library-combo/DE_library-combo_gene.pdf
+Error in xy.coords(x, y, xlabel, ylabel, log) : 
+  'x' and 'y' lengths differ
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   20676   20026
+q_library_prepCyto           20676   20026
+q_library_prepNuc            20676   20026
+2023-10-10 13:04:23.706882 - Saving
+2023-10-10 13:04:24.165597 - Running DE exon
+2023-10-10 13:04:24.177682 - Calc Norm Factors
+2023-10-10 13:06:09.452619 - Limma
+2023-10-10 13:07:32.590278 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  360346  340510
+q_library_prepCyto          360346  340510
+q_library_prepNuc           360346  340510
+2023-10-10 13:07:38.43468 - Saving
+2023-10-10 13:07:54.12099 - Running DE jx
+2023-10-10 13:07:54.121373 - Calc Norm Factors
+2023-10-10 13:08:56.355758 - Limma
+2023-10-10 13:10:15.871059 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  245167  197498
+q_library_prepCyto          245167  197498
+q_library_prepNuc           245167  197498
+2023-10-10 13:10:21.442199 - Saving
+Error in utils::write.table(outDE$topTable, file = here(data_dir, paste0("DE_library-combo_",  : 
+  unimplemented type 'list' in 'EncodeElement'
+
+2023-10-10 13:10:21.446408 - Running DE tx
+Using tpm
+2023-10-10 13:10:21.739668 - Limma
+2023-10-10 13:10:22.995008 - eBayes
+Character coef in eBayes: TRUE
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   86022   82949
+q_library_prepCyto           86022   82949
+q_library_prepNuc            86022   82949
+2023-10-10 13:10:24.400661 - Saving
+[1] "Reproducibility information:"
+[1] "2023-10-10 13:11:38 EDT"
+   user  system elapsed 
+448.904  10.022 477.805 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.1 Patched (2023-07-19 r84711)
+ os       Rocky Linux 9.2 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2023-10-10
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.1)
+ Biobase              * 2.60.0    2023-04-25 [2] Bioconductor
+ BiocGenerics         * 0.46.0    2023-04-25 [2] Bioconductor
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.1)
+ cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.1)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
+ DelayedArray           0.26.7    2023-07-28 [2] Bioconductor
+ dplyr                  1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
+ edgeR                * 3.42.4    2023-05-31 [2] Bioconductor
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
+ fs                     1.6.3     2023-07-20 [2] CRAN (R 4.3.1)
+ gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.3.1)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.1)
+ GenomeInfoDb         * 1.36.3    2023-09-07 [2] Bioconductor
+ GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
+ GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
+ glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
+ googledrive            2.1.1     2023-06-11 [2] CRAN (R 4.3.1)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
+ IRanges              * 2.34.1    2023-06-22 [2] Bioconductor
+ jaffelab             * 0.99.32   2023-04-14 [1] Github (LieberInstitute/jaffelab@7b7afe3)
+ lattice                0.21-8    2023-04-05 [3] CRAN (R 4.3.1)
+ lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.1)
+ limma                * 3.56.2    2023-06-04 [2] Bioconductor
+ locfit                 1.5-9.8   2023-06-11 [2] CRAN (R 4.3.1)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.1)
+ MASS                   7.3-60    2023-05-04 [3] CRAN (R 4.3.1)
+ Matrix                 1.6-1.1   2023-09-18 [3] CRAN (R 4.3.1)
+ MatrixGenerics       * 1.12.3    2023-07-30 [2] Bioconductor
+ matrixStats          * 1.0.0     2023-06-02 [2] CRAN (R 4.3.1)
+ nlme                   3.1-163   2023-08-09 [3] CRAN (R 4.3.1)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.1)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.1)
+ purrr                * 1.0.2     2023-08-10 [2] CRAN (R 4.3.1)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.1)
+ rafalib              * 1.0.0     2015-08-09 [1] CRAN (R 4.3.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.3.1)
+ Rcpp                   1.0.11    2023-07-06 [2] CRAN (R 4.3.1)
+ RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.1)
+ rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
+ rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
+ S4Arrays               1.0.6     2023-08-30 [2] Bioconductor
+ S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
+ segmented              1.6-4     2023-04-13 [1] CRAN (R 4.3.0)
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.1)
+ SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
+ tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.1)
+ utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
+ vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
+ XVector                0.40.0    2023-04-25 [2] Bioconductor
+ zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
+
+ [1] /users/lhuuki/R/4.3
+ [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Oct 10 12:36:43 PM EDT 2023
+Tue Oct 10 01:11:39 PM EDT 2023

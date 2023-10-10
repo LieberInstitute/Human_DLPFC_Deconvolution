@@ -164,3 +164,183 @@ q_library_typeRiboZeroGold    3467    1148
 2023-10-10 12:36:03.350325 - Saving
 2023-10-10 12:36:03.898877 - Running DE exon + Bulk
 2023-10-10 12:36:03.908368 - Calc Norm Factors
+2023-10-10 12:36:50.485263 - Limma
+2023-10-10 12:38:10.275048 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_exon_Bulk.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold    5443    1775
+2023-10-10 12:38:44.325281 - Saving
+2023-10-10 12:38:53.49555 - Running DE exon + Cyto
+2023-10-10 12:38:53.942426 - Calc Norm Factors
+2023-10-10 12:39:39.520454 - Limma
+2023-10-10 12:41:00.071224 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_exon_Cyto.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold  134974   58589
+2023-10-10 12:41:33.971555 - Saving
+2023-10-10 12:41:42.592596 - Running DE exon + Nuc
+2023-10-10 12:41:42.63555 - Calc Norm Factors
+2023-10-10 12:42:27.50493 - Limma
+2023-10-10 12:43:46.326906 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_exon_Nuc.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold       0       0
+2023-10-10 12:44:21.122024 - Saving
+2023-10-10 12:44:29.905118 - Running DE jx + Bulk
+2023-10-10 12:44:29.917141 - Calc Norm Factors
+2023-10-10 12:45:04.93994 - Limma
+2023-10-10 12:46:21.583076 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_jx_Bulk.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold     462      84
+2023-10-10 12:46:53.037895 - Saving
+Error in utils::write.table(outDE, file = here(data_dir, paste0("DE_library-type_",  : 
+  unimplemented type 'list' in 'EncodeElement'
+
+2023-10-10 12:46:53.065232 - Running DE jx + Cyto
+2023-10-10 12:46:53.073262 - Calc Norm Factors
+2023-10-10 12:47:25.177396 - Limma
+2023-10-10 12:48:42.496701 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_jx_Cyto.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   41819   10988
+2023-10-10 12:49:14.370385 - Saving
+Error in utils::write.table(outDE, file = here(data_dir, paste0("DE_library-type_",  : 
+  unimplemented type 'list' in 'EncodeElement'
+
+2023-10-10 12:49:14.418334 - Running DE jx + Nuc
+2023-10-10 12:49:14.422796 - Calc Norm Factors
+2023-10-10 12:49:45.879758 - Limma
+2023-10-10 12:51:00.451019 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_jx_Nuc.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold       0       0
+2023-10-10 12:51:33.595438 - Saving
+Error in utils::write.table(outDE, file = here(data_dir, paste0("DE_library-type_",  : 
+  unimplemented type 'list' in 'EncodeElement'
+
+2023-10-10 12:51:33.649722 - Running DE tx + Bulk
+Using tpm
+2023-10-10 12:51:33.807605 - Limma
+2023-10-10 12:51:34.337781 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_tx_Bulk.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold    2684     803
+2023-10-10 12:51:40.135603 - Saving
+2023-10-10 12:51:41.284683 - Running DE tx + Cyto
+Using tpm
+2023-10-10 12:51:41.513967 - Limma
+2023-10-10 12:51:42.075587 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_tx_Cyto.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold   15848   10184
+2023-10-10 12:52:10.253628 - Saving
+2023-10-10 12:52:11.269761 - Running DE tx + Nuc
+Using tpm
+2023-10-10 12:52:11.390813 - Limma
+2023-10-10 12:52:11.852196 - eBayes
+Character coef in eBayes: TRUE
+plotting: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/09_bulk_DE/04_DE_library-type/DE_library-type_tx_Nuc.pdf
+1 coef, Return t-stats
+                           <  0.05 <  0.01
+q_library_typeRiboZeroGold    1178     187
+2023-10-10 12:52:17.356137 - Saving
+Warning messages:
+1: Zero sample variances detected, have been offset away from zero 
+2: Zero sample variances detected, have been offset away from zero 
+3: Zero sample variances detected, have been offset away from zero 
+[1] "Reproducibility information:"
+[1] "2023-10-10 12:52:54 EDT"
+    user   system  elapsed 
+1029.108   14.060 1084.565 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.1 Patched (2023-07-19 r84711)
+ os       Rocky Linux 9.2 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2023-10-10
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.1)
+ Biobase              * 2.60.0    2023-04-25 [2] Bioconductor
+ BiocGenerics         * 0.46.0    2023-04-25 [2] Bioconductor
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.1)
+ cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.1)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
+ DelayedArray           0.26.7    2023-07-28 [2] Bioconductor
+ dplyr                  1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
+ edgeR                * 3.42.4    2023-05-31 [2] Bioconductor
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
+ fs                     1.6.3     2023-07-20 [2] CRAN (R 4.3.1)
+ gargle                 1.5.2     2023-07-20 [2] CRAN (R 4.3.1)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.1)
+ GenomeInfoDb         * 1.36.3    2023-09-07 [2] Bioconductor
+ GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
+ GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
+ glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
+ googledrive            2.1.1     2023-06-11 [2] CRAN (R 4.3.1)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
+ IRanges              * 2.34.1    2023-06-22 [2] Bioconductor
+ jaffelab             * 0.99.32   2023-04-14 [1] Github (LieberInstitute/jaffelab@7b7afe3)
+ lattice                0.21-8    2023-04-05 [3] CRAN (R 4.3.1)
+ lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.1)
+ limma                * 3.56.2    2023-06-04 [2] Bioconductor
+ locfit                 1.5-9.8   2023-06-11 [2] CRAN (R 4.3.1)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.1)
+ MASS                   7.3-60    2023-05-04 [3] CRAN (R 4.3.1)
+ Matrix                 1.6-1.1   2023-09-18 [3] CRAN (R 4.3.1)
+ MatrixGenerics       * 1.12.3    2023-07-30 [2] Bioconductor
+ matrixStats          * 1.0.0     2023-06-02 [2] CRAN (R 4.3.1)
+ nlme                   3.1-163   2023-08-09 [3] CRAN (R 4.3.1)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.1)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.1)
+ purrr                * 1.0.2     2023-08-10 [2] CRAN (R 4.3.1)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.1)
+ rafalib              * 1.0.0     2015-08-09 [1] CRAN (R 4.3.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.3.1)
+ Rcpp                   1.0.11    2023-07-06 [2] CRAN (R 4.3.1)
+ RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.1)
+ rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
+ rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
+ S4Arrays               1.0.6     2023-08-30 [2] Bioconductor
+ S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
+ segmented              1.6-4     2023-04-13 [1] CRAN (R 4.3.0)
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.1)
+ SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
+ tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.1)
+ utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
+ vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
+ XVector                0.40.0    2023-04-25 [2] Bioconductor
+ zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
+
+ [1] /users/lhuuki/R/4.3
+ [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Oct 10 12:52:55 PM EDT 2023
