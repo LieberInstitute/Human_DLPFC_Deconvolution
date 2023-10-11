@@ -20,31 +20,7 @@ if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 
 ## edit rse list: factor sample, split library_prep
-
 rse_list <- map(splitit(rse_gene$library_prep), ~rse_gene[,.x])
-
-map(rse_list, dim)
-
-#### build model ####
-mod <- map(rse_list, function(rse){
-  pd <- as.data.frame(colData(rse))
-  pd$Sample <- factor(pd$Sample)
-  mod <- model.matrix(~library_type + BrNum + mitoRate + rRNA_rate + totalAssignedGene, data = pd)
-  # mod <- model.matrix(~library_type + Sample, data = pd) # Simple Model
-  return(mod)
-})
-
-map(mod, dim)
-# $Bulk
-# [1] 38 14
-# 
-# $Cyto
-# [1] 37 14
-# 
-# $Nuc
-# [1] 35 14
-
-colnames(mod[[1]])
 
 # The variable to be tested must be a fixed effect
 form <- ~library_type + (1|BrNum) + mitoRate + rRNA_rate + totalAssignedGene
