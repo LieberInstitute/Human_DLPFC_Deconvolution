@@ -72,7 +72,7 @@ DREAM_library_prep <- map2(rse_list, names(rse_list), function(rse, type_name){
     # Examine design matrix
     head(fitmm$design, 3)
     
-    outDE <- topTable( fitmm, coef="library_typeRiboZeroGold", number=Inf , sort.by = "none")
+    outDE <- topTable( fitmm, coef=2, number=Inf , sort.by = "none")
     
     message(Sys.time(), " - Saving")
     try(write.csv(outDE, file = here(data_dir, paste0("DREAM_library-prep_gene_",type_name,"_",pair_name,".csv")), row.names = FALSE))
