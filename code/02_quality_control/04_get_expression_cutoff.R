@@ -1,5 +1,6 @@
 library("SummarizedExperiment")
 library("purrr")
+library("recount")
 library("sessioninfo")
 library("here")
 library("jaffelab")
@@ -20,6 +21,20 @@ rse_list <- lapply(preQC_paths, function(x) get(load(x)))
 message("Original Dimesions")
 map(rse_list, dim)
 
+#### Add missing colData ####
+sample_info <- read.csv(here("processed-data", "00_data_prep", "sample_info.csv"))
+sample_info$sample_id <- gsub("_2","",sample_info$sample_id)
+rownames(sample_info) <- sample_info$sample_id
+
+rse_samples <- unique(rse_list$gene$Sample)
+all(rse_samples %in% sample_info$sample_id)
+
+sample_info_missing <- sample_info[rse_list$gene$Sample, c("sex","age","diagnosis")]
+
+rse_list <- map(rse_list, function(rse){
+  colData(rse) <- cbind(colData(rse), sample_info_missing)
+  return(rse)
+  })
 
 #### drop QC samples ####
 message(Sys.time(), " - Drop Samples identified in QC")
@@ -85,10 +100,9 @@ rse_list <- pmap(list(rse = rse_list, cutoff = cutoffs, expr = exprs, n = names(
 message("Dimensions post-filter")
 map(rse_list, dim)
 
+#### Add normalized logcounts & Save ####
 message("Object Sizes:")
 walk(rse_list, ~print(object.size(.x),units = "auto"))
-
-message(Sys.time(), " - Save Data")
 
 # walk2(rse_list, names(rse_list), ~{
 #   message(Sys.time(), " - Save ", .y)
@@ -100,6 +114,14 @@ rse_exon <- rse_list$exon
 rse_jx <- rse_list$jx
 rse_tx <- rse_list$tx
 
+## add logcounts
+message(Sys.time(), " - Calc Logcounts")
+assays(rse_gene)$logcounts <- log2(getRPKM(rse_gene, "Length")+1)
+assays(rse_exon)$logcounts <- log2(getRPKM(rse_exon, "Length")+1)
+assays(rse_jx)$logcounts <- log2(getRPKM(rse_jx, "Length")+1)
+assays(rse_tx)$logcounts <- log2(assays(rse_tx)$tpm+1)
+
+message(Sys.time(), " - Save Data")
 save(rse_gene, file = here("processed-data","rse", "rse_gene.Rdata"))
 save(rse_exon, file = here("processed-data","rse", "rse_exon.Rdata"))
 save(rse_jx, file = here("processed-data","rse", "rse_jx.Rdata"))

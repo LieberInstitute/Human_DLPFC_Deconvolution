@@ -1,36 +1,56 @@
-Adding LIBD modules
-Loading git
-Loading LIBD module for git-status-size/github
-Loading LIBD module for git-lfs/2.8.0
-Loading LIBD module for rmate/1.5.9
-Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.3
+Refreshing JHPCE_ROCKY9_DEFAULT_ENV
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/JHPCE_ROCKY9_DEFAULT_ENV.lua'
+    Please contact <root@localhost>
+
+Refreshing ruby/3.2.2
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/ruby/3.2.2.lua'
+    Please contact <root@localhost>
+
+Refreshing rmate/1.5.10
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/rmate/1.5.10.lua'
+    Please contact <root@localhost>
+
+Refreshing conda/3-23.3.1
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/conda/3-23.3.1.lua'
+    Please contact <root@localhost>
+
+Refreshing conda_R/4.3
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/community/modulefiles/conda_R/4.3.lua'
+    Please contact <root@localhost>
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
 **** Job starts ****
-Thu Aug 10 15:09:33 EDT 2023
+Wed Sep 27 02:09:06 PM EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3673605
+Job id: 246658
 Job name: explore_proportions
-Hostname: compute-100.cm.cluster
-Task id: undefined
+Hostname: compute-141.cm.cluster
+Task id: 
 Unloading conda_R/4.3
 Loading conda_R/4.3
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'deactivate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'doctor', 'env', 'content-trust')
 
 Currently Loaded Modules:
-  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
-  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
-  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
-  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.3
-  5) gcc/4.4.7        10) git-lfs/2.8.0
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ dplyr     1.1.3     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
+✔ purrr     1.0.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -155,6 +175,7 @@ The following objects are masked from ‘package:matrixStats’:
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
 Loading objects:
   cell_type_colors_halo
+  cell_type_colors_broad
 Loading objects:
   sce
 Loading required package: HDF5Array
@@ -265,26 +286,80 @@ the `.groups` argument.
  Mean   :0.500  
  3rd Qu.:0.760  
  Max.   :0.878  
+   Combo Confidence n
+1 Circle   Excluded 2
+2 Circle        Low 6
+3 Circle         OK 4
+4 Circle       High 9
+5   Star   Excluded 6
+6   Star        Low 2
+7   Star         OK 9
+8   Star       High 4
+# A tibble: 21 × 7
+   Sample      Star     Circle   both_high one_high both_ok one_ok
+   <chr>       <ord>    <ord>    <lgl>     <lgl>    <lgl>   <lgl> 
+ 1 Br8492_post High     High     TRUE      TRUE     TRUE    TRUE  
+ 2 Br2720_post High     High     TRUE      TRUE     TRUE    TRUE  
+ 3 Br6423_post High     High     TRUE      TRUE     TRUE    TRUE  
+ 4 Br2743_ant  High     OK       FALSE     TRUE     TRUE    TRUE  
+ 5 Br6471_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+ 6 Br3942_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+ 7 Br8667_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+ 8 Br8325_mid  OK       OK       FALSE     FALSE    TRUE    TRUE  
+ 9 Br6522_mid  OK       OK       FALSE     FALSE    TRUE    TRUE  
+10 Br6423_ant  OK       OK       FALSE     FALSE    TRUE    TRUE  
+11 Br6432_post OK       Low      FALSE     FALSE    FALSE   TRUE  
+12 Br8325_ant  OK       Low      FALSE     FALSE    FALSE   TRUE  
+13 Br6522_post OK       Low      FALSE     FALSE    FALSE   TRUE  
+14 Br6471_ant  Low      Low      FALSE     FALSE    FALSE   FALSE 
+15 Br8667_ant  Low      Low      FALSE     FALSE    FALSE   FALSE 
+16 Br8492_mid  Excluded High     FALSE     TRUE     FALSE   TRUE  
+17 Br3942_post Excluded High     FALSE     TRUE     FALSE   TRUE  
+18 Br3942_ant  Excluded High     FALSE     TRUE     FALSE   TRUE  
+19 Br2720_mid  Excluded Low      FALSE     FALSE    FALSE   FALSE 
+20 Br6432_ant  Excluded Excluded FALSE     FALSE    FALSE   FALSE 
+21 Br6432_mid  Excluded Excluded FALSE     FALSE    FALSE   FALSE 
+# A tibble: 3 × 3
+  both_ok one_ok     n
+  <lgl>   <lgl>  <int>
+1 FALSE   FALSE      5
+2 FALSE   TRUE       6
+3 TRUE    TRUE      10
 Loading objects:
   halo_all
+# A tibble: 26 × 3
+# Groups:   Sample, Confidence [26]
+   Sample      Confidence     n
+   <chr>       <fct>      <int>
+ 1 Br2720_mid  Low        14506
+ 2 Br2720_post High       74862
+ 3 Br2743_ant  High       50069
+ 4 Br2743_ant  OK         58189
+ 5 Br3942_ant  High       51184
+ 6 Br3942_mid  High       36229
+ 7 Br3942_mid  OK         35519
+ 8 Br3942_post High       53506
+ 9 Br6423_ant  OK         94847
+10 Br6423_post High       85539
+# ℹ 16 more rows
 # A tibble: 7 × 2
-  cell_type       n
-  <chr>       <int>
-1 Astro      233049
-2 Endo        57739
-3 Excit      133184
-4 Inhib       89839
-5 Micro       29756
-6 Oligo       86245
-7 Other     1001662
-`summarise()` has grouped output by 'SAMPLE_ID', 'Sample', 'Combo'. You can
-override using the `.groups` argument.
+  cell_type      n
+  <chr>      <int>
+1 Astro     161898
+2 Endo       45862
+3 Excit     136096
+4 Inhib      73933
+5 Micro      25737
+6 Oligo      67697
+7 Other     807899
+`summarise()` has grouped output by 'SAMPLE_ID', 'Sample', 'Combo',
+'cell_type'. You can override using the `.groups` argument.
 Joining with `by = join_by(Sample, Combo, cell_type)`
-`summarise()` has grouped output by 'Sample'. You can override using the
-`.groups` argument.
+`summarise()` has grouped output by 'Sample', 'cell_type'. You can override
+using the `.groups` argument.
 Joining with `by = join_by(Sample, cell_type)`
     Sample                s    
- Length:21          Min.   :1  
+ Length:19          Min.   :1  
  Class :character   1st Qu.:1  
  Mode  :character   Median :1  
                     Mean   :1  
@@ -293,195 +368,193 @@ Joining with `by = join_by(Sample, cell_type)`
 # A tibble: 2 × 4
   Combo    min median   max
   <chr>  <int>  <int> <int>
-1 Circle 26793  46576 62729
-2 Star   30607  42649 60268
+1 Circle 13779  37786 57674
+2 Star   28093  36592 53709
 Joining with `by = join_by(Sample)`
     Sample              Circle           Star        mean_n_cells  
- Length:21          Min.   :26793   Min.   :30607   Min.   :26793  
- Class :character   1st Qu.:40076   1st Qu.:38950   1st Qu.:38542  
- Mode  :character   Median :46576   Median :42649   Median :45799  
-                    Mean   :46340   Mean   :43889   Mean   :45431  
-                    3rd Qu.:51511   3rd Qu.:47988   3rd Qu.:51511  
-                    Max.   :62729   Max.   :60268   Max.   :60276  
-                                    NA's   :6                      
- total_n_cells    only_circle         error         
- Min.   : 26793   Mode :logical   Min.   :0.000249  
- 1st Qu.: 55674   FALSE:15        1st Qu.:0.010678  
- Median : 77083   TRUE :6         Median :0.064122  
- Mean   : 77689                   Mean   :0.084332  
- 3rd Qu.: 91598                   3rd Qu.:0.117233  
- Max.   :120551                   Max.   :0.339997  
-                                  NA's   :6         
+ Length:19          Min.   :13779   Min.   :28093   Min.   :13779  
+ Class :character   1st Qu.:32570   1st Qu.:32394   1st Qu.:32969  
+ Mode  :character   Median :37786   Median :36592   Median :36863  
+                    Mean   :38820   Mean   :38769   Mean   :38887  
+                    3rd Qu.:46456   3rd Qu.:44042   3rd Qu.:47830  
+                    Max.   :57674   Max.   :53709   Max.   :53770  
+                                    NA's   :4                      
+ total_n_cells    only_circle         error        
+ Min.   : 13779   Mode :logical   Min.   :0.01322  
+ 1st Qu.: 60568   FALSE:15        1st Qu.:0.03161  
+ Median : 67386   TRUE :4         Median :0.11180  
+ Mean   : 69427                   Mean   :0.09656  
+ 3rd Qu.: 79702                   3rd Qu.:0.14050  
+ Max.   :107540                   Max.   :0.20891  
+                                  NA's   :4        
 Saving 7 x 7 in image
 Warning messages:
-1: Removed 6 rows containing missing values (`geom_point()`). 
-2: Removed 6 rows containing missing values (`geom_text_repel()`). 
+1: Removed 4 rows containing missing values (`geom_point()`). 
+2: Removed 4 rows containing missing values (`geom_text_repel()`). 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Warning messages:
-1: Removed 6 rows containing missing values (`geom_point()`). 
-2: Removed 6 rows containing missing values (`geom_text_repel()`). 
+1: Removed 4 rows containing missing values (`geom_point()`). 
+2: Removed 4 rows containing missing values (`geom_text_repel()`). 
 Saving 7 x 7 in image
 `geom_smooth()` using formula = 'y ~ x'
 Warning messages:
-1: Removed 6 rows containing non-finite values (`stat_smooth()`). 
-2: Removed 6 rows containing missing values (`geom_point()`). 
-3: Removed 6 rows containing missing values (`geom_text_repel()`). 
-Saving 7 x 7 in image
-Warning message:
-ggrepel: 1 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+1: Removed 4 rows containing non-finite values (`stat_smooth()`). 
+2: Removed 4 rows containing missing values (`geom_point()`). 
+3: Removed 4 rows containing missing values (`geom_text_repel()`). 
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
+Saving 10 x 7 in image
 Saving 7 x 7 in image
 Saving 7 x 7 in image
-Joining with `by = join_by(Sample, Combo, cell_type, n_cell, n_cell_sn,
-prop_sn)`
 Saving 7 x 7 in image
-Warning message:
-Removed 45 rows containing missing values (`geom_point()`). 
+Saving 7 x 7 in image
 Saving 11 x 7 in image
 Warning message:
-Removed 32 rows containing missing values (`geom_point()`). 
+Removed 24 rows containing missing values (`geom_point()`). 
 Saving 11 x 7 in image
 `geom_smooth()` using formula = 'y ~ x'
 Warning messages:
-1: Removed 32 rows containing non-finite values (`stat_smooth()`). 
-2: Removed 32 rows containing missing values (`geom_point()`). 
+1: Removed 24 rows containing non-finite values (`stat_smooth()`). 
+2: Removed 24 rows containing missing values (`geom_point()`). 
+Saving 11 x 7 in image
+Warning message:
+Removed 24 rows containing missing values (`geom_point()`). 
 Saving 11 x 7 in image
 There were 15 warnings (use warnings() to see them)
 # A tibble: 2 × 6
   method   term    estimate std.error statistic  p.value
   <chr>    <chr>      <dbl>     <dbl>     <dbl>    <dbl>
-1 Adjusted prop_sn    0.666    0.0559      11.9 9.96e-21
-2 Simple   prop_sn    0.757    0.0504      15.0 7.66e-30
+1 Adjusted prop_sn    0.721    0.0560      12.9 2.16e-22
+2 Simple   prop_sn    0.773    0.0511      15.1 1.20e-29
 # A tibble: 14 × 7
    method   cell_type term    estimate std.error statistic  p.value
    <chr>    <fct>     <chr>      <dbl>     <dbl>     <dbl>    <dbl>
- 1 Adjusted Astro     prop_sn    3.23     0.445       7.27 1.32e- 6
- 2 Adjusted Endo      prop_sn    1.37     0.250       5.48 4.08e- 5
- 3 Adjusted Micro     prop_sn    1.31     0.464       2.82 1.53e- 2
- 4 Adjusted Oligo     prop_sn    0.469    0.124       3.76 2.36e- 3
- 5 Adjusted Excit     prop_sn    0.640    0.0598     10.7  8.10e- 8
- 6 Adjusted Inhib     prop_sn    0.305    0.0796      3.83 1.35e- 3
- 7 Adjusted Other     prop_sn    0.900    0.133       6.79 6.52e- 3
- 8 Simple   Astro     prop_sn    2.77     0.417       6.64 4.14e- 6
- 9 Simple   Endo      prop_sn    1.16     0.206       5.62 3.07e- 5
-10 Simple   Micro     prop_sn    1.07     0.345       3.10 9.24e- 3
-11 Simple   Oligo     prop_sn    0.400    0.0908      4.41 7.11e- 4
-12 Simple   Excit     prop_sn    0.461    0.0381     12.1  1.90e- 8
-13 Simple   Inhib     prop_sn    0.244    0.0604      4.04 8.42e- 4
-14 Simple   Other     prop_sn    0.915    0.0951      9.62 8.02e-11
+ 1 Adjusted Astro     prop_sn    2.74     0.457       6.01 1.83e- 5
+ 2 Adjusted Endo      prop_sn    1.39     0.251       5.52 4.68e- 5
+ 3 Adjusted Micro     prop_sn    1.38     0.352       3.93 2.01e- 3
+ 4 Adjusted Oligo     prop_sn    0.451    0.142       3.17 8.08e- 3
+ 5 Adjusted Excit     prop_sn    0.700    0.0575     12.2  1.77e- 8
+ 6 Adjusted Inhib     prop_sn    0.373    0.101       3.69 1.99e- 3
+ 7 Adjusted Other     prop_sn    1.04     0.132       7.83 1.59e- 2
+ 8 Simple   Astro     prop_sn    2.42     0.444       5.46 5.27e- 5
+ 9 Simple   Endo      prop_sn    1.17     0.216       5.42 5.62e- 5
+10 Simple   Micro     prop_sn    1.10     0.297       3.70 3.02e- 3
+11 Simple   Oligo     prop_sn    0.378    0.101       3.75 2.77e- 3
+12 Simple   Excit     prop_sn    0.499    0.0388     12.8  9.18e- 9
+13 Simple   Inhib     prop_sn    0.315    0.0744      4.24 6.26e- 4
+14 Simple   Other     prop_sn    0.916    0.0998      9.18 3.21e-10
 [1] "Reproducibility information:"
-[1] "2023-08-10 15:11:03 EDT"
+[1] "2023-09-27 14:09:54 EDT"
    user  system elapsed 
- 77.494   3.443  88.238 
+ 40.128   1.280  45.422 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.3.1 Patched (2023-08-09 r84918)
- os       CentOS Linux 7 (Core)
+ version  R version 4.3.1 Patched (2023-07-19 r84711)
+ os       Rocky Linux 9.2 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
  language (EN)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-08-10
- pandoc   3.1.1 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/bin/pandoc
+ date     2023-09-27
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package              * version   date (UTC) lib source
- abind                * 1.4-5     2016-07-21 [2] CRAN (R 4.3.0)
- backports              1.4.1     2021-12-13 [2] CRAN (R 4.3.0)
+ abind                * 1.4-5     2016-07-21 [2] CRAN (R 4.3.1)
+ backports              1.4.1     2021-12-13 [2] CRAN (R 4.3.1)
  beachmat               2.16.0    2023-04-25 [2] Bioconductor
  Biobase              * 2.60.0    2023-04-25 [2] Bioconductor
  BiocGenerics         * 0.46.0    2023-04-25 [2] Bioconductor
  BiocParallel           1.34.2    2023-05-22 [2] Bioconductor
  BiocSingular           1.16.0    2023-04-25 [2] Bioconductor
- bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.0)
- bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.0)
- bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.0)
+ bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.1)
+ bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.1)
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.1)
  broom                * 1.0.5     2023-06-09 [2] CRAN (R 4.3.1)
- cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.0)
+ cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.1)
  codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.1)
- colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.0)
- crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.0)
+ colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.1)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
  DelayedArray         * 0.26.7    2023-07-28 [2] Bioconductor
- DelayedMatrixStats     1.22.1    2023-06-09 [2] Bioconductor
- dplyr                * 1.1.2     2023-04-20 [2] CRAN (R 4.3.0)
- fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.0)
- farver                 2.1.1     2022-07-06 [2] CRAN (R 4.3.0)
- forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.3.0)
- generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.0)
- GenomeInfoDb         * 1.36.1    2023-06-21 [2] Bioconductor
- GenomeInfoDbData       1.2.10    2023-04-11 [2] Bioconductor
+ DelayedMatrixStats     1.22.6    2023-08-28 [2] Bioconductor
+ dplyr                * 1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
+ farver                 2.1.1     2022-07-06 [2] CRAN (R 4.3.1)
+ forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.3.1)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.1)
+ GenomeInfoDb         * 1.36.3    2023-09-07 [2] Bioconductor
+ GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
  GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
- ggplot2              * 3.4.2     2023-04-03 [2] CRAN (R 4.3.0)
- ggrepel              * 0.9.3     2023-02-03 [2] CRAN (R 4.3.0)
- glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.0)
- gtable                 0.3.3     2023-03-21 [2] CRAN (R 4.3.0)
+ ggplot2              * 3.4.3     2023-08-14 [2] CRAN (R 4.3.1)
+ ggrepel              * 0.9.3     2023-02-03 [2] CRAN (R 4.3.1)
+ glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
+ gtable                 0.3.4     2023-08-21 [2] CRAN (R 4.3.1)
  HDF5Array            * 1.28.1    2023-05-01 [2] Bioconductor
- here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.0)
- hms                    1.1.3     2023-03-21 [2] CRAN (R 4.3.0)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
+ hms                    1.1.3     2023-03-21 [2] CRAN (R 4.3.1)
  IRanges              * 2.34.1    2023-06-22 [2] Bioconductor
- irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.0)
- labeling               0.4.2     2020-10-20 [2] CRAN (R 4.3.0)
+ irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.1)
+ labeling               0.4.3     2023-08-29 [2] CRAN (R 4.3.1)
  lattice                0.21-8    2023-04-05 [3] CRAN (R 4.3.1)
- lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.0)
- lubridate            * 1.9.2     2023-02-10 [2] CRAN (R 4.3.0)
- magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.0)
- Matrix               * 1.6-0     2023-07-08 [3] CRAN (R 4.3.1)
+ lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.1)
+ lubridate            * 1.9.2     2023-02-10 [2] CRAN (R 4.3.1)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.1)
+ Matrix               * 1.6-1.1   2023-09-18 [3] CRAN (R 4.3.1)
  MatrixGenerics       * 1.12.3    2023-07-30 [2] Bioconductor
- matrixStats          * 1.0.0     2023-06-02 [2] CRAN (R 4.3.0)
+ matrixStats          * 1.0.0     2023-06-02 [2] CRAN (R 4.3.1)
  mgcv                   1.9-0     2023-07-11 [3] CRAN (R 4.3.1)
- munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.0)
- nlme                   3.1-162   2023-01-31 [3] CRAN (R 4.3.1)
- pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.0)
- pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.0)
- purrr                * 1.0.1     2023-01-10 [2] CRAN (R 4.3.0)
- R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.0)
- ragg                   1.2.5     2023-01-12 [2] CRAN (R 4.3.0)
+ munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.1)
+ nlme                   3.1-163   2023-08-09 [3] CRAN (R 4.3.1)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.1)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.1)
+ purrr                * 1.0.2     2023-08-10 [2] CRAN (R 4.3.1)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.1)
+ ragg                   1.2.5     2023-01-12 [2] CRAN (R 4.3.1)
  Rcpp                   1.0.11    2023-07-06 [2] CRAN (R 4.3.1)
- RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.0)
- readr                * 2.1.4     2023-02-10 [2] CRAN (R 4.3.0)
+ RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.1)
+ readr                * 2.1.4     2023-02-10 [2] CRAN (R 4.3.1)
  rhdf5                * 2.44.0    2023-04-25 [2] Bioconductor
  rhdf5filters           1.12.1    2023-04-30 [2] Bioconductor
- Rhdf5lib               1.22.0    2023-04-25 [2] Bioconductor
- rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.0)
- rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.0)
- rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.0)
- S4Arrays             * 1.0.5     2023-07-24 [2] Bioconductor
+ Rhdf5lib               1.22.1    2023-09-10 [2] Bioconductor
+ rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
+ rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.1)
+ S4Arrays             * 1.0.6     2023-08-30 [2] Bioconductor
  S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
  ScaledMatrix           1.8.1     2023-05-03 [2] Bioconductor
- scales                 1.2.1     2022-08-20 [2] CRAN (R 4.3.0)
+ scales                 1.2.1     2022-08-20 [2] CRAN (R 4.3.1)
  scry                   1.12.0    2023-04-25 [2] Bioconductor
  scuttle                1.10.2    2023-08-03 [2] Bioconductor
- sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.0)
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.1)
  SingleCellExperiment * 1.22.0    2023-04-25 [2] Bioconductor
  sparseMatrixStats      1.12.2    2023-07-02 [2] Bioconductor
- stringi                1.7.12    2023-01-11 [2] CRAN (R 4.3.0)
- stringr              * 1.5.0     2022-12-02 [2] CRAN (R 4.3.0)
+ stringi                1.7.12    2023-01-11 [2] CRAN (R 4.3.1)
+ stringr              * 1.5.0     2022-12-02 [2] CRAN (R 4.3.1)
  SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
- systemfonts            1.0.4     2022-02-11 [2] CRAN (R 4.3.0)
- textshaping            0.3.6     2021-10-13 [2] CRAN (R 4.3.0)
- tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.3.0)
- tidyr                * 1.3.0     2023-01-24 [2] CRAN (R 4.3.0)
- tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.0)
- tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.3.0)
- timechange             0.2.0     2023-01-11 [2] CRAN (R 4.3.0)
- tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.0)
- utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.0)
+ systemfonts            1.0.4     2022-02-11 [2] CRAN (R 4.3.1)
+ textshaping            0.3.6     2021-10-13 [2] CRAN (R 4.3.1)
+ tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
+ tidyr                * 1.3.0     2023-01-24 [2] CRAN (R 4.3.1)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.1)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.3.1)
+ timechange             0.2.0     2023-01-11 [2] CRAN (R 4.3.1)
+ tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.1)
+ utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
  vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
- vroom                  1.6.3     2023-04-28 [2] CRAN (R 4.3.0)
- withr                  2.5.0     2022-03-03 [2] CRAN (R 4.3.0)
+ vroom                  1.6.3     2023-04-28 [2] CRAN (R 4.3.1)
+ withr                  2.5.0     2022-03-03 [2] CRAN (R 4.3.1)
  XVector                0.40.0    2023-04-25 [2] Bioconductor
  zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
 
  [1] /users/lhuuki/R/4.3
- [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/site-library
- [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/library
+ [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Aug 10 15:11:06 EDT 2023
+Wed Sep 27 02:09:55 PM EDT 2023

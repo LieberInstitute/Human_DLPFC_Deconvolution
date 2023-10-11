@@ -1,36 +1,56 @@
-Adding LIBD modules
-Loading git
-Loading LIBD module for git-status-size/github
-Loading LIBD module for git-lfs/2.8.0
-Loading LIBD module for rmate/1.5.9
-Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.3
+Refreshing JHPCE_ROCKY9_DEFAULT_ENV
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/JHPCE_ROCKY9_DEFAULT_ENV.lua'
+    Please contact <root@localhost>
+
+Refreshing ruby/3.2.2
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/ruby/3.2.2.lua'
+    Please contact <root@localhost>
+
+Refreshing rmate/1.5.10
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/libd/modulefiles/rmate/1.5.10.lua'
+    Please contact <root@localhost>
+
+Refreshing conda/3-23.3.1
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/jhpce/modulefiles/conda/3-23.3.1.lua'
+    Please contact <root@localhost>
+
+Refreshing conda_R/4.3
+  Module ERROR: Magic cookie '#%Module' missing
+    In '/jhpce/shared/community/modulefiles/conda_R/4.3.lua'
+    Please contact <root@localhost>
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
+Loading LIBD module for rmate/1.5.10
+Loading LIBD module for ruby/3.2.2
 **** Job starts ****
-Thu Aug 10 13:48:24 EDT 2023
+Mon Sep 25 04:29:30 PM EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3673534
+Job id: 226492
 Job name: spatial_size_QC
-Hostname: compute-093.cm.cluster
-Task id: undefined
+Hostname: compute-122.cm.cluster
+Task id: 
 Unloading conda_R/4.3
 Loading conda_R/4.3
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'deactivate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'doctor', 'content-trust', 'env')
 
 Currently Loaded Modules:
-  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
-  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
-  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
-  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.3
-  5) gcc/4.4.7        10) git-lfs/2.8.0
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ dplyr     1.1.3     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
+✔ purrr     1.0.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -49,70 +69,77 @@ The following object is masked from ‘package:readr’:
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
 Loading objects:
   cell_type_colors_halo
+  cell_type_colors_broad
 Loading objects:
   halo_all
-[1] 1685807      40
+[1] 1362399      43
 `summarise()` has grouped output by 'Sample', 'SAMPLE_ID', 'Combo', 'subslide',
 'i'. You can override using the `.groups` argument.
 Saving 7 x 7 in image
 Saving 7 x 7 in image
 Saving 12 x 7 in image
+# A tibble: 2 × 3
+  Combo  n_large prop_large
+  <chr>    <int>      <dbl>
+1 Circle   29804     0.0388
+2 Star     13473     0.0226
 Large Nuc over cell types
   cell_type n_large  prop_large
-1     Excit    8358 0.059049611
-2     Inhib    4591 0.048618024
-3      Endo    2114 0.035319867
-4     Astro    7702 0.031991560
-5     Other   30019 0.029097172
-6     Oligo    1289 0.014725707
-7     Micro     260 0.008662047
+1     Excit    8694 0.060045583
+2     Inhib    3597 0.046394944
+3      Endo    1626 0.034240229
+4     Astro    5543 0.033104198
+5     Other   22696 0.027324990
+6     Oligo     928 0.013522769
+7     Micro     193 0.007443116
 Large Nuc over Samples
-        SAMPLE_ID n_large  prop_large
-1  Br3942M_CIRCLE    2896 0.076581341
-2  Br6423P_CIRCLE    3020 0.065180325
-3  Br6471A_CIRCLE    2608 0.059556976
-4  Br8667M_CIRCLE    2913 0.057994386
-5  Br6432A_CIRCLE    3403 0.055443318
-6  Br2720M_CIRCLE    1446 0.051205779
-7  Br3942P_CIRCLE    2724 0.046645433
-8  Br6522M_CIRCLE    1626 0.046592928
-9    Br3942M_STAR    1540 0.042286781
-10 Br8325M_CIRCLE    1701 0.041631994
-11 Br6423A_CIRCLE    2065 0.041541773
-12   Br6471A_STAR    1787 0.038647865
-13   Br8325M_STAR    1463 0.037142349
-14 Br6522P_CIRCLE    1626 0.036082817
-15 Br8667A_CIRCLE    1848 0.035206706
-16 Br6432M_CIRCLE    1676 0.034734312
-17   Br8667M_STAR    1539 0.033587220
-18 Br6432P_CIRCLE    1577 0.032887740
-19   Br6432P_STAR    1026 0.032434483
-20   Br6423P_STAR    1406 0.031914652
-21 Br3942A_CIRCLE    1673 0.031456829
-22 Br6471M_CIRCLE    1812 0.030509159
-23 Br8325A_CIRCLE    1119 0.028427711
-24   Br6432A_STAR    1487 0.027075254
-25 Br8492P_CIRCLE    1321 0.021443413
-26   Br6522M_STAR     835 0.020453154
-27   Br8325A_STAR     671 0.019293252
-28   Br8667A_STAR     821 0.018217725
-29   Br6522P_STAR     780 0.018202184
-30 Br2720P_CIRCLE     700 0.017166961
-31   Br2720P_STAR     547 0.013498840
-32   Br6471M_STAR     718 0.012243158
-33   Br8492P_STAR     700 0.011481433
-34 Br8492M_CIRCLE     462 0.009447853
-35 Br2743A_CIRCLE     564 0.008910938
-36   Br2743A_STAR     233 0.004501633
+`summarise()` has grouped output by 'Sample'. You can override using the
+`.groups` argument.
+        Sample  Combo n_large  prop_large
+1   Br3942_mid Circle    2846 0.078555853
+2   Br6471_ant Circle    2277 0.073520390
+3  Br6423_post Circle    2829 0.065999440
+4   Br8667_mid Circle    2591 0.063158151
+5   Br2720_mid Circle     727 0.050117193
+6  Br3942_post Circle    2586 0.048331028
+7   Br6522_mid Circle    1531 0.048100789
+8   Br6423_ant Circle    2043 0.043096720
+9   Br3942_mid   Star    1516 0.042681382
+10  Br6471_ant   Star    1447 0.042371889
+11 Br6522_post Circle    1382 0.040531425
+12  Br8325_mid Circle    1360 0.040254551
+13  Br8667_ant Circle    1549 0.039379687
+14  Br8325_mid   Star    1411 0.037665839
+15  Br8667_mid   Star    1472 0.035797665
+16 Br6432_post Circle    1305 0.034718527
+17 Br6432_post   Star     989 0.033308635
+18  Br6471_mid Circle    1622 0.032986252
+19 Br6423_post   Star    1386 0.032478032
+20  Br3942_ant Circle    1604 0.031337918
+21  Br8325_ant Circle     887 0.029497838
+22  Br6522_mid   Star     801 0.021421122
+23 Br8492_post Circle    1122 0.020727877
+24  Br8325_ant   Star     646 0.020320216
+25  Br8667_ant   Star     633 0.019347740
+26 Br6522_post   Star     538 0.018790821
+27 Br2720_post Circle     599 0.016289568
+28 Br2720_post   Star     537 0.014098189
+29  Br6423_ant   Star     646 0.013616627
+30  Br6471_mid   Star     646 0.011975160
+31 Br8492_post   Star     602 0.011084311
+32  Br8492_mid Circle     429 0.009589378
+33  Br2743_ant Circle     515 0.008850470
+34  Br2743_ant   Star     203 0.004054405
+Saving 7 x 7 in image
 Br2720_post
 Saving 10 x 7 in image
 Br2743_ant
 Saving 10 x 7 in image
 Br3942_mid
 Saving 10 x 7 in image
-Br6423_post
+Br6423_ant
 Saving 10 x 7 in image
-Br6432_ant
+Br6423_post
 Saving 10 x 7 in image
 Br6432_post
 Saving 10 x 7 in image
@@ -139,10 +166,6 @@ Saving 10 x 7 in image
 Br3942_ant
 Saving 10 x 7 in image
 Br3942_post
-Saving 10 x 7 in image
-Br6423_ant
-Saving 10 x 7 in image
-Br6432_mid
 Saving 10 x 7 in image
 Br8492_mid
 Saving 10 x 7 in image
@@ -153,9 +176,9 @@ Br2743_ant
 Saving 10 x 7 in image
 Br3942_mid
 Saving 10 x 7 in image
-Br6423_post
+Br6423_ant
 Saving 10 x 7 in image
-Br6432_ant
+Br6423_post
 Saving 10 x 7 in image
 Br6432_post
 Saving 10 x 7 in image
@@ -182,10 +205,6 @@ Saving 10 x 7 in image
 Br3942_ant
 Saving 10 x 7 in image
 Br3942_post
-Saving 10 x 7 in image
-Br6423_ant
-Saving 10 x 7 in image
-Br6432_mid
 Saving 10 x 7 in image
 Br8492_mid
 Saving 10 x 7 in image
@@ -195,9 +214,9 @@ Br2743_ant
 Saving 10 x 7 in image
 Br3942_mid
 Saving 10 x 7 in image
-Br6423_post
+Br6423_ant
 Saving 10 x 7 in image
-Br6432_ant
+Br6423_post
 Saving 10 x 7 in image
 Br6432_post
 Saving 10 x 7 in image
@@ -225,10 +244,6 @@ Br3942_ant
 Saving 10 x 7 in image
 Br3942_post
 Saving 10 x 7 in image
-Br6423_ant
-Saving 10 x 7 in image
-Br6432_mid
-Saving 10 x 7 in image
 Br8492_mid
 Saving 10 x 7 in image
 Saving 10 x 7 in image
@@ -237,13 +252,13 @@ Saving 7 x 7 in image
 # A tibble: 2 × 2
   large_nuc       n
   <lgl>       <int>
-1 FALSE     1631474
-2 TRUE        54333
+1 FALSE     1319122
+2 TRUE        43277
 Saving 7 x 7 in image
 Warning messages:
-1: Removed 12 rows containing missing values (`geom_line()`). 
-2: Removed 12 rows containing missing values (`geom_point()`). 
-3: Removed 12 rows containing missing values (`geom_text_repel()`). 
+1: Removed 8 rows containing missing values (`geom_line()`). 
+2: Removed 8 rows containing missing values (`geom_point()`). 
+3: Removed 8 rows containing missing values (`geom_text_repel()`). 
 Saving 7 x 7 in image
 `geom_smooth()` using formula = 'y ~ x'
 Saving 7 x 7 in image
@@ -251,80 +266,80 @@ Saving 7 x 7 in image
 Saving 7 x 7 in image
 `geom_smooth()` using formula = 'y ~ x'
 [1] "Reproducibility information:"
-[1] "2023-08-10 13:58:56 EDT"
+[1] "2023-09-25 16:35:02 EDT"
    user  system elapsed 
-622.619   5.530 630.461 
+265.125   1.580 329.625 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.3.1 Patched (2023-08-09 r84918)
- os       CentOS Linux 7 (Core)
+ version  R version 4.3.1 Patched (2023-07-19 r84711)
+ os       Rocky Linux 9.2 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
  language (EN)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-08-10
- pandoc   3.1.1 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/bin/pandoc
+ date     2023-09-25
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package     * version date (UTC) lib source
- backports     1.4.1   2021-12-13 [2] CRAN (R 4.3.0)
+ backports     1.4.1   2021-12-13 [2] CRAN (R 4.3.1)
  broom       * 1.0.5   2023-06-09 [2] CRAN (R 4.3.1)
- cli           3.6.1   2023-03-23 [2] CRAN (R 4.3.0)
- colorspace    2.1-0   2023-01-23 [2] CRAN (R 4.3.0)
- dplyr       * 1.1.2   2023-04-20 [2] CRAN (R 4.3.0)
- fansi         1.0.4   2023-01-22 [2] CRAN (R 4.3.0)
- farver        2.1.1   2022-07-06 [2] CRAN (R 4.3.0)
- forcats     * 1.0.0   2023-01-29 [2] CRAN (R 4.3.0)
- generics      0.1.3   2022-07-05 [2] CRAN (R 4.3.0)
- ggplot2     * 3.4.2   2023-04-03 [2] CRAN (R 4.3.0)
- ggrepel     * 0.9.3   2023-02-03 [2] CRAN (R 4.3.0)
- glue          1.6.2   2022-02-24 [2] CRAN (R 4.3.0)
- gtable        0.3.3   2023-03-21 [2] CRAN (R 4.3.0)
- here        * 1.0.1   2020-12-13 [2] CRAN (R 4.3.0)
- hexbin        1.28.3  2023-03-21 [2] CRAN (R 4.3.0)
- hms           1.1.3   2023-03-21 [2] CRAN (R 4.3.0)
- labeling      0.4.2   2020-10-20 [2] CRAN (R 4.3.0)
+ cli           3.6.1   2023-03-23 [2] CRAN (R 4.3.1)
+ colorspace    2.1-0   2023-01-23 [2] CRAN (R 4.3.1)
+ dplyr       * 1.1.3   2023-09-03 [2] CRAN (R 4.3.1)
+ fansi         1.0.4   2023-01-22 [2] CRAN (R 4.3.1)
+ farver        2.1.1   2022-07-06 [2] CRAN (R 4.3.1)
+ forcats     * 1.0.0   2023-01-29 [2] CRAN (R 4.3.1)
+ generics      0.1.3   2022-07-05 [2] CRAN (R 4.3.1)
+ ggplot2     * 3.4.3   2023-08-14 [2] CRAN (R 4.3.1)
+ ggrepel     * 0.9.3   2023-02-03 [2] CRAN (R 4.3.1)
+ glue          1.6.2   2022-02-24 [2] CRAN (R 4.3.1)
+ gtable        0.3.4   2023-08-21 [2] CRAN (R 4.3.1)
+ here        * 1.0.1   2020-12-13 [2] CRAN (R 4.3.1)
+ hexbin        1.28.3  2023-03-21 [2] CRAN (R 4.3.1)
+ hms           1.1.3   2023-03-21 [2] CRAN (R 4.3.1)
+ labeling      0.4.3   2023-08-29 [2] CRAN (R 4.3.1)
  lattice       0.21-8  2023-04-05 [3] CRAN (R 4.3.1)
- lifecycle     1.0.3   2022-10-07 [2] CRAN (R 4.3.0)
- lubridate   * 1.9.2   2023-02-10 [2] CRAN (R 4.3.0)
- magrittr      2.0.3   2022-03-30 [2] CRAN (R 4.3.0)
- Matrix        1.6-0   2023-07-08 [3] CRAN (R 4.3.1)
+ lifecycle     1.0.3   2022-10-07 [2] CRAN (R 4.3.1)
+ lubridate   * 1.9.2   2023-02-10 [2] CRAN (R 4.3.1)
+ magrittr      2.0.3   2022-03-30 [2] CRAN (R 4.3.1)
+ Matrix        1.6-1.1 2023-09-18 [3] CRAN (R 4.3.1)
  mgcv          1.9-0   2023-07-11 [3] CRAN (R 4.3.1)
- munsell       0.5.0   2018-06-12 [2] CRAN (R 4.3.0)
- nlme          3.1-162 2023-01-31 [3] CRAN (R 4.3.1)
- patchwork   * 1.1.2   2022-08-19 [2] CRAN (R 4.3.0)
- pillar        1.9.0   2023-03-22 [2] CRAN (R 4.3.0)
- pkgconfig     2.0.3   2019-09-22 [2] CRAN (R 4.3.0)
- purrr       * 1.0.1   2023-01-10 [2] CRAN (R 4.3.0)
- R6            2.5.1   2021-08-19 [2] CRAN (R 4.3.0)
- ragg          1.2.5   2023-01-12 [2] CRAN (R 4.3.0)
+ munsell       0.5.0   2018-06-12 [2] CRAN (R 4.3.1)
+ nlme          3.1-163 2023-08-09 [3] CRAN (R 4.3.1)
+ patchwork   * 1.1.3   2023-08-14 [2] CRAN (R 4.3.1)
+ pillar        1.9.0   2023-03-22 [2] CRAN (R 4.3.1)
+ pkgconfig     2.0.3   2019-09-22 [2] CRAN (R 4.3.1)
+ purrr       * 1.0.2   2023-08-10 [2] CRAN (R 4.3.1)
+ R6            2.5.1   2021-08-19 [2] CRAN (R 4.3.1)
+ ragg          1.2.5   2023-01-12 [2] CRAN (R 4.3.1)
  Rcpp          1.0.11  2023-07-06 [2] CRAN (R 4.3.1)
- readr       * 2.1.4   2023-02-10 [2] CRAN (R 4.3.0)
- rlang         1.1.1   2023-04-28 [2] CRAN (R 4.3.0)
- rprojroot     2.0.3   2022-04-02 [2] CRAN (R 4.3.0)
- scales      * 1.2.1   2022-08-20 [2] CRAN (R 4.3.0)
- sessioninfo * 1.2.2   2021-12-06 [2] CRAN (R 4.3.0)
- stringi       1.7.12  2023-01-11 [2] CRAN (R 4.3.0)
- stringr     * 1.5.0   2022-12-02 [2] CRAN (R 4.3.0)
- systemfonts   1.0.4   2022-02-11 [2] CRAN (R 4.3.0)
- textshaping   0.3.6   2021-10-13 [2] CRAN (R 4.3.0)
- tibble      * 3.2.1   2023-03-20 [2] CRAN (R 4.3.0)
- tidyr       * 1.3.0   2023-01-24 [2] CRAN (R 4.3.0)
- tidyselect    1.2.0   2022-10-10 [2] CRAN (R 4.3.0)
- tidyverse   * 2.0.0   2023-02-22 [2] CRAN (R 4.3.0)
- timechange    0.2.0   2023-01-11 [2] CRAN (R 4.3.0)
- tzdb          0.4.0   2023-05-12 [2] CRAN (R 4.3.0)
- utf8          1.2.3   2023-01-31 [2] CRAN (R 4.3.0)
+ readr       * 2.1.4   2023-02-10 [2] CRAN (R 4.3.1)
+ rlang         1.1.1   2023-04-28 [2] CRAN (R 4.3.1)
+ rprojroot     2.0.3   2022-04-02 [2] CRAN (R 4.3.1)
+ scales      * 1.2.1   2022-08-20 [2] CRAN (R 4.3.1)
+ sessioninfo * 1.2.2   2021-12-06 [2] CRAN (R 4.3.1)
+ stringi       1.7.12  2023-01-11 [2] CRAN (R 4.3.1)
+ stringr     * 1.5.0   2022-12-02 [2] CRAN (R 4.3.1)
+ systemfonts   1.0.4   2022-02-11 [2] CRAN (R 4.3.1)
+ textshaping   0.3.6   2021-10-13 [2] CRAN (R 4.3.1)
+ tibble      * 3.2.1   2023-03-20 [2] CRAN (R 4.3.1)
+ tidyr       * 1.3.0   2023-01-24 [2] CRAN (R 4.3.1)
+ tidyselect    1.2.0   2022-10-10 [2] CRAN (R 4.3.1)
+ tidyverse   * 2.0.0   2023-02-22 [2] CRAN (R 4.3.1)
+ timechange    0.2.0   2023-01-11 [2] CRAN (R 4.3.1)
+ tzdb          0.4.0   2023-05-12 [2] CRAN (R 4.3.1)
+ utf8          1.2.3   2023-01-31 [2] CRAN (R 4.3.1)
  vctrs         0.6.3   2023-06-14 [2] CRAN (R 4.3.1)
- viridisLite   0.4.2   2023-05-02 [2] CRAN (R 4.3.0)
- withr         2.5.0   2022-03-03 [2] CRAN (R 4.3.0)
+ viridisLite   0.4.2   2023-05-02 [2] CRAN (R 4.3.1)
+ withr         2.5.0   2022-03-03 [2] CRAN (R 4.3.1)
 
  [1] /users/lhuuki/R/4.3
- [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/site-library
- [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/library
+ [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Aug 10 13:58:56 EDT 2023
+Mon Sep 25 04:35:04 PM EDT 2023

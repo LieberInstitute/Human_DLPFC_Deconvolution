@@ -1,20 +1,19 @@
-#!/bin/bash
-#$ -cwd
-#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
-#$ -N explore_proportions
-#$ -o logs/08_explore_proportions.txt
-#$ -e logs/08_explore_proportions.txt
-#$ -m e
+#!/bin/bash -l
+#SBATCH --output=logs/08_explore_proportions.txt
+#SBATCH --error=logs/08_explore_proportions.txt
+#SBATCH --partition=shared
+#SBATCH --job-name=explore_proportions
+#SBATCH --mem=5GB
 
 echo "**** Job starts ****"
 date
 
 echo "**** JHPCE info ****"
 echo "User: ${USER}"
-echo "Job id: ${JOB_ID}"
-echo "Job name: ${JOB_NAME}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Job name: ${SLURM_JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
-echo "Task id: ${SGE_TASK_ID}"
+echo "Task id: ${SLURM_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
 module load conda_R/4.3

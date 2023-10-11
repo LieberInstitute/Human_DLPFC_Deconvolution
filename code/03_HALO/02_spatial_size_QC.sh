@@ -1,20 +1,20 @@
-#!/bin/bash
-#$ -cwd
-#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
-#$ -N spatial_size_QC
-#$ -o logs/02_spatial_size_QC.txt
-#$ -e logs/02_spatial_size_QC.txt
-#$ -m e
+#!/bin/bash -l
+#SBATCH --output=logs/02_spatial_size_QC.txt
+#SBATCH --error=logs/02_spatial_size_QC.txt
+#SBATCH --partition=shared
+#SBATCH --job-name=spatial_size_QC
+#SBATCH --mem=5GB
+
 
 echo "**** Job starts ****"
 date
 
 echo "**** JHPCE info ****"
 echo "User: ${USER}"
-echo "Job id: ${JOB_ID}"
-echo "Job name: ${JOB_NAME}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Job name: ${SLURM_JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
-echo "Task id: ${SGE_TASK_ID}"
+echo "Task id: ${SLURM_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
 module load conda_R/4.3
