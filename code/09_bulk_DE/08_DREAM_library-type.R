@@ -55,7 +55,7 @@ DREAM_library_type <- map2(rse_list, names(rse_list), function(rse, prep_name){
   outDE <- topTable( fitmm, coef="library_typeRiboZeroGold", number=Inf , sort.by = "none")
   
   message(Sys.time(), " - Saving")
-  try(write.csv(outDE, file = here(data_dir, paste0("DREAM_library-type_gene_",prep_name,".csv")), row.names = FALSE))
+  try(write.csv(outDE, file = here(data_dir, paste0("DREAM_library-type_gene_",prep_name,".csv")), row.names = TRUE))
   
   return(outDE)
 })
