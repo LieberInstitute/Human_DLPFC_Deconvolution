@@ -414,7 +414,7 @@ metadata |> count(Confidence)
 
 save(halo_all, file = here("processed-data", "03_HALO", "halo_all.Rdata"))
 
-# sgejobs::job_single('01_import_HALO_data', create_shell = TRUE, memory = '10G', command = "Rscript 01_import_HALO_data.R")
+# slurmjobs::job_single(name = "01_import_HALO_data", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 01_import_HALO_data.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

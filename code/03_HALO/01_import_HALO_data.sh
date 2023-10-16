@@ -1,22 +1,25 @@
 #!/bin/bash
-#$ -cwd
-#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
-#$ -N import_HALO_data
-#$ -o logs/01_import_HALO_data.txt
-#$ -e logs/01_import_HALO_data.txt
-#$ -m e
+#SBATCH -p shared
+#SBATCH --mem-per-cpu=10G
+#SBATCH --job-name=01_import_HALO_data
+#SBATCH -c 1
+#SBATCH -o logs/01_import_HALO_data.txt
+#SBATCH -e logs/01_import_HALO_data.txt
+#SBATCH --mail-type=ALL
+
+set -e
 
 echo "**** Job starts ****"
 date
 
 echo "**** JHPCE info ****"
 echo "User: ${USER}"
-echo "Job id: ${JOB_ID}"
-echo "Job name: ${JOB_NAME}"
-echo "Hostname: ${HOSTNAME}"
-echo "Task id: ${SGE_TASK_ID}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Job name: ${SLURM_JOB_NAME}"
+echo "Node name: ${SLURMD_NODENAME}"
+echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
-## Load the R module (absent since the JHPCE upgrade to CentOS v7)
+## Load the R module
 module load conda_R/4.3
 
 ## List current modules for reproducibility
@@ -28,5 +31,5 @@ Rscript 01_import_HALO_data.R
 echo "**** Job ends ****"
 date
 
-## This script was made using sgejobs version 0.99.1
-## available from http://research.libd.org/sgejobs/
+## This script was made using slurmjobs version 0.99.0
+## available from http://research.libd.org/slurmjobs/
