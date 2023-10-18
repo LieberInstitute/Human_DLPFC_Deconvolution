@@ -43,8 +43,8 @@ DREAM_data_type_long <- map2_dfr(DREAM_data_type, names(DREAM_data_type), functi
   as_tibble() |>
   group_by(library_type) |>
   arrange(adj.P.Val) |>
-  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ library_type,
-                                         logFC < -1 & adj.P.Val < 0.05 ~ "snRNA-seq",
+  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ "snRNA-seq",
+                                         logFC < -1 & adj.P.Val < 0.05 ~ library_type,
                                          TRUE ~"None"),
          rank_p = row_number()) |>
   group_by(library_type, DE_class) |>
@@ -118,7 +118,7 @@ pdf(here(plot_dir, "data_type_upset.pdf"))
 upset(fromList(DE_libray_type_geneList), order.by = "freq", sets = names(DE_libray_type_geneList), keep.order = TRUE)
 dev.off()
 
-# slurmjobs::job_single(name = ""04_DREAM_plots_sn", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 04_DREAM_plots_sn.R")
+# slurmjobs::job_single(name = "04_DREAM_plots_sn", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 04_DREAM_plots_sn.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
