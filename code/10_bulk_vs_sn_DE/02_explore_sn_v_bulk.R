@@ -59,6 +59,9 @@ colData(rse_gene) <- colData(rse_gene)[,common_colnames]
 #### Match rowData ####
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
+nrow(sce_pb_sample) # [1] 29962
+nrow(rse_gene) # [1] 21745
+
 common_genes <- intersect(rownames(sce_pb_sample), rownames(rse_gene))
 length(common_genes)
 # [1] 17660
@@ -76,6 +79,14 @@ rse_combine <- SummarizedExperiment(colData = rbind(colData(rse_gene),
                                                                  assays(sce_pb_sample)$logcounts)
                                                   )
                                     )
+
+dim(rse_combine)
+# [1] 17660   129
+table(rse_combine$library_combo)
+# polyA_Bulk        polyA_Cyto         polyA_Nuc RiboZeroGold_Bulk RiboZeroGold_Cyto  RiboZeroGold_Nuc 
+# 19                18                18                19                19                17 
+# snRNA-seq 
+# 19 
 
 # move to colData
 pd <- as.data.frame(colData(rse_combine))
@@ -196,6 +207,59 @@ pc_test <- pca_tab |>
 
 ggsave(pc_test, filename = here(plot_dir, "sn_vs_Bulk_PC1vPC2_mitoRate.png"))
 
+#### Genes with zero expression ####
+
+rd <- as.data.frame(rowData(rse_combine))[,c("ensemblID", "gencodeID", "gene_type", "Symbol")]
+
+expression_sum <- map_dfc(splitit(rse_combine$library_combo), ~rowSums(assays(rse_combine[,.x])$counts))
+expression_sum_rd <- cbind(rd, expression_sum)
+head(expression_sum)
+#                       ensemblID          gencodeID      gene_type          Symbol polyA_Bulk polyA_Cyto polyA_Nuc
+# ENSG00000228794 ENSG00000228794 ENSG00000228794.11         lncRNA       LINC01128      30235      13610     19667
+# ENSG00000225880 ENSG00000225880  ENSG00000225880.5         lncRNA       LINC00115        488        355       392
+# ENSG00000187634 ENSG00000187634 ENSG00000187634.13 protein_coding          SAMD11        507        936      1029
+# ENSG00000188976 ENSG00000188976 ENSG00000188976.11 protein_coding           NOC2L      55965      84834     64962
+# ENSG00000187961 ENSG00000187961 ENSG00000187961.15 protein_coding          KLHL17       5737       5211     12420
+# ENSG00000272512 ENSG00000272512  ENSG00000272512.1         lncRNA ENSG00000272512        840        899      2684
+
+expression_long <- expression_sum |>
+  pivot_longer(!c("ensemblID", "gencodeID", "gene_type", "Symbol"),
+               names_to = "group",
+               values_to = "count_sum")
+
+expression_long |>
+  filter(count_sum == 0) |>
+  count(group, gene_type)
+# group      gene_type          n
+# <chr>      <chr>          <int>
+# 1 polyA_Bulk lncRNA            25
+# 2 polyA_Bulk protein_coding     1
+# 3 polyA_Cyto lncRNA            70
+# 4 polyA_Cyto protein_coding     1
+# 5 polyA_Nuc  lncRNA            28
+# 6 polyA_Nuc  protein_coding     1
+
+
+head(expression_sum)
+
+map(splitit(rd$gene_type),length)
+gene_type_sum <- map_dfr(splitit(rd$gene_type),~colSums(expression_sum[.x,,])) |>
+  add_column(gene_type = unique(rd$gene_type))
+
+gene_type_sum <- expression_long |>
+  group_by(gene_type, group) |>
+  summarize(gene_type_sum = sum(count_sum)) |>
+  group_by(group) |>
+  mutate(gene_type_prop = gene_type_sum/sum(gene_type_sum)) |>
+  arrange(-gene_type_prop)
+
+gene_breakdown <- gene_type_sum |>
+  ggplot(aes(x = group, y = gene_type_prop, fill = gene_type)) +
+  geom_col() +
+  theme_bw() +
+  coord_flip()
+
+ggsave(gene_breakdown, filename = here(plot_dir, "gene_breakdown.png"))
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
 ## Reproducibility information
