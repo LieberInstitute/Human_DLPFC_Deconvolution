@@ -1,36 +1,25 @@
-Adding LIBD modules
-Loading git
-Loading LIBD module for git-status-size/github
-Loading LIBD module for git-lfs/2.8.0
-Loading LIBD module for rmate/1.5.9
-Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.3
 **** Job starts ****
-Tue Jul 25 12:04:29 EDT 2023
+Mon Oct 16 02:57:06 PM EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3648611
-Job name: import_HALO_data
-Hostname: compute-124.cm.cluster
-Task id: undefined
-Unloading conda_R/4.3
+Job id: 517342
+Job name: 01_import_HALO_data
+Node name: compute-091
+Task id: 
 Loading conda_R/4.3
 
 Currently Loaded Modules:
-  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
-  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
-  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
-  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.3
-  5) gcc/4.4.7        10) git-lfs/2.8.0
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ dplyr     1.1.3     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
+✔ purrr     1.0.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -49,9 +38,35 @@ The following object is masked from ‘package:readr’:
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
 Loading objects:
   cell_type_colors_halo
-   typo  n
-1 FALSE 40
-2  TRUE  2
+  cell_type_colors_broad
+ [1] "Section"                                              
+ [2] "Slide"                                                
+ [3] "Round"                                                
+ [4] "Combination"                                          
+ [5] "Average Copy Intensity for AKT3 from initial analysis"
+ [6] "Comments_Issues"                                      
+ [7] "Excluded"                                             
+ [8] "Re HALO completed?"                                   
+ [9] "Confidence in overall quality"                        
+[10] "Average AKT3 Copy Intensity from initial analysis"    
+[11] "HALO Folder Path (on Neurolucida)"                    
+[12] "HALO Algorithm used for Final analysis"               
+[13] "Path to Final csv File"                               
+[14] "File Path to Raw Image"                               
+[15] "redo"                                                 
+[16] "Glare"                                                
+# A tibble: 2 × 2
+  typo      n
+  <lgl> <int>
+1 FALSE    40
+2 TRUE      2
+# A tibble: 4 × 2
+  `Confidence in overall quality`     n
+  <chr>                           <int>
+1 Excluded                            8
+2 High                               13
+3 Low                                 9
+4 OK                                 12
 # A tibble: 10 × 3
    Slide Combo      n
    <fct> <chr>  <int>
@@ -79,11 +94,19 @@ Loading objects:
  9 Circle 5     D1            1
 10 Circle 5     A2            1
 # ℹ 32 more rows
+# A tibble: 5 × 3
+  Excluded Confidence     n
+  <chr>    <chr>      <int>
+1 Maybe    Low            1
+2 No       High          13
+3 No       Low            8
+4 No       OK            12
+5 Yes      Excluded       8
 Joining with `by = join_by(Pos)`
 Joining with `by = join_by(Section, Combo)`
 # A tibble: 5 × 2
   Round     n
-  <int> <int>
+  <dbl> <int>
 1     1    10
 2     2     8
 3     3    10
@@ -132,7 +155,7 @@ $prelim
  [5] "Br6432M_CIRCLE" "Br6432M_STAR"   "Br6432P_CIRCLE" "Br6432P_STAR"  
  [9] "Br6471A_CIRCLE" "Br6471A_STAR"  
 
-$Aug10
+$Aug10_2022
  [1] "Br2720M_CIRCLE" "Br6432A_CIRCLE" "Br6432M_CIRCLE" "Br6432P_CIRCLE"
  [5] "Br6471A_CIRCLE" "Br6471M_CIRCLE" "Br6522M_CIRCLE" "Br6522P_CIRCLE"
  [9] "Br8492P_CIRCLE" "Br2720P_CIRCLE" "Br2743A_CIRCLE" "Br3942A_CIRCLE"
@@ -145,12 +168,12 @@ $Aug10
 [37] "Br6423A_STAR"   "Br6423P_STAR"   "Br8667M_STAR"   "Br8325A_STAR"  
 [41] "Br8325M_STAR"   "Br8667A_STAR"  
 
-$Sep14
+$Sep14_20222
  [1] "Br2743A_CIRCLE" "Br2743A_STAR"   "Br6423A_CIRCLE" "Br6423A_STAR"  
  [5] "Br6432A_CIRCLE" "Br6432A_STAR"   "Br6432P_STAR"   "Br6522M_CIRCLE"
  [9] "Br6522M_STAR"   "Br8325A_CIRCLE" "Br8325A_STAR"  
 
-$Sep20
+$Sep20_2022
  [1] "Br2720P_CIRCLE"                                                        
  [2] "Br2743A_CIRCLE"                                                        
  [3] "Br3942A_CIRCLE"                                                        
@@ -169,7 +192,7 @@ $Sep20
 [16] "Br6522M_STAR"                                                          
 [17] "Br8325A_STAR"                                                          
 
-$Oct20
+$Oct20_2022
  [1] "Br2720M_CIRCLE" "Br2720P_CIRCLE" "Br2743A_CIRCLE" "Br3942A_CIRCLE"
  [5] "Br3942M_CIRCLE" "Br3942P_CIRCLE" "Br6423A_CIRCLE" "Br6423P_CIRCLE"
  [9] "Br6432A_CIRCLE" "Br6432M_CIRCLE" "Br6432P_CIRCLE" "Br6471A_CIRCLE"
@@ -182,58 +205,49 @@ $Oct20
 [37] "Br8667A_STAR"   "Br8667M_STAR"  
 
 Warning message:
-In halo_files$Sep20$BrHALO_Allsections_round4_AKT3_Circle_Fused.tif_object_Data.csv_CIRCLE <- NULL :
+In halo_files$Sep20_2022$BrHALO_Allsections_round4_AKT3_Circle_Fused.tif_object_Data.csv_CIRCLE <- NULL :
   Coercing LHS to a list
-$prelim
-[1] 10
-
-$Aug10
-[1] 42
-
-$Sep14
-[1] 11
-
-$Sep20
-[1] 16
-
-$Oct20
-[1] 38
-
+[1] TRUE
 $prelim
 [1] TRUE
 
-$Aug10
+$Aug10_2022
 [1] TRUE
 
-$Sep14
+$Sep14_20222
 [1] TRUE
 
-$Sep20
+$Sep20_2022
 [1] TRUE
 
-$Oct20
+$Oct20_2022
 [1] TRUE
 
+$Sep22_2023
+[1] TRUE
+
+     prelim  Aug10_2022 Sep14_20222  Sep20_2022  Oct20_2022  Sep22_2023 
+         10          42          11          16          38          34 
 # A tibble: 2 × 3
-  SAMPLE_ID    HALO_run     n
-  <chr>        <chr>    <int>
-1 Br6432A_STAR Oct20        3
-2 Br6432A_STAR Sep20        2
+  SAMPLE_ID    HALO_run       n
+  <chr>        <chr>      <int>
+1 Br6432A_STAR Oct20_2022     3
+2 Br6432A_STAR Sep20_2022     2
 # A tibble: 5 × 4
 # Groups:   SAMPLE_ID, HALO_run [2]
-  HALO_run SAMPLE_ID    basename                                          rescan
-  <chr>    <chr>        <chr>                                             <lgl> 
-1 Sep20    Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_… FALSE 
-2 Sep20    Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.tif… TRUE  
-3 Oct20    Br6432A_STAR STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif… TRUE  
-4 Oct20    Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_… FALSE 
-5 Oct20    Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.tif… TRUE  
-[1] 1011916      46
+  HALO_run   SAMPLE_ID    basename                                        rescan
+  <chr>      <chr>        <chr>                                           <lgl> 
+1 Sep20_2022 Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.ti… FALSE 
+2 Sep20_2022 Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.t… TRUE  
+3 Oct20_2022 Br6432A_STAR STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.t… TRUE  
+4 Oct20_2022 Br6432A_STAR STAR_6432A_HALO_allsections_AKT3_Star_Fused.ti… FALSE 
+5 Oct20_2022 Br6432A_STAR STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.t… TRUE  
+[1] 767393     46
    GAD1 GFAP CLDN5      n
-1:    0    0     0 616882
-2:    0    0     1  59853
-3:    0    1     0 240751
-4:    1    0     0  94430
+1:    0    0     0 474934
+2:    0    0     1  47488
+3:    0    1     0 167441
+4:    1    0     0  77530
                                                                                                                           Image Location
 1: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
 2: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
@@ -242,89 +256,89 @@ $Oct20
 5: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
 6: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
    Analysis Region                                         Algorithm Name
-1:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-2:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-3:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-4:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-5:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-6:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-   Object Id XMin XMax YMin YMax DAPI/AKT3 GAD1/AKT3 GFAP/AKT3 CLDN5/AKT3 GAD1
-1:         0 4523 4544  610  638         1         1         0          0    1
-2:         1 4503 4529  623  649         1         1         0          0    1
-3:         2 4561 4590  644  670         1         1         0          0    1
-4:         3 4529 4558  653  684         1         1         0          0    1
-5:         4 4556 4583  661  686         1         0         0          0    0
-6:         5 4620 4651  680  720         1         0         0          0    0
-   GFAP CLDN5 GAD1 (Opal 690) Positive GAD1 (Opal 690) Positive Nucleus
-1:    0     0                        1                                1
-2:    0     0                        1                                1
-3:    0     0                        1                                1
-4:    0     0                        1                                1
-5:    0     0                        0                                0
-6:    0     0                        0                                0
+1:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+2:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+3:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+4:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+5:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+6:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+   Object Id  XMin  XMax YMin YMax DAPI/AKT3 GAD1/AKT3 GFAP/AKT3 CLDN5/AKT3
+1:         0 11557 11590 1320 1349         1         0         1          0
+2:         1 11728 11750 1320 1349         1         0         0          0
+3:         2 11749 11772 1324 1352         1         0         0          0
+4:         3 11589 11613 1326 1355         1         0         0          0
+5:         4 11807 11837 1335 1362         1         0         0          0
+6:         5 11695 11728 1341 1370         1         0         1          0
+   GAD1 GFAP CLDN5 GAD1 (Opal 690) Positive GAD1 (Opal 690) Positive Nucleus
+1:    0    1     0                        0                                0
+2:    0    0     0                        0                                0
+3:    0    0     0                        0                                0
+4:    0    0     0                        0                                0
+5:    0    0     0                        0                                0
+6:    0    1     0                        0                                0
    GAD1 (Opal 690) Nucleus Intensity GAD1 (Opal 690) Positive Cytoplasm
-1:                          0.588595                                  0
-2:                          6.479153                                  1
-3:                          1.008365                                  0
-4:                          0.812404                                  0
-5:                          0.229289                                  0
-6:                          0.255016                                  0
+1:                          0.210487                                  0
+2:                          0.180292                                  0
+3:                          0.210884                                  0
+4:                          0.288090                                  0
+5:                          0.333929                                  0
+6:                          0.291776                                  0
    GAD1 (Opal 690) Cytoplasm Intensity DAPI (DAPI) Positive
-1:                            0.271175                    1
-2:                            2.782876                    1
-3:                            0.327806                    1
-4:                            0.284751                    1
-5:                            0.207763                    1
-6:                            0.222356                    1
+1:                            0.113486                    1
+2:                            0.164522                    1
+3:                            0.170841                    1
+4:                            0.174606                    1
+5:                            0.254547                    1
+6:                            0.197103                    1
    DAPI (DAPI) Positive Nucleus DAPI (DAPI) Nucleus Intensity
-1:                            1                      27.36132
-2:                            1                      34.14495
-3:                            1                      47.78344
-4:                            1                      38.05312
-5:                            1                      31.08277
-6:                            1                      32.98694
+1:                            1                      54.01625
+2:                            1                      31.00939
+3:                            1                      46.11821
+4:                            1                      63.53780
+5:                            1                      57.96297
+6:                            1                      34.54254
    DAPI (DAPI) Positive Cytoplasm DAPI (DAPI) Cytoplasm Intensity
-1:                              0                        4.017028
-2:                              0                        3.775738
-3:                              0                        5.165792
-4:                              0                        4.696064
-5:                              0                        6.747797
-6:                              0                        6.199795
+1:                              0                        6.537566
+2:                              0                        4.167953
+3:                              0                        4.026057
+4:                              0                        6.448225
+5:                              0                        5.129826
+6:                              0                        4.137512
    GFAP (Alexa 594) Copies GFAP (Alexa 594) Area (µm²)
-1:                       0                           0
-2:                       0                           0
-3:                       0                           0
-4:                       0                           0
-5:                       0                           0
-6:                       0                           0
+1:                       4                   14.029600
+2:                       0                    0.000000
+3:                       0                    0.000000
+4:                       0                    0.000000
+5:                       0                    0.000000
+6:                       2                    7.663746
    GFAP (Alexa 594) Classification GFAP (Alexa 594) Cell Intensity
-1:                               0                               0
-2:                               0                               0
-3:                               0                               0
-4:                               0                               0
-5:                               0                               0
-6:                               0                               0
+1:                               2                        4.349964
+2:                               0                        0.000000
+3:                               0                        0.000000
+4:                               0                        0.000000
+5:                               0                        0.000000
+6:                               1                        1.953234
    GFAP (Alexa 594) Avg Intensity AKT3 (Opal 570) Copies
-1:                              0                      5
-2:                              0                      8
-3:                              0                      9
-4:                              0                     11
-5:                              0                      8
-6:                              0                     23
+1:                       0.310056                      7
+2:                       0.000000                      2
+3:                       0.000000                      9
+4:                       0.000000                      6
+5:                       0.000000                     12
+6:                       0.254867                     18
    AKT3 (Opal 570) Area (µm²) AKT3 (Opal 570) Classification
-1:                   10.87758                              2
-2:                   18.29411                              2
-3:                   15.69832                              2
-4:                   22.31139                              3
-5:                   21.13711                              2
-6:                   38.31873                              4
+1:                   8.776226                              2
+2:                   3.213829                              1
+3:                  14.091405                              2
+4:                   9.888705                              2
+5:                  26.514091                              3
+6:                  33.930620                              4
    AKT3 (Opal 570) Cell Intensity AKT3 (Opal 570) Avg Intensity
-1:                       43.56621                      4.005140
-2:                       52.79305                      2.885796
-3:                       48.52030                      3.090796
-4:                       57.20073                      2.542616
-5:                      108.05802                      5.112243
-6:                      129.62305                      3.371882
+1:                      17.214478                      1.961490
+2:                       6.267524                      1.950173
+3:                      38.348106                      2.721383
+4:                      22.652004                      2.155948
+5:                     114.593850                      4.321998
+6:                     191.526320                      5.644645
    CLDN5 (Alexa 488) Copies CLDN5 (Alexa 488) Area (µm²)
 1:                        0                            0
 2:                        0                            0
@@ -340,35 +354,35 @@ $Oct20
 5:                                0                                0
 6:                                0                                0
    CLDN5 (Alexa 488) Avg Intensity Cell Area (µm²) Cytoplasm Area (µm²)
-1:                               0        102.2863             71.01327
-2:                               0        124.8449             88.44211
-3:                               0        129.7893             92.45940
-4:                               0        170.7038            127.62610
-5:                               0        120.5804             80.77836
-6:                               0        224.0410            130.46910
+1:                               0        198.2067             144.2515
+2:                               0        134.4246             106.7980
+3:                               0        127.2553             101.1738
+4:                               0        135.1662             105.4383
+5:                               0        155.5617             125.1539
+6:                               0        183.8681             141.5321
    Nucleus Area (µm²) Nucleus Perimeter (µm) Nucleus Roundness
-1:           31.27303               24.11468          0.842075
-2:           36.40280               29.33538          0.702417
-3:           37.32986               27.84375          0.772712
-4:           43.07767               30.82701          0.760390
-5:           39.80204               29.83259          0.745100
-6:           93.57188               46.73772          0.693153
-                                                                                                                                                                                             JHPCE_path
-1: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
-2: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
-3: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
-4: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
-5: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
-6: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_object_Data.csv
+1:           53.95525               36.29632          0.655787
+2:           27.62657               24.11468          0.788059
+3:           26.08146               22.37444          0.839397
+4:           29.72792               24.36328          0.793629
+5:           30.40777               24.36328          0.777762
+6:           42.33602               30.32980          0.721264
+                                                                                                                                                                                                                                                                                                                         JHPCE_path
+1: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
+2: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
+3: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
+4: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
+5: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
+6: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/CIRCLE/Br2720M_Circle/Halo archive 2023-09-15 14-52 - v3.6.4134/ObjectData/HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif_job1694Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2_object_results.csv
    n_marker cell_type
-1:        1     Inhib
-2:        1     Inhib
-3:        1     Inhib
-4:        1     Inhib
+1:        1     Astro
+2:        0     Other
+3:        0     Other
+4:        0     Other
 5:        0     Other
-6:        0     Other
+6:        1     Astro
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   2.000   4.000   6.017   8.000  64.000 
+  0.000   2.000   5.000   6.441   9.000  59.000 
                                                                                                                           Image Location
 1: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
 2: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
@@ -377,73 +391,25 @@ $Oct20
 5: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
 6: \\\\10.17.9.104\\Neural_Plasticity\\Kelsey\\Polaris\\3422_DECON_RIF_CIRCLE_B1R1S2\\HALO\\HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif
    Analysis Region                                         Algorithm Name
-1:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-2:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-3:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-4:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-5:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-6:         Layer 1 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
-   Object Id XMin
-1:         0 4523
-2:         1 4503
-3:         2 4561
-4:         3 4529
-5:         4 4556
-6:         5 4620
+1:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+2:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+3:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+4:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+5:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+6:         Layer 2 Decon_AKT3_Circle_Cyto_Nuc_Copyintensity_FINAL_R1_SMC2
+   Object Id  XMin
+1:         0 11557
+2:         1 11728
+3:         2 11749
+4:         3 11589
+5:         4 11807
+6:         5 11695
 [1] FALSE FALSE FALSE FALSE FALSE FALSE
    cell_type      n
-1:     Astro 240751
-2:      Endo  59853
-3:     Inhib  94430
-4:     Other 616882
-$Br6432A_STAR
- [1] "Image Location"                        
- [2] "Analysis Region"                       
- [3] "Algorithm Name"                        
- [4] "Object Id"                             
- [5] "XMin"                                  
- [6] "XMax"                                  
- [7] "YMin"                                  
- [8] "YMax"                                  
- [9] "DAPI/AKT3"                             
-[10] "OLIG2/AKT3"                            
-[11] "SLC17A7/AKT3"                          
-[12] "TMEM119/AKT3"                          
-[13] "OLIG2"                                 
-[14] "SLC17A7"                               
-[15] "TMEM119"                               
-[16] "SLC17A7 (Opal 520) Positive"           
-[17] "SLC17A7 (Opal 520) Positive Nucleus"   
-[18] "SLC17A7 (Opal 520) Nucleus Intensity"  
-[19] "SLC17A7 (Opal 520) Positive Cytoplasm" 
-[20] "SLC17A7 (Opal 520) Cytoplasm Intensity"
-[21] "OLIG2 (Alexa 647) Positive"            
-[22] "OLIG2 (Alexa 647) Positive Nucleus"    
-[23] "OLIG2 (Alexa 647) Nucleus Intensity"   
-[24] "OLIG2 (Alexa 647) Positive Cytoplasm"  
-[25] "OLIG2 (Alexa 647) Cytoplasm Intensity" 
-[26] "DAPI (DAPI) Positive"                  
-[27] "DAPI (DAPI) Positive Nucleus"          
-[28] "DAPI (DAPI) Nucleus Intensity"         
-[29] "DAPI (DAPI) Positive Cytoplasm"        
-[30] "DAPI (DAPI) Cytoplasm Intensity"       
-[31] "AKT3 (Opal 620) Copies"                
-[32] "AKT3 (Opal 620) Area (µm²)"            
-[33] "AKT3 (Opal 620) Classification"        
-[34] "AKT3 (Opal 620) Cell Intensity"        
-[35] "AKT3 (Opal 620) Avg Intensity"         
-[36] "TMEM119 (Alexa 555) Copies"            
-[37] "TMEM119 (Alexa 555) Area (µm²)"        
-[38] "TMEM119 (Alexa 555) Classification"    
-[39] "TMEM119 (Alexa 555) Cell Intensity"    
-[40] "TMEM119 (Alexa 555) Avg Intensity"     
-[41] "Cell Area (µm²)"                       
-[42] "Cytoplasm Area (µm²)"                  
-[43] "Nucleus Area (µm²)"                    
-[44] "Nucleus Perimeter (µm)"                
-[45] "Nucleus Roundness"                     
-[46] "JHPCE_path"                            
-
+1:     Astro 167441
+2:      Endo  47488
+3:     Inhib  77530
+4:     Other 474934
 $Br2720P_STAR
  [1] "Image Location"                        
  [2] "Analysis Region"                       
@@ -588,103 +554,55 @@ $Br3942M_STAR
 [45] "Nucleus Roundness"                     
 [46] "JHPCE_path"                            
 
+$Br6423A_STAR
+ [1] "Image Location"                        
+ [2] "Analysis Region"                       
+ [3] "Algorithm Name"                        
+ [4] "Object Id"                             
+ [5] "XMin"                                  
+ [6] "XMax"                                  
+ [7] "YMin"                                  
+ [8] "YMax"                                  
+ [9] "DAPI/AKT3"                             
+[10] "OLIG2/AKT3"                            
+[11] "SLC17A7/AKT3"                          
+[12] "TMEM119/AKT3"                          
+[13] "OLIG2"                                 
+[14] "SLC17A7"                               
+[15] "TMEM119"                               
+[16] "SLC17A7 (Opal 520) Positive"           
+[17] "SLC17A7 (Opal 520) Positive Nucleus"   
+[18] "SLC17A7 (Opal 520) Nucleus Intensity"  
+[19] "SLC17A7 (Opal 520) Positive Cytoplasm" 
+[20] "SLC17A7 (Opal 520) Cytoplasm Intensity"
+[21] "OLIG2 (Alexa 647) Positive"            
+[22] "OLIG2 (Alexa 647) Positive Nucleus"    
+[23] "OLIG2 (Alexa 647) Nucleus Intensity"   
+[24] "OLIG2 (Alexa 647) Positive Cytoplasm"  
+[25] "OLIG2 (Alexa 647) Cytoplasm Intensity" 
+[26] "DAPI (DAPI) Positive"                  
+[27] "DAPI (DAPI) Positive Nucleus"          
+[28] "DAPI (DAPI) Nucleus Intensity"         
+[29] "DAPI (DAPI) Positive Cytoplasm"        
+[30] "DAPI (DAPI) Cytoplasm Intensity"       
+[31] "AKT3 (Opal 620) Copies"                
+[32] "AKT3 (Opal 620) Area (µm²)"            
+[33] "AKT3 (Opal 620) Classification"        
+[34] "AKT3 (Opal 620) Cell Intensity"        
+[35] "AKT3 (Opal 620) Avg Intensity"         
+[36] "TMEM119 (Alexa 555) Copies"            
+[37] "TMEM119 (Alexa 555) Area (µm²)"        
+[38] "TMEM119 (Alexa 555) Classification"    
+[39] "TMEM119 (Alexa 555) Cell Intensity"    
+[40] "TMEM119 (Alexa 555) Avg Intensity"     
+[41] "Cell Area (µm²)"                       
+[42] "Cytoplasm Area (µm²)"                  
+[43] "Nucleus Area (µm²)"                    
+[44] "Nucleus Perimeter (µm)"                
+[45] "Nucleus Roundness"                     
+[46] "JHPCE_path"                            
+
 $Br6423P_STAR
- [1] "Image Location"                        
- [2] "Analysis Region"                       
- [3] "Algorithm Name"                        
- [4] "Object Id"                             
- [5] "XMin"                                  
- [6] "XMax"                                  
- [7] "YMin"                                  
- [8] "YMax"                                  
- [9] "DAPI/AKT3"                             
-[10] "OLIG2/AKT3"                            
-[11] "SLC17A7/AKT3"                          
-[12] "TMEM119/AKT3"                          
-[13] "OLIG2"                                 
-[14] "SLC17A7"                               
-[15] "TMEM119"                               
-[16] "SLC17A7 (Opal 520) Positive"           
-[17] "SLC17A7 (Opal 520) Positive Nucleus"   
-[18] "SLC17A7 (Opal 520) Nucleus Intensity"  
-[19] "SLC17A7 (Opal 520) Positive Cytoplasm" 
-[20] "SLC17A7 (Opal 520) Cytoplasm Intensity"
-[21] "OLIG2 (Alexa 647) Positive"            
-[22] "OLIG2 (Alexa 647) Positive Nucleus"    
-[23] "OLIG2 (Alexa 647) Nucleus Intensity"   
-[24] "OLIG2 (Alexa 647) Positive Cytoplasm"  
-[25] "OLIG2 (Alexa 647) Cytoplasm Intensity" 
-[26] "DAPI (DAPI) Positive"                  
-[27] "DAPI (DAPI) Positive Nucleus"          
-[28] "DAPI (DAPI) Nucleus Intensity"         
-[29] "DAPI (DAPI) Positive Cytoplasm"        
-[30] "DAPI (DAPI) Cytoplasm Intensity"       
-[31] "AKT3 (Opal 620) Copies"                
-[32] "AKT3 (Opal 620) Area (µm²)"            
-[33] "AKT3 (Opal 620) Classification"        
-[34] "AKT3 (Opal 620) Cell Intensity"        
-[35] "AKT3 (Opal 620) Avg Intensity"         
-[36] "TMEM119 (Alexa 555) Copies"            
-[37] "TMEM119 (Alexa 555) Area (µm²)"        
-[38] "TMEM119 (Alexa 555) Classification"    
-[39] "TMEM119 (Alexa 555) Cell Intensity"    
-[40] "TMEM119 (Alexa 555) Avg Intensity"     
-[41] "Cell Area (µm²)"                       
-[42] "Cytoplasm Area (µm²)"                  
-[43] "Nucleus Area (µm²)"                    
-[44] "Nucleus Perimeter (µm)"                
-[45] "Nucleus Roundness"                     
-[46] "JHPCE_path"                            
-
-$Br6432A_STAR
- [1] "Image Location"                        
- [2] "Analysis Region"                       
- [3] "Algorithm Name"                        
- [4] "Object Id"                             
- [5] "XMin"                                  
- [6] "XMax"                                  
- [7] "YMin"                                  
- [8] "YMax"                                  
- [9] "DAPI/AKT3"                             
-[10] "OLIG2/AKT3"                            
-[11] "SLC17A7/AKT3"                          
-[12] "TMEM119/AKT3"                          
-[13] "OLIG2"                                 
-[14] "SLC17A7"                               
-[15] "TMEM119"                               
-[16] "SLC17A7 (Opal 520) Positive"           
-[17] "SLC17A7 (Opal 520) Positive Nucleus"   
-[18] "SLC17A7 (Opal 520) Nucleus Intensity"  
-[19] "SLC17A7 (Opal 520) Positive Cytoplasm" 
-[20] "SLC17A7 (Opal 520) Cytoplasm Intensity"
-[21] "OLIG2 (Alexa 647) Positive"            
-[22] "OLIG2 (Alexa 647) Positive Nucleus"    
-[23] "OLIG2 (Alexa 647) Nucleus Intensity"   
-[24] "OLIG2 (Alexa 647) Positive Cytoplasm"  
-[25] "OLIG2 (Alexa 647) Cytoplasm Intensity" 
-[26] "DAPI (DAPI) Positive"                  
-[27] "DAPI (DAPI) Positive Nucleus"          
-[28] "DAPI (DAPI) Nucleus Intensity"         
-[29] "DAPI (DAPI) Positive Cytoplasm"        
-[30] "DAPI (DAPI) Cytoplasm Intensity"       
-[31] "AKT3 (Opal 620) Copies"                
-[32] "AKT3 (Opal 620) Area (µm²)"            
-[33] "AKT3 (Opal 620) Classification"        
-[34] "AKT3 (Opal 620) Cell Intensity"        
-[35] "AKT3 (Opal 620) Avg Intensity"         
-[36] "TMEM119 (Alexa 555) Copies"            
-[37] "TMEM119 (Alexa 555) Area (µm²)"        
-[38] "TMEM119 (Alexa 555) Classification"    
-[39] "TMEM119 (Alexa 555) Cell Intensity"    
-[40] "TMEM119 (Alexa 555) Avg Intensity"     
-[41] "Cell Area (µm²)"                       
-[42] "Cytoplasm Area (µm²)"                  
-[43] "Nucleus Area (µm²)"                    
-[44] "Nucleus Perimeter (µm)"                
-[45] "Nucleus Roundness"                     
-[46] "JHPCE_path"                            
-
-$Br6432A_STAR
  [1] "Image Location"                        
  [2] "Analysis Region"                       
  [3] "Algorithm Name"                        
@@ -1212,9 +1130,6 @@ $Br8667M_STAR
 [45] "Nucleus Roundness"                     
 [46] "JHPCE_path"                            
 
-$Br6432A_STAR
-character(0)
-
 $Br2720P_STAR
 character(0)
 
@@ -1224,13 +1139,10 @@ character(0)
 $Br3942M_STAR
 character(0)
 
+$Br6423A_STAR
+character(0)
+
 $Br6423P_STAR
-character(0)
-
-$Br6432A_STAR
-character(0)
-
-$Br6432A_STAR
 character(0)
 
 $Br6432P_STAR
@@ -1276,53 +1188,49 @@ $Br8667M_STAR
 character(0)
 
 [1] TRUE
-[1] 782053     46
+[1] 595006     46
    SLC17A7 TMEM119 OLIG2      n
-1:       0       0     0 473785
-2:       0       0     1 111398
-3:       0       1     0  39152
-4:       1       0     0 157718
+1:       0       0     0 355661
+2:       0       0     1  68625
+3:       0       1     0  25930
+4:       1       0     0 144790
    cell_type      n
-1:     Excit 157718
-2:     Micro  39152
-3:     Oligo 111398
-4:     Other 473785
-                                                                                                                                                                                           JHPCE_path
- 1:       /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_2720M_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv
- 2: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_2720P_HALO_allsections_Round3_AKT3_Star_Fused.tif_object_Data.csv
- 3: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_2743A_HALO_allsections_Round3_AKT3_Star_Fused.tif_object_Data.csv
- 4:        /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_3942M_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv
- 5:        /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6423P_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv
- 6:       /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6432A_HALO_RESCAN_6432A_Star_AKT3_Fused.tif_object_Data.csv
- 7:        /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6432A_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv
- 8:    /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6432P_Fused_HALO_section2_Br6432_Post_Star.tif_object_Data.csv
- 9:     /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6471A_Fused_HALO_section3_Br6471_Ant_Star.tif_object_Data.csv
-10: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6471M_HALO_allsections_round2_AKT3_Star_Fused.tif_object_Data.csv
-11: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6522M_HALO_allsections_round2_AKT3_Star_Fused.tif_object_Data.csv
-12: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_6522P_HALO_allsections_round2_AKT3_Star_Fused.tif_object_Data.csv
-13:           /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_8325A_HALO_B1_R5_Star_Br8325A_Fused.tif_object_Data.csv
-14:           /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_8325M_HALO_B1_R5_Star_Br8325M_Fused.tif_object_Data.csv
-15: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_8492P_HALO_allsections_round2_AKT3_Star_Fused.tif_object_Data.csv
-16:           /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_8667A_HALO_B1_R5_Star_Br8667A_Fused.tif_object_Data.csv
-17:        /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Algorithm_Check_20221020/HALO_CSV/STAR_8667M_HALO_allsections_AKT3_Star_Fused.tif_object_Data.csv
+1:     Excit 144790
+2:     Micro  25930
+3:     Oligo  68625
+4:     Other 355661
+                                                                                                                                                                                                                                                                                                                        JHPCE_path
+ 1:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br2720P_Star/Halo archive 2023-09-15 14-01 - v3.6.4134/ObjectData/HALO_allsections_Round3_AKT3_Star_Fused.tif_job1689Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R3_SMC2_object_results.csv
+ 2:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br2743A_Star/Halo archive 2023-09-15 13-56 - v3.6.4134/ObjectData/HALO_allsections_Round3_AKT3_Star_Fused.tif_job1688Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R3_SMC2_object_results.csv
+ 3:             /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br3942M_Star/Halo archive 2023-09-15 14-29 - v3.6.4134/ObjectData/HALO_allsections_AKT3_Star_Fused.tif_job1692Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R4_SMC2_object_results.csv
+ 4:             /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6423A_Star/Halo archive 2023-09-15 14-22 - v3.6.4134/ObjectData/HALO_allsections_AKT3_Star_Fused.tif_job1690Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R4_SMC2_object_results.csv
+ 5:             /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6423P_Star/Halo archive 2023-09-15 14-23 - v3.6.4134/ObjectData/HALO_allsections_AKT3_Star_Fused.tif_job1691Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R4_SMC2_object_results.csv
+ 6: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6432P_Star/Halo archive 2023-09-15 12-33 - v3.6.4134/ObjectData/Fused_HALO_section2_Br6432_Post_Star.tif_job1679Decon_AKT3_Star_Cyto_Nuc_Copyintensity_LowOLIG_FINAL_R1_SMC2_object_results.csv
+ 7:  /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6471A_Star/Halo archive 2023-09-15 12-41 - v3.6.4134/ObjectData/Fused_HALO_section3_Br6471_Ant_Star.tif_job1680Decon_AKT3_Star_Cyto_Nuc_Copyintensity_LowOLIG_FINAL_R1_SMC2_object_results.csv
+ 8:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6471M_Star/Halo archive 2023-09-15 13-41 - v3.6.4134/ObjectData/HALO_allsections_round2_AKT3_Star_Fused.tif_job1686Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R2_SMC3_object_results.csv
+ 9:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6522M_Star/Halo archive 2023-09-15 13-19 - v3.6.4134/ObjectData/HALO_allsections_round2_AKT3_Star_Fused.tif_job1684Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R2_SMC2_object_results.csv
+10:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br6522P_Star/Halo archive 2023-09-15 13-32 - v3.6.4134/ObjectData/HALO_allsections_round2_AKT3_Star_Fused.tif_job1685Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R2_SMC3_object_results.csv
+11:                /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br8325A_Star/Halo archive 2023-09-15 12-48 - v3.6.4134/ObjectData/HALO_B1_R5_Star_Br8325A_Fused.tif_job1681Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R5_SMC2_object_results.csv
+12:                /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br8325M_Star/Halo archive 2023-09-15 12-56 - v3.6.4134/ObjectData/HALO_B1_R5_Star_Br8325M_Fused.tif_job1682Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R5_SMC3_object_results.csv
+13:      /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br8492P_Star/Halo archive 2023-09-15 13-48 - v3.6.4134/ObjectData/HALO_allsections_round2_AKT3_Star_Fused.tif_job1687Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R2_SMC4_object_results.csv
+14:  /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br8667A_Star/Halo archive 2023-09-15 13-05 - v3.6.4134/ObjectData/HALO_B1_R5_Star_Br8667A_Fused.tif_job1683Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R5_editedbySMC_080322_object_results.csv
+15:             /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/HALO/Annotation_refinement_20230922/STAR/Br8667M_Star/Halo archive 2023-09-15 14-40 - v3.6.4134/ObjectData/HALO_allsections_AKT3_Star_Fused.tif_job1693Decon_AKT3_Star_Cyto_Nuc_Copyintensity_FINAL_R4_SMC2_object_results.csv
         n
- 1: 54921
- 2: 40522
- 3: 51759
- 4: 36418
- 5: 44055
- 6: 54921
- 7: 53241
- 8: 31633
- 9: 46238
-10: 58645
-11: 40825
-12: 42852
-13: 34779
-14: 39389
-15: 60968
-16: 45066
-17: 45821
+ 1: 38090
+ 2: 50069
+ 3: 35519
+ 4: 47442
+ 5: 42675
+ 6: 29692
+ 7: 34150
+ 8: 53945
+ 9: 37393
+10: 28631
+11: 31791
+12: 37461
+13: 54311
+14: 32717
+15: 41120
  [1] "Image Location"                  "Analysis Region"                
  [3] "Algorithm Name"                  "Object Id"                      
  [5] "XMin"                            "XMax"                           
@@ -1337,133 +1245,149 @@ character(0)
 [23] "cell_type"                      
 Joining with `by = join_by(JHPCE_path)`
 Joining with `by = join_by(SAMPLE_ID)`
-`summarise()` has grouped output by 'SAMPLE_ID'. You can override using the
-`.groups` argument.
-# A tibble: 36 × 3
-# Groups:   SAMPLE_ID [36]
-   SAMPLE_ID      basename                                                     n
-   <chr>          <chr>                                                    <int>
- 1 Br2720M_CIRCLE CIRCLE_2720M_HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.t… 28239
- 2 Br2720P_CIRCLE CIRCLE_2720P_HALO_allsections_round3_AKT3_Circle_Fused.… 40776
- 3 Br2720P_STAR   STAR_2720P_HALO_allsections_Round3_AKT3_Star_Fused.tif_… 40522
- 4 Br2743A_CIRCLE CIRCLE_2743A_HALO_allsections_round3_AKT3_Circle_Fused.… 63293
- 5 Br2743A_STAR   STAR_2743A_HALO_allsections_Round3_AKT3_Star_Fused.tif_… 51759
- 6 Br3942A_CIRCLE CIRCLE_3942A_HALO_Round3_BO_AKT3_Circle_Fused.tif_objec… 53184
- 7 Br3942M_CIRCLE CIRCLE_3942M_HALO_Allsections_round4_AKT3_Circle_Fused.… 37816
- 8 Br3942M_STAR   STAR_3942M_HALO_allsections_AKT3_Star_Fused.tif_object_… 36418
- 9 Br3942P_CIRCLE CIRCLE_3942P_HALO_allsections_round3_AKT3_Circle_Fused.… 58398
-10 Br6423A_CIRCLE CIRCLE_6423A_HALO_Allsections_round4_AKT3_Circle_Fused.… 49709
-# ℹ 26 more rows
+`summarise()` has grouped output by 'SAMPLE_ID', 'basename'. You can override
+using the `.groups` argument.
+# A tibble: 34 × 4
+# Groups:   SAMPLE_ID, basename [34]
+   SAMPLE_ID      basename                                      Confidence     n
+   <chr>          <chr>                                         <fct>      <int>
+ 1 Br2720M_CIRCLE HALO_RESCAN_2720M_B1R1_Circle_AKT3_Fused.tif… Low        14506
+ 2 Br2720P_CIRCLE HALO_allsections_round3_AKT3_Circle_Fused.ti… High       36772
+ 3 Br2720P_STAR   HALO_allsections_Round3_AKT3_Star_Fused.tif_… High       38090
+ 4 Br2743A_CIRCLE HALO_allsections_round3_AKT3_Circle_Fused.ti… OK         58189
+ 5 Br2743A_STAR   HALO_allsections_Round3_AKT3_Star_Fused.tif_… High       50069
+ 6 Br3942A_CIRCLE HALO_Round3_BO_AKT3_Circle_Fused.tif_job1715… High       51184
+ 7 Br3942M_CIRCLE HALO_Allsections_round4_AKT3_Circle_Fused.ti… High       36229
+ 8 Br3942M_STAR   HALO_allsections_AKT3_Star_Fused.tif_job1692… OK         35519
+ 9 Br3942P_CIRCLE HALO_allsections_round3_AKT3_Circle_Fused.ti… High       53506
+10 Br6423A_CIRCLE HALO_Allsections_round4_AKT3_Circle_Fused.ti… OK         47405
+# ℹ 24 more rows
 # A tibble: 0 × 2
 # ℹ 2 variables: SAMPLE_ID <chr>, n <int>
+# A tibble: 3 × 2
+  Confidence      n
+  <fct>       <int>
+1 High       594763
+2 OK         482373
+3 Low        285263
+# A tibble: 4 × 2
+  Confidence     n
+  <fct>      <int>
+1 High          13
+2 OK            12
+3 Low            9
+4 Excluded       8
 [1] "Reproducibility information:"
-[1] "2023-07-25 12:05:34 EDT"
+[1] "2023-10-16 14:59:46 EDT"
    user  system elapsed 
- 61.152   1.794  64.601 
+ 89.727   2.832 156.514 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.3.1 Patched (2023-07-24 r84750)
- os       CentOS Linux 7 (Core)
+ version  R version 4.3.1 Patched (2023-07-19 r84711)
+ os       Rocky Linux 9.2 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
  language (EN)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-07-25
- pandoc   3.1.1 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/bin/pandoc
+ date     2023-10-16
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
  package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.1)
  beachmat               2.16.0    2023-04-25 [2] Bioconductor
  Biobase                2.60.0    2023-04-25 [2] Bioconductor
  BiocGenerics           0.46.0    2023-04-25 [2] Bioconductor
  BiocNeighbors          1.18.0    2023-04-25 [2] Bioconductor
  BiocParallel           1.34.2    2023-05-22 [2] Bioconductor
  BiocSingular           1.16.0    2023-04-25 [2] Bioconductor
- bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.0)
- bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.0)
- bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.0)
+ bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.1)
+ bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.1)
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.1)
  bluster                1.10.0    2023-04-25 [2] Bioconductor
- cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.0)
+ cellranger             1.1.0     2016-07-27 [2] CRAN (R 4.3.1)
+ cli                    3.6.1     2023-03-23 [2] CRAN (R 4.3.1)
  cluster                2.1.4     2022-08-22 [3] CRAN (R 4.3.1)
  codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.1)
- colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.0)
- crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.0)
- data.table             1.14.8    2023-02-17 [2] CRAN (R 4.3.0)
+ colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.1)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
+ data.table             1.14.8    2023-02-17 [2] CRAN (R 4.3.1)
  DeconvoBuddies       * 0.99.0    2023-06-08 [1] Github (LieberInstitute/DeconvoBuddies@9ce4a42)
- DelayedArray           0.26.6    2023-07-02 [2] Bioconductor
- DelayedMatrixStats     1.22.1    2023-06-09 [2] Bioconductor
- dplyr                * 1.1.2     2023-04-20 [2] CRAN (R 4.3.0)
- dqrng                  0.3.0     2021-05-01 [2] CRAN (R 4.3.0)
+ DelayedArray           0.26.7    2023-07-28 [2] Bioconductor
+ DelayedMatrixStats     1.22.6    2023-08-28 [2] Bioconductor
+ dplyr                * 1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
+ dqrng                  0.3.1     2023-08-30 [2] CRAN (R 4.3.1)
  edgeR                  3.42.4    2023-05-31 [2] Bioconductor
- fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.0)
- forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.3.0)
- generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.0)
- GenomeInfoDb           1.36.1    2023-06-21 [2] Bioconductor
- GenomeInfoDbData       1.2.10    2023-04-11 [2] Bioconductor
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
+ forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.3.1)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.1)
+ GenomeInfoDb           1.36.3    2023-09-07 [2] Bioconductor
+ GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
  GenomicRanges          1.52.0    2023-04-25 [2] Bioconductor
- ggplot2              * 3.4.2     2023-04-03 [2] CRAN (R 4.3.0)
- glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.0)
- gtable                 0.3.3     2023-03-21 [2] CRAN (R 4.3.0)
- here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.0)
- hms                    1.1.3     2023-03-21 [2] CRAN (R 4.3.0)
- igraph                 1.5.0.1   2023-07-23 [2] CRAN (R 4.3.1)
+ ggplot2              * 3.4.3     2023-08-14 [2] CRAN (R 4.3.1)
+ glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
+ gtable                 0.3.4     2023-08-21 [2] CRAN (R 4.3.1)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
+ hms                    1.1.3     2023-03-21 [2] CRAN (R 4.3.1)
+ igraph                 1.5.1     2023-08-10 [2] CRAN (R 4.3.1)
  IRanges                2.34.1    2023-06-22 [2] Bioconductor
- irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.0)
+ irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.1)
  lattice                0.21-8    2023-04-05 [3] CRAN (R 4.3.1)
- lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.0)
+ lifecycle              1.0.3     2022-10-07 [2] CRAN (R 4.3.1)
  limma                  3.56.2    2023-06-04 [2] Bioconductor
  locfit                 1.5-9.8   2023-06-11 [2] CRAN (R 4.3.1)
- lubridate            * 1.9.2     2023-02-10 [2] CRAN (R 4.3.0)
- magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.0)
- Matrix                 1.6-0     2023-07-08 [3] CRAN (R 4.3.1)
- MatrixGenerics         1.12.2    2023-06-09 [2] Bioconductor
- matrixStats            1.0.0     2023-06-02 [2] CRAN (R 4.3.0)
+ lubridate            * 1.9.2     2023-02-10 [2] CRAN (R 4.3.1)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.1)
+ Matrix                 1.6-1.1   2023-09-18 [3] CRAN (R 4.3.1)
+ MatrixGenerics         1.12.3    2023-07-30 [2] Bioconductor
+ matrixStats            1.0.0     2023-06-02 [2] CRAN (R 4.3.1)
  metapod                1.8.0     2023-04-25 [2] Bioconductor
- munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.0)
- pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.0)
- pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.0)
- purrr                * 1.0.1     2023-01-10 [2] CRAN (R 4.3.0)
- R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.0)
+ munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.1)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.1)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.1)
+ purrr                * 1.0.2     2023-08-10 [2] CRAN (R 4.3.1)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.1)
  rafalib                1.0.0     2015-08-09 [1] CRAN (R 4.3.0)
- RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.3.0)
+ RColorBrewer           1.1-3     2022-04-03 [2] CRAN (R 4.3.1)
  Rcpp                   1.0.11    2023-07-06 [2] CRAN (R 4.3.1)
- RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.0)
- readr                * 2.1.4     2023-02-10 [2] CRAN (R 4.3.0)
- rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.0)
- rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.0)
- rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.0)
- S4Arrays               1.0.4     2023-05-14 [2] Bioconductor
+ RCurl                  1.98-1.12 2023-03-27 [2] CRAN (R 4.3.1)
+ readr                * 2.1.4     2023-02-10 [2] CRAN (R 4.3.1)
+ readxl               * 1.4.3     2023-07-06 [2] CRAN (R 4.3.1)
+ rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
+ rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.1)
+ S4Arrays               1.0.6     2023-08-30 [2] Bioconductor
  S4Vectors              0.38.1    2023-05-02 [2] Bioconductor
  ScaledMatrix           1.8.1     2023-05-03 [2] Bioconductor
- scales               * 1.2.1     2022-08-20 [2] CRAN (R 4.3.0)
+ scales               * 1.2.1     2022-08-20 [2] CRAN (R 4.3.1)
  scran                  1.28.2    2023-07-23 [2] Bioconductor
- scuttle                1.10.1    2023-05-02 [2] Bioconductor
- sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.0)
+ scuttle                1.10.2    2023-08-03 [2] Bioconductor
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.1)
  SingleCellExperiment   1.22.0    2023-04-25 [2] Bioconductor
  sparseMatrixStats      1.12.2    2023-07-02 [2] Bioconductor
- statmod                1.5.0     2023-01-06 [2] CRAN (R 4.3.0)
- stringi                1.7.12    2023-01-11 [2] CRAN (R 4.3.0)
- stringr              * 1.5.0     2022-12-02 [2] CRAN (R 4.3.0)
+ statmod                1.5.0     2023-01-06 [2] CRAN (R 4.3.1)
+ stringi                1.7.12    2023-01-11 [2] CRAN (R 4.3.1)
+ stringr              * 1.5.0     2022-12-02 [2] CRAN (R 4.3.1)
  SummarizedExperiment   1.30.2    2023-06-06 [2] Bioconductor
- tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.3.0)
- tidyr                * 1.3.0     2023-01-24 [2] CRAN (R 4.3.0)
- tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.0)
- tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.3.0)
- timechange             0.2.0     2023-01-11 [2] CRAN (R 4.3.0)
- tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.0)
- utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.0)
+ tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
+ tidyr                * 1.3.0     2023-01-24 [2] CRAN (R 4.3.1)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.1)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.3.1)
+ timechange             0.2.0     2023-01-11 [2] CRAN (R 4.3.1)
+ tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.1)
+ utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
  vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
- vroom                  1.6.3     2023-04-28 [2] CRAN (R 4.3.0)
- withr                  2.5.0     2022-03-03 [2] CRAN (R 4.3.0)
+ vroom                  1.6.3     2023-04-28 [2] CRAN (R 4.3.1)
+ withr                  2.5.1     2023-09-26 [1] CRAN (R 4.3.1)
  XVector                0.40.0    2023-04-25 [2] Bioconductor
  zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
 
  [1] /users/lhuuki/R/4.3
- [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/site-library
- [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/R/4.3/lib64/R/library
+ [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jul 25 12:05:35 EDT 2023
+Mon Oct 16 02:59:51 PM EDT 2023
