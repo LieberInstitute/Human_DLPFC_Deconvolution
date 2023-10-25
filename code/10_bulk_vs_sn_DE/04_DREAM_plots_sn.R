@@ -1,0 +1,128 @@
+
+library("SummarizedExperiment")
+library("tidyverse")
+library("EnhancedVolcano")
+library("here")
+library("sessioninfo")
+library("ggrepel")
+library("jaffelab")
+library("UpSetR")
+
+#### Set up ####
+
+## dirs
+plot_dir <- here("plots", "10_bulk_vs_sn_DE", "04_DREAM_plots_sn")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+## load colors
+load(here("processed-data", "00_data_prep", "bulk_colors.Rdata"), verbose = TRUE)
+# library_combo_colors
+# library_prep_colors
+# library_type_colors
+
+#### load data ####
+load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
+
+rd <- as.data.frame(rowData(rse_gene)) |> select(gencodeID, ensemblID, gene_type, Symbol, EntrezID)
+
+## library_type
+load(here("processed-data", "10_bulk_vs_sn_DE",  "03_DREAM_sn_v_bulk", "DREAM_data-type.Rdata"), verbose = TRUE)
+DREAM_data_type <- DREAM_library_type ## fix object name
+
+head(DREAM_data_type$polyA)
+
+rownames(rd) <- rd$ensemblID
+rd <- rd[rownames(DREAM_data_type$polyA),]
+identical(rownames(rd), rownames(DREAM_data_type$polyA))
+
+DREAM_data_type_long <- map2_dfr(DREAM_data_type, names(DREAM_data_type), function(DE, name){
+  DE <- cbind(DE, rd)
+  DE$library_type <- name
+  return(DE)
+}) |>
+  as_tibble() |>
+  group_by(library_type) |>
+  arrange(adj.P.Val) |>
+  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ "snRNA-seq",
+                                         logFC < -1 & adj.P.Val < 0.05 ~ library_type,
+                                         TRUE ~"None"),
+         rank_p = row_number()) |>
+  group_by(library_type, DE_class) |>
+  arrange(-abs(logFC)) |>
+  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA))
+ 
+DREAM_data_type_long |> count(DE_class, library_type)
+#   library_type DE_class      n
+# 1 RiboZeroGold Bulk       4335
+# 2 RiboZeroGold None       8902
+# 3 RiboZeroGold snRNA-seq  4423
+# 4 polyA        Bulk       5749
+# 5 polyA        None       6402
+# 6 polyA        snRNA-seq  5509
+
+#### pval distribution ####
+data_type_pval_histo <- DREAM_data_type_long |>
+  ggplot(aes(x = P.Value)) +
+  geom_histogram(binwidth = 0.05) +
+  facet_wrap(~library_type, ncol = 1) +
+  theme_bw()
+
+ggsave(data_type_pval_histo, filename = here(plot_dir, "data_type_pval_histogram.png"))
+
+#### Volcano Plots ####
+
+type_max_pval <- DREAM_data_type_long |>
+  filter(adj.P.Val < 0.05) |>
+  arrange(-P.Value) |>
+  slice(1) |>
+  select(library_type, P.Value, adj.P.Val) |>
+  mutate(logP = -log10(P.Value))
+ 
+data_type_volcano <- DREAM_data_type_long |>
+  ggplot(aes(x = logFC, y = -log10(P.Value), color = DE_class)) +
+  geom_point(size = .7, alpha = 0.5) +
+  geom_text_repel(aes(label = ifelse(rank_p < 100 | rank_fc < 100, Symbol, NA)),
+                  size = 2, 
+                  show.legend=FALSE,
+                  color = "black") +
+  scale_color_manual(values = c(library_type_colors, "Other" = "darkgray", "snRNA-seq" = "#417B5A")) +
+  # scale_color_manual(values = c("Bulk" = "#8D6E53", "snRNA-seq" = "#417B5A", "Other" = "darkgray")) +
+  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_vline(xintercept = c(1, -1), linetype = "dashed") +
+  geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
+  facet_wrap(~library_type, nrow = 1) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ggsave(data_type_volcano, filename = here(plot_dir, "data_type_Volcano_small.png"), width = 7 , height = 5)
+ggsave(data_type_volcano, filename = here(plot_dir, "data_type_Volcano.png"), width = 12)
+
+DREAM_data_type_long |>
+  count(gene_type) |>
+  arrange(library_type, DE_class, -n) |>
+  print(n = 100)
+
+#### Upset Plot ####
+DREAM_data_type_filter <- DREAM_data_type_long |> 
+  filter(DE_class != "None") |>
+  mutate(prep_class = paste0(DE_class, "_", library_type))
+
+DREAM_data_type_filter |>
+  count(prep_class)
+
+DE_libray_type_geneList <- map(splitit(DREAM_data_type_filter$prep_class), ~DREAM_data_type_filter$ensemblID[.x])
+map_int(DE_libray_type_geneList, length)
+
+pdf(here(plot_dir, "data_type_upset.pdf"))
+# upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
+upset(fromList(DE_libray_type_geneList), order.by = "freq", sets = names(DE_libray_type_geneList), keep.order = TRUE)
+dev.off()
+
+# slurmjobs::job_single(name = "04_DREAM_plots_sn", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 04_DREAM_plots_sn.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()

@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem-per-cpu=10G
-#SBATCH --job-name=01_import_HALO_data
+#SBATCH --mem-per-cpu=5G
+#SBATCH --job-name=10_DREAM_plots
 #SBATCH -c 1
-#SBATCH -o logs/01_import_HALO_data.txt
-#SBATCH -e logs/01_import_HALO_data.txt
+#SBATCH -o logs/10_DREAM_plots.txt
+#SBATCH -e logs/10_DREAM_plots.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -20,13 +20,13 @@ echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.3
+module load conda_R
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 01_import_HALO_data.R
+Rscript 10_DREAM_plots.R
 
 echo "**** Job ends ****"
 date

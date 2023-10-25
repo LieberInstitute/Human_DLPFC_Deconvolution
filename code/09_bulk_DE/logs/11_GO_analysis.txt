@@ -1,0 +1,347 @@
+**** Job starts ****
+Wed Oct 18 01:24:54 PM EDT 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 533305
+Job name: 11_GO_analysis
+Node name: compute-062
+Task id: 
+Unloading conda_R/4.3
+Loading conda_R/4.3
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'deactivate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'doctor', 'content-trust', 'env')
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
+
+ 
+
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: ggrepel
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Loading required package: rafalib
+Loading objects:
+  library_combo_colors
+  library_prep_colors
+  library_type_colors
+Loading objects:
+  rse_gene
+Loading objects:
+  DREAM_library_type
+                        logFC    AveExpr          t     P.Value  adj.P.Val
+ENSG00000227232.5  -0.5538340  0.5408991 -0.3672508 0.715647551 0.86830465
+ENSG00000278267.1  -2.3407408 -2.0425367 -1.7104250 0.097538552 0.30548406
+ENSG00000268903.1   0.5425000 -2.7450333  0.2467626 0.806733884 0.91562490
+ENSG00000269981.1  -5.7951164 -3.1301748 -2.8369050 0.008057025 0.06835739
+ENSG00000279457.4   0.2488817  2.0333900  0.3611698 0.720665712 0.87110838
+ENSG00000228463.10 -1.1207555  1.5118970 -1.9536973 0.061224818 0.23443100
+                           B      z.std
+ENSG00000227232.5  -6.444410 -0.3642819
+ENSG00000278267.1  -5.083626 -1.6569057
+ENSG00000268903.1  -6.384641  0.2446417
+ENSG00000269981.1  -2.892049 -2.6496708
+ENSG00000279457.4  -6.352895  0.3575692
+ENSG00000228463.10 -4.685009 -1.8718684
+[1] TRUE
+Loading objects:
+  DREAM_library_prep
+[1] "Cyto_Nuc"  "Bulk_Nuc"  "Bulk_Cyto"
+[1] TRUE
+  library_type library_prep_pair     n
+1 RiboZeroGold         Bulk_Cyto 21745
+2 RiboZeroGold          Bulk_Nuc 21745
+3 RiboZeroGold          Cyto_Nuc 21745
+4        polyA         Bulk_Cyto 21745
+5        polyA          Bulk_Nuc 21745
+6        polyA          Cyto_Nuc 21745
+# A tibble: 18 × 4
+# Groups:   library_type, library_prep_pair, DE_class [18]
+   library_type library_prep_pair DE_class     n
+   <chr>        <chr>             <chr>    <int>
+ 1 RiboZeroGold Bulk_Cyto         Bulk      2698
+ 2 RiboZeroGold Bulk_Cyto         Cyto       247
+ 3 RiboZeroGold Bulk_Cyto         None     18800
+ 4 RiboZeroGold Bulk_Nuc          Bulk       346
+ 5 RiboZeroGold Bulk_Nuc          None     21182
+ 6 RiboZeroGold Bulk_Nuc          Nuc        217
+ 7 RiboZeroGold Cyto_Nuc          Cyto      1887
+ 8 RiboZeroGold Cyto_Nuc          None     17083
+ 9 RiboZeroGold Cyto_Nuc          Nuc       2775
+10 polyA        Bulk_Cyto         Bulk      3269
+11 polyA        Bulk_Cyto         Cyto      2639
+12 polyA        Bulk_Cyto         None     15837
+13 polyA        Bulk_Nuc          Bulk       556
+14 polyA        Bulk_Nuc          None     20341
+15 polyA        Bulk_Nuc          Nuc        848
+16 polyA        Cyto_Nuc          Cyto      2449
+17 polyA        Cyto_Nuc          None     16975
+18 polyA        Cyto_Nuc          Nuc       2321
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+Adding missing grouping variables: `DE_class`
+Warning messages:
+1: Removed 64423 rows containing missing values (`geom_text_repel()`). 
+2: ggrepel: 224 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+3: ggrepel: 275 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 283 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+Saving 12 x 7 in image
+Warning messages:
+1: Removed 64423 rows containing missing values (`geom_text_repel()`). 
+2: ggrepel: 197 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+3: ggrepel: 253 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 245 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+# A tibble: 186 × 4
+# Groups:   library_prep, DE_class [9]
+    library_prep DE_class     gene_type                              n
+    <chr>        <chr>        <chr>                              <int>
+  1 Bulk         None         protein_coding                     12614
+  2 Bulk         None         lncRNA                              3812
+  3 Bulk         None         processed_pseudogene                1129
+  4 Bulk         None         miRNA                                497
+  5 Bulk         None         snRNA                                306
+  6 Bulk         None         misc_RNA                             265
+  7 Bulk         None         transcribed_unprocessed_pseudogene   260
+  8 Bulk         None         TEC                                  222
+  9 Bulk         None         unprocessed_pseudogene               198
+ 10 Bulk         None         snoRNA                               195
+ 11 Bulk         None         transcribed_processed_pseudogene     120
+ 12 Bulk         None         transcribed_unitary_pseudogene        41
+ 13 Bulk         None         rRNA_pseudogene                       19
+ 14 Bulk         None         Mt_tRNA                               18
+ 15 Bulk         None         TR_J_gene                             10
+ 16 Bulk         None         scaRNA                                 9
+ 17 Bulk         None         TR_C_gene                              6
+ 18 Bulk         None         rRNA                                   4
+ 19 Bulk         None         polymorphic_pseudogene                 3
+ 20 Bulk         None         TR_D_gene                              2
+ 21 Bulk         None         TR_V_gene                              2
+ 22 Bulk         None         pseudogene                             2
+ 23 Bulk         None         ribozyme                               2
+ 24 Bulk         None         translated_unprocessed_pseudogene      2
+ 25 Bulk         None         IG_C_gene                              1
+ 26 Bulk         None         IG_J_gene                              1
+ 27 Bulk         None         IG_V_pseudogene                        1
+ 28 Bulk         None         TR_V_pseudogene                        1
+ 29 Bulk         None         scRNA                                  1
+ 30 Bulk         None         unitary_pseudogene                     1
+ 31 Bulk         RiboZeroGold protein_coding                       669
+ 32 Bulk         RiboZeroGold lncRNA                               150
+ 33 Bulk         RiboZeroGold snoRNA                                47
+ 34 Bulk         RiboZeroGold processed_pseudogene                  42
+ 35 Bulk         RiboZeroGold misc_RNA                              18
+ 36 Bulk         RiboZeroGold TEC                                   14
+ 37 Bulk         RiboZeroGold miRNA                                 13
+ 38 Bulk         RiboZeroGold unprocessed_pseudogene                10
+ 39 Bulk         RiboZeroGold transcribed_processed_pseudogene       9
+ 40 Bulk         RiboZeroGold transcribed_unprocessed_pseudogene     9
+ 41 Bulk         RiboZeroGold snRNA                                  8
+ 42 Bulk         RiboZeroGold scaRNA                                 4
+ 43 Bulk         RiboZeroGold Mt_tRNA                                2
+ 44 Bulk         RiboZeroGold transcribed_unitary_pseudogene         1
+ 45 Bulk         polyA        protein_coding                       815
+ 46 Bulk         polyA        lncRNA                               115
+ 47 Bulk         polyA        processed_pseudogene                  23
+ 48 Bulk         polyA        transcribed_unprocessed_pseudogene    15
+ 49 Bulk         polyA        TEC                                    8
+ 50 Bulk         polyA        transcribed_processed_pseudogene       6
+ 51 Bulk         polyA        miRNA                                  5
+ 52 Bulk         polyA        snRNA                                  4
+ 53 Bulk         polyA        unprocessed_pseudogene                 4
+ 54 Bulk         polyA        Mt_rRNA                                2
+ 55 Bulk         polyA        Mt_tRNA                                2
+ 56 Bulk         polyA        transcribed_unitary_pseudogene         2
+ 57 Bulk         polyA        misc_RNA                               1
+ 58 Bulk         polyA        rRNA_pseudogene                        1
+ 59 Bulk         polyA        snoRNA                                 1
+ 60 Bulk         polyA        unitary_pseudogene                     1
+ 61 Cyto         None         protein_coding                      5566
+ 62 Cyto         None         lncRNA                              2007
+ 63 Cyto         None         processed_pseudogene                 546
+ 64 Cyto         None         miRNA                                461
+ 65 Cyto         None         snRNA                                277
+ 66 Cyto         None         misc_RNA                             204
+ 67 Cyto         None         snoRNA                               150
+ 68 Cyto         None         transcribed_unprocessed_pseudogene   115
+ 69 Cyto         None         unprocessed_pseudogene               112
+ 70 Cyto         None         TEC                                   94
+ 71 Cyto         None         transcribed_processed_pseudogene      52
+ 72 Cyto         None         transcribed_unitary_pseudogene        28
+ 73 Cyto         None         rRNA_pseudogene                       20
+ 74 Cyto         None         Mt_tRNA                               16
+ 75 Cyto         None         TR_J_gene                             10
+ 76 Cyto         None         scaRNA                                 5
+ 77 Cyto         None         TR_C_gene                              4
+ 78 Cyto         None         rRNA                                   4
+ 79 Cyto         None         TR_D_gene                              2
+ 80 Cyto         None         TR_V_gene                              2
+ 81 Cyto         None         polymorphic_pseudogene                 2
+ 82 Cyto         None         pseudogene                             2
+ 83 Cyto         None         ribozyme                               2
+ 84 Cyto         None         translated_unprocessed_pseudogene      2
+ 85 Cyto         None         IG_C_gene                              1
+ 86 Cyto         None         IG_J_gene                              1
+ 87 Cyto         None         IG_V_pseudogene                        1
+ 88 Cyto         None         scRNA                                  1
+ 89 Cyto         RiboZeroGold protein_coding                      4866
+ 90 Cyto         RiboZeroGold lncRNA                              1146
+ 91 Cyto         RiboZeroGold processed_pseudogene                 439
+ 92 Cyto         RiboZeroGold TEC                                  127
+ 93 Cyto         RiboZeroGold transcribed_unprocessed_pseudogene   118
+ 94 Cyto         RiboZeroGold snoRNA                                91
+ 95 Cyto         RiboZeroGold unprocessed_pseudogene                81
+ 96 Cyto         RiboZeroGold misc_RNA                              75
+ 97 Cyto         RiboZeroGold transcribed_processed_pseudogene      61
+ 98 Cyto         RiboZeroGold miRNA                                 43
+ 99 Cyto         RiboZeroGold snRNA                                 39
+100 Cyto         RiboZeroGold scaRNA                                 8
+# ℹ 86 more rows
+Adding missing grouping variables: `DE_class`
+Warning messages:
+1: Removed 128779 rows containing missing values (`geom_text_repel()`). 
+2: ggrepel: 255 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+3: ggrepel: 254 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+4: ggrepel: 275 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+5: ggrepel: 254 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+6: ggrepel: 282 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+7: ggrepel: 259 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+# A tibble: 6 × 4
+# Groups:   library_prep, DE_class [6]
+  library_prep DE_class     prep_class            n
+  <chr>        <chr>        <chr>             <int>
+1 Bulk         RiboZeroGold RiboZeroGold_Bulk   996
+2 Bulk         polyA        polyA_Bulk         1005
+3 Cyto         RiboZeroGold RiboZeroGold_Cyto  7109
+4 Cyto         polyA        polyA_Cyto         4949
+5 Nuc          RiboZeroGold RiboZeroGold_Nuc   5821
+6 Nuc          polyA        polyA_Nuc          4084
+       polyA_Bulk        polyA_Cyto         polyA_Nuc RiboZeroGold_Bulk 
+             1005              4949              4084               996 
+RiboZeroGold_Cyto  RiboZeroGold_Nuc 
+             7109              5821 
+null device 
+          1 
+# A tibble: 12 × 5
+# Groups:   library_type, library_prep_pair, DE_class [12]
+   library_type library_prep_pair DE_class prep_class                  n
+   <chr>        <chr>             <chr>    <chr>                   <int>
+ 1 RiboZeroGold Bulk_Cyto         Bulk     RiboZeroGold_Cyto_Bulk^  2698
+ 2 RiboZeroGold Bulk_Cyto         Cyto     RiboZeroGold_Cyto^_Bulk   247
+ 3 RiboZeroGold Bulk_Nuc          Bulk     RiboZeroGold_Nuc_Bulk^    346
+ 4 RiboZeroGold Bulk_Nuc          Nuc      RiboZeroGold_Nuc^_Bulk    217
+ 5 RiboZeroGold Cyto_Nuc          Cyto     RiboZeroGold_Nuc_Cyto^   1887
+ 6 RiboZeroGold Cyto_Nuc          Nuc      RiboZeroGold_Nuc^_Cyto   2775
+ 7 polyA        Bulk_Cyto         Bulk     polyA_Cyto_Bulk^         3269
+ 8 polyA        Bulk_Cyto         Cyto     polyA_Cyto^_Bulk         2639
+ 9 polyA        Bulk_Nuc          Bulk     polyA_Nuc_Bulk^           556
+10 polyA        Bulk_Nuc          Nuc      polyA_Nuc^_Bulk           848
+11 polyA        Cyto_Nuc          Cyto     polyA_Nuc_Cyto^          2449
+12 polyA        Cyto_Nuc          Nuc      polyA_Nuc^_Cyto          2321
+       polyA_Cyto_Bulk^        polyA_Cyto^_Bulk         polyA_Nuc_Bulk^ 
+                   3269                    2639                     556 
+        polyA_Nuc_Cyto^         polyA_Nuc^_Bulk         polyA_Nuc^_Cyto 
+                   2449                     848                    2321 
+RiboZeroGold_Cyto_Bulk^ RiboZeroGold_Cyto^_Bulk  RiboZeroGold_Nuc_Bulk^ 
+                   2698                     247                     346 
+ RiboZeroGold_Nuc_Cyto^  RiboZeroGold_Nuc^_Bulk  RiboZeroGold_Nuc^_Cyto 
+                   1887                     217                    2775 
+null device 
+          1 
+**** Job ends ****
+Wed Oct 18 01:28:36 PM EDT 2023

@@ -28,7 +28,7 @@ Br6432M_CIRCLE,Br6432_mid,Br6432,Middle,M,mid,6432M,1,Circle,2,A,FALSE,Yes,Exclu
 Br8325A_CIRCLE,Br8325_ant,Br8325,Anterior,A,ant,8325A,5,Circle,6,A,FALSE,No,Low,1,A1
 Br8325M_CIRCLE,Br8325_mid,Br8325,Middle,M,mid,8325M,5,Circle,6,B,FALSE,No,OK,1,B1
 Br8667A_CIRCLE,Br8667_ant,Br8667,Anterior,A,ant,8667A,5,Circle,6,C,FALSE,No,Low,1,C1
-Br6522M_CIRCLE,Br6522_mid,Br6522,Middle,M,mid,6522M,2,Circle,4,A,FALSE,No,OK,1,A1
+Br6522M_CIRCLE,Br6522_mid,Br6522,Middle,M,mid,6522M,2,Circle,4,A,FALSE,No,Low,1,A1
 Br6522P_CIRCLE,Br6522_post,Br6522,Posterior,P,post,6522P,2,Circle,4,B,FALSE,No,Low,1,B1
 Br6471M_CIRCLE,Br6471_mid,Br6471,Middle,M,mid,6471M,2,Circle,4,C,FALSE,No,High,1,C1
 Br8492P_CIRCLE,Br8492_post,Br8492,Posterior,P,post,8492P,2,Circle,4,D,FALSE,No,High,1,D1
