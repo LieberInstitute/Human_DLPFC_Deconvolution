@@ -14,6 +14,9 @@ table(sce$cellType_broad_hc)
 # Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib
 # 3979      2157      1601     10894      1940     24809     11067
 
+## prevent dup rownames
+rownames(sce) <- rowData(sce)$gene_id
+
 broad_modeling_results <- registration_wrapper(
   sce,
   var_registration = "cellType_broad_hc",
@@ -23,7 +26,7 @@ broad_modeling_results <- registration_wrapper(
   pseudobulk_rds_file = here("processed-data", "sce","sce_broad_pseudobulk.rds")
 )
 
-save(broad_modeling_results, here("processed-data","06_marker_genes", "05_broad_registration", "broad_modeling_results.Rdata"))
+save(broad_modeling_results, file = here("processed-data","06_marker_genes", "05_broad_registration", "broad_modeling_results.Rdata"))
 
 # slurmjobs::job_single(name = "05_broad_registration", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 05_broad_registration.R")
 
@@ -31,6 +34,4 @@ save(broad_modeling_results, here("processed-data","06_marker_genes", "05_broad_
 print("Reproducibility information:")
 Sys.time()
 proc.time()
-options(width = 120)
-session_info()
-
+options(width
