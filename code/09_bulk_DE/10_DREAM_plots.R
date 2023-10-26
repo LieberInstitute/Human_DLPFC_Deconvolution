@@ -19,6 +19,9 @@ load(here("processed-data", "00_data_prep", "bulk_colors.Rdata"), verbose = TRUE
 # library_combo_colors
 # library_prep_colors
 # library_type_colors
+load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
+# cell_type_colors_halo
+# cell_type_colors_broad
 
 #### load data ####
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
@@ -213,4 +216,74 @@ pdf(here(plot_dir, "library_prep_upset.pdf"))
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
 upset(fromList(DE_libray_prep_geneList), order.by = "freq", sets = names(DE_libray_prep_geneList), keep.order = TRUE)
 dev.off()
+
+#### marker genes ####
+load(here("processed-data","06_marker_genes","marker_genes_top25.Rdata"), verbose = TRUE)
+
+
+DREAM_library_type_long <- DREAM_library_type_long |> 
+  left_join(marker_genes_top25_simple)
+
+DREAM_library_type_long |> filter(DE_class != "None") |> count(cellType.target)
+# library_prep DE_class     cellType.target     n
+# <chr>        <chr>        <fct>           <int>
+#   1 Bulk         RiboZeroGold Astro               1
+# 2 Bulk         RiboZeroGold Micro               1
+# 3 Bulk         RiboZeroGold NA                994
+# 4 Bulk         polyA        EndoMural           1
+# 5 Bulk         polyA        Oligo               4
+# 6 Bulk         polyA        Excit               1
+# 7 Bulk         polyA        Inhib               1
+# 8 Bulk         polyA        NA                998
+# 9 Cyto         RiboZeroGold Astro              15
+# 10 Cyto         RiboZeroGold EndoMural          14
+
+
+DREAM_library_prep_long <- DREAM_library_prep_long |> 
+  left_join(marker_genes_top25_simple)
+
+DREAM_library_prep_long |> 
+  filter(DE_class != "None", !is.na(cellType.target)) |> 
+  count(cellType.target) |>
+  arrange(-n) |>
+  print(n = 35)
+  
+## plots
+
+library_type_volcano_ct <- DREAM_library_type_long |>
+  filter(!is.na(cellType.target)) |>
+  ggplot(aes(x = logFC, y = -log10(P.Value), color = cellType.target)) +
+  geom_point(size = .7, alpha = 0.5) +
+  geom_text_repel(aes(label = ifelse(!is.na(cellType.target), Symbol, NA)),
+                  size = 2, 
+                  show.legend=FALSE,
+                  color = "black") +
+  scale_color_manual(values = cell_type_colors_broad) +
+  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_vline(xintercept = c(1, -1), linetype = "dashed") +
+  geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
+  facet_wrap(~library_prep, nrow = 1) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ggsave(library_type_volcano_ct, filename = here(plot_dir, "library_type_Volcano_cellType_markers.png"), width = 12)
+
+
+library_prep_volcano_ct <- DREAM_library_prep_long |>
+  filter(!is.na(cellType.target)) |>
+  ggplot(aes(x = logFC, y = -log10(P.Value), color = cellType.target)) +
+  geom_point(size = .7, alpha = 0.5) +
+  geom_text_repel(aes(label = ifelse(!is.na(cellType.target), Symbol, NA)),
+                  size = 2, 
+                  show.legend=FALSE,
+                  color = "black") +
+  scale_color_manual(values = cell_type_colors_broad) +
+  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_vline(xintercept = c(1, -1), linetype = "dashed") +
+  geom_hline(data = prep_max_pval, aes(yintercept = logP), linetype = "dashed") +
+  facet_grid(library_type~library_prep_pair) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ggsave(library_prep_volcano_ct, filename = here(plot_dir, "library_prep_Volcano_cellType_markers.png"), height = 12, width = 12)
 
