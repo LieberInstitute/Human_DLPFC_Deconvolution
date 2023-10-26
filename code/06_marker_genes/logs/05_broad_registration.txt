@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Oct 25 05:35:44 PM EDT 2023
+Thu Oct 26 12:38:21 PM EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 619763
+Job id: 628505
 Job name: 05_broad_registration
-Node name: compute-057
+Node name: compute-147
 Task id: 
 Unloading conda_R/4.3
 Loading conda_R/4.3
@@ -98,21 +98,22 @@ Loading objects:
 
     Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
      3979      2157      1601     10894      1940     24809     11067 
-2023-10-25 17:37:01.099181 make pseudobulk object
-2023-10-25 17:52:44.318359 dropping 4 pseudo-bulked samples that are below 'min_ncells'.
-2023-10-25 17:52:44.418063 drop lowly expressed genes
-2023-10-25 17:52:45.227891 normalize expression
-2023-10-25 17:52:49.323616 saving sce_pseudo to /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/sce/sce_broad_pseudobulk.rds
-2023-10-25 17:52:53.231003 create model matrix
-2023-10-25 17:52:53.391858 run duplicateCorrelation()
-2023-10-25 17:54:05.373049 The estimated correlation is: 0.131369926144489
-2023-10-25 17:54:05.394452 computing enrichment statistics
-2023-10-25 17:54:10.417942 extract and reformat enrichment results
-2023-10-25 17:54:10.533497 running the baseline pairwise model
-2023-10-25 17:54:11.840433 computing pairwise statistics
-2023-10-25 17:54:15.009048 computing F-statistics
-Warning message:
-Count matrix has duplicated rownames 
-Error in save(broad_modeling_results, here("processed-data", "06_marker_genes",  : 
-  object ‘here("processed-data", "06_marker_genes", "05_broad_registration", "broad_modeling_results.Rdata")’ not found
+2023-10-26 12:39:35.018059 make pseudobulk object
+2023-10-26 12:49:57.933708 dropping 4 pseudo-bulked samples that are below 'min_ncells'.
+2023-10-26 12:49:58.087444 drop lowly expressed genes
+2023-10-26 12:49:58.529985 normalize expression
+2023-10-26 12:50:01.480412 saving sce_pseudo to /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/sce/sce_broad_pseudobulk.rds
+2023-10-26 12:50:03.96535 create model matrix
+2023-10-26 12:50:04.087256 run duplicateCorrelation()
+2023-10-26 12:50:47.294168 The estimated correlation is: 0.131369926144489
+2023-10-26 12:50:47.304039 computing enrichment statistics
+2023-10-26 12:50:50.182389 extract and reformat enrichment results
+2023-10-26 12:50:50.268597 running the baseline pairwise model
+2023-10-26 12:50:50.711761 computing pairwise statistics
+2023-10-26 12:50:51.48335 computing F-statistics
+[1] "Reproducibility information:"
+[1] "2023-10-26 12:50:52 EDT"
+   user  system elapsed 
+657.682   5.673 741.734 
+Error: unexpected end of input
 Execution halted
