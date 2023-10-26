@@ -28,6 +28,10 @@ load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 
 rd <- as.data.frame(rowData(rse_gene)) |> select(gencodeID, ensemblID, gene_type, Symbol, EntrezID)
 
+## marker gene data
+load(here("processed-data", "06_marker_genes", "marker_genes_top25.Rdata"), verbose = TRUE)
+marker_genes_top25_simple <- marker_genes_top25_simple |> rename(ensemblID = gene)
+
 ## library_type
 load(here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type.Rdata"), verbose = TRUE)
 head(DREAM_library_type$Bulk)
@@ -41,14 +45,17 @@ DREAM_library_type_long <- map2_dfr(DREAM_library_type, names(DREAM_library_type
   as_tibble() |>
   group_by(library_prep) |>
   arrange(adj.P.Val) |>
-  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ "RiboZeroGold",
-                                         logFC < -1 & adj.P.Val < 0.05 ~ "polyA",
+  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ paste0("RiboZeroGold_",library_prep),
+                                         logFC < -1 & adj.P.Val < 0.05 ~ paste0("polyA_", library_prep),
                                          TRUE ~"None"),
          rank_p = row_number()) |>
   group_by(library_prep, DE_class) |>
   arrange(-abs(logFC)) |>
-  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA))
- 
+  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA),
+         library_prep = factor(library_prep, levels = c("Cyto", "Bulk", "Nuc"))) |> 
+  left_join(marker_genes_top25_simple)
+
+DREAM_library_type_long |> count()
 
 ## LibraryPrep
 load(here("processed-data", "09_bulk_DE","09_DREAM_library-prep", "DREAM_library-prep.Rdata"), verbose = TRUE)
@@ -65,22 +72,19 @@ DREAM_library_prep_long <- map2_dfr(DREAM_library_prep, names(DREAM_library_prep
   })
   DE$library_type <- type_name
   return(DE)
-})
-
-DREAM_library_prep_long |> count(library_type, library_prep_pair)
-
-DREAM_library_prep_long <- DREAM_library_prep_long |>
+}) |>
   as_tibble() |>
   separate(library_prep_pair, into = c("down", "up"), remove = FALSE) |>
   group_by(library_prep_pair, library_type) |>
   arrange(adj.P.Val) |>
-  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ up,
-                              logFC < -1 & adj.P.Val < 0.05 ~ down,
+  mutate(DE_class = case_when(logFC > 1 & adj.P.Val < 0.05 ~ paste0(library_type, "_", up),
+                              logFC < -1 & adj.P.Val < 0.05 ~ paste0(library_type, "_", down),
                               TRUE ~"None"),
          rank_p = row_number()) |>
   group_by(library_type, library_prep_pair, DE_class) |>
   arrange(-abs(logFC)) |>
-  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA))
+  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA)) |> 
+  left_join(marker_genes_top25_simple)
 
 DREAM_library_prep_long |> count()
 
@@ -117,15 +121,15 @@ library_type_volcano <- DREAM_library_type_long |>
                   size = 2, 
                   show.legend=FALSE,
                   color = "black") +
-  scale_color_manual(values = c(library_type_colors, "Other" = "darkgray")) +
+  scale_color_manual(values = c(library_combo_colors, "Other" = "darkgray")) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_wrap(~library_prep, nrow = 1) +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "none")
 
-ggsave(library_type_volcano, filename = here(plot_dir, "library_type_Volcano_small.png"), width = 7 , height = 5)
+ggsave(library_type_volcano, filename = here(plot_dir, "library_type_Volcano_small.png"), width = 6 , height = 4)
 ggsave(library_type_volcano, filename = here(plot_dir, "library_type_Volcano.png"), width = 12)
 
 DREAM_library_type_long |>
@@ -146,19 +150,19 @@ library_prep_volcano <- DREAM_library_prep_long |>
   ggplot(aes(x = logFC, y = -log10(P.Value), color = DE_class)) +
   geom_point(size = .7, alpha = 0.5) +
   geom_text_repel(aes(label = ifelse(rank_p < 100 | rank_fc < 100, Symbol, NA)),
-                  size = 2, 
+                  size = 3, 
                   show.legend=FALSE,
                   color = "black") +
-  scale_color_manual(values = c(Bulk = "#688E26", Cyto = "#FBB337", Nuc = "#104F55", Other = "darkgray")) +
+  scale_color_manual(values = c(library_combo_colors, "Other" = "darkgray")) +
+  # scale_color_manual(values = c(Bulk = "#688E26", Cyto = "#FBB337", Nuc = "#104F55", Other = "darkgray")) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = prep_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_grid(library_type~library_prep_pair) +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "none", text = element_text(size=14))
 
-# ggsave(library_prep_volcano, filename = here(plot_dir, "library_type_Volcano_small.png"), width = 7 , height = 5)
-ggsave(library_prep_volcano, filename = here(plot_dir, "library_prep_Volcano.png"), height = 12, width = 12)
+ggsave(library_prep_volcano, filename = here(plot_dir, "library_prep_Volcano.png"), height = 8.5, width = 11)
 
 
 #### Upset Plot ####
@@ -218,9 +222,6 @@ upset(fromList(DE_libray_prep_geneList), order.by = "freq", sets = names(DE_libr
 dev.off()
 
 #### marker genes ####
-load(here("processed-data","06_marker_genes","marker_genes_top25.Rdata"), verbose = TRUE)
-
-
 DREAM_library_type_long <- DREAM_library_type_long |> 
   left_join(marker_genes_top25_simple)
 
