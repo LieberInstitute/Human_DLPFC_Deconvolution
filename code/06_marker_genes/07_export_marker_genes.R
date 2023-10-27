@@ -26,6 +26,7 @@ marker_genes_top25 <- marker_stats |>
   slice(1:25)
 
 marker_genes_top25 |> count(cellType.target)
+## top 25 that overlap w/ rse_genes
 # cellType.target     n
 # <fct>           <int>
 # 1 Astro              24
@@ -59,5 +60,5 @@ marker_genes_top25_simple <- marker_genes_top25 |>
 
 marker_genes_ensembl <- map(splitit(marker_genes_top25$cellType.target), ~marker_genes_top25$gene[.x])
 
-save(marker_genes_top25_simple, marker_genes_top25_simple, marker_genes_ensembl, file = here("processed-data","06_marker_genes","marker_genes_top25.Rdata"))
+save(marker_genes_top25, marker_genes_top25_simple, marker_genes_ensembl, file = here("processed-data","06_marker_genes","marker_genes_top25.Rdata"))
 
