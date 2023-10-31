@@ -59,18 +59,18 @@ mean_v_sd <- gene_mean |>
 ggsave(mean_v_sd, filename = here(plot_dir, "my_mean_vs_sd_counts.png"))
 
 #### filter genes by Expression ####
-# gene_rpkm <- getRPKM(rse_gene, "Length")
-# rse_gene_filter <- rse_gene[rowMeans(gene_rpkm) > 0.1, ]
-# gene_rpkm_filter <- gene_rpkm[rowMeans(gene_rpkm) > 0.1, ]
-# table(droplevels(seqnames(rse_gene_filter)))
-# 
+gene_rpkm <- getRPKM(rse_gene, "Length")
+rse_gene_filter <- rse_gene[rowMeans(gene_rpkm) > 0.1, ]
+gene_rpkm_filter <- gene_rpkm[rowMeans(gene_rpkm) > 0.1, ]
+table(droplevels(seqnames(rse_gene_filter)))
+
 # pdf(here(plot_dir, "mean_vs_sd_rpkm.pdf"))
 # meanSdPlot(gene_rpkm, ranks = FALSE)
 # dev.off()
-# 
+
 # ## get expression
-# geneExprs_filter <- log2(gene_rpkm_filter + 1)
-# assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter + 1) ## check
+geneExprs_filter <- log2(gene_rpkm_filter + 1)
+assays(rse_gene_filter)$logcounts <- log2(gene_rpkm_filter + 1) ## check
 
 
 pdf(here(plot_dir, "mean_vs_sd_logrpkm.pdf"))
@@ -112,7 +112,7 @@ gg_pca_position <- ggpairs(pca_tab,
 ggsave(gg_pca_position, filename = here(plot_dir, "ggpairs_position.png"), height = 10, width = 10)
 
 ## PC1 vs. PC2
-pc_test <- pca_tab |>
+pc1v2 <- pca_tab |>
     ggplot(aes(x = PC1, y = PC2, color = library_combo)) +
     geom_point() +
     theme_bw() +
@@ -120,7 +120,8 @@ pc_test <- pca_tab |>
     labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[2]]) +
     coord_equal()
 
-ggsave(pc_test, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo.png"))
+ggsave(pc1v2, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo.png"))
+ggsave(pc1v2, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_small.png"), width = 5, height = 3.5)
 
 pc1v2_lab <- pca_tab |>
     ggplot(aes(x = PC1, y = PC2, color = library_combo, shape = qc_class)) +
