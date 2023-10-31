@@ -19,11 +19,17 @@ load(here("processed-data", "00_data_prep", "bulk_colors.Rdata"), verbose = TRUE
 # library_combo_colors
 # library_prep_colors
 # library_type_colors
-
+load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
+# cell_type_colors_halo
+# cell_type_colors_broad
 #### load data ####
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 
 rd <- as.data.frame(rowData(rse_gene)) |> select(gencodeID, ensemblID, gene_type, Symbol, EntrezID)
+
+## marker gene data
+load(here("processed-data", "06_marker_genes", "marker_genes_top25.Rdata"), verbose = TRUE)
+marker_genes_top25_simple <- marker_genes_top25_simple |> rename(ensemblID = gene)
 
 ## library_type
 load(here("processed-data", "10_bulk_vs_sn_DE",  "03_DREAM_sn_v_bulk", "DREAM_data-type.Rdata"), verbose = TRUE)
@@ -49,7 +55,8 @@ DREAM_data_type_long <- map2_dfr(DREAM_data_type, names(DREAM_data_type), functi
          rank_p = row_number()) |>
   group_by(library_type, DE_class) |>
   arrange(-abs(logFC)) |>
-  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA))
+  mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA)) |> 
+  left_join(marker_genes_top25_simple)
  
 DREAM_data_type_long |> count(DE_class, library_type)
 #   library_type DE_class      n
@@ -59,6 +66,8 @@ DREAM_data_type_long |> count(DE_class, library_type)
 # 4 polyA        Bulk       5749
 # 5 polyA        None       6402
 # 6 polyA        snRNA-seq  5509
+
+DREAM_data_type_long |> filter(DE_class != "None") |> count(DE_class, cellType.target)
 
 #### pval distribution ####
 data_type_pval_histo <- DREAM_data_type_long |>
@@ -72,6 +81,7 @@ ggsave(data_type_pval_histo, filename = here(plot_dir, "data_type_pval_histogram
 #### Volcano Plots ####
 
 type_max_pval <- DREAM_data_type_long |>
+  group_by(library_type) |>
   filter(adj.P.Val < 0.05) |>
   arrange(-P.Value) |>
   slice(1) |>
@@ -81,21 +91,29 @@ type_max_pval <- DREAM_data_type_long |>
 data_type_volcano <- DREAM_data_type_long |>
   ggplot(aes(x = logFC, y = -log10(P.Value), color = DE_class)) +
   geom_point(size = .7, alpha = 0.5) +
-  geom_text_repel(aes(label = ifelse(rank_p < 100 | rank_fc < 100, Symbol, NA)),
+  geom_text_repel(aes(label = ifelse(DE_class != "None" & ensemblID != Symbol, Symbol, NA)),
+  # geom_text_repel(aes(label = ifelse(rank_p < 100 | rank_fc < 100 & ensemblID != Symbol, Symbol, NA)),
                   size = 2, 
                   show.legend=FALSE,
                   color = "black") +
-  scale_color_manual(values = c(library_type_colors, "Other" = "darkgray", "snRNA-seq" = "#417B5A")) +
+  scale_color_manual(values = c(library_type_colors, "Other" = "darkgray", "snRNA-seq" = "#2f7ec0")) +
   # scale_color_manual(values = c("Bulk" = "#8D6E53", "snRNA-seq" = "#417B5A", "Other" = "darkgray")) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_wrap(~library_type, nrow = 1) +
-  theme_bw() +
-  theme(legend.position = "bottom")
+  theme_bw() 
 
-ggsave(data_type_volcano, filename = here(plot_dir, "data_type_Volcano_small.png"), width = 7 , height = 5)
-ggsave(data_type_volcano, filename = here(plot_dir, "data_type_Volcano.png"), width = 12)
+ggsave(data_type_volcano +
+         theme(legend.position = "none"), 
+       filename = here(plot_dir, "data_type_Volcano_small.png"), width = 4 , height = 4)
+ggsave(data_type_volcano +
+         theme(legend.position = "none"),
+       filename = here(plot_dir, "data_type_Volcano_small.pdf"), width = 4 , height = 4)
+
+ggsave(data_type_volcano +
+         theme(legend.position = "bottom"), 
+       filename = here(plot_dir, "data_type_Volcano.png"), width = 12)
 
 DREAM_data_type_long |>
   count(gene_type) |>
@@ -117,6 +135,27 @@ pdf(here(plot_dir, "data_type_upset.pdf"))
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
 upset(fromList(DE_libray_type_geneList), order.by = "freq", sets = names(DE_libray_type_geneList), keep.order = TRUE)
 dev.off()
+
+## cell type markers
+data_type_volcano_ct <- DREAM_data_type_long |>
+  filter(!is.na(cellType.target)) |>
+  ggplot(aes(x = logFC, y = -log10(P.Value), color = cellType.target)) +
+  geom_point(alpha = 0.5) +
+  geom_text_repel(aes(label = ifelse(!is.na(cellType.target), Symbol, NA)),
+                  size = 2, 
+                  show.legend=FALSE,
+                  color = "black") +
+  scale_color_manual(values = cell_type_colors_broad) +
+  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_vline(xintercept = c(1, -1), linetype = "dashed") +
+  geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
+  facet_wrap(~library_type, nrow = 1) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ggsave(data_type_volcano_ct, filename = here(plot_dir, "data_type_Volcano_cellType_markers.png"), height = 12, width = 12)
+
+
 
 # slurmjobs::job_single(name = "04_DREAM_plots_sn", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 04_DREAM_plots_sn.R")
 
