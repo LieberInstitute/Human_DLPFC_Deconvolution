@@ -180,6 +180,14 @@ Heatmap(fc_data$top5$z_score,
 )
 dev.off()
 
+# slurmjobs::job_single(name = "06_marker_gene_heatmap", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 06_marker_gene_heatmap.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
 ## top 10 
 pdf(here(plot_dir, "markers_heatmap_top10.pdf"), width = 8.5, height = 10.3)
