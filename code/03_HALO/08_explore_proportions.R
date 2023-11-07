@@ -146,36 +146,36 @@ conf_ref <- metadata |>
 
 conf_ref |> print(n = 21)      
 # A tibble: 21 × 5
-# Sample      Star     Circle   both_high both_ok
-# <chr>       <ord>    <ord>    <lgl>     <lgl>  
-#   1 Br8492_post High     High     TRUE      TRUE   
-# 2 Br2720_post High     High     TRUE      TRUE   
-# 3 Br6423_post High     High     TRUE      TRUE   
-# 4 Br2743_ant  High     OK       FALSE     TRUE   
-# 5 Br6471_mid  OK       High     FALSE     TRUE   
-# 6 Br3942_mid  OK       High     FALSE     TRUE   
-# 7 Br8667_mid  OK       High     FALSE     TRUE   
-# 8 Br8325_mid  OK       OK       FALSE     TRUE   
-# 9 Br6522_mid  OK       OK       FALSE     TRUE   
-# 10 Br6423_ant  OK       OK       FALSE     TRUE   
-# 11 Br6432_post OK       Low      FALSE     FALSE  
-# 12 Br8325_ant  OK       Low      FALSE     FALSE  
-# 13 Br6522_post OK       Low      FALSE     FALSE  
-# 14 Br6471_ant  Low      Low      FALSE     FALSE  
-# 15 Br8667_ant  Low      Low      FALSE     FALSE  
-# 16 Br8492_mid  Excluded High     FALSE     FALSE  
-# 17 Br3942_post Excluded High     FALSE     FALSE  
-# 18 Br3942_ant  Excluded High     FALSE     FALSE  
-# 19 Br2720_mid  Excluded Low      FALSE     FALSE  
-# 20 Br6432_ant  Excluded Excluded FALSE     FALSE  
-# 21 Br6432_mid  Excluded Excluded FALSE     FALSE
+# Sample      Star     Circle   both_high one_high both_ok one_ok
+# <chr>       <ord>    <ord>    <lgl>     <lgl>    <lgl>   <lgl> 
+# 1 Br8492_post High     High     TRUE      TRUE     TRUE    TRUE  
+# 2 Br2720_post High     High     TRUE      TRUE     TRUE    TRUE  
+# 3 Br6423_post High     High     TRUE      TRUE     TRUE    TRUE  
+# 4 Br2743_ant  High     OK       FALSE     TRUE     TRUE    TRUE  
+# 5 Br6471_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+# 6 Br3942_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+# 7 Br8667_mid  OK       High     FALSE     TRUE     TRUE    TRUE  
+# 8 Br8325_mid  OK       OK       FALSE     FALSE    TRUE    TRUE  
+# 9 Br6423_ant  OK       OK       FALSE     FALSE    TRUE    TRUE  
+# 10 Br6432_post OK       Low      FALSE     FALSE    FALSE   TRUE  
+# 11 Br8325_ant  OK       Low      FALSE     FALSE    FALSE   TRUE  
+# 12 Br6522_mid  OK       Low      FALSE     FALSE    FALSE   TRUE  
+# 13 Br6522_post OK       Low      FALSE     FALSE    FALSE   TRUE  
+# 14 Br6471_ant  Low      Low      FALSE     FALSE    FALSE   FALSE 
+# 15 Br8667_ant  Low      Low      FALSE     FALSE    FALSE   FALSE 
+# 16 Br8492_mid  Excluded High     FALSE     TRUE     FALSE   TRUE  
+# 17 Br3942_post Excluded High     FALSE     TRUE     FALSE   TRUE  
+# 18 Br3942_ant  Excluded High     FALSE     TRUE     FALSE   TRUE  
+# 19 Br2720_mid  Excluded Low      FALSE     FALSE    FALSE   FALSE 
+# 20 Br6432_ant  Excluded Excluded FALSE     FALSE    FALSE   FALSE 
+# 21 Br6432_mid  Excluded Excluded FALSE     FALSE    FALSE   FALSE
 
 conf_ref |> dplyr::count(both_ok, one_ok)
 # both_ok one_ok     n
 # <lgl>   <lgl>  <int>
 # 1 FALSE   FALSE      5
-# 2 FALSE   TRUE       6
-# 3 TRUE    TRUE      10
+# 2 FALSE   TRUE       7
+# 3 TRUE    TRUE       9
 
 write_csv(conf_ref, file = here(data_dir, "Sample_confidence_reference.csv"))
 
@@ -372,6 +372,40 @@ prop_bar_conf2 <- cell_type_prop |>
 
 ggsave(prop_bar_conf2, filename = here(plot_dir, "halo_prop_bar_conf2.png"))
 
+## prop bar w OK+ confidence
+prop_bar_filter <- cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~Combo, ncol = 1)+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(prop_bar_filter, filename = here(plot_dir, "halo_prop_bar_filter.png"))
+ggsave(prop_bar_filter, filename = here(plot_dir, "halo_prop_bar_filter_short.png"), height = 4, width = 10)
+
+prop_bar_filter_txt <- cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+  ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  geom_text(
+    aes(
+      label = ifelse(prop > 0.075, format(round(prop, 3), 3), "")
+    ),
+    size = 2.5,
+    position = position_stack(vjust = 0.5)
+    # color = "gray35"
+  ) +
+  facet_wrap(~Combo, ncol = 1)+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt.png"))
+ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt_short.png"), height = 4, width = 10)
+
+
 prop_boxplot <- cell_type_prop |>
   ggplot(aes(x = cell_type , y = prop, fill = Confidence)) +
   geom_boxplot(alpha = 0.6) +
@@ -444,6 +478,32 @@ ggsave(prop_bar_combine, filename = here(plot_dir, "halo_prop_bar_combine.png"))
 # ggsave(prop_compare_scatter,  filename = here(plot_dir, "halo_prop_compare_scatter.png"))
 
 #### compare with snRNA-seq prop ####
+
+halo_vs_sn_prop_filter <- cell_type_prop |>
+  filter(Confidence %in% c("OK", 'High'), cell_type != "Other") |>
+  ggplot(aes(x = prop_sn, y = prop, color = cell_type)) +
+  geom_point() +
+  scale_color_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, scales = "free") +
+  theme_bw() +
+  geom_abline(linetype = "dashed", color = "black") +
+  labs(x = "snRNA-scope Proportion", y = "RNAscope Proportion")
+
+ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_free.png"), width = 10, height = 5)
+
+halo_vs_sn_prop_filter <- cell_type_prop |>
+  filter(Confidence %in% c("OK", 'High'), cell_type != "Other") |>
+  ggplot(aes(x = prop_sn, y = prop, fill = cell_type)) +
+  geom_point(shape = 21) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, nrow = 1) +
+  theme_bw() +
+  coord_equal() +
+  geom_abline(linetype = "dashed", color = "black") +
+  labs(x = "snRNA-scope Proportion", y = "RNAscope Proportion") +
+  theme(legend.position = "none")
+
+ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_equal.png"), width = 10, height = 5)
 
 cell_type_prop_compare_long <- cell_type_prop |>
   mutate(method = "Simple") |>
