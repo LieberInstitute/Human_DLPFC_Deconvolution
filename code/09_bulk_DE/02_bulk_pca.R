@@ -121,7 +121,13 @@ pc1v2 <- pca_tab |>
     coord_equal()
 
 ggsave(pc1v2, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo.png"))
-ggsave(pc1v2, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_small.png"), width = 5, height = 3.5)
+ggsave(pc1v2 + theme(legend.position = "None"), 
+       filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_small.png"),
+       width = 3, height = 4)
+
+ggsave(pc1v2 + theme(legend.position = "None"), 
+       filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_small.pdf"),
+       width = 3, height = 4)
 
 pc1v2_lab <- pca_tab |>
     ggplot(aes(x = PC1, y = PC2, color = library_combo, shape = qc_class)) +
