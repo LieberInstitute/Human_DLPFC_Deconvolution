@@ -34,7 +34,7 @@ load(here("processed-data","rse","rse_gene.Rdata"), verbose = TRUE)
 bulk_samples <- colData(rse_gene) |>
   as.data.frame() |>
   select(Sample, SAMPLE_ID, Position, pos, library_type, library_prep, library_combo, round, BrNum, age, sex) |>
-  mutate(library_prep = factor(library_prep, levels = c("Cyto", "Bulk", "Nuc")))
+  mutate(library_prep = factor(library_prep, levels = c("Nuc", "Bulk", "Cyto")))
 
 bulk_n_samp <- bulk_samples |>
   dplyr::count(Sample, Position, BrNum, library_type) |>
@@ -46,18 +46,19 @@ library_prep_type_count <- bulk_samples |>
   dplyr::count(library_prep, library_type, library_combo)
 
 bulk_tile <- library_prep_type_count |>
-  mutate(library_type = gsub("RiboZeroGold", "Ribo\nZero\nGold", library_type))|>
+  mutate(library_type = gsub("RiboZeroGold", "RiboZero\nGold", library_type))|>
   ggplot(aes(library_prep, library_type, fill = library_combo)) +
   geom_tile() +
   geom_text(aes(label = n), color = "white", fontface = "bold") +
   scale_fill_manual(values = library_combo_colors) +
   theme_bw() + 
   theme(legend.position='none') +
-  labs(x = "Library Prep", y = "Library Type")
+  labs(x = "Library Prep", y = "Library Type") +
+  coord_flip()
   
-ggsave(bulk_tile, filename = here(plot_dir, "bulk_sample_tile.png"), height = 2, width = 3)
-ggsave(bulk_tile, filename = here(plot_dir, "bulk_sample_tile.pdf"), height = 2, width = 3)
-
+ggsave(bulk_tile, filename = here(plot_dir, "bulk_sample_tile.png"), height = 3, width = 2)
+ggsave(bulk_tile, filename = here(plot_dir, "bulk_sample_tile.pdf"), height = 3, width = 2)
+ 
 #### HALO Info ####
 halo_info <- read.csv(here("processed-data","03_HALO", "01_import_HALO_data","HALO_metadata.csv"))
 head(halo_info)
@@ -104,7 +105,7 @@ ggsave(experiment_tile +
 #### simplify n plot ####
 
 ## snRNA-seq 
-"#417B5A"
+# "#2f7ec0"
 
 colorRampPalette(library_type_colors)(3)
 # "#735290" "#A38062" "#D4AF35"
