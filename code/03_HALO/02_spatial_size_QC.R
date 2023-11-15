@@ -31,7 +31,7 @@ blank_axis <- theme(
 )
 
 #### Load Data ####
-metadata <- read.csv(here("processed-data", "03_HALO", "HALO_metadata.csv"))
+metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "HALO_metadata.csv"))
 # prop_all <- read.csv(here("processed-data","03_HALO","HALO_cell_type_proportions.csv"))
 load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
 
@@ -97,6 +97,40 @@ all_slides <- halo_all |>
     labs(x = "HALO X Coord", y = "HALO Y Coord", title = "Star Combo")
 
 ggsave(all_slides, filename = here(plot_dir, "slides_all.png"), width = 12)
+
+
+## Plot Slides
+slide7 <- halo_all |>
+  filter(Slide == 7, Combo == "Circle") |>
+  ggplot() +
+  geom_rect(aes(
+    xmin = XMin, xmax = XMax,
+    ymin = YMin, ymax = YMax,
+    fill = cell_type
+  )) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  coord_equal()+
+  theme_void() +
+  theme(legend.position = "none")
+
+ggsave(slide7, filename = here(plot_dir, "slide7.png"))
+ggsave(slide7, filename = here(plot_dir, "slide7.pdf"))
+
+slide8 <- halo_all |>
+  filter(Slide == 8, Combo == "Star") |>
+  ggplot() +
+  geom_rect(aes(
+    xmin = XMin, xmax = XMax,
+    ymin = YMin, ymax = YMax,
+    fill = cell_type
+  )) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  coord_equal()+
+  theme_void() +
+  theme(legend.position = "none")
+
+ggsave(slide8, filename = here(plot_dir, "slide8.png"))
+ggsave(slide8, filename = here(plot_dir, "slide8.pdf"))
 
 
 star_samples <- halo_all |>
