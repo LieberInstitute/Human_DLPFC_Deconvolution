@@ -6,7 +6,7 @@ library("here")
 library("sessioninfo")
 library("here")
 library("broom")
-
+library("patchwork")
 
 #### Set-up ####
 plot_dir <- here("plots", "03_HALO", "08_explore_proportions")
@@ -389,12 +389,12 @@ prop_bar_filter_txt <- cell_type_prop |>
   filter(Confidence %in% c("OK","High")) |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
-  scale_fill_manual(values = cell_type_colors_halo) +
+  scale_fill_manual(values = cell_type_colors_halo, name = "Cell Type") +
   geom_text(
     aes(
-      label = ifelse(prop > 0.075, format(round(prop, 3), 3), "")
+      label = ifelse(prop > 0.1 & cell_type != "Other", format(round(prop, 3), 3), "")
     ),
-    size = 2.5,
+    size = 3,
     position = position_stack(vjust = 0.5)
     # color = "gray35"
   ) +
@@ -404,6 +404,7 @@ prop_bar_filter_txt <- cell_type_prop |>
 
 ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt.png"))
 ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt_short.png"), height = 4, width = 10)
+ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt_short.pdf"), height = 4, width = 10)
 
 
 prop_boxplot <- cell_type_prop |>
@@ -505,6 +506,39 @@ halo_vs_sn_prop_filter <- cell_type_prop |>
 
 ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_equal.png"), width = 10, height = 5)
 
+## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
+
+halo_vs_sn_prop_filter_big <- cell_type_prop |>
+  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Astro", "Oligo", "Excit")) |>
+  ggplot(aes(x = prop_sn, y = prop, fill = cell_type)) +
+  geom_point(shape = 21) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, nrow = 1) +
+  theme_bw() +
+  # coord_equal() +
+  geom_abline(linetype = "dashed", color = "black") +
+  labs(x = "snRNA-scope Proportion", y = "RNAscope Proportion") +
+  theme(legend.position = "none", aspect.ratio=1)
+
+
+halo_vs_sn_prop_filter_little <- cell_type_prop |>
+  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Endo", "Micro", "Inhib")) |>
+  ggplot(aes(x = prop_sn, y = prop, fill = cell_type)) +
+  geom_point(shape = 21) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  facet_wrap(~cell_type, nrow = 1) +
+  theme_bw() +
+  # coord_equal() +
+  geom_abline(linetype = "dashed", color = "black") +
+  labs(x = "snRNA-scope Proportion", y = "RNAscope Proportion") +
+  theme(legend.position = "none", axis.title.y=element_blank(), aspect.ratio=1)
+
+ggsave(halo_vs_sn_prop_filter_big + halo_vs_sn_prop_filter_little,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_big_little.png"), width = 10, height = 2.5)
+ggsave(halo_vs_sn_prop_filter_big + halo_vs_sn_prop_filter_little,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_big_little.pdf"), width = 10, height = 2.5)
+
+
+
+
 cell_type_prop_compare_long <- cell_type_prop |>
   mutate(method = "Simple") |>
   bind_rows(cell_type_prop_adj |>
@@ -553,6 +587,8 @@ halo_vs_sn_prop_facet_label <- cell_type_prop_compare_long |>
   geom_abline(linetype = "dashed", color = "red")
 
 ggsave(halo_vs_sn_prop_facet_label,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_facet_label.png"), width = 11)
+
+
 
 
 ### calc slopes ####
