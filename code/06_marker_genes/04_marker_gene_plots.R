@@ -36,17 +36,20 @@ load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_
 #### Mean ratio vs. log FC (Hockey Stick) Plots ####
 
 mean_ratio_v_logFC <- marker_stats |>
-    mutate(top25 = rank_ratio <= 25) |>
-    ggplot(aes(x = ratio, y = std.logFC, color = top25)) +
-    geom_point(alpha = 0.5) +
-    facet_wrap(~cellType.target, scales = "free_x", nrow = 1) +
-    # facet_wrap(~cellType.target, nrow = 1) +
-    labs(x = "Mean Ratio", y = "1vALL Standard logFC") +
-    theme_bw()
+  mutate(top25 = rank_ratio <= 25) |>
+  ggplot(aes(x = ratio, y = std.logFC, color = top25)) +
+  geom_point(alpha = 0.5) +
+  geom_text_repel(aes(label = ifelse(rank_ratio ==1 | rank_marker ==1 , Symbol, "")), 
+                  size = 2.5, 
+                  color = "black") +
+  facet_wrap(~cellType.target, scales = "free_x", nrow = 1) +
+  # facet_wrap(~cellType.target, nrow = 1) +
+  labs(x = "Mean Ratio", y = "1vALL Standard logFC") +
+  theme_bw()
 # theme(legend.position = "bottom")
 
-ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.png"), width = 12, height = 4)
-ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.pdf"), width = 12, height = 4)
+ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.png"), width = 12, height = 2.5)
+ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.pdf"), width = 12, height = 2.5)
 
 mean_ratio_v_logFC_detail <- marker_stats |>
     mutate(top25 = rank_ratio <= 25) |>
@@ -154,7 +157,8 @@ oligo_example1 <- plot_gene_express(sce,
                                     genes = c("MBP", "FOLH1"), 
                                     assay_name = "logcounts", 
                                     cat = "Oligo", 
-                                    color_pal = cell_type_colors_broad)
+                                    color_pal = cell_type_colors_broad) +
+  scale_y_continuous(position = "right")
 
 ggsave(oligo_example1, filename = here(plot_dir, "Oligo_example1.png"), height = 3, width = 5)
 
@@ -162,7 +166,8 @@ oligo_example2 <- plot_gene_express(sce,
                   genes = c("MBP", "FOLH1"), 
                   assay_name = "logcounts", 
                   cat = "cellType_broad_hc", 
-                  color_pal = cell_type_colors_broad)
+                  color_pal = cell_type_colors_broad) +
+  scale_y_continuous(position = "right")
 
 ggsave(oligo_example2, filename = here(plot_dir, "Oligo_example2.png"), height = 3, width = 5)
 
