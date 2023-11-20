@@ -48,15 +48,16 @@ get_marker_z_score <- function(n = 10){
   rownames(marker_logcounts) <- rowData(sce_pb[marker_genes_top$gene, ])$gene_name
   marker_z_score <- scale(t(marker_logcounts))
   ## build annotations
-  column_ha <- HeatmapAnnotation(
+  column_ha <- rowAnnotation(
     cell_type = marker_genes_top$cellType.target,
     col = list(cell_type = cell_type_colors_broad),
     show_legend = FALSE
   )
-  return(list(z_score = marker_z_score, marker_col_ha = column_ha))
+  return(list(z_score = t(marker_z_score), marker_col_ha = column_ha))
 }
 
-maker_data <- map(c(top5 = 5, top10 = 10, top25 = 25), get_marker_z_score)
+marker_data <- map(c(top5 = 5, top10 = 10, top25 = 25), get_marker_z_score)
+marker_data$top5$z_score[1:5,1:5]
 
 ## logFC markers
 get_FC_z_score <- function(n = 10){
@@ -69,12 +70,12 @@ get_FC_z_score <- function(n = 10){
   rownames(marker_logcounts) <- rowData(sce_pb[marker_genes_top$gene, ])$gene_name
   marker_z_score <- scale(t(marker_logcounts))
   ## build annotations
-  column_ha <- HeatmapAnnotation(
+  column_ha <- rowAnnotation(
     cell_type = marker_genes_top$cellType.target,
     col = list(cell_type = cell_type_colors_broad),
     show_legend = FALSE
   )
-  return(list(z_score = marker_z_score, marker_col_ha = column_ha))
+  return(list(z_score = t(marker_z_score), marker_col_ha = column_ha))
 }
 
 fc_data <- map(c(top5 = 5, top10 = 10, top25 = 25), get_FC_z_score)
@@ -94,7 +95,7 @@ BrNum_colors <- c("#ffb6b4",
 
 names(BrNum_colors) <- unique(sce_pb$BrNum)
 
-row_ha <- rowAnnotation(
+ct_anno <- HeatmapAnnotation(
   cell_type = sce_pb$cellType_broad_hc,
   BrNum = sce_pb$BrNum,
   ncells = anno_barplot(sce_pb$ncells),
@@ -103,101 +104,96 @@ row_ha <- rowAnnotation(
 )
 
 ## just cell type
-simple_row_ha <- rowAnnotation(
+simple_ct_anno <- HeatmapAnnotation(
   cell_type = sce_pb$cellType_broad_hc,
   col = list(cell_type = cell_type_colors_broad)
 )
 
 ## define color scale for top5
 
-max(rbind(maker_data$top5$z_score, fc_data$top5$z_score))
-min(rbind(maker_data$top5$z_score, fc_data$top5$z_score))
+max(rbind(marker_data$top5$z_score, fc_data$top5$z_score))
+min(rbind(marker_data$top5$z_score, fc_data$top5$z_score))
 
-col_fun = colorRamp2(c(min(rbind(maker_data$top5$z_score, fc_data$top5$z_score)),
+col_fun = colorRamp2(c(min(rbind(marker_data$top5$z_score, fc_data$top5$z_score)),
                        0,
-                       max(rbind(maker_data$top5$z_score, fc_data$top5$z_score))), 
+                       max(rbind(marker_data$top5$z_score, fc_data$top5$z_score))), 
                      c("blue","white" ,"red"))
 
 
 ## need to fine-tune  params for different  n
 
+cell_type_split <- sce_pb$cellType_broad_hc
+
 ## top 5
-pdf(here(plot_dir, "markers_heatmap_top5.pdf"), width = 5, height = 5)
-Heatmap(maker_data$top5$z_score,
+pdf(here(plot_dir, "markers_heatmap_top5.pdf"), width = 7, height = 7)
+Heatmap(marker_data$top5$z_score,
         name = "z score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        right_annotation = simple_row_ha,
-        top_annotation = maker_data$top5$marker_col_ha,
-        show_column_names = TRUE,
-        column_names_gp = gpar(fontsize = 6),
-        show_row_names = FALSE,
+        top_annotation = simple_ct_anno,
+        right_annotation = marker_data$top5$marker_col_ha,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        # column_names_gp = gpar(fontsize = 6),
         col = col_fun
 )
 dev.off()
 
-pdf(here(plot_dir, "markers_heatmap_top5_uncluster.pdf"), width = 5, height = 5)
-Heatmap(maker_data$top5$z_score,
+pdf(here(plot_dir, "markers_heatmap_top5_uncluster.pdf"), width = 9, height = 7)
+Heatmap(marker_data$top5$z_score,
         name = "z score",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
-        right_annotation = simple_row_ha,
-        top_annotation = maker_data$top5$marker_col_ha,
-        show_column_names = TRUE,
-        column_names_gp = gpar(fontsize = 6),
-        show_row_names = FALSE,
+        column_split = cell_type_split,
+        top_annotation = simple_ct_anno,
+        right_annotation = marker_data$top5$marker_col_ha,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        # column_names_gp = gpar(fontsize = 6),
         col = col_fun
 )
 dev.off()
 
 
 ## logFC version
-pdf(here(plot_dir, "markers_heatmap_top5logFC_uncluster.pdf"), width = 5, height = 5)
+pdf(here(plot_dir, "markers_heatmap_top5logFC_uncluster.pdf"), width = 9, height = 7)
 Heatmap(fc_data$top5$z_score,
         name = "z score",
         cluster_rows = FALSE,
         cluster_columns = FALSE,
-        right_annotation = simple_row_ha,
-        top_annotation = fc_data$top5$marker_col_ha,
-        show_column_names = TRUE,
-        column_names_gp = gpar(fontsize = 6),
-        show_row_names = FALSE,
+        column_split = cell_type_split,
+        top_annotation = simple_ct_anno,
+        right_annotation = fc_data$top5$marker_col_ha,
+        show_column_names = FALSE,
+        show_row_names = TRUE,
+        # column_names_gp = gpar(fontsize = 6),
         col = col_fun
 )
 dev.off()
 
-pdf(here(plot_dir, "markers_heatmap_top5logFC.pdf"), width = 5, height = 5)
+pdf(here(plot_dir, "markers_heatmap_top5logFC.pdf"), width = 9, height = 7)
 Heatmap(fc_data$top5$z_score,
         name = "z score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        right_annotation = simple_row_ha,
-        top_annotation = fc_data$top5$marker_col_ha,
-        show_column_names = TRUE,
-        column_names_gp = gpar(fontsize = 6),
-        show_row_names = FALSE,
+        top_annotation = simple_ct_anno,
+        right_annotation = fc_data$top5$marker_col_ha,
+        show_column_names = FALSE,
+        show_row_names = TRUE,
+        # column_names_gp = gpar(fontsize = 6),
         col = col_fun
 )
 dev.off()
 
-# slurmjobs::job_single(name = "06_marker_gene_heatmap", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 06_marker_gene_heatmap.R")
-
-## Reproducibility information
-print("Reproducibility information:")
-Sys.time()
-proc.time()
-options(width = 120)
-session_info()
-
 ## top 10 
 pdf(here(plot_dir, "markers_heatmap_top10.pdf"), width = 8.5, height = 10.3)
 # png(here(plot_dir, "markers_heatmap_layer.png"), height = 1000, width = 100)
-Heatmap(maker_data$top10$z_score,
+Heatmap(marker_data$top10$z_score,
         name = "z score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        right_annotation = row_ha,
-        top_annotation = maker_data$top10$marker_col_ha,
+        right_annotation = ct_anno,
+        top_annotation = marker_data$top10$marker_col_ha,
         show_column_names = TRUE,
         column_names_gp = gpar(fontsize = 6),
         show_row_names = FALSE
@@ -211,7 +207,7 @@ Heatmap(fc_data$top10$z_score,
         name = "z score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        right_annotation = row_ha,
+        right_annotation = ct_anno,
         top_annotation = fc_data$top10$marker_col_ha,
         show_column_names = TRUE,
         column_names_gp = gpar(fontsize = 6),
@@ -223,12 +219,12 @@ dev.off()
 ## top 25
 pdf(here(plot_dir, "markers_heatmap_top25.pdf"), width = 10, height = 11)
 # png(here(plot_dir, "markers_heatmap_layer.png"), height = 1000, width = 100)
-Heatmap(maker_data$top25$z_score,
+Heatmap(marker_data$top25$z_score,
         name = "z score",
         cluster_rows = TRUE,
         cluster_columns = TRUE,
-        right_annotation = row_ha,
-        top_annotation = maker_data$top25$marker_col_ha,
+        right_annotation = ct_anno,
+        top_annotation = marker_data$top25$marker_col_ha,
         show_column_names = TRUE,
         column_names_gp = gpar(fontsize = 4),
         show_row_names = FALSE
@@ -237,4 +233,23 @@ Heatmap(maker_data$top25$z_score,
 )
 dev.off()
 
+
+#### Create Separate Legends ####
+lgd_Z = Legend(col_fun = col_fun,
+               title = "Z Score",
+               direction = "horizontal",
+               legend_width = unit(6, "cm"))
+
+pdf(here(plot_dir, "z_legend.pdf"), height = 1, width = 3)
+draw(lgd_Z)
+dev.off()
+
+# slurmjobs::job_single(name = "06_marker_gene_heatmap", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 06_marker_gene_heatmap.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
