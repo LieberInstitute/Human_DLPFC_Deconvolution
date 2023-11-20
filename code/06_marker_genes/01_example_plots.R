@@ -63,16 +63,16 @@ Heatmap(marker_matrix,
 dev.off()
 
 
-pdf(here(plot_dir, "ideal_heatmap_split.pdf"))
+pdf(here(plot_dir, "ideal_heatmap_split.pdf"), height = 5.5, width = 6)
 Heatmap(marker_matrix_var,
-    name = "Expression",
+    name = "Z Score",
     cluster_rows = FALSE,
     cluster_columns = FALSE,
     top_annotation = column_ha,
-    left_annotation = row_ha,
+    right_annotation = row_ha,
     column_split = cell_types,
     row_split = paste0("markers\n", rep(cell_types, each = n_gene)),
-    rect_gp = gpar(col = "grey50", lwd = 1),
+    # rect_gp = gpar(col = "grey50", lwd = 1),
     show_row_names = TRUE,
     show_column_names = FALSE
 )
