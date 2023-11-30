@@ -50,7 +50,6 @@ markers <- marker_stats |>
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
   dplyr::pull(gene)
 
-
 ## expression set 
 exp_set_bulk <- ExpressionSet(assayData = assays(rse_gene)$counts[markers,],
                               phenoData=AnnotatedDataFrame(
@@ -60,6 +59,14 @@ exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,])
                              phenoData=AnnotatedDataFrame(
                                as.data.frame(colData(sce)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")])))
 
+exprs(exp_set_sce)
+
+sage(Sys.time(), " - Bisque Prep")
+exp_set_sce <- exp_set_sce[markers,]
+zero_cell_filter <- colSums(Biobase::exprs(exp_set_sce)) != 0
+message("Exclude ",sum(!zero_cell_filter), " cells")
+# Exclude 33 cells
+exp_set_sce <- exp_set_sce[,zero_cell_filter]
 
 #### Build Summarized Benchmark #####
 deconvo_bench <- BenchDesign(data = list(bulk = rse_gene, 
@@ -75,9 +82,23 @@ deconvo_bench <- addMethod(deconvo_bench,
                                                 sc.eset = sc.eset,
                                                 cell.types = "cellType_broad_hc",
                                                 subject.names = "Sample",
-                                                use.overlap = FALSE))
+                                                use.overlap = FALSE),
+                           post = function(x){x$bulk.props})
 
 printMethods(deconvo_bench)
 
 
 deconvo_bench2 <- buildBench(deconvo_bench)
+
+head(assay(deconvo_bench2))
+dim(assay(deconvo_bench2))
+# Bisque
+# [1,] 0.03431589
+# [2,] 0.02021306
+# [3,] 0.01102649
+# [4,] 0.19167913
+# [5,] 0.05537558
+# [6,] 0.38401795
+
+colData(deconvo_bench2)
+
