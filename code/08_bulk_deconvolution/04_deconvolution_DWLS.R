@@ -6,15 +6,9 @@ library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
-#### DWLS example ####
-
-head(DWLS::dataSC_3)
-
 #### Run on our data ####
-
 output_dir <- here("processed-data","08_bulk_deconvolution", "04_deconvoltion_DWLS")
 if(!file.exists(output_dir)) dir.create(output_dir)
-
 
 #### load data ####
 ## load bulk data
@@ -24,9 +18,10 @@ dim(rse_gene)
 
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
+## Ambiguous
 ## sce data
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
-sce <- sce[,sce$cellType_broad_hc != "Ambigious"]
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
 
 ## use ensemblIDs
 rownames(sce) <- rowData(sce)$gene_id
