@@ -83,6 +83,27 @@ rownames(sce_pb) <- rowData(sce_pb)$gene_id
 common_genes <- intersect(rownames(rse_gene), rownames(sce_pb))
 length(common_genes)
 
+# we can instead explicitly pass a list of markers to hspe specifying the marker genes
+# elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
+
+pure_samples = rafalib::splitit(sce_pb$cellType_broad_hc)
+# hspe assumes log2 transformed expressions
+mixture_samples = t(assays(rse_gene)$logcounts[common_genes,])
+reference_samples = t(assays(sce_pb)$logcounts[common_genes,])
+
+ncol(mixture_samples) == ncol(reference_samples)
+
+message(Sys.time(), "- DWLS")
+est_prop_hspe = hspe(Y = mixture_samples, 
+                     reference = reference_samples,
+                     pure_samples = pure_samples,
+                     seed =10524)
+
+message(Sys.time(), "- Saving")
+save(est_prop_hspe, file = here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"))
+
+#### Run with our markers ####
+
 ## load marker gene data
 load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
 # marker_stats
@@ -92,37 +113,23 @@ marker_stats |>
                 rank_ratio <= 25) |>
   dplyr::count(cellType.target)
 
-# cellType.target     n
-# <fct>           <int>
-# 1 Astro              24
-# 2 EndoMural          24
-# 3 Micro              17
-# 4 Oligo              25
-# 5 OPC                18
-# 6 Excit              23
-# 7 Inhib              20
+marker_tab <- marker_stats |> 
+  dplyr::filter(gene %in% common_genes, rank_ratio <= 25) 
 
-markers <- marker_stats |> 
-  dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
-  dplyr::pull(gene)
+marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x])
 
-# we can instead explicitly pass a list of markers to hspe specifying the marker genes
-# elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
+marker_genes <- marker_genes[names(pure_samples)]
 
-pure_samples = rafalab::splitit(sce_pb$cellType_broad_hc)
-# hspe assumes log2 transformed expressions
-mixture_samples = t(assays(rse_gene)$logcounts[markers,])
-reference_samples = t(assays(sce_pb)$logcounts[markers,])
-
-ncol(mixture_samples) == ncol(reference_samples)
-
-message(Sys.time(), "- DWLS")
+message(Sys.time(), "- DWLS w/ markers")
 est_prop_hspe = hspe(Y = mixture_samples, 
                      reference = reference_samples,
-                     pure_samples = pure_samples)
+                     pure_samples = pure_samples,
+                     markers = marker_genes,
+                     seed = 10524)
 
 message(Sys.time(), "- Saving")
 save(est_prop_hspe, file = here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"))
+
 
 # slurmjobs::job_single(name = "05_deconvolution_hspe", memory = "25G", cores = 1, create_shell = TRUE, command = "Rscript 05_deconvolution_hspe.R")
 
