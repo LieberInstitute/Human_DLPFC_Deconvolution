@@ -6,45 +6,56 @@ library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism_example")
+plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-#### BayesPrism Example ####
-load(here("processed-data", "08_bulk_deconvolution","example_data","tutorial.gbm.rdata"), verbose = TRUE)
-# [1] "bk.dat"            "cell.state.labels" "cell.type.labels"  "sc.dat"
+#### load DLPFC data ####
+load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
+dim(rse_gene)
+# [1] 21745   110
+
+rownames(rse_gene) <- rowData(rse_gene)$ensemblID
+
+## sce data
+load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
+
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
+
+rownames(sce) <- rowData(sce)$gene_id
+
+#### convert to bayPrism matricies ####
+# sample-by-gene raw count matrix of bulk RNA-seq expression
+bk.dat <- t(assays(rse_gene)$counts)
 
 dim(bk.dat)
-# [1]   169 60483
+# [1]   110 21745
 bk.dat[1:5,1:5]
 class(bk.dat)
 # [1] "matrix" "array" 
 
 #cell-by-gene raw count matrix of single cell RNA-seq expression
+sc.dat <- t(as.matrix(counts(sce)))
 dim(sc.dat)
 # [1] 23793 60294
 class(sc.dat)
 # [1] "matrix" "array"
 
 # cell.type.labels is a character vector of the same length as nrow(sc.dat)
+cell.type.labes <- sce$cellType_broad_hc
 length(cell.type.labels)
 # [1] 23793
 
-# plot.cor.phi (input=sc.dat, 
-#               input.labels=cell.type.labels, 
-#               title="cell type correlation",
-#               #specify pdf.prefix if need to output to pdf
-#               #pdf.prefix="gbm.cor.ct",
-#               cexRow=0.5, cexCol=0.5,
-# )
+table(cell.type.labels)
 
-message(Sys.time(), "- Examine Data")
+message(Sys.time(), "- Filter outlier genes")
 
 sc.stat <- plot.scRNA.outlier(
   input=sc.dat, #make sure the colnames are gene symbol or ENSMEBL ID 
   cell.type.labels=cell.type.labels,
   species="hs", #currently only human(hs) and mouse(mm) annotations are supported
   return.raw=TRUE, #return the data used for plotting. 
-  pdf.prefix = here(plot_dir, "BayesPrism_example") #specify pdf.prefix
+  pdf.prefix = here(plot_dir, "BayesPrism_DLPFC") #specify pdf.prefix
 )
 
 bk.stat <- plot.bulk.outlier(
@@ -53,7 +64,7 @@ bk.stat <- plot.bulk.outlier(
   cell.type.labels=cell.type.labels,
   species="hs", #currently only human(hs) and mouse(mm) annotations are supported
   return.raw=TRUE,
-  pdf.prefix = here(plot_dir, "BayesPrism_example_bulk.outlier") #specify pdf.prefix
+  pdf.prefix = here(plot_dir, "BayesPrism_DLPFC_bulk.outlier") #specify pdf.prefix
 )
 
 sc.dat.filtered <- cleanup.genes (input=sc.dat,
@@ -108,13 +119,13 @@ myPrism <- new.prism(
 
 ## run prism 
 message(Sys.time(), "- Run Prism")
-bp.res <- run.prism(prism = myPrism, n.cores=50)
+est_prop_BayesPrisim <- run.prism(prism = myPrism, n.cores=50)
 
 message(Sys.time(), "- Saving")
-save(bp.res, file = here("processed-data","08_bulk_deconvolution","bayes_prism_example.Rdata"))
+save(est_prop_BayesPrisim, diff.exp.stat, file = here("processed-data","08_bulk_deconvolution","est_prop_BayesPrisim.Rdata"))
 
 
-# slurmjobs::job_single(name = "06_deconvolution_BayesPrism_example", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 06_deconvolution_BayesPrism_example.R")
+# slurmjobs::job_single(name = "06_deconvolution_BayesPrism", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 06_deconvolution_BayesPrism.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
@@ -122,6 +133,4 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-
-
 
