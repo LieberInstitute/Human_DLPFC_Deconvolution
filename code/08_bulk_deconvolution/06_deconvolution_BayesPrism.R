@@ -2,13 +2,14 @@
 # devtools::install_github("Danko-Lab/BayesPrism/BayesPrism")
 
 library("BayesPrism")
+library("SingleCellExperiment")
 library("here")
-
-#### BayesPrism Example ####
+library("sessioninfo")
 
 plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
-  
+
+#### BayesPrism Example ####
 load(here("processed-data", "08_bulk_deconvolution","example_data","tutorial.gbm.rdata"), verbose = TRUE)
 # [1] "bk.dat"            "cell.state.labels" "cell.type.labels"  "sc.dat"
 
@@ -35,6 +36,8 @@ length(cell.type.labels)
 #               #pdf.prefix="gbm.cor.ct",
 #               cexRow=0.5, cexCol=0.5,
 # )
+
+message(Sys.time(), "- Examine Data")
 
 sc.stat <- plot.scRNA.outlier(
   input=sc.dat, #make sure the colnames are gene symbol or ENSMEBL ID 
@@ -75,6 +78,7 @@ sc.dat.filtered.pc <- select.gene.type(sc.dat.filtered,
                                        gene.type = "protein_coding")
 
 ## slow - needs lots of memory
+message(Sys.time(), "- get.exp.stat")
 diff.exp.stat <- get.exp.stat(sc.dat=sc.dat[,colSums(sc.dat>0)>3],# filter genes to reduce memory use
                               cell.type.labels=cell.type.labels,
                               cell.state.labels=cell.state.labels,
@@ -83,5 +87,41 @@ diff.exp.stat <- get.exp.stat(sc.dat=sc.dat[,colSums(sc.dat>0)>3],# filter genes
                               n.cores=1 #number of threads
 )
 
+sc.dat.filtered.pc.sig <- select.marker(sc.dat=sc.dat.filtered.pc,
+                                         stat=diff.exp.stat,
+                                         pval.max=0.01,
+                                         lfc.min=0.1)
+
 
 ## Construct a prism object
+message(Sys.time(), "- Build prism object")
+myPrism <- new.prism(
+  reference=sc.dat.filtered.pc, 
+  mixture=bk.dat,
+  input.type="count.matrix", 
+  cell.type.labels = cell.type.labels, 
+  cell.state.labels = cell.state.labels,
+  key="tumor",
+  outlier.cut=0.01,
+  outlier.fraction=0.1,
+)
+
+## run prism 
+message(Sys.time(), "- Run Prism")
+bp.res <- run.prism(prism = myPrism, n.cores=50)
+
+message(Sys.time(), "- Saving")
+save(bp.res, file = here("processed-data","08_bulk_deconvolution","bayes_prism_example.Rdata"))
+
+
+# slurmjobs::job_single(name = "06_deconvolution_BayesPrism_example", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 06_deconvolution_BayesPrism_example.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
+
+
