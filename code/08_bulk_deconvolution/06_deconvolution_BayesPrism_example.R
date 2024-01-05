@@ -6,7 +6,7 @@ library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism")
+plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism_example")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### BayesPrism Example ####
