@@ -42,7 +42,7 @@ class(sc.dat)
 # [1] "matrix" "array"
 
 # cell.type.labels is a character vector of the same length as nrow(sc.dat)
-cell.type.labes <- sce$cellType_broad_hc
+cell.type.labels <- sce$cellType_broad_hc
 length(cell.type.labels)
 # [1] 23793
 
@@ -81,7 +81,7 @@ sc.dat.filtered <- cleanup.genes (input=sc.dat,
 
 plot.bulk.vs.sc(sc.input = sc.dat.filtered,
                  bulk.input = bk.dat,
-                 pdf.prefix= here(plot_dir, "BayesPrism_example")
+                 pdf.prefix= here(plot_dir, "BayesPrism_DLPFC")
 )
 
 ## marker finding 
@@ -92,7 +92,7 @@ sc.dat.filtered.pc <- select.gene.type(sc.dat.filtered,
 message(Sys.time(), "- get.exp.stat")
 diff.exp.stat <- get.exp.stat(sc.dat=sc.dat[,colSums(sc.dat>0)>3],# filter genes to reduce memory use
                               cell.type.labels=cell.type.labels,
-                              cell.state.labels=cell.state.labels,
+                              cell.state.labels=cell.type.labels, ## test if this works for just cell type
                               pseudo.count=0.1, #a numeric value used for log2 transformation. =0.1 for 10x data, =10 for smart-seq. Default=0.1.
                               cell.count.cutoff=50, # a numeric value to exclude cell state with number of cells fewer than this value for t test. Default=50.
                               n.cores=1 #number of threads
