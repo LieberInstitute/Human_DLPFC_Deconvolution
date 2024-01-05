@@ -93,7 +93,7 @@ reference_samples = t(assays(sce_pb)$logcounts[common_genes,])
 
 ncol(mixture_samples) == ncol(reference_samples)
 
-message(Sys.time(), "- DWLS")
+message(Sys.time(), "- hspe")
 est_prop_hspe = hspe(Y = mixture_samples, 
                      reference = reference_samples,
                      pure_samples = pure_samples,
@@ -120,7 +120,7 @@ marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker
 
 marker_genes <- marker_genes[names(pure_samples)]
 
-message(Sys.time(), "- DWLS w/ markers")
+message(Sys.time(), "- hspe w/ markers")
 est_prop_hspe = hspe(Y = mixture_samples, 
                      reference = reference_samples,
                      pure_samples = pure_samples,
@@ -128,7 +128,7 @@ est_prop_hspe = hspe(Y = mixture_samples,
                      seed = 10524)
 
 message(Sys.time(), "- Saving")
-save(est_prop_hspe, file = here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"))
+save(est_prop_hspe, file = here("processed-data","08_bulk_deconvolution","est_prop_hspe_markers.Rdata"))
 
 
 # slurmjobs::job_single(name = "05_deconvolution_hspe", memory = "25G", cores = 1, create_shell = TRUE, command = "Rscript 05_deconvolution_hspe.R")
