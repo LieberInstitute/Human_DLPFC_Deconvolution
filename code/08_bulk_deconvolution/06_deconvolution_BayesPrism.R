@@ -20,6 +20,11 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
 
 sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+
+# ## to test
+# sce <- sce[,sce$cellType_broad_hc %in% c("Oligo", "Excit", "Inhib")]
+# sce <- sce[sample(rownames(sce), 2000), sample(colnames(sce), 2000)]
+
 sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 
 rownames(sce) <- rowData(sce)$gene_id
@@ -42,11 +47,12 @@ class(sc.dat)
 # [1] "matrix" "array"
 
 # cell.type.labels is a character vector of the same length as nrow(sc.dat)
-cell.type.labels <- sce$cellType_broad_hc
+cell.type.labels <- as.character(sce$cellType_broad_hc)
 length(cell.type.labels)
 # [1] 23793
 
 table(cell.type.labels)
+rm(sce)
 
 message(Sys.time(), "- Filter outlier genes")
 
@@ -73,11 +79,6 @@ sc.dat.filtered <- cleanup.genes (input=sc.dat,
                                   gene.group=c( "Rb","Mrp","other_Rb","chrM","MALAT1","chrX","chrY") ,
                                   exp.cells=5)
 
-# number of genes filtered in each category: 
-#   Rb      Mrp other_Rb     chrM   MALAT1     chrX     chrY 
-# 89       78     1011       37        1     2464      594 
-# A total of  4214  genes from Rb Mrp other_Rb chrM MALAT1 chrX chrY  have been excluded 
-# A total of  24343  gene expressed in fewer than  5  cells have been excluded 
 
 plot.bulk.vs.sc(sc.input = sc.dat.filtered,
                  bulk.input = bk.dat,
@@ -98,6 +99,73 @@ diff.exp.stat <- get.exp.stat(sc.dat=sc.dat[,colSums(sc.dat>0)>3],# filter genes
                               n.cores=1 #number of threads
 )
 
+## debug get.exp.stat
+
+# cell.type.labels <- as.character(cell.type.labels)
+# cell.state.labels <- cell.type.labels
+# 
+# ct.to.cst <- unique(cbind(cell.type=cell.type.labels, cell.state=cell.state.labels))
+# cst.count.table <- table(cell.state.labels)
+# cell.count.cutoff=50
+# low.count.cst <- names(cst.count.table)[cst.count.table < cell.count.cutoff]
+# 
+# #normalize ref.dat to prepare input for findMarker	
+# lib.size <- rowSums(sc.dat)
+# lib.size <- lib.size / median(lib.size)
+# dat.tmp <- sc.dat/lib.size
+# pseudo.count=0.1
+# dat.tmp <- log2(dat.tmp + pseudo.count) - log2(pseudo.count)
+# 
+# fit.up <- scran::pairwiseTTests(x= t(dat.tmp), 
+#                          groups= cell.state.labels, 
+#                          direction="up")
+# 
+# pairs.celltype.first <- ct.to.cst[match(fit.up$pairs$first, ct.to.cst[,"cell.state"]),"cell.type"]
+# pairs.celltype.second <- ct.to.cst[match(fit.up$pairs$second, ct.to.cst[,"cell.state"]),"cell.type"]
+# 
+# filter.idx <- pairs.celltype.first != pairs.celltype.second & ! fit.up$pairs$second %in% low.count.cst
+# 
+# fit.up[[1]] <- fit.up[[1]][filter.idx]
+# fit.up[[2]] <- fit.up[[2]][filter.idx,]
+# 
+# #get the maxmimum pvalue
+# output.up <- scran::combineMarkers(fit.up$statistics, fit.up$pairs, pval.type="all", min.prop=NULL, 
+#                             log.p.in=F, log.p.out=F, full.stats=F, pval.field="p.value", 
+#                             effect.field="logFC", sorted=F)
+# 
+# all.ct <- unique(ct.to.cst[,"cell.type"])
+# 
+# ct.stat.list <- lapply(all.ct,function(ct.i){
+#   
+#   #subset on the subtypes associated with celltype i (ct.i)
+#   cst.i <- ct.to.cst[ct.to.cst[,"cell.type"]==ct.i,"cell.state"]
+#   output.up.i <- output.up[cst.i]
+#   
+#   #take the minimum pvalue over all cst.i
+#   pval.up.i <- do.call(cbind,lapply(output.up.i, '[', "p.value"))
+#   pval.up.min.i <- apply(pval.up.i,1,min)
+#   
+#   #take the max lfc over the min lfc of cst.i over cst.j in other ct.j (same as the pvalue=min over "all" type)
+#   lfc.i <- apply(do.call(cbind,lapply(output.up.i, function(output.up.i.j) {
+#     apply(output.up.i.j[,grepl("logFC",colnames(output.up.i.j)),drop=F],1,min)
+#   } )),1,max)
+#   
+#   data.frame(pval.up.min = pval.up.min.i, 
+#              min.lfc = lfc.i)	
+# })		
+# 
+# names(ct.stat.list) <- all.ct
+
+# #get the maxmimum pvalue
+# output.up <- combineMarkers(fit.up$statistics, fit.up$pairs, pval.type="all", min.prop=NULL, 
+#                             log.p.in=F, log.p.out=F, full.stats=F, pval.field="p.value", 
+#                             effect.field="logFC", sorted=F)
+# 
+# all.ct <- unique(ct.to.cst[,"cell.type"])
+
+
+## fit markers
+
 sc.dat.filtered.pc.sig <- select.marker(sc.dat=sc.dat.filtered.pc,
                                          stat=diff.exp.stat,
                                          pval.max=0.01,
@@ -111,8 +179,8 @@ myPrism <- new.prism(
   mixture=bk.dat,
   input.type="count.matrix", 
   cell.type.labels = cell.type.labels, 
-  cell.state.labels = cell.state.labels,
-  key="tumor",
+  cell.state.labels = cell.type.labels,
+  key=NULL,
   outlier.cut=0.01,
   outlier.fraction=0.1,
 )
@@ -132,5 +200,4 @@ print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_info()
-
+session_in
