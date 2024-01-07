@@ -68,7 +68,7 @@ rse_gene <- rse_gene[rownames(Signature),]
 est_prop_dwls <- apply(assays(rse_gene)$counts,2,solveDampenedWLS,S = Signature)
 est_prop_dwls <- t(est_prop_dwls)
 
-save(est_prop_dwls, file = here("processed-data","08_bulk_deconvolution","est_prop_dwls.Rdata"))
+save(est_prop_dwls, Signature, file = here("processed-data","08_bulk_deconvolution","est_prop_dwls.Rdata"))
 
 # slurmjobs::job_single(name = "04_deconvolution_DWLS", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 04_deconvolution_DWLS.R")
 
