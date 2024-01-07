@@ -1,3 +1,6 @@
 [submodule "code/SPEAQeasy"]
 	path = code/SPEAQeasy
 	url = git@github.com:LieberInstitute/SPEAQeasy.git
+[submodule "code/08_bulk_deconvolution/DISSECT"]
+	path = code/08_bulk_deconvolution/DISSECT
+	url = https://github.com/robinredX/DISSECT
