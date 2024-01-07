@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=300G
 #SBATCH --job-name=06_deconvolution_BayesPrism
 #SBATCH -c 1
 #SBATCH -o logs/06_deconvolution_BayesPrism.txt
