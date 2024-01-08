@@ -4,8 +4,8 @@ library("here")
 library("sessioninfo")
 
 # Tab-delimited tabular input format (.txt) with no double quotations and no missing entries.
-data_dir <- here("processed-data" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism")
-if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+data_dir <- here("processed-data" , "08_bulk_deconvolution", "07_deconvolution_CIBERSORTx_prep")
+if(!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### load DLPFC data ####
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
@@ -43,12 +43,14 @@ table(sce$cellType_broad_hc)
 
 rownames(sce) <- rowData(sce)$gene_id
 
+message(Sys.time(), " - Format sce counts")
 sce_counts <- assays(sce)$counts |>
   as.data.frame() |>
   tibble::rownames_to_column("GeneSymbol")
 
 sce_counts[1:5,1:3]
 
+message(Sys.time(), " - Export sce counts to ", data_dir)
 write.table(sce_counts, file = here(data_dir, "DLPFC_sc_counts.txt"), sep = "\t")
 
 # slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_prep", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 07_deconvolution_CIBERSORTx_prep.R")
