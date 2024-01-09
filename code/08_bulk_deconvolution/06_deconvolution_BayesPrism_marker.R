@@ -6,7 +6,7 @@ library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
-plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism")
+plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism_marker")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 #### load DLPFC data ####
@@ -57,17 +57,12 @@ rm(sce)
 
 message(Sys.time(), "- Filter outlier genes")
 
-sc.dat.filtered <- cleanup.genes (input=sc.dat,
+sc.dat.filtered <- cleanup.genes(input=sc.dat,
                                   input.type="count.matrix",
                                   species="hs", 
                                   gene.group=c( "Rb","Mrp","other_Rb","chrM","MALAT1","chrX","chrY") ,
                                   exp.cells=5)
 
-
-plot.bulk.vs.sc(sc.input = sc.dat.filtered,
-                 bulk.input = bk.dat,
-                 pdf.prefix= here(plot_dir, "BayesPrism_DLPFC")
-)
 
 ## marker finding 
 sc.dat.filtered.pc <- select.gene.type(sc.dat.filtered,
