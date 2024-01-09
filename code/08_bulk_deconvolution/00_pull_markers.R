@@ -45,13 +45,13 @@ markers_top <- marker_stats |>
 markers_top |>
   dplyr::count(cellType.target)
 
-write.csv(markers_top, filename = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"))
+write.csv(markers_top, file = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"))
 
 markers_top25 <- marker_stats |> 
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
   dplyr::pull(gene)
 
-save(markers_top25, filename = here("processed-data","08_bulk_deconvolution", "markers_top25.Rdata"))
+save(markers_top25, file = here("processed-data","08_bulk_deconvolution", "markers_top25.Rdata"))
 
 # slurmjobs::job_single('00_pull_markerse', create_shell = TRUE, memory = '25G', command = "Rscript 00_pull_markers.R")
 

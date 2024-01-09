@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=00_pull_markerse
+#SBATCH --job-name=00_pull_markers
 #SBATCH -c 1
-#SBATCH -o logs/00_pull_markerse.txt
-#SBATCH -e logs/00_pull_markerse.txt
+#SBATCH -o logs/00_pull_markers.txt
+#SBATCH -e logs/00_pull_markers.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -20,7 +20,7 @@ echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
-module load conda_R/4.3
+module load conda_R/4.3.x
 
 ## List current modules for reproducibility
 module list
