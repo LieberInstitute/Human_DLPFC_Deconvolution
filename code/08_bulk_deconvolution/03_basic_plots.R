@@ -21,6 +21,9 @@ pd <- as.data.frame(colData(rse_gene))
 
 pd2 <- pd[,1:10] |> as_tibble()
 
+dataset_lt <- tibble(Dataset = c("2107UNHS-0291", "2107UNHS-0293" ,"AN00000904","AN00000906"),
+       library_type = c("polyA","RiboZeroGold", "polyA","RiboZeroGold"))
+
 #### proportion data ####
 halo_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "HALO_cell_type_proportions.csv")) 
 
@@ -52,7 +55,7 @@ prop_long_DWLS <- est_prop_dwls |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "DWLS_marker")
+  mutate(method = "DWLS", marker = "MR_top25")
 
 #### Bisque ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"), verbose = TRUE)
@@ -63,7 +66,7 @@ prop_long_bisque <- est_prop_bisque$bulk.props |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "Bisque_marker")
+  mutate(method = "Bisque", marker = "MR_top25")
 
 #### MuSiC ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_music.Rdata"), verbose = TRUE)
@@ -75,7 +78,7 @@ prop_long_music <- est_prop_music$Est.prop.weighted |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "MuSiC_marker")
+  mutate(method = "MuSiC", marker = "MR_top25")
 
 #### hspe ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_hspe_markers.Rdata"), verbose = TRUE)
@@ -83,7 +86,7 @@ prop_long_hspe <- est_prop_hspe$estimates |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "hspe_marker")
+  mutate(method = "hspe", marker = "MR_top25")
 
 load(here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"), verbose = TRUE)
 names(est_prop_hspe)
@@ -94,7 +97,8 @@ prop_long_hspe <- prop_long_hspe |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "hspe"))
+  mutate(method = "hspe", marker = "ALL")
+  )
 
 prop_long_hspe |> count(method, cell_type)
 
@@ -107,9 +111,10 @@ prop_long <- prop_long_bisque |>
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
   mutate(cell_type = factor(cell_type, levels = names(cell_type_colors_broad)),
          Sample = paste0(BrNum, "_", tolower(pos))) |>
-  left_join(halo_prop_simple)
+  left_join(halo_prop_simple) |>
+  left_join(dataset_lt)
 
-prop_long |> count(method)
+prop_long |> count(method, marker)
 prop_long |> count(!is.na(RNAscope_prop))
 
 ### Composition bar plots ####
@@ -123,6 +128,18 @@ prop_bar_SAMPLE_ID <- ggplot(data = prop_long, aes(x = SAMPLE_ID, y = prop, fill
         axis.ticks.x=element_blank())
 
 ggsave(prop_bar_SAMPLE_ID, filename = here(plot_dir, "Bulk_prop_SAMPLE_ID.png"), width = 12)
+
+prop_bar_SAMPLE_ID_facet <- ggplot(data = prop_long, aes(x = SAMPLE_ID, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  facet_grid(method~Sample) +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", fill = "Cell Type") +
+  theme_bw() +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+ggsave(prop_bar_SAMPLE_ID_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_ID_facet.png"), width = 12)
+
 
 ## filter to Nuc + RiboZero
 
@@ -148,8 +165,87 @@ est_prop_v_RNAscope_scatter <- prop_long |>
   ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
   scale_color_manual(values = cell_type_colors_broad) +
   geom_point() +
-  facet_wrap(~method) +
+  facet_grid(marker~method) +
   geom_abline() +
+  coord_equal() +
   theme_bw() 
 
-ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"))
+ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"), width = 10)
+
+
+est_prop_v_RNAscope_scatter_library_type <- prop_long |>
+  filter(marker == "MR_top25", !is.na(RNAscope_prop)) |>
+  ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  geom_point() +
+  facet_grid(library_type~method) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw() 
+
+ggsave(est_prop_v_RNAscope_scatter_library_type, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_library_type.png"), width = 10)
+
+est_prop_v_RNAscope_scatter_library_prep <- prop_long |>
+  filter(marker == "MR_top25", !is.na(RNAscope_prop)) |>
+  ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  geom_point() +
+  facet_grid(library_prep~method) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw() 
+
+ggsave(est_prop_v_RNAscope_scatter_library_prep, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_library_prep.png"), width = 10)
+
+#### correlation ####
+
+cor_check <- prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker) |>
+  summarize(cor = cor(RNAscope_prop, prop),
+            rmse = Metrics::rmse(RNAscope_prop, prop))
+# method marker   correlation  rmse
+# <chr>  <chr>          <dbl> <dbl>
+#   1 Bisque MR_top25     0.508   0.148
+# 2 DWLS   MR_top25    -0.00684 0.231
+# 3 MuSiC  MR_top25     0.0292  0.209
+# 4 hspe   ALL          0.416   0.103
+# 5 hspe   MR_top25     0.513   0.151
+
+cor_check_ct  <- prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker, cell_type) |>
+  summarize(cor = cor(RNAscope_prop, prop),
+            rmse = Metrics::rmse(RNAscope_prop, prop))
+# method marker   correlation
+# <chr>  <chr>          <dbl>
+#   1 Bisque MR_top25     0.508  
+# 2 DWLS   MR_top25    -0.00684
+# 3 MuSiC  MR_top25     0.0292 
+# 4 hspe   ALL          0.416  
+# 5 hspe   MR_top25     0.513 
+
+
+cor_vs_rmse <- cor_check_ct |>
+  ggplot(aes(cor, rmse, color = cell_type)) +
+  geom_point() +
+  scale_color_manual(values = cell_type_colors_broad) +
+  geom_point() +
+  facet_grid(marker~method) +
+  theme_bw()
+
+ggsave(cor_vs_rmse, filename = here(plot_dir, "cor_vs_rmse.png"))
+
+
+prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker)|>
+  do(fit = tidy(lm(RNAscope_prop ~ prop + 0, data = .), conf.int = TRUE)) |>
+  unnest(fit)
+
+prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker)|>
+  do(fit = tidy(cor.test(RNAscope_prop, prop, data = .))) |>
+  unnest(fit)
+
