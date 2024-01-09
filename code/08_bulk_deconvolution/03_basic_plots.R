@@ -38,23 +38,21 @@ halo_prop_long <- halo_prop |>
 halo_prop_long |> count(method, cell_type)
 halo_prop_long |> count(method)
 
+## what data exisits?
+list.files(here("processed-data","08_bulk_deconvolution"), pattern = "est_prop")
+# [1] "est_prop_bisque.Rdata"       "est_prop_dwls_marker.Rdata"  "est_prop_dwls.Rdata"         "est_prop_hspe_markers.Rdata"
+# [5] "est_prop_hspe.Rdata"         "est_prop_music.Rdata"
+
 #### DWLS ####
 ## 1/8/24 only subset has run: use for example
-load(here("processed-data","08_bulk_deconvolution","est_prop_dwls.Rdata"), verbose = TRUE)
+load(here("processed-data","08_bulk_deconvolution","est_prop_dwls_marker.Rdata"), verbose = TRUE)
 head(est_prop_dwls)
-#                               Excit     Oligo         Inhib
-# 2107UNHS-0291_Br2720_Mid_Bulk 0.2776874 0.7223126 -8.725580e-23
-# 2107UNHS-0291_Br2720_Mid_Cyto 0.3583183 0.6416817  4.867616e-19
-# 2107UNHS-0291_Br2720_Mid_Nuc  0.3795312 0.6204688 -1.206760e-23
-# 2107UNHS-0291_Br6432_Ant_Bulk 0.2735463 0.7264537  0.000000e+00
-# 2107UNHS-0291_Br6432_Ant_Cyto 0.4290107 0.5709893  2.336838e-18
-# 2107UNHS-0291_Br6432_Ant_Nuc  0.3210709 0.6789291 -1.313101e-23
 
 prop_long_DWLS <- est_prop_dwls |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "DWLS")
+  mutate(method = "DWLS_marker")
 
 #### Bisque ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"), verbose = TRUE)
@@ -65,7 +63,7 @@ prop_long_bisque <- est_prop_bisque$bulk.props |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "Bisque")
+  mutate(method = "Bisque_marker")
 
 #### MuSiC ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_music.Rdata"), verbose = TRUE)
@@ -77,7 +75,7 @@ prop_long_music <- est_prop_music$Est.prop.weighted |>
   as.data.frame() |>
   rownames_to_column("SAMPLE_ID") |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "MuSiC")
+  mutate(method = "MuSiC_marker")
 
 #### hspe ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_hspe_markers.Rdata"), verbose = TRUE)
@@ -154,4 +152,4 @@ est_prop_v_RNAscope_scatter <- prop_long |>
   geom_abline() +
   theme_bw() 
 
-
+ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"))
