@@ -53,7 +53,7 @@ markers_top25 <- marker_stats |>
 
 save(markers_top25, filename = here("processed-data","08_bulk_deconvolution", "markers_top25.Rdata"))
 
-# sgejobs::job_single('00_pull_markerse', create_shell = TRUE, memory = '25G', command = "Rscript 00_pull_markers.R")
+# slurmjobs::job_single('00_pull_markerse', create_shell = TRUE, memory = '25G', command = "Rscript 00_pull_markers.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
