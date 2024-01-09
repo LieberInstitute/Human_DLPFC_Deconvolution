@@ -21,7 +21,42 @@ pd <- as.data.frame(colData(rse_gene))
 
 pd2 <- pd[,1:10] |> as_tibble()
 
-## Bisque
+#### proportion data ####
+halo_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "HALO_cell_type_proportions.csv")) 
+
+halo_prop_simple <- halo_prop |>
+  filter(Confidence != "Low" ) |>
+  select(Sample, cell_type, RNAscope_prop = prop) 
+
+halo_prop_long <- halo_prop |>
+  select(Sample, cell_type, prop, prop_sn, Confidence) |>
+  pivot_longer(!c(Sample, cell_type, Confidence), names_to = "method", values_to = "prop") |>
+  mutate(method = ifelse(grepl("sn", method), "sn", "RNAscope")) |>
+  filter((Confidence != "Low" | method != "RNAscope"), cell_type != "Other") |>
+  select(!Confidence)
+
+halo_prop_long |> count(method, cell_type)
+halo_prop_long |> count(method)
+
+#### DWLS ####
+## 1/8/24 only subset has run: use for example
+load(here("processed-data","08_bulk_deconvolution","est_prop_dwls.Rdata"), verbose = TRUE)
+head(est_prop_dwls)
+#                               Excit     Oligo         Inhib
+# 2107UNHS-0291_Br2720_Mid_Bulk 0.2776874 0.7223126 -8.725580e-23
+# 2107UNHS-0291_Br2720_Mid_Cyto 0.3583183 0.6416817  4.867616e-19
+# 2107UNHS-0291_Br2720_Mid_Nuc  0.3795312 0.6204688 -1.206760e-23
+# 2107UNHS-0291_Br6432_Ant_Bulk 0.2735463 0.7264537  0.000000e+00
+# 2107UNHS-0291_Br6432_Ant_Cyto 0.4290107 0.5709893  2.336838e-18
+# 2107UNHS-0291_Br6432_Ant_Nuc  0.3210709 0.6789291 -1.313101e-23
+
+prop_long_DWLS <- est_prop_dwls |>
+  as.data.frame() |>
+  rownames_to_column("SAMPLE_ID") |>
+  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+  mutate(method = "DWLS")
+
+#### Bisque ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"), verbose = TRUE)
 
 est_prop_bisque$bulk.props <- t(est_prop_bisque$bulk.props)
@@ -32,7 +67,7 @@ prop_long_bisque <- est_prop_bisque$bulk.props |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
   mutate(method = "Bisque")
 
-## MuSiC
+#### MuSiC ####
 load(here("processed-data","08_bulk_deconvolution","est_prop_music.Rdata"), verbose = TRUE)
 names(est_prop_music)
 
@@ -44,12 +79,40 @@ prop_long_music <- est_prop_music$Est.prop.weighted |>
   pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
   mutate(method = "MuSiC")
 
+#### hspe ####
+load(here("processed-data","08_bulk_deconvolution","est_prop_hspe_markers.Rdata"), verbose = TRUE)
+prop_long_hspe <- est_prop_hspe$estimates |>
+  as.data.frame() |>
+  rownames_to_column("SAMPLE_ID") |>
+  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+  mutate(method = "hspe_marker")
+
+load(here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"), verbose = TRUE)
+names(est_prop_hspe)
+
+prop_long_hspe <- prop_long_hspe |>
+  bind_rows(
+  est_prop_hspe$estimates |>
+  as.data.frame() |>
+  rownames_to_column("SAMPLE_ID") |>
+  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+  mutate(method = "hspe"))
+
+prop_long_hspe |> count(method, cell_type)
+
 #### Compile data ####
 prop_long <- prop_long_bisque |>
   bind_rows(prop_long_music) |>
-  left_join(pd2) |>
-  mutate(cell_type = factor(cell_type, levels = names(cell_type_colors_broad)))
+  bind_rows(prop_long_hspe) |>
+  bind_rows(prop_long_DWLS) |>
+  # left_join(pd2) |> 
+  separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
+  mutate(cell_type = factor(cell_type, levels = names(cell_type_colors_broad)),
+         Sample = paste0(BrNum, "_", tolower(pos))) |>
+  left_join(halo_prop_simple)
 
+prop_long |> count(method)
+prop_long |> count(!is.na(RNAscope_prop))
 
 ### Composition bar plots ####
 prop_bar_SAMPLE_ID <- ggplot(data = prop_long, aes(x = SAMPLE_ID, y = prop, fill = cell_type)) +
@@ -80,6 +143,15 @@ prop_bar_Nuc_RiboZero <- prop_long |>
 ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.png"))
 ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.pdf"))
 
+#### comapre to RNAscope ####
 
+est_prop_v_RNAscope_scatter <- prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  geom_point() +
+  facet_wrap(~method) +
+  geom_abline() +
+  theme_bw() 
 
 
