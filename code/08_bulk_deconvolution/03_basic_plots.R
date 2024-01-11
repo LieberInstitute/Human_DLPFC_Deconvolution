@@ -266,6 +266,17 @@ cor_vs_rmse <- cor_check_ct |>
 ggsave(cor_vs_rmse, filename = here(plot_dir, "cor_vs_rmse.png"))
 
 
+cor_vs_rmse_method <- cor_check_ct |>
+  ggplot(aes(cor, rmse, color = method)) +
+  geom_point() +
+  # scale_color_manual(values = cell_type_colors_broad) +
+  geom_point() +
+  facet_wrap(~cell_type) +
+  theme_bw()
+
+ggsave(cor_vs_rmse_method, filename = here(plot_dir, "cor_vs_rmse_method.png"))
+
+
 prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   group_by(method, marker)|>
