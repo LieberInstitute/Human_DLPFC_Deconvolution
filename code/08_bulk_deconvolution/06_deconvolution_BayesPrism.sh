@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p shared
+#SBATCH -p caracol
 #SBATCH --mem=300G
 #SBATCH --job-name=06_deconvolution_BayesPrism
 #SBATCH -c 1
@@ -18,6 +18,7 @@ echo "Job id: ${SLURM_JOB_ID}"
 echo "Job name: ${SLURM_JOB_NAME}"
 echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
+
 
 ## Load the R module
 module load conda_R/4.3.x
