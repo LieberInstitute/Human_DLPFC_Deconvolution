@@ -153,7 +153,11 @@ prop_long <- prop_long_bisque |>
 prop_long |> count(method, marker)
 prop_long |> count(!is.na(RNAscope_prop))
 
+## export this data
 save(prop_long, file = here(data_dir, "prop_long.Rdata"))
+
+## as csv
+write_csv(prop_long, file = here(data_dir, "prop_long.csv"))
 
 # slurmjobs::job_single(name = "03_get_est_prop", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 03_get_est_prop.R")
 
