@@ -51,6 +51,7 @@ markers_top25 <- marker_stats |>
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
   dplyr::pull(gene)
 
+cat(markers_top25, sep = "\n", file = here("processed-data","08_bulk_deconvolution", "markers_top25.txt"))
 save(markers_top25, file = here("processed-data","08_bulk_deconvolution", "markers_top25.Rdata"))
 
 # slurmjobs::job_single('00_pull_markerse', create_shell = TRUE, memory = '25G', command = "Rscript 00_pull_markers.R")
