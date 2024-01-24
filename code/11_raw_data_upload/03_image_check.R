@@ -1,18 +1,20 @@
 library(here)
 library(tidyverse)
 library(purrr)
+library(readxl)
 
 image_meta_path = here(
-    'raw-data', 'Deconvolution_HALO_Analysis_Refined_Annotations.csv'
+    'raw-data', 'HALO', 'Deconvolution_HALO_Analysis.xlsx'
 )
 
-image_meta = read.csv(image_meta_path) |>
+image_meta = read_excel(image_meta_path, sheet = 2) |>
     as_tibble() |>
     mutate(
-        raw_img_path = File.Path.to.Raw.Image |>
+        raw_img_path = `File Path to Raw Image` |>
             str_replace_all('\\\\', '/') |>
             str_replace('Z:/Kelsey/Polaris', here('raw-data', 'RNAscope_images'))
-    )
+    ) |>
+    filter(!is.na(raw_img_path), !duplicated(raw_img_path))
 
 a = list.files(
     '/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/raw-data/RNAscope_images',
