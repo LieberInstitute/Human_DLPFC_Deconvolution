@@ -145,7 +145,7 @@ prop_long <- prop_long_bisque |>
   bind_rows(prop_long_BayesPrism) |>
   # left_join(pd2) |> 
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
-  mutate(cell_type = factor(cell_type, levels = names(cell_type_colors_broad)),
+  mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
          Sample = paste0(BrNum, "_", tolower(pos))) |>
   left_join(halo_prop_simple) |>
   left_join(dataset_lt)
