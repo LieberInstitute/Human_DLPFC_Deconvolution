@@ -4,6 +4,18 @@ library("BisqueRNA")
 library("here")
 library("sessioninfo")
 
+## get args
+args = commandArgs(trailingOnly=TRUE)
+args<- c()
+args[1] <- "../../processed-data/08_bulk_deconvolution/markers_top25.txt"
+
+if(args[1] == "ALL"){
+  message("Using All genes")
+} else {
+  stopifnot(file.exists(args[1]))
+  message("Using marker genes from:", args[1])
+}
+
 #### load data ####
 ## load bulk data
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
@@ -25,31 +37,19 @@ common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
 length(common_genes)
 # [1] 17804
 
-## load marker gene data
-load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
-# marker_stats
+if(args[1] == "ALL"){
+  markers <- common_genes
+} else {
+  message("Input Markers:")
+  markers <- scan(args[[1]], what="", sep="\n")
+  if(!all(markers %in% common_genes)) warning("Markers missing from common genes: ", paste(setdiff(markers, common_genes), collapse = ", "))
+  markers <- intersect(markers, common_genes)
+}
 
-marker_stats |>
-  dplyr::filter(gene %in% common_genes,
-         rank_ratio <= 25) |>
-  dplyr::count(cellType.target)
-
-# cellType.target     n
-# <fct>           <int>
-# 1 Astro              24
-# 2 EndoMural          24
-# 3 Micro              17
-# 4 Oligo              25
-# 5 OPC                18
-# 6 Excit              23
-# 7 Inhib              20
-
-markers <- marker_stats |> 
-  dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
-  dplyr::pull(gene)
+message(Sys.time(), " - Prep data with ", length(markers), "genes")
 
 #### Build Expression sets ####
-
+message(Sys.time(), " - Prep Bisque Data")
 exp_set_bulk <- ExpressionSet(assayData = assays(rse_gene)$counts[markers,],
                               phenoData=AnnotatedDataFrame(
                                 as.data.frame(colData(rse_gene))[c("SAMPLE_ID")]))
@@ -59,7 +59,6 @@ exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,])
                                as.data.frame(colData(sce)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")])))
 
 ### run Bisque ####
-message(Sys.time(), " - Bisque Prep")
 exp_set_sce_temp <- exp_set_sce[markers,]
 zero_cell_filter <- colSums(exprs(exp_set_sce_temp)) != 0
 message("Exclude ",sum(!zero_cell_filter), " cells")
