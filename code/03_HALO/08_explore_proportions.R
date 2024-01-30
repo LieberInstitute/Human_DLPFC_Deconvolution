@@ -7,6 +7,7 @@ library("sessioninfo")
 library("here")
 library("broom")
 library("patchwork")
+library("Metrics")
 
 #### Set-up ####
 plot_dir <- here("plots", "03_HALO", "08_explore_proportions")
@@ -134,6 +135,15 @@ metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "H
   mutate(Confidence = ordered(Confidence, levels = c("Excluded", "Low", "OK", "High")))
 
 metadata |> dplyr::count(Combo, Confidence)
+#    Combo Confidence n
+# 1 Circle   Excluded 2
+# 2 Circle        Low 7
+# 3 Circle         OK 3
+# 4 Circle       High 9
+# 5   Star   Excluded 6
+# 6   Star        Low 2
+# 7   Star         OK 9
+# 8   Star       High 4
 
 conf_ref <- metadata |> 
   select(Sample, Combo, Confidence)  |>
@@ -184,8 +194,56 @@ load(here("processed-data", "03_HALO", "halo_all.Rdata"), verbose = TRUE)
 
 halo_all |> group_by(Sample, Confidence) |> dplyr::count()
 
+halo_all |> 
+  group_by(Combo) |> 
+  dplyr::count(Sample) |>
+  summarize(min(n), median(n), max(n))
+
+# Combo  `min(n)` `median(n)` `max(n)`
+# <chr>     <int>       <int>    <int>
+# 1 Circle    14506       39335    58189
+# 2 Star      28631       37461    54311
+
+halo_all |> 
+  filter(Confidence %in% c("OK","High")) |>
+  group_by(Combo) |> 
+  dplyr::count(Sample) |>
+  summarize(min(n), median(n), max(n))
+
+# Combo  `min(n)` `median(n)` `max(n)`
+# <chr>     <int>       <dbl>    <int>
+# 1 Circle    33785       46071    58189
+# 2 Star      28631       38090    54311
+
+halo_all |> 
+  filter(Confidence %in% c("OK","High")) |>
+  # group_by(Combo) |> 
+  dplyr::count(large_nuc)
+
+# Combo  large_nuc      n
+# <chr>  <lgl>      <int>
+# 1 Circle FALSE     528851 
+# 2 Circle TRUE       20146 (3.8%)
+# 3 Star   FALSE     516746
+# 4 Star   TRUE       11393 (2.2%)
+
 ## filter out large nuclei
 halo_all <- halo_all |> filter(!large_nuc)
+
+halo_all |> 
+  filter(Confidence %in% c("OK","High")) |>
+  group_by(Combo) |>
+  dplyr::count(Sample) |>
+  summarize(min(n), median(n), max(n))
+
+# Combo  `min(n)` `median(n)` `max(n)`
+# <chr>     <int>       <dbl>    <int>
+# 1 Circle    32425       44835    57674
+# 2 Star      28093       37553    53709
+
+## combined
+#      `min(n)` `median(n)` `max(n)`
+#   1    28093       40035    57674
 
 halo_all |>
   dplyr::count(cell_type)
@@ -209,9 +267,9 @@ cell_type_prop <- halo_all |>
   mutate(cell_type = factor(cell_type, levels = halo_ct))
 
 write_csv(cell_type_prop, file = here(data_dir,"HALO_cell_type_proportions.csv"))
+# cell_type_prop <- read_csv(here(data_dir,"HALO_cell_type_proportions.csv"))
 
 ## Adjusted cell type proportions
-
 sn_ct_prop_adj <- sn_ct_prop |>
   filter((cell_type != "Other" & Sample %in% samples_both) |
            (!Sample %in% samples_both & Combo == "Circle"))
@@ -237,7 +295,6 @@ cell_type_prop_adj |>
 write_csv(cell_type_prop_adj, file = here(data_dir,"HALO_cell_type_proportions_adj.csv"))
 
 #### Number of cells ####
-
 halo_n_cells <- halo_all |>
   dplyr::count(Sample, Combo)
 
@@ -246,7 +303,7 @@ halo_n_cells |>
   summarize(min = min(n),
             median = median(n),
             max = max(n))
-
+## non-filtered
 # Combo    min median   max
 # <chr>  <int>  <int> <int>
 # 1 Circle 13779  37786 57674
@@ -289,6 +346,29 @@ n_cell_boxplot <- halo_n_cells |>
 
 ggsave(n_cell_boxplot, filename = here(plot_dir, "halo_n_cells_boxplot.png"))
 
+#### QC metric check ####
+cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+  select(SAMPLE_ID, Combo, cell_type, prop) |>
+  pivot_wider(names_from = "cell_type", values_from = "prop") |>
+  summary()
+
+# SAMPLE_ID            Combo               Astro              Endo             Inhib             Other            Excit       
+# Length:25          Length:25          Min.   :0.05958   Min.   :0.02624   Min.   :0.05132   Min.   :0.3292   Min.   :0.1154  
+# Class :character   Class :character   1st Qu.:0.07875   1st Qu.:0.04042   1st Qu.:0.09709   1st Qu.:0.5532   1st Qu.:0.2073  
+# Mode  :character   Mode  :character   Median :0.09667   Median :0.04667   Median :0.11101   Median :0.6223   Median :0.2336  
+#                                       Mean   :0.17949   Mean   :0.05601   Mean   :0.10386   Mean   :0.6288   Mean   :0.2376  
+#                                       3rd Qu.:0.24435   3rd Qu.:0.06429   3rd Qu.:0.11585   3rd Qu.:0.7121   3rd Qu.:0.3130  
+#                                       Max.   :0.51874   Max.   :0.10070   Max.   :0.14425   Max.   :0.8009   Max.   :0.3248  
+#                                       NA's   :13        NA's   :13        NA's   :13                         NA's   :12      
+# Micro              Oligo        
+# Min.   :0.009823   Min.   :0.02099  
+# 1st Qu.:0.017403   1st Qu.:0.05131  
+# Median :0.037707   Median :0.12324  
+# Mean   :0.046239   Mean   :0.11679  
+# 3rd Qu.:0.070113   3rd Qu.:0.15676  
+# Max.   :0.124418   Max.   :0.25454  
+# NA's   :12         NA's   :12
 
 #### Other proportions ####
 
@@ -407,7 +487,7 @@ ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt_
 ggsave(prop_bar_filter_txt, filename = here(plot_dir, "halo_prop_bar_filter_txt_short.pdf"), height = 4, width = 10)
 
 
-prop_boxplot <- cell_type_prop |>
+prop_boxplot_conf <- cell_type_prop |>
   ggplot(aes(x = cell_type , y = prop, fill = Confidence)) +
   geom_boxplot(alpha = 0.6) +
   facet_wrap(~Combo, scales = "free_x")+
@@ -416,7 +496,21 @@ prop_boxplot <- cell_type_prop |>
   theme(legend.position = "None") +
   labs(title = "RNAscope Cell Type Proportions")
 
-ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), width = 10)
+ggsave(prop_boxplot_conf, filename = here(plot_dir, "halo_prop_boxplot_confidence.png"), width = 10)
+
+prop_boxplot <- cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+  ggplot(aes(x = cell_type , y = prop, fill = cell_type)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_jitter(width = 0.2, colour = "black", pch = 21) +
+  facet_wrap(~Combo, scales = "free_x")+
+  scale_fill_manual(values = cell_type_colors_halo) +
+  theme_bw() +
+  theme(legend.position = "None") 
+
+ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), height = 5, width = 7)
+ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.pdf"), height = 5, width = 7)
+
 
 prop_bar_combine <- cell_type_prop |>
   filter(cell_type != "Other") |>
@@ -506,12 +600,33 @@ halo_vs_sn_prop_filter <- cell_type_prop |>
 
 ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_equal.png"), width = 10, height = 5)
 
-## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
+## calc correlation
+(ct_cor <- cell_type_prop |>
+  filter(Confidence %in% c("OK", 'High'), !is.na(prop_sn)) |>
+  group_by(cell_type) |>
+  summarise(cor = cor(prop_sn, prop),
+            rmse = rmse(prop_sn, prop)) |>
+  mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+  arrange(-cor))
 
+# cell_type    cor   rmse cor_anno                
+# <chr>      <dbl>  <dbl> <chr>                   
+# 1 Inhib      0.813 0.0249 "cor:0.813\nrmse:0.025" 
+# 2 Astro      0.495 0.164  "cor:0.495\nrmse:0.164" 
+# 3 Excit      0.367 0.267  "cor:0.367\nrmse:0.267" 
+# 4 Oligo      0.343 0.182  "cor:0.343\nrmse:0.182" 
+# 5 Other      0.245 0.307  "cor:0.245\nrmse:0.307" 
+# 6 Micro     -0.225 0.0381 "cor:-0.225\nrmse:0.038"
+# 7 Endo      -0.414 0.0352 "cor:-0.414\nrmse:0.035"
+
+## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
 halo_vs_sn_prop_filter_big <- cell_type_prop |>
   filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Astro", "Oligo", "Excit")) |>
-  ggplot(aes(x = prop_sn, y = prop, fill = cell_type)) +
-  geom_point(shape = 21) +
+  ggplot() +
+  geom_point(aes(x = prop_sn, y = prop, fill = cell_type), shape = 21) +
+  geom_text(data = ct_cor |> filter(cell_type %in% c("Astro", "Oligo", "Excit")), 
+            aes(label = cor_anno,x = .7, y = .48),
+            vjust = "inward", hjust = "inward", size = 2.5) +
   scale_fill_manual(values = cell_type_colors_halo) +
   facet_wrap(~cell_type, nrow = 1) +
   theme_bw() +
@@ -523,8 +638,11 @@ halo_vs_sn_prop_filter_big <- cell_type_prop |>
 
 halo_vs_sn_prop_filter_little <- cell_type_prop |>
   filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Endo", "Micro", "Inhib")) |>
-  ggplot(aes(x = prop_sn, y = prop, fill = cell_type)) +
-  geom_point(shape = 21) +
+  ggplot() +
+  geom_point(aes(x = prop_sn, y = prop, fill = cell_type), shape = 21) +
+  geom_text(data = ct_cor |> filter(cell_type %in% c("Endo", "Micro", "Inhib")), 
+            aes(label = cor_anno,x = .15, y = .1),
+            vjust = "inward", hjust = "inward", size = 2.5) +
   scale_fill_manual(values = cell_type_colors_halo) +
   facet_wrap(~cell_type, nrow = 1) +
   theme_bw() +
@@ -535,8 +653,6 @@ halo_vs_sn_prop_filter_little <- cell_type_prop |>
 
 ggsave(halo_vs_sn_prop_filter_big + halo_vs_sn_prop_filter_little,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_big_little.png"), width = 10, height = 2.5)
 ggsave(halo_vs_sn_prop_filter_big + halo_vs_sn_prop_filter_little,  filename = here(plot_dir, "halo_vs_sn_prop_scatter_filter_big_little.pdf"), width = 10, height = 2.5)
-
-
 
 
 cell_type_prop_compare_long <- cell_type_prop |>

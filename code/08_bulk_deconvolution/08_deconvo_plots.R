@@ -171,7 +171,7 @@ cor_check_library |>
   geom_point(aes(x = method, y =library, size = 1/rmse, color = cor)) +
   scale_color_viridis(option = "plasma", direction = -1) +
   theme_bw() +
-  labs(x = "Library Prep", y = "Library Type")
+  labs(x = "Deconvolution Method", y = "Library")
 
 cor_check_ct |>
   filter(marker == "MR_top25") |>
