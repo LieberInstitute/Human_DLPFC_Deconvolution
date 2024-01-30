@@ -26,6 +26,10 @@ names(cell_type_colors_halo) <- cell_types_halo
 
 cell_type_colors_broad <- cell_type_colors_broad[c("Astro", "EndoMural", "Micro", "Oligo","OPC", "Excit", "Inhib", "Other")]
 
+#improve contrast in Inhib oligo
+cell_type_colors_broad[["Inhib"]] <- "#E83E38"
+cell_type_colors_broad[["Oligo"]] <- "#F57A00"
+
 save(cell_type_colors_halo, cell_type_colors_broad, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
 
 ### Bulk data colors ####
