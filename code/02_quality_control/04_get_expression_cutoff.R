@@ -38,11 +38,21 @@ rse_list <- map(rse_list, function(rse){
 
 #### drop QC samples ####
 message(Sys.time(), " - Drop Samples identified in QC")
-qc_tb <- read.csv(file = here("processed-data", "02_quality_control","QC_record_DLPFC_bulk.csv"))
+qc_tb <- read.csv(file = here("processed-data","02_quality_control","QC_record_DLPFC_bulk.csv"))
+
+qc_tb |>
+  filter(qc_class == "drop")
+
+#                       SAMPLE_ID auto_drop auto_warn qc_class
+# 1  2107UNHS-0293_Br2720_Mid_Nuc      TRUE     FALSE     drop
+# 2    AN00000904_Br2743_Ant_Cyto      TRUE      TRUE     drop
 
 rse_list <- map(rse_list, function(rse){
   stopifnot(identical(qc_tb$SAMPLE_ID, colnames(rse)))
   rse$qc_class <- qc_tb$qc_class 
+  
+  ## gene only
+  ## write.csv(as.data.frame(colData(rse_gene)), here("processed-data", "02_quality_control", "preQC_colData.csv"), row.names = FALSE)
   
   ## drop 2 poor QC samples
   rse <- rse[,rse$qc_class != "drop"]
