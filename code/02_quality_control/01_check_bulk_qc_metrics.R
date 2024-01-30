@@ -227,6 +227,22 @@ focused_qc_metrics <- c(
     "totalMapped"
 )
 
+pd_new |> select(all_of(focused_qc_metrics)) |> summary()
+# concordMapRate      mitoRate          numMapped            numReads         overallMapRate   totalAssignedGene
+# Min.   :0.2129   Min.   :0.004984   Min.   :  4640878   Min.   :  4766188   Min.   :0.2148   Min.   :0.1288   
+# 1st Qu.:0.9511   1st Qu.:0.011783   1st Qu.: 76561190   1st Qu.: 79557146   1st Qu.:0.9567   1st Qu.:0.4149   
+# Median :0.9666   Median :0.027592   Median : 81431818   Median : 84244892   Median :0.9737   Median :0.5532   
+# Mean   :0.9502   Mean   :0.087704   Mean   : 86387367   Mean   : 89962872   Mean   :0.9586   Mean   :0.5792   
+# 3rd Qu.:0.9728   3rd Qu.:0.149239   3rd Qu.: 95729405   3rd Qu.: 98449216   3rd Qu.:0.9820   3rd Qu.:0.7957   
+# Max.   :0.9822   Max.   :0.363808   Max.   :154430775   Max.   :155907976   Max.   :0.9910   Max.   :0.8326   
+# totalMapped       
+# Min.   :  5155691  
+# 1st Qu.: 76342891  
+# Median : 90790027  
+# Mean   : 95341842  
+# 3rd Qu.:111672025  
+# Max.   :202580047 
+
 pd_new |>
     group_by(library_type) |>
     group_map(~ {
