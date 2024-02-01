@@ -26,7 +26,8 @@ names(cell_type_colors_halo) <- cell_types_halo
 
 cell_type_colors_broad <- cell_type_colors_broad[c("Astro", "EndoMural", "Micro", "Oligo","OPC", "Excit", "Inhib", "Other")]
 
-#improve contrast in Inhib oligo
+#improve contrast in Inhib oligo TODO fix in HALO colors
+## note that there were prevous versions of colors
 cell_type_colors_broad[["Inhib"]] <- "#E83E38"
 cell_type_colors_broad[["Oligo"]] <- "#F57A00"
 
