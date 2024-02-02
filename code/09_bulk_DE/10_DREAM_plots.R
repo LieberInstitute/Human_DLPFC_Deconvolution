@@ -240,6 +240,23 @@ DREAM_library_type_long |> filter(DE_class != "None") |> count(cellType.target)
 # 10 Cyto         RiboZeroGold EndoMural          14
 
 
+DREAM_type_marker_count <- DREAM_library_type_long |> 
+  count(cellType.target) |>
+  filter(!is.na(cellType.target)) |>
+  separate(DE_class, into = c("library_type", NA), remove = FALSE, sep = "_") |>
+  mutate(library_type = factor(library_type, levels =c("polyA", "None", "RiboZeroGold")))
+
+
+DREAM_type_marker_count_tile <- DREAM_type_marker_count |> 
+  ggplot(aes(x = library_type, y = cellType.target, fill = n)) +
+  geom_tile() +
+  geom_text(aes(label = n), color = "white") +
+  facet_wrap(~library_prep) +
+  theme_bw()
+
+ggsave(DREAM_type_marker_count_tile, filename = here(plot_dir, "DREAM_type_marker_count_tile.png"))
+  
+## prep
 DREAM_library_prep_long <- DREAM_library_prep_long |> 
   left_join(marker_genes_top25_simple)
 
