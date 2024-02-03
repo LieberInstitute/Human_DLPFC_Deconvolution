@@ -608,20 +608,20 @@ ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatt
   group_by(cell_type) |>
   summarise(cor = cor(prop_sn, prop),
             rmse = rmse(prop_sn, prop),
-            median_prop = median(prop),
-            rrmse = rmse/median_prop) |>
-  mutate(cor_anno = sprintf("cor:%.3f\nrrmse:%.3f", round(cor,3), round(rrmse,3)))|>
+            mean_prop = mean(prop),
+            rrmse = rmse/mean_prop) |>
+  mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f\nrrmse:%.3f", round(cor,3), round(rmse,3), round(rrmse,3)))|>
   arrange(-cor))
-
-# cell_type    cor   rmse cor_anno                
-# <chr>      <dbl>  <dbl> <chr>                   
-# 1 Inhib      0.813 0.0249 "cor:0.813\nrmse:0.025" 
-# 2 Astro      0.495 0.164  "cor:0.495\nrmse:0.164" 
-# 3 Excit      0.367 0.267  "cor:0.367\nrmse:0.267" 
-# 4 Oligo      0.343 0.182  "cor:0.343\nrmse:0.182" 
-# 5 Other      0.245 0.307  "cor:0.245\nrmse:0.307" 
-# 6 Micro     -0.225 0.0381 "cor:-0.225\nrmse:0.038"
-# 7 Endo      -0.414 0.0352 "cor:-0.414\nrmse:0.035"
+# 
+# cell_type    cor   rmse mean_prop rrmse cor_anno                             
+# <chr>      <dbl>  <dbl>     <dbl> <dbl> <chr>                                
+#   1 Inhib      0.813 0.0249    0.103  0.242 "cor:0.813\nrmse:0.025\nrrmse:0.242" 
+# 2 Astro      0.495 0.164     0.187  0.876 "cor:0.495\nrmse:0.164\nrrmse:0.876" 
+# 3 Excit      0.367 0.267     0.248  1.08  "cor:0.367\nrmse:0.267\nrrmse:1.076" 
+# 4 Oligo      0.343 0.182     0.105  1.73  "cor:0.343\nrmse:0.182\nrrmse:1.730" 
+# 5 Other      0.245 0.307     0.627  0.490 "cor:0.245\nrmse:0.307\nrrmse:0.490" 
+# 6 Micro     -0.225 0.0381    0.0437 0.871 "cor:-0.225\nrmse:0.038\nrrmse:0.871"
+# 7 Endo      -0.414 0.0352    0.0569 0.618 "cor:-0.414\nrmse:0.035\nrrmse:0.618"
 
 ## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
 halo_vs_sn_prop_filter_big <- cell_type_prop |>
