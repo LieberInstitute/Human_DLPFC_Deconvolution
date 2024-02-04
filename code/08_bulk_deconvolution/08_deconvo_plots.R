@@ -31,7 +31,7 @@ head(prop_long)
 ## filter to just MR_top25 for this script
 prop_long <- prop_long |> 
   filter(marker == "MR_top25")|>
-  mutate(library = paste0(library_type, "_",library_prep),
+  mutate(library_combo = paste0(library_type, "_",library_prep),
          cell_type = factor(cell_type, levels = names(cell_type_colors_broad)))
 
 prop_long |> count(method, is.na(RNAscope_prop))
@@ -166,11 +166,11 @@ ggsave(prop_bar_SAMPLE_ID, filename = here(plot_dir, "Bulk_prop_SAMPLE_ID_MRtop2
 
 prop_bar_SAMPLE_facet <- prop_long |> 
   mutate(Sample = gsub("_","\n", Sample)) |>
-  ggplot(aes(x = library, y = prop, fill = cell_type)) +
+  ggplot(aes(x = library_combo, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   facet_grid(method~Sample) +
   scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Cell Type Proportion", x = "Library Type & Prep", fill = "Cell Type") +
+  labs(y = "Cell Type Proportion", x = "Library Type & RNA Extraction Prep", fill = "Cell Type") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         legend.position = "bottom")
