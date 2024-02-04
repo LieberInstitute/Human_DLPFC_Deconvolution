@@ -384,6 +384,30 @@ cell_type_prop |>
 # Max.   :0.124418   Max.   :0.25454  
 # NA's   :12         NA's   :12
 
+## sn from same samples
+cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+  select(SAMPLE_ID, Combo, cell_type, prop_sn) |>
+  pivot_wider(names_from = "cell_type", values_from = "prop_sn") |>
+  summary()
+
+# SAMPLE_ID            Combo               Astro              Endo             Inhib             Other            Excit       
+# Length:25          Length:25          Min.   :0.04288   Min.   :0.02021   Min.   :0.03938   Min.   :0.1276   Min.   :0.2039  
+# Class :character   Class :character   1st Qu.:0.06524   1st Qu.:0.03674   1st Qu.:0.06140   1st Qu.:0.2239   1st Qu.:0.4226  
+# Mode  :character   Mode  :character   Median :0.07820   Median :0.04722   Median :0.07719   Median :0.2929   Median :0.4819  
+#                                       Mean   :0.09342   Mean   :0.04683   Mean   :0.08691   Mean   :0.4864   Mean   :0.4865  
+#                                       3rd Qu.:0.12763   3rd Qu.:0.05391   3rd Qu.:0.11212   3rd Qu.:0.7703   3rd Qu.:0.6016  
+#                                       Max.   :0.15550   Max.   :0.07753   Max.   :0.13919   Max.   :0.8724   Max.   :0.6737  
+#                                       NA's   :14        NA's   :14        NA's   :14        NA's   :2        NA's   :13      
+#      Micro             Oligo        
+#  Min.   :0.02488   Min.   :0.09688  
+#  1st Qu.:0.02788   1st Qu.:0.19247  
+#  Median :0.03124   Median :0.23837  
+#  Mean   :0.03599   Mean   :0.25369  
+#  3rd Qu.:0.04592   3rd Qu.:0.30767  
+#  Max.   :0.05397   Max.   :0.52543  
+#  NA's   :13        NA's   :13   
+
 #### Other proportions ####
 
 other_v_other_n_scater <- cell_type_prop |>
