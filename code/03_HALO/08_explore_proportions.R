@@ -106,6 +106,20 @@ sn_prop_boxplot <- sn_ct_prop |>
 
 ggsave(sn_prop_boxplot, filename = here(plot_dir, "sn_prop_boxplot.png"))
 
+sn_ct_prop |> 
+  select(-Combo, -n_cell_sn) |> 
+  filter(cell_type != "Other") |> 
+  pivot_wider(names_from = "cell_type", values_from = "prop_sn") |>
+  summary()
+
+# Sample              Astro               Endo              Excit             Inhib             Micro              Oligo         
+# Length:19          Min.   :0.002514   Min.   :0.002514   Min.   :0.06182   Min.   :0.03938   Min.   :0.004944   Min.   :0.009428  
+# Class :character   1st Qu.:0.048339   1st Qu.:0.024908   1st Qu.:0.38352   1st Qu.:0.06819   1st Qu.:0.025223   1st Qu.:0.167950  
+# Mode  :character   Median :0.063607   Median :0.038208   Median :0.47881   Median :0.10275   Median :0.029891   Median :0.213340  
+# Mean   :0.072243   Mean   :0.038965   Mean   :0.43741   Mean   :0.18744   Mean   :0.031759   Mean   :0.233853  
+# 3rd Qu.:0.080744   3rd Qu.:0.048462   3rd Qu.:0.56496   3rd Qu.:0.15765   3rd Qu.:0.043661   3rd Qu.:0.303292  
+# Max.   :0.155498   Max.   :0.081568   Max.   :0.67375   Max.   :0.77813   Max.   :0.054713   Max.   :0.525431  
+#                                                                                              NA's   :1   
 
 # sn_ct_prop <- read.csv(here(data_dir,"snRNA_cell_type_proportions.csv"))
 
@@ -512,6 +526,50 @@ ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), height 
 ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.pdf"), height = 5, width = 7)
 
 
+prop_boxplot <- cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |>
+  ggplot(aes(x = cell_type , y = prop, fill = cell_type)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  # geom_jitter(width = 0.2, colour = "black", pch = 21) +
+  geom_jitter(aes(color = cell_type), width = 0.2) +
+  facet_wrap(~Combo, scales = "free_x")+
+  scale_fill_manual(values = cell_type_colors_halo) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  theme_bw() +
+  theme(legend.position = "None") +
+  labs(y = "RNAscope Cell Type Proportion")
+
+ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), height = 5, width = 7)
+ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.pdf"), height = 5, width = 7)
+
+cell_type_prop |>
+  filter(Confidence %in% c("OK","High")) |> 
+  group_by(cell_type, Sample) |> 
+  summarize(RNAscope = TRUE)
+
+sn_prop_boxplot <- sn_ct_prop |> 
+  filter(cell_type != "Other") |>
+  left_join(cell_type_prop |>
+              filter(Confidence %in% c("OK","High")) |> 
+              group_by(cell_type, Sample) |> 
+              summarize(`in RNAscope` = TRUE)) |>
+  replace_na(list(`in RNAscope` = FALSE)) |>
+  mutate(Combo = "snRNA-seq") |>
+  ggplot(aes(x = cell_type, y = prop_sn)) +
+  geom_boxplot(aes(fill = cell_type), alpha = 0.4, outlier.shape = NA) +
+  geom_jitter(aes(colour = cell_type, shape = `in RNAscope`), width = 0.2) +
+  facet_wrap(~Combo, scales = "free_x") +
+  scale_shape_manual(values = c(`TRUE` = 16, `FALSE` = 4)) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  theme_bw()+
+  labs(y = "snRNA-seq Cell Type Proportion") +
+  theme(legend.position = "left")
+
+ggsave(sn_prop_boxplot + prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot2.png"), height = 5, width = 8)
+ggsave(sn_prop_boxplot + prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot2.pdf"), height = 5, width = 8)
+
+
 prop_bar_combine <- cell_type_prop |>
   filter(cell_type != "Other") |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
@@ -622,6 +680,12 @@ ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatt
 # 5 Other      0.245 0.307     0.627  0.490 "cor:0.245\nrmse:0.307\nrrmse:0.490" 
 # 6 Micro     -0.225 0.0381    0.0437 0.871 "cor:-0.225\nrmse:0.038\nrrmse:0.871"
 # 7 Endo      -0.414 0.0352    0.0569 0.618 "cor:-0.414\nrmse:0.035\nrrmse:0.618"
+
+ct_cor |> 
+  ggplot(aes(x = cor, y = rrmse, color = cell_type)) + 
+  geom_point() + 
+  scale_color_manual(values = cell_type_colors_halo) +
+  theme_bw() 
 
 ## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
 halo_vs_sn_prop_filter_big <- cell_type_prop |>
