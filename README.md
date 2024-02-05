@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/416403838.svg)](https://zenodo.org/doi/10.5281/zenodo.10616687)
 
-This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using spatially-resolved transcriptomics with Visium (10x Genomics), single nucleus RNA-seq with Chromium (10x Genomics), bulk RNA-seq, single molecule fluorescent in situ hybridization (smFISH) with RNAScope (Advanced Cell Diagnostics) in combination with immunofluorescence (IF). RNAScope images were processed with HALO (Indica Labs). This dataset can be used to benchmark computational deconvolution algorithms for bulk RNA-seq data that use snRNA-seq refernece data.
+This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using spatially-resolved transcriptomics with Visium (10x Genomics), single nucleus RNA-seq with Chromium (10x Genomics), bulk RNA-seq, single molecule fluorescent in situ hybridization (smFISH) with RNAScope (Advanced Cell Diagnostics) in combination with immunofluorescence (IF). RNAScope images were processed with HALO (Indica Labs). This dataset can be used to benchmark computational deconvolution algorithms for bulk RNA-seq data that use snRNA-seq reference data.
 
 # Study design
  
