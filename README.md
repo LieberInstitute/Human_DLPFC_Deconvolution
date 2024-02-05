@@ -59,16 +59,15 @@ Cell type labels aren't available for the bulk RNA-seq and other datasets produc
 
 The molecular markers for the `Circle` and `Star` RNAscope experiments are as follows:
 
-```
-# rnascope markers/expts
-0 cellType marker  Combo	Type		LongName
-1 Endo     CLDN5   Circle	Ab    Claudin_5 
-2 Astro    GFAP    Circle	Ab    GFAP
-3 Inhib    GAD1    Circle	RNA_probe    GAD1
-4 Excit    SLC17A7 Star		RNA_probe    SLC17A7
-5 Micro    TMEM119 Star		Ab    TMEM119
-6 Oligo    OLIG2   Star		Ab    OLIG2
-```
+
+0 | cellType | marker | Combo | Type | LongName
+---  | ---  | --- | --- | --- | ---
+1 | Endo | CLDN5 | Circle | Ab | Claudin_5 
+2 | Astro | GFAP | Circle | Ab | GFAP
+3 | Inhib | GAD1 | Circle | RNA_probe | GAD1
+4 | Excit | SLC17A7 | Star | RNA_probe | SLC17A7
+5 | Micro | TMEM119 | Star | Ab | TMEM119
+6 | Oligo | OLIG2 | Star | Ab | OLIG2
 
 ## Terminology
 
