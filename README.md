@@ -1,5 +1,7 @@
 # Human_DLPFC_Deconvolution
 
+[![DOI](https://zenodo.org/badge/416403838.svg)](https://zenodo.org/doi/10.5281/zenodo.10616687)
+
 This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using spatially-resolved transcriptomics with Visium (10x Genomics), single nucleus RNA-seq with Chromium (10x Genomics), bulk RNA-seq, single molecule fluorescent in situ hybridization (smFISH) with RNAScope (Advanced Cell Diagnostics) in combination with immunofluorescence (IF). RNAScope images were processed with HALO (Indica Labs). This dataset can be used to benchmark computational deconvolution algorithms for bulk RNA-seq data that use snRNA-seq refernece data.
 
 # Study design
@@ -27,7 +29,7 @@ We hope that this repository will be useful for your research. Please use the fo
 
 # Data access
 
-Files for this project are publicly available, either directly here or via controlled-access locations when necessary.
+Files for this project are publicly available.
 
 ## snRNA-seq
 
@@ -41,7 +43,11 @@ The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#TODO'](https:/
 
 The RNAscope images are available via the Globus endpoint ['jhpce#TODO'](https://research.libd.org/globus/jhpce_TODO/index.html).
 
-These images were analyzed with HALO software (Indica labs), settings files & tabular output of the HALO analysis are available in [`raw-data/HALO`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO).
+These images were analyzed with HALO software (Indica labs). The HALO exported setting files and data CSV files are available at [`raw-data/HALO`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO). The combined HALO output data is available into an R object is available at [`processed-data/03_HALO/halo_all.Rdata`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/blob/main/processed-data/03_HALO/halo_all.Rdata).
+
+## Visium and Visium SPG data
+
+Check the [`spatialDLPFC` project](https://github.com/LieberInstitute/spatialDLPFC) for more details on the spatially-resolved transcriptomics data that was generated from these tissue blocks.
 
 # Code structure
 
