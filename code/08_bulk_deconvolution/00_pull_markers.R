@@ -49,7 +49,7 @@ markers_top |>
 # 6 Excit              23
 # 7 Inhib              20
 
-write.csv(markers_top, file = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"))
+write.csv(markers_top, file = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"), row.names = FALSE)
 
 markers_top25 <- marker_stats |> 
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
