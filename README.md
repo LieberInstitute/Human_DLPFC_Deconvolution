@@ -1,6 +1,8 @@
 # Human_DLPFC_Deconvolution
 
-## Study design
+This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using spatially-resolved transcriptomics with Visium (10x Genomics), single nucleus RNA-seq with Chromium (10x Genomics), bulk RNA-seq, single molecule fluorescent in situ hybridization (smFISH) with RNAScope (Advanced Cell Diagnostics) in combination with immunofluorescence (IF). RNAScope images were processed with HALO (Indica Labs). This dataset can be used to benchmark computational deconvolution algorithms for bulk RNA-seq data that use snRNA-seq refernece data.
+
+# Study design
  
 <p align="center">
   <img src= "overview.png" width="800" >
@@ -23,9 +25,34 @@ We hope that this repository will be useful for your research. Please use the fo
 }
 ```
 
-## File locations
+# Data access
 
-This is an integrative, multi-assay project including individual-matched data generated from human dorsolateral prefrontal cortex (DLPFC) using the RNAscope, 10X Chromium, and Illumina HiSeq platforms. Files are organized following the structure from [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project). Scripts include the R session information with details about version numbers of the packages we used.
+Files for this project are publicly available, either directly here or via controlled-access locations when necessary.
+
+## snRNA-seq
+
+As documented in the [`spatialDLPFC` project](https://github.com/LieberInstitute/spatialDLPFC), the FASTQ files are available via Globus endpoint ['jhpce#DLPFC_snRNAseq'](https://research.libd.org/globus/jhpce_DLPFC_snRNAseq/index.html) endpoint as well as the PsychENCODE Knowledge Portal (https://PsychENCODE.synapse.org/) through https://doi.org/10.7303/syn51032055.1 or https://www.synapse.org/#!Synapse:syn51032055/datasets/.
+
+## bulk RNA-seq
+
+The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#TODO'](https://research.libd.org/globus/jhpce_TODO/index.html) endpoint. They are also available through the NCBI Sequence Read Archive at study ID accession (TODO).
+
+## smFISH data
+
+The RNAscope images are available via the Globus endpoint ['jhpce#TODO'](https://research.libd.org/globus/jhpce_TODO/index.html).
+
+These images were analyzed with HALO software (Indica labs), settings files & tabular output of the HALO analysis are available in [`raw-data/HALO`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO).
+
+# Code structure
+
+Files are organized following the structure from [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project). Scripts include the R session information with details about version numbers of the packages we used.
+
+# Internal
+
+JHPCE location: `/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution`.
+
+* snRNA-seq: available in a file called `sce_DLPFC.Rdata` located at the subdirectory `DLPFC_snRNAseq/processed-data/sce/`.
+* bulk RNA-seq: located at the subdirectory `Human_DLPFC_Deconvolution/processed-data/01_SPEAQeasy/`.
 
 ### 10X Chromium single-nucleus RNA-seq datasets
 
@@ -33,13 +60,11 @@ The snRNA-seq data is available as a `SingleCellExperiment` object.
 
 ### Bulk RNA-seq datasets
 
-The bulk RNA-seq datasets include 6 samples groups comprised of mRNA isolated from either nucleus, cytoplasm, or bulk, and from either polyA selection or RiboZero RNA-seq library types. Data come from 19 samples, meaning 113 total data points. 
-
-These bulk RNA-seq data are available as a `SummarizedExperiment` object.
+Bulk RNA-seq data are available as a `SummarizedExperiment` object.
 
 ### RNAScope/HALO image datasets
 
-Image data is generated for RNAscope slides by analysis with HALO and outputting the analysis results as `.csv` tables. These tables are read from the file tree located at the subdirectory [`raw-data/HALO/`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO).
+Image data is generated for RNAScope slides by analysis with HALO and outputting the analysis results as `.csv` tables. These tables are read from the file tree located at the subdirectory [`raw-data/HALO/`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO).
 
 Note that RNAScope experiments were performed with two combinations of markers, called `Circle` and `Star`, respectively, These experiments are distinct in that they each comprise of an analysis of an independent, albeit adjacent, tissue and each includes a different set of molecular markers (see table below).
 
@@ -102,14 +127,7 @@ The $J$ samples are the samples having mixed signal, for which we predict cell t
 
 The $K$ cell types represent the cell types for which we deconvolute signal and obtain amount estimates. Note, this is the "column" dimension in matrix $Y$ and the length of the vector represented by $\pi$.
 
-## Funding sources
+# Funding sources
 
-* NIMH (USA) [R01MH123183-01](https://reporter.nih.gov/search/yvBQf4z9EUWj-79epaE62g/project-details/10573242)
-* LIBD
-
-## Internal
-
-JHPCE location: `/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution`
-
-* snRNA-seq: The latest (final?) version is a file called `sce_DLPFC.Rdata` located at the subdirectory `DLPFC_snRNAseq/processed-data/sce/`.
-* bulk RNA-seq: located at the subdirectory `Human_DLPFC_Deconvolution/processed-data/01_SPEAQeasy/`.
+* NIMH (USA) grant [R01 MH123183](https://reporter.nih.gov/search/yvBQf4z9EUWj-79epaE62g/project-details/10573242)
+* [LIBD](https://www.libd.org/)
