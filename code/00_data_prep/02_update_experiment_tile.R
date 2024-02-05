@@ -150,3 +150,30 @@ simple_tile <- simple_count |>
 
 ggsave(simple_tile, filename = here(plot_dir, "simple_sample_tile.png"), height = 4, width = 4)
 
+#### by tissue block ####
+
+
+bulk_qc <- read_csv(here("processed-data", "02_quality_control", "preQC_colData.csv")) |>
+  mutate(pass_qc = !(auto_drop | drop_pca),
+         data_type = "bulk")|>
+  select(BrNum, Sample, data_type, pass_qc, subsample = library_combo)
+
+bulk_qc |> count(pass_qc)
+
+qc_tab <- sn_n_samp |>
+  select(BrNum, Sample, data_type) |>
+  mutate(pass_qc = TRUE, subsample = data_type)|> 
+  rbind(halo_info |>
+          mutate(pass_qc = Confidence %in% c("High", "OK"),
+                 subsample = Combo,
+                 data_type = "RNAscope") |>
+          select(BrNum, Sample, data_type, pass_qc, subsample)) |>
+  rbind(bulk_qc)
+
+qc_tab |> 
+  ggplot(aes(x = Sample, y = subsample, fill = pass_qc)) +
+  geom_tile() +
+  # facet_wrap(~data_type, ncol = 1, scales = "free_y") + 
+  facet_grid(data_type~BrNum, scales="free") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
