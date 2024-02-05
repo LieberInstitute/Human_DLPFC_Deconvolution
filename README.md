@@ -37,11 +37,11 @@ As documented in the [`spatialDLPFC` project](https://github.com/LieberInstitute
 
 ## bulk RNA-seq
 
-The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#TODO'](https://research.libd.org/globus/jhpce_TODO/index.html) endpoint. They are also available through the NCBI Sequence Read Archive at study ID accession (TODO).
+The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#humanDeconvolutionBulkRNAseq'](https://research.libd.org/globus/jhpce_humanDeconvolutionBulkRNAseq/index.html) endpoint. They are also available through the NCBI Sequence Read Archive at study ID accession (TODO).
 
 ## smFISH data
 
-The RNAscope images are available via the Globus endpoint ['jhpce#TODO'](https://research.libd.org/globus/jhpce_TODO/index.html).
+The RNAscope images are available via the Globus endpoint ['jhpce#humanDeconvolutionRNAScope'](https://research.libd.org/globus/jhpce_humanDeconvolutionRNAScope/index.html).
 
 These images were analyzed with HALO software (Indica labs). The HALO exported setting files and data CSV files are available at [`raw-data/HALO`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO). The combined HALO output data is available into an R object is available at [`processed-data/03_HALO/halo_all.Rdata`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/blob/main/processed-data/03_HALO/halo_all.Rdata).
 
