@@ -105,6 +105,59 @@ library_prep_pval_histo <- DREAM_library_prep_long |>
 
 ggsave(library_prep_pval_histo, filename = here(plot_dir, "library_prep_pval_histogram.png"))
 
+#### DEG counts ####
+
+DREAM_library_type_long |> count(DE_class)
+
+DREAM_library_type_long |> 
+  group_by(library_prep, DE_class) |>
+  summarise(n_DE = n()) |>
+  group_by(library_prep) |>
+  mutate(percent = 100*n_DE/sum(n_DE))|>
+  write_csv(here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type_summary_FDR05.csv"))
+
+# library_prep DE_class           n_DE percent
+# <fct>        <chr>             <int>   <dbl>
+# 1 Cyto         None               9687   44.5 
+# 2 Cyto         RiboZeroGold_Cyto  7109   32.7 
+# 3 Cyto         polyA_Cyto         4949   22.8 
+# 4 Bulk         None              19744   90.8 
+# 5 Bulk         RiboZeroGold_Bulk   996    4.58
+# 6 Bulk         polyA_Bulk         1005    4.62
+# 7 Nuc          None              11840   54.4 
+# 8 Nuc          RiboZeroGold_Nuc   5821   26.8 
+# 9 Nuc          polyA_Nuc          4084   18.8 
+
+
+DREAM_library_prep_long |> 
+  group_by(library_type, library_prep_pair, DE_class) |>
+  summarise(n_DE = n()) |>
+  group_by(library_type, library_prep_pair) |>
+  mutate(percent = 100*n_DE/sum(n_DE)) |>
+  write_csv(here("processed-data", "09_bulk_DE","09_DREAM_library-prep", "DREAM_library-prep_summary_FDR05.csv"))
+
+# library_type library_prep_pair DE_class           n_DE percent
+# <chr>        <chr>             <chr>             <int>   <dbl>
+#   1 RiboZeroGold Bulk_Cyto         None              18800  86.5  
+# 2 RiboZeroGold Bulk_Cyto         RiboZeroGold_Bulk  2698  12.4  
+# 3 RiboZeroGold Bulk_Cyto         RiboZeroGold_Cyto   247   1.14 
+# 4 RiboZeroGold Bulk_Nuc          None              21182  97.4  
+# 5 RiboZeroGold Bulk_Nuc          RiboZeroGold_Bulk   346   1.59 
+# 6 RiboZeroGold Bulk_Nuc          RiboZeroGold_Nuc    217   0.998
+# 7 RiboZeroGold Cyto_Nuc          None              17083  78.6  
+# 8 RiboZeroGold Cyto_Nuc          RiboZeroGold_Cyto  1887   8.68 
+# 9 RiboZeroGold Cyto_Nuc          RiboZeroGold_Nuc   2775  12.8  
+# 10 polyA        Bulk_Cyto         None              15837  72.8  
+# 11 polyA        Bulk_Cyto         polyA_Bulk         3269  15.0  
+# 12 polyA        Bulk_Cyto         polyA_Cyto         2639  12.1  
+# 13 polyA        Bulk_Nuc          None              20341  93.5  
+# 14 polyA        Bulk_Nuc          polyA_Bulk          556   2.56 
+# 15 polyA        Bulk_Nuc          polyA_Nuc           848   3.90 
+# 16 polyA        Cyto_Nuc          None              16975  78.1  
+# 17 polyA        Cyto_Nuc          polyA_Cyto         2449  11.3  
+# 18 polyA        Cyto_Nuc          polyA_Nuc          2321  10.7 
+
+
 #### Volcano Plots ####
 
 type_max_pval <- DREAM_library_type_long |>
