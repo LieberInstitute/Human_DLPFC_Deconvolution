@@ -2,21 +2,30 @@ library(tidyverse)
 library(here)
 library(sessioninfo)
 
-man_path = here('raw-data', 'bulkRNA', 'samples.manifest')
+sample_info_path = here('processed-data', '01_SPEAQeasy', 'data_info.csv')
 
-meta_df = read.table(
-        man_path, col.names = c('filename', 'md1', 'filename2', 'md2', 'sample_name')
-    ) |>
+meta_df = sample_info_path |>
+    read.csv() |>
     as_tibble() |>
-    select(c('filename', 'filename2', 'sample_name'))
-
-#   Show that a sample always consists of exactly 2 files
-total_files = meta_df |>
-    pivot_longer(cols = c('filename', 'filename2')) |>
-    group_by(sample_name) |>
-    summarize(num_files = n()) |>
-    pull(num_files)
-stopifnot(all(total_files == 2))
+    rename(
+        sample_name = SAMPLE_ID,
+        filename = fastq1,
+        filename2 = fastq2
+    ) |>
+    mutate(
+        title = paste(
+            library_prep, 'RNA-seq from the', location, 'human DLPFC:', dataset,
+            'dataset'
+        ),
+        library_strategy = 'RNA-Seq',
+        library_source = 'TRANSCRIPTOMIC',
+        library_selection = case_when(
+            library_type == 'polyA' ~ 'PolyA',
+            library_type == 'RiboZeroGold' ~ NA,
+            TRUE ~ NA
+        ),
+        library_layout = 'Paired-end'
+    )
 
 #   Re-order columns to match SRA's expectations
 meta_df = meta_df |>
