@@ -31,7 +31,15 @@ read.table(
         organism = 'Homo sapiens',
         age = paste(age, 'years'),
         biomaterial_provider = 'Lieber Institute for Brain Development: 855 North Wolfe Street, Suite 300, 3rd Floor, Baltimore, MD 21205',
-        collection_date = NA, # TODO!
+        #   From Kelsey's lab notebook
+        collection_date = ifelse(
+            individual %in% c(
+                "Br6432_mid", "Br6432_ant", "Br2720_mid", "Br6471_ant",
+                "Br6471_mid", "Br6471_post"
+            ),
+            "2021-06-14",
+            "2021-11-01"
+        ),
         geo_loc_name = 'United States: Baltimore, MD',
         sex = ifelse(sex == "M", 'male', 'female'),
         tissue = "Dorsolateral prefrontal cortex",
@@ -39,7 +47,7 @@ read.table(
     ) |>
     #   Documentation is unclear and real examples are widely varied of what
     #   "isolate" may be
-    rename(isolate = diagnosis) |>
+    rename(isolate = individual) |>
     select(
         sample_name, organism, isolate, age, biomaterial_provider,
         collection_date, geo_loc_name, sex, tissue, disease
