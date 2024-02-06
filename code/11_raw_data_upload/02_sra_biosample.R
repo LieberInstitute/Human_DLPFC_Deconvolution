@@ -29,6 +29,13 @@ read.table(
     left_join(pheno_df, by = 'individual') |>
     mutate(
         organism = 'Homo sapiens',
+        #   Documentation is unclear and real examples are widely varied of what
+        #   "isolate" may be. Use a sample description
+        isolate = str_replace(
+            a$sample_name,
+            '^(.*?)_(.*?)_(.*?)_(.*)$',
+            '\\4 sample from \\3 position of donor \\2 from dataset \\1'
+        ),
         age = paste(age, 'years'),
         biomaterial_provider = 'Lieber Institute for Brain Development: 855 North Wolfe Street, Suite 300, 3rd Floor, Baltimore, MD 21205',
         #   From Kelsey's lab notebook
@@ -45,9 +52,6 @@ read.table(
         tissue = "Dorsolateral prefrontal cortex",
         disease = diagnosis
     ) |>
-    #   Documentation is unclear and real examples are widely varied of what
-    #   "isolate" may be
-    rename(isolate = individual) |>
     select(
         sample_name, organism, isolate, age, biomaterial_provider,
         collection_date, geo_loc_name, sex, tissue, disease
