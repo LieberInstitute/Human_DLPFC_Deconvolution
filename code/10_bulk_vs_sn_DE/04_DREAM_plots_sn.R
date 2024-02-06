@@ -58,14 +58,21 @@ DREAM_data_type_long <- map2_dfr(DREAM_data_type, names(DREAM_data_type), functi
   mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA)) |> 
   left_join(marker_genes_top25_simple)
  
-DREAM_data_type_long |> count(DE_class, library_type)
-#   library_type DE_class      n
-# 1 RiboZeroGold Bulk       4335
-# 2 RiboZeroGold None       8902
-# 3 RiboZeroGold snRNA-seq  4423
-# 4 polyA        Bulk       5749
-# 5 polyA        None       6402
-# 6 polyA        snRNA-seq  5509
+
+DREAM_data_type_long |> 
+  group_by(library_type, DE_class) |>
+  summarise(n_DE = n()) |>
+  group_by(library_type) |>
+  mutate(percent = 100*n_DE/sum(n_DE))
+
+# library_type DE_class      n_DE percent
+# <chr>        <chr>        <int>   <dbl>
+# 1 RiboZeroGold None          8902    50.4
+# 2 RiboZeroGold RiboZeroGold  4423    25.0
+# 3 RiboZeroGold snRNA-seq     4335    24.5
+# 4 polyA        None          6402    36.3
+# 5 polyA        polyA         5509    31.2
+# 6 polyA        snRNA-seq     5749    32.6
 
 DREAM_data_type_long |> filter(DE_class != "None") |> count(DE_class, cellType.target)
 
