@@ -1,6 +1,6 @@
 
 library("SingleCellExperiment")
-library("BisqueRNA")
+library("dplyr")
 library("here")
 library("sessioninfo")
 
@@ -28,6 +28,16 @@ length(common_genes)
 ## load marker gene data
 load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
 # marker_stats
+dim(marker_stats)
+
+
+markers_top <- marker_stats |> 
+  filter(rank_ratio <= 25) |>
+  mutate(in_bulk = gene %in% rowData(rse_gene)$ensemblID)
+
+markers_top |>
+  filter(in_bulk) |>
+  dplyr::count(cellType.target)
 
 # cellType.target     n
 # <fct>           <int>
@@ -39,13 +49,7 @@ load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_
 # 6 Excit              23
 # 7 Inhib              20
 
-markers_top <- marker_stats |> 
-  dplyr::filter(gene %in% common_genes, rank_ratio <= 25) 
-
-markers_top |>
-  dplyr::count(cellType.target)
-
-write.csv(markers_top, file = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"))
+write.csv(markers_top, file = here("processed-data","08_bulk_deconvolution", "markers_top25.csv"), row.names = FALSE)
 
 markers_top25 <- marker_stats |> 
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>

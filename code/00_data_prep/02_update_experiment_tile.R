@@ -150,3 +150,75 @@ simple_tile <- simple_count |>
 
 ggsave(simple_tile, filename = here(plot_dir, "simple_sample_tile.png"), height = 4, width = 4)
 
+#### by tissue block ####
+bulk_qc <- read_csv(here("processed-data", "02_quality_control", "preQC_colData.csv")) |>
+  mutate(pass_qc = !(auto_drop | drop_pca),
+         data_type = "Bulk RNA")|>
+  select(BrNum, Sample, data_type, pass_qc, subsample = library_combo)
+
+bulk_qc |> count(pass_qc)
+
+qc_tab <- sn_n_samp |>
+  select(BrNum, Sample, data_type) |>
+  mutate(pass_qc = TRUE, subsample = data_type)|> 
+  rbind(halo_info |>
+          mutate(pass_qc = Confidence %in% c("High", "OK"),
+                 subsample = Combo,
+                 data_type = "RNAScope/IF") |>
+          select(BrNum, Sample, data_type, pass_qc, subsample)) |>
+  rbind(bulk_qc) |>
+  mutate(data_type = factor(data_type, levels= c("RNAScope/IF","snRNA-seq","Bulk RNA")))
+
+length(unique(qc_tab$Sample))
+# [1] 22
+
+table(jaffelab::ss(unique(qc_tab$Sample),'_',2))
+# ant  mid post 
+# 7    9    6 
+
+qc_count_assay <- qc_tab |> 
+  group_by(data_type) |> 
+  summarise(preQC = n(), 
+            postQC = sum(pass_qc)) |>
+  mutate(data_type_anno = paste0(data_type,"\n(n=", preQC, ":", postQC, ")")) |>
+  mutate(data_type_anno = fct_reorder(data_type_anno, as.integer(data_type)))
+# data_type preQC postQc
+# <fct>     <int>  <int>
+# 1 Bulk RNA    113    110
+# 2 snRNA-seq    19     19
+# 3 RNAscope     42     25
+
+qc_count_sub <- qc_tab |> 
+  group_by(data_type, subsample) |> 
+  summarise(preQC = n(), 
+            postQC = sum(pass_qc)) |>
+  mutate(subsample_anno = paste0(subsample," (n=", preQC, ":", postQC, ")"))
+# data_type subsample         preQC postQC
+# <fct>     <chr>             <int>  <int>
+# 1 Bulk RNA  RiboZeroGold_Bulk    19     19
+# 2 Bulk RNA  RiboZeroGold_Cyto    19     19
+# 3 Bulk RNA  RiboZeroGold_Nuc     19     17
+# 4 Bulk RNA  polyA_Bulk           19     19
+# 5 Bulk RNA  polyA_Cyto           19     18
+# 6 Bulk RNA  polyA_Nuc            18     18
+# 7 snRNA-seq snRNA-seq            19     19
+# 8 RNAscope  Circle               21     12
+# 9 RNAscope  Star                 21     13
+
+qc_tile <- qc_tab |> 
+  left_join(qc_count_assay |> select(-preQC, -postQC)) |>
+  left_join(qc_count_sub |> select(-preQC, -postQC)) |>
+  # ggplot(aes(x = Sample, y = subsample, fill = pass_qc)) +
+  ggplot(aes(x = Sample, y = subsample_anno, fill = pass_qc)) +
+  geom_tile(color = "black") +
+  # facet_wrap(~data_type, ncol = 1, scales = "free_y") + 
+  facet_grid(data_type_anno~BrNum, scales="free", switch="y") + 
+  scale_y_discrete(position = "right") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y.left = ,
+        legend.position = "bottom") +
+  labs(x = "Tissue Blocks (n=22)", y = "")
+
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5)
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5)

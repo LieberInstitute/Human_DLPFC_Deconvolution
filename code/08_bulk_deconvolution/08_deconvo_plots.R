@@ -338,17 +338,16 @@ sn_prop <- read_csv(here("processed-data", "03_HALO", "08_explore_proportions","
 
 prop_wide <- prop_long |>
   left_join(sn_prop) |>
-  select(SAMPLE_ID, library_prep, cell_type, method, RNAscope = RNAscope_prop, sn = prop_sn, prop) |>
+  select(SAMPLE_ID, library_prep, cell_type, method, RNAscope = RNAscope_prop, `snRNA-seq` = prop_sn, prop) |>
   pivot_wider(names_from = "method", values_from = "prop")
 
-
-
-gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "sn", as.character(cor_check$method)), aes(colour = cell_type)) +
+gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", as.character(cor_check$method)), aes(colour = cell_type)) +
   scale_color_manual(values = cell_type_colors_broad) +
   scale_fill_manual(values = cell_type_colors_broad) +
   theme_bw()
 
 ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.png"), height = 10, width = 10)
+ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.pdf"), height = 10, width = 10)
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
