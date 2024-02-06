@@ -4,12 +4,16 @@ library(sessioninfo)
 
 man_path = here('raw-data', 'bulkRNA', 'samples.manifest')
 pheno_path = here('processed-data', '00_data_prep', 'sample_info.csv')
+out_path = here('processed-data', '11_raw_data_upload', 'biosample.tsv')
+
+dir.create(dirname(out_path), showWarnings = FALSE)
 
 pheno_df = read.csv(pheno_path) |>
     as_tibble() |>
-    rename(individual = sample_id)
+    rename(individual = sample_id) |>
+    mutate(individual = str_replace(individual, '_2$', ''))
 
-meta_df = read.table(
+read.table(
         man_path,
         col.names = c('filename', 'md1', 'filename2', 'md2', 'sample_name')
     ) |>
@@ -23,13 +27,23 @@ meta_df = read.table(
             str_replace('^br', 'Br')
     ) |>
     left_join(pheno_df, by = 'individual') |>
-    rename(`Sample Name` = sample_name) |>
-    select(c('filename', 'filename2', 'Sample Name', 'sex', 'age')) |>
     mutate(
-        Organism = 'Homo sapiens',
-        `geographic location` = 'Baltimore, MD, USA',
+        organism = 'Homo sapiens',
+        age = paste(age, 'years'),
+        biomaterial_provider = 'Lieber Institute for Brain Development: 855 North Wolfe Street, Suite 300, 3rd Floor, Baltimore, MD 21205',
+        collection_date = NA, # TODO!
+        geo_loc_name = 'United States: Baltimore, MD',
+        sex = ifelse(sex == "M", 'male', 'female'),
         tissue = "Dorsolateral prefrontal cortex",
-        age = ifelse(age == "M", 'male', 'female')
-    )
+        disease = diagnosis
+    ) |>
+    #   Documentation is unclear and real examples are widely varied of what
+    #   "isolate" may be
+    rename(isolate = diagnosis) |>
+    select(
+        sample_name, organism, isolate, age, biomaterial_provider,
+        collection_date, geo_loc_name, sex, tissue, disease
+    ) |>
+    write_tsv(out_path)
 
 session_info()
