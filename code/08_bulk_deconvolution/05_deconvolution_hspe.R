@@ -38,8 +38,8 @@ rownames(sce_pb) <- rowData(sce_pb)$gene_id
 
 ## find common genes
 common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene)$ensemblID)
-length(common_genes)
-# [1] 13311
+message("common genes: ", length(common_genes))
+# [1] 13311 
 
 # we can instead explicitly pass a list of markers to hspe specifying the marker genes
 # elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
@@ -84,14 +84,16 @@ if(marker_label == "FULL"){
   
   ## notes
   
-  ## markers: Marker gene indices...list is a vector of indicies (columns of ‘Y’) that will be considered markers of that particular type.
+  ## markers: Marker gene indices...list is a vector of indices (columns of ‘Y’) that will be considered markers of that particular type.
   
   est_prop_hspe = hspe(Y = mixture_samples, 
                        reference = reference_samples,
                        pure_samples = pure_samples,
                        markers = marker_genes,
                        seed = 10524)
-} else stop()
+} else { ## not valid marker condition
+  stop()
+}
 
 message(Sys.time(), "- Saving")
 save(est_prop_hspe, file = here(data_dir,paste0("est_prop_hspe-",marker_label,".Rdata")))
