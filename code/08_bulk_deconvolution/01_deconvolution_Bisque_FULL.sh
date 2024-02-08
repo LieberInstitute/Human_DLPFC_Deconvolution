@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
 #$ -N 01_deconvolution_Bisque_FULL
 #$ -o logs/01_deconvolution_Bisque_FULL.txt
 #$ -e logs/01_deconvolution_Bisque_FULL.txt
