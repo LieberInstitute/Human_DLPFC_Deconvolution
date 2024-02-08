@@ -6,6 +6,22 @@ library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
+## get args
+args = commandArgs(trailingOnly=TRUE)
+marker_label <- args[1]
+marker_file <- NULL
+
+if(marker_label == "FULL"){
+  message("Using FULL gene-set")
+} else {
+  marker_file <- args[2]
+  stopifnot(file.exists(marker_file))
+  message("Using ", marker_label," marker genes from:", marker_file)
+}
+
+#### data output folder ####
+data_dir <- here("processed-data","08_bulk_deconvolution", "06_deconvolution_BayesPrism")
+if(!dir.exists(data_dir)) dir.create(data_dir)
 plot_dir <- here("plots" , "08_bulk_deconvolution", "06_deconvolution_BayesPrism_marker")
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
@@ -29,6 +45,24 @@ sce <- sce[markers_top25, sce$cellType_broad_hc != "Ambiguous"]
 
 sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 
+## find common genes
+common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
+length(common_genes)
+# [1] 17804
+
+if(marker_label == "FULL"){
+  markers <- common_genes
+} else {
+  message("Input Markers:")
+  markers <- scan(marker_file, what="", sep="\n")
+  if(!all(markers %in% common_genes)) warning("Markers missing from common genes: ", paste(setdiff(markers, common_genes), collapse = ", "))
+  markers <- intersect(markers, common_genes)
+}
+
+message(Sys.time(), " - Prep data with ", length(markers), " genes")
+
+rse_gene <- rse_gene[markers, ]
+sce <- sce[markers, ]
 
 #### convert to bayPrism matricies ####
 # sample-by-gene raw count matrix of bulk RNA-seq expression
@@ -103,10 +137,11 @@ message(Sys.time(), "- Run Prism")
 est_prop_BayesPrisim_marker <- run.prism(prism = myPrism, n.cores=50)
 
 message(Sys.time(), "- Saving")
-save(est_prop_BayesPrisim_marker, diff.exp.stat, file = here("processed-data","08_bulk_deconvolution","est_prop_BayesPrisim_marker.Rdata"))
+save(est_prop_BayesPrisim_marker, diff.exp.stat, file = here(data_dir,"est_prop_BayesPrisim-",marker_label,".Rdata"))
 
 
-# slurmjobs::job_single(name = "06_deconvolution_BayesPrism_marker", memory = "50G", cores = 1, create_shell = TRUE, command = "Rscript 06_deconvolution_BayesPrism_marker.R")
+# slurmjobs::job_single('06_deconvolution_BayesPrism_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# slurmjobs::job_single('06_deconvolution_BayesPrism_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 06_deconvolution_BayesPrism_marker.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
 
 ## Reproducibility information
 print("Reproducibility information:")

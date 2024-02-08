@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH -p caracol
-#SBATCH --mem=300G
-#SBATCH --job-name=06_deconvolution_BayesPrism
+#SBATCH -p shared
+#SBATCH --mem=25G
+#SBATCH --job-name=06_deconvolution_BayesPrism_MeanRatio_top25
 #SBATCH -c 1
-#SBATCH -o logs/06_deconvolution_BayesPrism.txt
-#SBATCH -e logs/06_deconvolution_BayesPrism.txt
+#SBATCH -o logs/06_deconvolution_BayesPrism_MeanRatio_top25.txt
+#SBATCH -e logs/06_deconvolution_BayesPrism_MeanRatio_top25.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -19,15 +19,14 @@ echo "Job name: ${SLURM_JOB_NAME}"
 echo "Node name: ${SLURMD_NODENAME}"
 echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
-
 ## Load the R module
-module load conda_R/4.3.x
+module load conda_R/4.3
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript 06_deconvolution_BayesPrism.R
+Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt
 
 echo "**** Job ends ****"
 date
