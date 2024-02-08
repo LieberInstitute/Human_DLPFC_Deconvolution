@@ -57,12 +57,12 @@ if(marker_label == "FULL"){
   
   message(Sys.time(), "- hspe")
   ## n_markers...If not specified then top 10% of genes are used. 1vALL ratio method
-  est_prop_hspe = hspe(Y = mixture_samples, 
+  est_prop_hspe = hspe(Y = mixture_samples,
                        reference = reference_samples,
                        pure_samples = pure_samples,
                        seed =10524)
 
-} elseif(marker_label %in% c("MeanRatio_top25", "1vALL_top25")){ ## Run with our markers 
+} else if(marker_label %in% c("MeanRatio_top25", "1vALL_top25")){ ## Run with our markers 
   
   ## load marker gene data
   load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
@@ -86,7 +86,7 @@ if(marker_label == "FULL"){
   
   ## markers: Marker gene indices...list is a vector of indices (columns of ‘Y’) that will be considered markers of that particular type.
   
-  est_prop_hspe = hspe(Y = mixture_samples, 
+  est_prop_hspe = hspe(Y = mixture_samples,
                        reference = reference_samples,
                        pure_samples = pure_samples,
                        markers = marker_genes,
