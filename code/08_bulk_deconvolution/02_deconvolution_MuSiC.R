@@ -9,7 +9,7 @@ args = commandArgs(trailingOnly=TRUE)
 marker_label <- args[1]
 marker_file <- NULL
 
-if(args[2] == "FULL"){
+if(marker_label == "FULL"){
   message("Using FULL gene-set")
 } else {
   marker_file <- args[2]
