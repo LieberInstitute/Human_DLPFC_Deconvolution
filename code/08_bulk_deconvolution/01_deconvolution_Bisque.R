@@ -6,15 +6,23 @@ library("sessioninfo")
 
 ## get args
 args = commandArgs(trailingOnly=TRUE)
-args<- c()
-args[1] <- "../../processed-data/08_bulk_deconvolution/markers_top25.txt"
 
-if(args[1] == "ALL"){
-  message("Using All genes")
+# Test
+# args<- c() 
+# args[1] <- "FULL"
+# args[1] <- "MeanRatio_top25"
+# args[2] <- "../../processed-data/08_bulk_deconvolution/markers_top25.txt"
+
+if(args[1] == "FULL"){
+  message("Using FULL gene-set")
 } else {
-  stopifnot(file.exists(args[1]))
-  message("Using marker genes from:", args[1])
+  stopifnot(file.exists(args[2]))
+  message("Using ", args[1]," marker genes from:", args[2])
 }
+
+#### data output folder ####
+data_dir <- here("processed-data","08_bulk_deconvolution", "01_deconvolution_Bisque")
+if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
 ## load bulk data
@@ -72,9 +80,12 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
                                                subject.names = "Sample",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"))
+save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution",paste0("est_prop_bisque-",args[1],".Rdata")))
 
-# sgejobs::job_single('01_deconvolution_Bisque', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R")
+# sgejobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R FULL")
+# sgejobs::job_single('01_deconvolution_Bisque_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# sgejobs::job_single('01_deconvolution_Bisque_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
