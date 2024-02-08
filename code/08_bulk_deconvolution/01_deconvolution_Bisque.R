@@ -9,7 +9,7 @@ args = commandArgs(trailingOnly=TRUE)
 marker_label <- args[1]
 marker_file <- NULL
 
-if(args[2] == "FULL"){
+if(marker_label == "FULL"){
   message("Using FULL gene-set")
 } else {
   marker_file <- args[2]
@@ -42,7 +42,7 @@ common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
 length(common_genes)
 # [1] 17804
 
-if(marker_label == "ALL"){
+if(marker_label == "FULL"){
   markers <- common_genes
 } else {
   message("Input Markers:")
@@ -51,7 +51,7 @@ if(marker_label == "ALL"){
   markers <- intersect(markers, common_genes)
 }
 
-message(Sys.time(), " - Prep data with ", length(markers), "genes")
+message(Sys.time(), " - Prep data with ", length(markers), " genes")
 
 #### Build Expression sets ####
 message(Sys.time(), " - Prep Bisque Data")
@@ -77,7 +77,7 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
                                                subject.names = "Sample",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution",paste0("est_prop_bisque-",marker_label,".Rdata")))
+save(est_prop_bisque, file = here(data_dir, paste0("est_prop_bisque-",marker_label,".Rdata")))
 
 # slurmjobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R FULL")
 # slurmjobs::job_single('01_deconvolution_Bisque_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")

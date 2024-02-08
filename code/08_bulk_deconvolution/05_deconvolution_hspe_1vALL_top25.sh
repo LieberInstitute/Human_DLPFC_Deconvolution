@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=01_deconvolution_Bisque_1vALL_top25
+#SBATCH --job-name=05_deconvolution_hspe_1vALL_top25
 #SBATCH -c 1
-#SBATCH -o logs/01_deconvolution_Bisque_1vALL_top25.txt
-#SBATCH -e logs/01_deconvolution_Bisque_1vALL_top25.txt
+#SBATCH -o logs/05_deconvolution_hspe_1vALL_top25.txt
+#SBATCH -e logs/05_deconvolution_hspe_1vALL_top25.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -26,7 +26,7 @@ module load conda_R/4.3
 module list
 
 ## Edit with your job command
-Rscript 01_deconvolution_Bisque.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt
+Rscript 05_deconvolution_hspe.R 1vALL_top25
 
 echo "**** Job ends ****"
 date
