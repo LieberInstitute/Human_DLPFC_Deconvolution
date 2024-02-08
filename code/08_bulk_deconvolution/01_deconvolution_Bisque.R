@@ -6,18 +6,15 @@ library("sessioninfo")
 
 ## get args
 args = commandArgs(trailingOnly=TRUE)
+marker_label <- args[2]
+marker_file <- NULL
 
-# Test
-# args<- c() 
-# args[1] <- "FULL"
-# args[1] <- "MeanRatio_top25"
-# args[2] <- "../../processed-data/08_bulk_deconvolution/markers_top25.txt"
-
-if(args[1] == "FULL"){
+if(args[2] == "FULL"){
   message("Using FULL gene-set")
 } else {
-  stopifnot(file.exists(args[2]))
-  message("Using ", args[1]," marker genes from:", args[2])
+  marker_file <- args[[3]]
+  stopifnot(file.exists(marker_file))
+  message("Using ", marker_label," marker genes from:", marker_file)
 }
 
 #### data output folder ####
@@ -45,11 +42,11 @@ common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
 length(common_genes)
 # [1] 17804
 
-if(args[1] == "ALL"){
+if(marker_label == "ALL"){
   markers <- common_genes
 } else {
   message("Input Markers:")
-  markers <- scan(args[[1]], what="", sep="\n")
+  markers <- scan(marker_file, what="", sep="\n")
   if(!all(markers %in% common_genes)) warning("Markers missing from common genes: ", paste(setdiff(markers, common_genes), collapse = ", "))
   markers <- intersect(markers, common_genes)
 }
@@ -80,11 +77,11 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
                                                subject.names = "Sample",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution",paste0("est_prop_bisque-",args[1],".Rdata")))
+save(est_prop_bisque, file = here("processed-data","08_bulk_deconvolution",paste0("est_prop_bisque-",marker_label,".Rdata")))
 
-# sgejobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R FULL")
-# sgejobs::job_single('01_deconvolution_Bisque_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
-# sgejobs::job_single('01_deconvolution_Bisque_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
+# slurmjobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R FULL")
+# slurmjobs::job_single('01_deconvolution_Bisque_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# slurmjobs::job_single('01_deconvolution_Bisque_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
 
 ## Reproducibility information
 print("Reproducibility information:")
