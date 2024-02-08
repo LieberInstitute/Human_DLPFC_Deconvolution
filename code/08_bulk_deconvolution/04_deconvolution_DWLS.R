@@ -74,7 +74,7 @@ sc_matrix <- as.matrix(counts(sce))
 message(Sys.time(), "- buildSignatureMatrix")
 Signature <- buildSignatureMatrixMAST(scdata=sc_matrix,
                                       id=sce$cellType_broad_hc,
-                                      path=output_dir_marker,
+                                      path=data_dir_marker,
                                       diff.cutoff=0.5,
                                       pval.cutoff=0.01)
 
