@@ -7,51 +7,6 @@ library("jaffelab")
 library("here")
 library("sessioninfo")
 
-#### hspe example from https://github.com/gjhunt/hspe/blob/main/vign/basic-deconvolution.md ####
-# 
-# names(shen_orr_ex)
-# # [1] "data"       "annotation" "name"
-# 
-# head(shen_orr_ex$annotation$mixture)
-# 
-# # RNA-summarized gene expression data
-# # The values of the matrix are log2 RMA-summarized gene expressions.
-# Y <- shen_orr_ex$data$log
-# Y[1:4,1:4]
-# #           X1367566_at X1367568_a_at X1367570_at X1367584_at
-# # GSM495209    3.396192      7.685769    5.722330    6.628653
-# # GSM495210    2.882626      7.759002    6.005583    6.771917
-# # GSM495211    3.072980      7.598871    5.741630    6.564820
-# # GSM495212    3.168440      7.209959    6.396841    7.040779
-# 
-# dim(shen_orr_ex$data$log)
-# # [1]  42 600
-# 
-# ## seubset for example
-# data = shen_orr_ex$data$log[,c(1:10,201:210,401:410)]
-# mixture_proportions = shen_orr_ex$annotation$mixture
-# 
-# pure_samples = list(Liver=c(1,2,3),Brain=c(4,5,6),Lung=c(7,8,9))
-# mixture_samples = data[-(1:9),]
-# reference_samples = data[1:9,]
-# 
-# dim(mixture_samples)
-# dim(reference_samples)
-# 
-# mixture_samples[1:5,1:5]
-# reference_samples[1:5:1:5]
-# 
-# out = hspe(Y=mixture_samples, reference=reference_samples,pure_samples = pure_samples)
-# 
-# names(out)
-# head(out$estimates)
-# #           Liver      Brain      Lung
-# # GSM495218 0.04487030 0.23356650 0.7215632
-# # GSM495219 0.05038660 0.23772982 0.7118836
-# # GSM495220 0.05172627 0.23519603 0.7130777
-# # GSM495221 0.54595621 0.04624920 0.4077946
-# # GSM495222 0.54069326 0.05576177 0.4035450
-# # GSM495223 0.54231228 0.05122310 0.4064646
 
 #### Run on our data ####
 
