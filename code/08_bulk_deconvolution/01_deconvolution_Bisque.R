@@ -6,13 +6,13 @@ library("sessioninfo")
 
 ## get args
 args = commandArgs(trailingOnly=TRUE)
-marker_label <- args[2]
+marker_label <- args[1]
 marker_file <- NULL
 
 if(args[2] == "FULL"){
   message("Using FULL gene-set")
 } else {
-  marker_file <- args[[3]]
+  marker_file <- args[2]
   stopifnot(file.exists(marker_file))
   message("Using ", marker_label," marker genes from:", marker_file)
 }
