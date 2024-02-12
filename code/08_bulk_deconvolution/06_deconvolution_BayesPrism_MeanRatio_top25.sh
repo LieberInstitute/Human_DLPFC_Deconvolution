@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=100G
 #SBATCH --job-name=06_deconvolution_BayesPrism_MeanRatio_top25
 #SBATCH -c 1
 #SBATCH -o logs/06_deconvolution_BayesPrism_MeanRatio_top25.txt

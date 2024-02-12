@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH -p carcol
+#SBATCH --mem=300G
 #SBATCH --job-name=04_deconvolution_DWLS_FULL
 #SBATCH -c 1
 #SBATCH -o logs/04_deconvolution_DWLS_FULL.txt
