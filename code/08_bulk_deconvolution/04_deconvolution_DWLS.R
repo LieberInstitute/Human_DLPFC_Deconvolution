@@ -97,7 +97,7 @@ rse_gene <- rse_gene[rownames(Signature),]
 est_prop_dwls <- apply(assays(rse_gene)$counts,2,solveDampenedWLS,S = Signature)
 est_prop_dwls <- t(est_prop_dwls)
 
-save(est_prop_dwls, Signature, file = here(data_dir,"est_prop_dwls-", marker_label, ".Rdata"))
+save(est_prop_dwls, Signature, file = here(data_dir, paste0("est_prop_dwls-", marker_label, ".Rdata")))
 
 # slurmjobs::job_single('04_deconvolution_DWLS_FULL', create_shell = TRUE, memory = '100G', command = "Rscript 04_deconvolution_DWLS.R FULL")
 # slurmjobs::job_single('04_deconvolution_DWLS_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 04_deconvolution_DWLS.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
