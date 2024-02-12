@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p carcol
+#SBATCH -p caracol
 #SBATCH --mem=300G
 #SBATCH --job-name=04_deconvolution_DWLS_FULL
 #SBATCH -c 1
