@@ -35,24 +35,26 @@ halo_prop_long |> count(method)
 methods <- c("dwls", "bisque", "music", "CIBERSORTx","BayesPrisim", "hspe")
 
 ## what data exists?
-list.files(here("processed-data","08_bulk_deconvolution"), pattern = glob2rx("est_prop*.Rdata"))
+list.files(here("processed-data","08_bulk_deconvolution"))
 # [1] "est_prop_BayesPrisim_marker.Rdata" "est_prop_bisque.Rdata"             "est_prop_dwls_marker.Rdata"       
 # [4] "est_prop_dwls.Rdata"               "est_prop_hspe_markers.Rdata"       "est_prop_hspe.Rdata"              
 # [7] "est_prop_music.Rdata" 
 
 #### DWLS ####
-## top25
-load(here("processed-data","08_bulk_deconvolution","est_prop_dwls_marker.Rdata"), verbose = TRUE)
-head(est_prop_dwls)
+fn_dwls <- list.files(here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS"), pattern = ".Rdata", full.names = TRUE)
+names(fn_dwls) <- gsub("est_prop_dwls-(.*?).Rdata","\\1",basename(fn_dwls))
 
-prop_long_DWLS <- est_prop_dwls |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "DWLS", marker = "MR_top25")
+est_prop_dwls <- map(fn_dwls, ~get(load(.x)[1]))
 
-## All
-## TODO
+est_prop_dwls <- map2(est_prop_dwls, names(est_prop_dwls), ~.x |>
+                       as.data.frame() |>
+                       rownames_to_column("SAMPLE_ID") |>
+                       pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                       mutate(method = "DWLS", marker = .y))
+
+est_prop_dwls <- do.call("rbind", est_prop_dwls)
+
+est_prop_dwls |> count(marker)
 
 #### Bisque ####
 ## top 25
