@@ -148,4 +148,4 @@ print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
-session_in
+session_info()
