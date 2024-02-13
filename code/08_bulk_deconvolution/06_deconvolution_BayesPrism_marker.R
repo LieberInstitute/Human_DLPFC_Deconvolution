@@ -134,10 +134,10 @@ myPrism <- new.prism(
 
 ## run prism 
 message(Sys.time(), "- Run Prism")
-est_prop_BayesPrisim_marker <- run.prism(prism = myPrism, n.cores=50)
+est_prop_BayesPrism_marker <- run.prism(prism = myPrism, n.cores=50)
 
 message(Sys.time(), "- Saving")
-save(est_prop_BayesPrisim_marker, diff.exp.stat, file = here(data_dir,paste0("est_prop_BayesPrisim-",marker_label,".Rdata")))
+save(est_prop_BayesPrism_marker, diff.exp.stat, file = here(data_dir,paste0("est_prop_BayesPrism-",marker_label,".Rdata")))
 
 
 # slurmjobs::job_single('06_deconvolution_BayesPrism_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")

@@ -187,10 +187,10 @@ myPrism <- new.prism(
 
 ## run prism 
 message(Sys.time(), "- Run Prism")
-est_prop_BayesPrisim <- run.prism(prism = myPrism, n.cores=50)
+est_prop_BayesPrism <- run.prism(prism = myPrism, n.cores=50)
 
 message(Sys.time(), "- Saving")
-save(est_prop_BayesPrisim, diff.exp.stat, file = here("processed-data","08_bulk_deconvolution","est_prop_BayesPrisim.Rdata"))
+save(est_prop_BayesPrism, diff.exp.stat, file = here("processed-data","08_bulk_deconvolution","est_prop_BayesPrism.Rdata"))
 
 
 # slurmjobs::job_single(name = "06_deconvolution_BayesPrism", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 06_deconvolution_BayesPrism.R")
