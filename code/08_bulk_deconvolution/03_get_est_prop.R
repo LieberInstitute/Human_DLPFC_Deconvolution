@@ -134,7 +134,9 @@ prop_long <- est_prop_bisque |>
   mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
          Sample = paste0(BrNum, "_", tolower(pos))) |>
   left_join(halo_prop_simple) |>
-  left_join(dataset_lt)
+  left_join(dataset_lt) |> 
+  mutate(library_combo = paste0(library_type, "_",library_prep),
+         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","Oligo","OPC","Excit","Inhib")))
 
 prop_long |> count(method, marker)
 prop_long |> count(!is.na(RNAscope_prop))
