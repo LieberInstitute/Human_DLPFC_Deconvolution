@@ -32,13 +32,10 @@ halo_prop_long |> count(method)
 
 #### Deconvolution output ####
 
-methods <- c("dwls", "bisque", "music", "CIBERSORTx","BayesPrisim", "hspe")
-
 ## what data exists?
 list.files(here("processed-data","08_bulk_deconvolution"))
-# [1] "est_prop_BayesPrisim_marker.Rdata" "est_prop_bisque.Rdata"             "est_prop_dwls_marker.Rdata"       
-# [4] "est_prop_dwls.Rdata"               "est_prop_hspe_markers.Rdata"       "est_prop_hspe.Rdata"              
-# [7] "est_prop_music.Rdata" 
+# [1] "01_deconvolution_Bisque"           "02_deconvolution_MuSiC"            "03_get_est_prop"                   "04_deconvolution_DWLS"            
+# [5] "05_deconvolution_hspe"             "06_deconvolution_BayesPrism"
 
 #### DWLS ####
 fn_dwls <- list.files(here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS"), pattern = ".Rdata", full.names = TRUE)
@@ -57,94 +54,82 @@ est_prop_dwls <- do.call("rbind", est_prop_dwls)
 est_prop_dwls |> count(marker)
 
 #### Bisque ####
-## top 25
-load(here("processed-data","08_bulk_deconvolution","est_prop_bisque.Rdata"), verbose = TRUE)
+fn_bisque <- list.files(here("processed-data","08_bulk_deconvolution", "01_deconvolution_Bisque"), pattern = ".Rdata", full.names = TRUE)
+names(fn_bisque) <- gsub("est_prop_bisque-(.*?).Rdata","\\1",basename(fn_bisque))
 
-est_prop_bisque$bulk.props <- t(est_prop_bisque$bulk.props)
+est_prop_bisque <- map(fn_bisque, ~get(load(.x)[1]))
 
-prop_long_bisque <- est_prop_bisque$bulk.props |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "Bisque", marker = "MR_top25")
+est_prop_bisque <- map2(est_prop_bisque, names(est_prop_bisque), ~t(.x$bulk.props) |>
+                        as.data.frame() |>
+                        rownames_to_column("SAMPLE_ID") |>
+                        pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                        mutate(method = "Bisque", marker = .y))
 
-## ALL
-##TODO
+est_prop_bisque <- do.call("rbind", est_prop_bisque)
+
+est_prop_bisque |> count(marker)
 
 #### MuSiC ####
-## top 25
-load(here("processed-data","08_bulk_deconvolution","est_prop_music.Rdata"), verbose = TRUE)
-names(est_prop_music)
+fn_music <- list.files(here("processed-data","08_bulk_deconvolution", "02_deconvolution_MuSiC"), pattern = ".Rdata", full.names = TRUE)
+names(fn_music) <- gsub("est_prop_music-(.*?).Rdata","\\1",basename(fn_music))
 
-head(est_prop_music$Est.prop.weighted)
+est_prop_music <- map(fn_music, ~get(load(.x)[1]))
 
-prop_long_music <- est_prop_music$Est.prop.weighted |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "MuSiC", marker = "MR_top25")
+est_prop_music <- map2(est_prop_music, names(est_prop_music), ~.x$Est.prop.weighted |>
+                        as.data.frame() |>
+                        rownames_to_column("SAMPLE_ID") |>
+                        pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                        mutate(method = "music", marker = .y))
 
-## ALL
-## TODO
+est_prop_music <- do.call("rbind", est_prop_music)
+
+est_prop_music |> count(marker)
 
 #### CIBERSORTx ####
 ## TODO 
 
 #### hspe ####
-## top25
-load(here("processed-data","08_bulk_deconvolution","est_prop_hspe_markers.Rdata"), verbose = TRUE)
-prop_long_hspe <- est_prop_hspe$estimates |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "hspe", marker = "MR_top25")
+fn_hspe <- list.files(here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe"), pattern = ".Rdata", full.names = TRUE)
+names(fn_hspe) <- gsub("est_prop_hspe-(.*?).Rdata","\\1",basename(fn_hspe))
 
-load(here("processed-data","08_bulk_deconvolution","est_prop_hspe.Rdata"), verbose = TRUE)
-names(est_prop_hspe)
+est_prop_hspe <- map(fn_hspe, ~get(load(.x)[1]))
 
-## All
-prop_long_hspe <- prop_long_hspe |>
-  bind_rows(
-  est_prop_hspe$estimates |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "hspe", marker = "ALL")
-  )
+est_prop_hspe <- map2(est_prop_hspe, names(est_prop_hspe), ~.x$estimates |>
+                        as.data.frame() |>
+                        rownames_to_column("SAMPLE_ID") |>
+                        pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                        mutate(method = "hspe", marker = .y))
 
-prop_long_hspe |> count(method, cell_type)
+est_prop_hspe <- do.call("rbind", est_prop_hspe)
+
+est_prop_hspe |> count(marker)
+
 
 #### BayesPrism ####
-## Top25
-# need BayesPrism to load data
-load(here("processed-data","08_bulk_deconvolution","est_prop_BayesPrisim_marker.Rdata"), verbose = TRUE)
-# est_prop_BayesPrisim_marker
-# diff.exp.stat
+fn_bayes <- list.files(here("processed-data","08_bulk_deconvolution", "06_deconvolution_BayesPrism"), pattern = ".Rdata", full.names = TRUE)
+names(fn_bayes) <- gsub("est_prop_bayes-(.*?).Rdata","\\1",basename(fn_bayes))
 
-est_prop_BayesPrisim_marker
+est_prop_bayes <- map(fn_bayes, ~get(load(.x)[1]))
 
-slotNames(est_prop_BayesPrisim_marker)
-# [1] "prism"                       "posterior.initial.cellState" "posterior.initial.cellType" 
-# [4] "reference.update"            "posterior.theta_f"           "control_param" 
+est_prop_bayes <- map2(est_prop_bayes, names(est_prop_bayes), ~get.fraction(bp=.x,
+                                                                            which.theta="final",
+                                                                            state.or.type="type") |>
+                        as.data.frame() |>
+                        rownames_to_column("SAMPLE_ID") |>
+                        pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                        mutate(method = "BayesPrism", marker = .y))
 
-prop_long_BayesPrism <- get.fraction(bp=est_prop_BayesPrisim_marker,
-              which.theta="final",
-              state.or.type="type") |>
-  as.data.frame() |>
-  rownames_to_column("SAMPLE_ID") |>
-  pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-  mutate(method = "BayesPrisim", marker = "MR_top25")
+est_prop_bayes <- do.call("rbind", est_prop_bayes)
 
-## All
-## TODO
+est_prop_bayes |> count(marker)
 
 
 #### Compile data ####
 prop_long <- prop_long_bisque |>
   bind_rows(prop_long_music) |>
   bind_rows(prop_long_hspe) |>
-  bind_rows(prop_long_DWLS) |> 
-  bind_rows(prop_long_BayesPrism) |>
+  bind_rows(prop_long_dwls) |> 
+  bind_rows(prop_long_bayes) |>
   # left_join(pd2) |> 
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
   mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
