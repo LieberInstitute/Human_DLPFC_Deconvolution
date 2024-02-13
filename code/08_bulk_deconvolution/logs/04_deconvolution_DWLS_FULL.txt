@@ -1,0 +1,636 @@
+**** Job starts ****
+Mon Feb 12 04:45:50 PM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 1967729
+Job name: 04_deconvolution_DWLS_FULL
+Node name: compute-126
+Task id: 
+Loading conda_R/4.3.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Using FULL gene-set
+Loading objects:
+  rse_gene
+[1] 21745   110
+Loading objects:
+  sce
+Loading required package: HDF5Array
+Loading required package: DelayedArray
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: S4Arrays
+Loading required package: abind
+
+Attaching package: ‘S4Arrays’
+
+The following object is masked from ‘package:abind’:
+
+    abind
+
+The following object is masked from ‘package:base’:
+
+    rowsum
+
+Loading required package: SparseArray
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:base’:
+
+    apply, scale, sweep
+
+Loading required package: rhdf5
+
+Attaching package: ‘HDF5Array’
+
+The following object is masked from ‘package:rhdf5’:
+
+    h5ls
+
+
+    Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
+     3979      2157      1601     10894      1940     24809     11067 
+[1] 17804
+2024-02-12 16:46:17.293125 - Prep data with 17804 genes
+2024-02-12 16:46:17.411887- convert counts to matrix
+2024-02-12 16:47:29.031604- buildSignatureMatrix
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 1343 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Inhib"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 359 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Oligo"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 446 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "OPC"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 11878 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Excit"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 591 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Astro"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 890 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "EndoMural"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 498 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Micro"
+There were 14 warnings (use warnings() to see them)
+                    Inhib      Oligo       OPC      Excit      Astro  EndoMural
+ENSG00000136750  8.595012 0.08738755 0.1154639 0.15486315 0.07665243 0.07000464
+ENSG00000157404  5.333243 0.04920140 0.1463918 0.06110686 0.04423222 0.04636069
+ENSG00000171189 58.048523 0.22599596 8.0572165 2.21516385 0.23171651 0.24153917
+ENSG00000151136 10.961326 0.04240867 0.3128866 0.36982547 0.11636089 0.04496987
+ENSG00000128683  7.987079 0.09004957 0.8618557 0.18404611 0.09374215 0.07974038
+ENSG00000189056  6.610464 0.08949881 0.1324742 0.18710952 0.03568736 0.05192397
+                     Micro
+ENSG00000136750 0.06371018
+ENSG00000157404 0.01374141
+ENSG00000171189 0.16552155
+ENSG00000151136 0.02935665
+ENSG00000128683 0.06121174
+ENSG00000189056 0.03123048
+[1] 352   7
+[1] 352   7
+[1] 352
+2024-02-12 21:08:38.203038- DWLS
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04031   0.69677   0.04716   0.09054   0.01252   0.09299   0.01971 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04031   0.69677   0.04716   0.09054   0.01252   0.09299   0.01971 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04857   0.62789   0.05069   0.10334   0.01801   0.11919   0.03231 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06018   0.36050   0.12135   0.16095   0.05222   0.21489   0.02991 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05445   0.44445   0.02634   0.12797   0.17492   0.16762   0.00426 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06541   0.26657   0.00000   0.21045   0.22185   0.21979   0.01593 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05410   0.31675   0.01433   0.16911   0.20790   0.23781   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06325   0.20886   0.07878   0.11165   0.32237   0.20072   0.01436 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05315   0.09441   0.00000   0.15190   0.37361   0.29874   0.02818 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05991   0.13864   0.09449   0.14040   0.30448   0.25883   0.00325 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04297   0.69264   0.03456   0.07485   0.02447   0.11408   0.01642 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03294   0.69399   0.02804   0.05906   0.02306   0.12739   0.03550 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05236   0.50933   0.07141   0.11828   0.03894   0.19223   0.01745 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05430   0.42470   0.03583   0.10258   0.25545   0.08234   0.04478 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06005   0.41459   0.05053   0.10112   0.22106   0.08232   0.07033 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05795   0.24430   0.07180   0.10400   0.37841   0.08688   0.05666 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06537   0.15548   0.08935   0.10533   0.42526   0.08851   0.07069 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06042   0.24059   0.07681   0.11574   0.34207   0.11692   0.04745 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05879   0.15512   0.08017   0.09310   0.42671   0.10700   0.07911 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06505   0.06137   0.10142   0.09576   0.46846   0.12099   0.08696 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05997   0.14493   0.09549   0.10901   0.39199   0.12470   0.07391 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06359   0.38699   0.02932   0.10175   0.27112   0.12238   0.02485 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05149   0.37387   0.03913   0.06833   0.28168   0.11508   0.07044 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06188   0.40537   0.03822   0.10759   0.22366   0.14754   0.01574 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07051   0.47944   0.06977   0.15471   0.00000   0.17442   0.05115 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05894   0.38890   0.08598   0.14247   0.00000   0.23163   0.09208 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07261   0.21876   0.11940   0.22353   0.01032   0.30055   0.05482 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03225   0.72734   0.05208   0.09997   0.00000   0.07192   0.01643 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03196   0.28982   0.12067   0.13359   0.05423   0.34852   0.02120 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07915   0.18193   0.00000   0.21415   0.34299   0.18178   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.01985   0.18182   0.06688   0.08295   0.33987   0.18793   0.12070 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05635   0.11888   0.00000   0.21397   0.36928   0.24152   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04038   0.50790   0.05381   0.10250   0.14423   0.12651   0.02466 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.02182   0.34820   0.06220   0.07070   0.20561   0.21867   0.07280 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03230   0.30292   0.09414   0.12016   0.19121   0.22083   0.03844 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03554   0.50168   0.03642   0.06949   0.22773   0.09262   0.03652 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00000   0.33689   0.00000   0.14307   0.31331   0.17914   0.02759 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03118   0.37855   0.00000   0.10552   0.29984   0.16531   0.01961 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03910   0.52981   0.02642   0.06528   0.21270   0.09164   0.03504 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03956   0.36146   0.00000   0.09439   0.29075   0.18804   0.02580 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03360   0.39419   0.04899   0.08587   0.20563   0.17579   0.05594 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.02850   0.78617   0.02942   0.05857   0.00000   0.08147   0.01587 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00546   0.87422   0.01720   0.01454   0.00000   0.06837   0.02021 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.01298   0.84418   0.01283   0.03013   0.00000   0.08746   0.01242 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05105   0.54793   0.07785   0.14719   0.03478   0.11152   0.02966 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00442   0.87522   0.00000   0.03174   0.00000   0.06044   0.02818 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03908   0.47968   0.09103   0.10922   0.06448   0.18241   0.03410 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07295   0.39050   0.11172   0.17783   0.05494   0.15091   0.04115 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07314   0.34819   0.11686   0.15945   0.05741   0.18336   0.06160 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07987   0.18050   0.00000   0.31743   0.02117   0.40103   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.10942   0.20884   0.00000   0.21932   0.22830   0.22898   0.00515 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07337   0.24205   0.00000   0.19105   0.16989   0.30508   0.01856 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05007   0.26531   0.00000   0.17792   0.21928   0.28364   0.00378 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00350   0.95244   0.01096   0.00000   0.00000   0.02705   0.00605 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00000   0.93746   0.00755   0.00000   0.00000   0.02786   0.02714 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04274   0.60773   0.02332   0.14007   0.00000   0.13679   0.04935 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.02801   0.64701   0.02419   0.09512   0.00000   0.14466   0.06101 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04454   0.44593   0.04478   0.15267   0.00497   0.25272   0.05439 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05067   0.56918   0.01508   0.14301   0.00000   0.17535   0.04671 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03805   0.58113   0.01214   0.09162   0.00000   0.22563   0.05143 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06047   0.42647   0.02451   0.15137   0.00000   0.30057   0.03662 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03294   0.45080   0.03247   0.04988   0.32422   0.08748   0.02220 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.01360   0.51512   0.00937   0.03325   0.23151   0.14678   0.05036 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00000   0.36614   0.00000   0.11195   0.36538   0.15650   0.00002 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06080   0.24129   0.00000   0.10363   0.42278   0.16935   0.00215 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.01223   0.12351   0.00000   0.10798   0.45020   0.29906   0.00701 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05609   0.10793   0.00000   0.18210   0.42228   0.23161   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.08888   0.40447   0.03634   0.16969   0.11586   0.15133   0.03344 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.10987   0.30566   0.03313   0.18032   0.11728   0.20914   0.04459 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.12229   0.21911   0.04500   0.26170   0.09880   0.23702   0.01607 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03528   0.63209   0.05962   0.08184   0.11209   0.05254   0.02653 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06391   0.40128   0.04149   0.18708   0.20087   0.10536   0.00000 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04128   0.45110   0.04751   0.13903   0.08849   0.22977   0.00282 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07431   0.14477   0.03245   0.12396   0.46820   0.12050   0.03581 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04240   0.15516   0.04544   0.06904   0.46196   0.12806   0.09794 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07409   0.13450   0.06894   0.11632   0.41134   0.14934   0.04547 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05370   0.25374   0.04300   0.09116   0.38938   0.11141   0.05762 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05284   0.21582   0.02947   0.09748   0.37341   0.16168   0.06931 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06683   0.22418   0.04038   0.13652   0.35366   0.16868   0.00976 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04405   0.39517   0.03285   0.06693   0.31542   0.08109   0.06449 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05435   0.25967   0.04751   0.07970   0.38822   0.10812   0.06242 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05570   0.37534   0.03288   0.10410   0.29258   0.11039   0.02900 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04616   0.39532   0.02744   0.06033   0.32432   0.08023   0.06619 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05313   0.28372   0.03900   0.07405   0.36436   0.12016   0.06558 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05336   0.39122   0.02516   0.09123   0.28374   0.12318   0.03212 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04127   0.53968   0.04294   0.07916   0.17444   0.07895   0.04357 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.02572   0.64214   0.03744   0.04376   0.12623   0.07982   0.04489 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.02571   0.69701   0.03118   0.05279   0.08759   0.07726   0.02846 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05902   0.41215   0.04682   0.12881   0.22447   0.09148   0.03725 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.03961   0.47512   0.04598   0.09720   0.19454   0.09453   0.05302 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04530   0.46563   0.05896   0.12156   0.15157   0.11770   0.03928 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.08415   0.27584   0.05166   0.15192   0.28817   0.11166   0.03660 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.09027   0.26850   0.03085   0.15196   0.29282   0.13424   0.03136 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.09533   0.22090   0.05607   0.19080   0.23330   0.18632   0.01727 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.08356   0.18898   0.02760   0.13027   0.42395   0.11531   0.03033 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07508   0.24715   0.02522   0.11448   0.37017   0.14798   0.01992 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07995   0.23361   0.04581   0.15098   0.30552   0.17038   0.01373 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00283   0.90833   0.01523   0.00000   0.03521   0.01673   0.02167 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00000   0.89576   0.01515   0.00000   0.03160   0.02195   0.03554 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.00123   0.88462   0.02818   0.00000   0.02414   0.03026   0.03157 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04979   0.58929   0.01531   0.12787   0.09139   0.09578   0.03057 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05987   0.55522   0.01603   0.13351   0.09139   0.11938   0.02460 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07339   0.59167   0.00000   0.14272   0.04744   0.12115   0.02363 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05392   0.57578   0.03711   0.08080   0.07057   0.12171   0.06010 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.06767   0.50677   0.00000   0.13471   0.07318   0.19464   0.02303 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05389   0.34945   0.03017   0.08045   0.34151   0.07699   0.06755 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.04676   0.31493   0.03056   0.06984   0.33796   0.11676   0.08321 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05023   0.33031   0.05108   0.08930   0.33576   0.09768   0.04563 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07316   0.19179   0.02771   0.09900   0.42152   0.11053   0.07629 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.05624   0.10978   0.02969   0.07156   0.47705   0.16982   0.08586 
+    Inhib     Oligo       OPC     Excit     Astro EndoMural     Micro 
+  0.07695   0.11066   0.05809   0.12611   0.42877   0.14104   0.05838 
+[1] "Reproducibility information:"
+[1] "2024-02-12 21:12:37 EST"
+     user    system   elapsed 
+13656.314  2270.423 16004.572 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.2 Patched (2024-02-08 r85876)
+ os       Rocky Linux 9.2 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2024-02-12
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                * 1.4-5      2016-07-21 [2] CRAN (R 4.3.2)
+ beachmat               2.18.0     2023-10-24 [2] Bioconductor
+ Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
+ BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
+ BiocParallel           1.36.0     2023-10-24 [2] Bioconductor
+ BiocSingular           1.18.0     2023-10-24 [2] Bioconductor
+ bitops                 1.0-7      2021-04-24 [2] CRAN (R 4.3.2)
+ class                  7.3-22     2023-05-03 [3] CRAN (R 4.3.2)
+ cli                    3.6.2      2023-12-11 [1] CRAN (R 4.3.2)
+ cluster                2.1.6      2023-12-01 [3] CRAN (R 4.3.2)
+ codetools              0.2-19     2023-02-01 [3] CRAN (R 4.3.2)
+ colorspace             2.1-0      2023-01-23 [2] CRAN (R 4.3.2)
+ cowplot                1.1.3      2024-01-22 [2] CRAN (R 4.3.2)
+ crayon                 1.5.2      2022-09-29 [2] CRAN (R 4.3.2)
+ data.table             1.15.0     2024-01-30 [2] CRAN (R 4.3.2)
+ DelayedArray         * 0.28.0     2023-10-24 [2] Bioconductor
+ DelayedMatrixStats     1.24.0     2023-10-24 [2] Bioconductor
+ deldir                 2.0-2      2023-11-23 [2] CRAN (R 4.3.2)
+ digest                 0.6.34     2024-01-11 [2] CRAN (R 4.3.2)
+ dotCall64              1.1-1      2023-11-28 [2] CRAN (R 4.3.2)
+ dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
+ DWLS                 * 0.1.0      2022-05-24 [1] CRAN (R 4.3.2)
+ e1071                  1.7-14     2023-12-06 [2] CRAN (R 4.3.2)
+ ellipsis               0.3.2      2021-04-29 [2] CRAN (R 4.3.2)
+ fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
+ fastDummies            1.7.3      2023-07-06 [1] CRAN (R 4.3.2)
+ fastmap                1.1.1      2023-02-24 [2] CRAN (R 4.3.2)
+ fitdistrplus           1.1-11     2023-04-25 [1] CRAN (R 4.3.2)
+ future                 1.33.1     2023-12-22 [2] CRAN (R 4.3.2)
+ future.apply           1.11.0     2023-05-21 [1] CRAN (R 4.3.2)
+ generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
+ GenomeInfoDb         * 1.38.5     2023-12-28 [1] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
+ GenomicRanges        * 1.54.1     2023-10-29 [2] Bioconductor
+ ggplot2                3.4.4      2023-10-12 [2] CRAN (R 4.3.2)
+ ggrepel                0.9.5      2024-01-10 [2] CRAN (R 4.3.2)
+ ggridges               0.5.6      2024-01-23 [2] CRAN (R 4.3.2)
+ globals                0.16.2     2022-11-21 [2] CRAN (R 4.3.2)
+ glue                   1.7.0      2024-01-09 [2] CRAN (R 4.3.2)
+ goftest                1.2-3      2021-10-07 [1] CRAN (R 4.3.2)
+ gridExtra              2.3        2017-09-09 [2] CRAN (R 4.3.2)
+ gtable                 0.3.4      2023-08-21 [2] CRAN (R 4.3.2)
+ HDF5Array            * 1.30.0     2023-10-24 [2] Bioconductor
+ here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.3.2)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.3.2)
+ htmltools              0.5.7      2023-11-03 [2] CRAN (R 4.3.2)
+ htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.3.2)
+ httpuv                 1.6.14     2024-01-26 [2] CRAN (R 4.3.2)
+ httr                   1.4.7      2023-08-15 [2] CRAN (R 4.3.2)
+ ica                    1.0-3      2022-07-08 [1] CRAN (R 4.3.2)
+ igraph                 2.0.1.9008 2024-02-09 [2] Github (igraph/rigraph@39158c6)
+ IRanges              * 2.36.0     2023-10-24 [2] Bioconductor
+ irlba                  2.3.5.1    2022-10-03 [2] CRAN (R 4.3.2)
+ jsonlite               1.8.8      2023-12-04 [1] CRAN (R 4.3.2)
+ KernSmooth             2.23-22    2023-07-10 [3] CRAN (R 4.3.2)
+ later                  1.3.2      2023-12-06 [2] CRAN (R 4.3.2)
+ lattice                0.22-5     2023-10-24 [3] CRAN (R 4.3.2)
+ lazyeval               0.2.2      2019-03-15 [2] CRAN (R 4.3.2)
+ leiden                 0.4.3.1    2023-11-17 [1] CRAN (R 4.3.2)
+ lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.3.2)
+ listenv                0.9.1      2024-01-29 [2] CRAN (R 4.3.2)
+ lmtest                 0.9-40     2022-03-21 [2] CRAN (R 4.3.2)
+ magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.3.2)
+ MASS                   7.3-60.0.1 2024-01-13 [3] CRAN (R 4.3.2)
+ MAST                   1.28.0     2023-10-24 [1] Bioconductor
+ Matrix               * 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
+ MatrixGenerics       * 1.14.0     2023-10-24 [2] Bioconductor
+ matrixStats          * 1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
+ mime                   0.12       2021-09-28 [2] CRAN (R 4.3.2)
+ miniUI                 0.1.1.1    2018-05-18 [2] CRAN (R 4.3.2)
+ munsell                0.5.0      2018-06-12 [2] CRAN (R 4.3.2)
+ nlme                   3.1-164    2023-11-27 [3] CRAN (R 4.3.2)
+ parallelly             1.36.0     2023-05-26 [2] CRAN (R 4.3.2)
+ patchwork              1.2.0      2024-01-08 [2] CRAN (R 4.3.2)
+ pbapply                1.7-2      2023-06-27 [2] CRAN (R 4.3.2)
+ pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
+ pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
+ plotly                 4.10.4     2024-01-13 [2] CRAN (R 4.3.2)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.3.2)
+ png                    0.1-8      2022-11-29 [2] CRAN (R 4.3.2)
+ polyclip               1.10-6     2023-09-27 [2] CRAN (R 4.3.2)
+ prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.3.2)
+ progress               1.2.3      2023-12-06 [2] CRAN (R 4.3.2)
+ progressr              0.14.0     2023-08-10 [1] CRAN (R 4.3.2)
+ promises               1.2.1      2023-08-10 [2] CRAN (R 4.3.2)
+ proxy                  0.4-27     2022-06-09 [2] CRAN (R 4.3.2)
+ purrr                  1.0.2      2023-08-10 [2] CRAN (R 4.3.2)
+ quadprog               1.5-8      2019-11-20 [2] CRAN (R 4.3.2)
+ R6                     2.5.1      2021-08-19 [2] CRAN (R 4.3.2)
+ RANN                   2.6.1      2019-01-08 [2] CRAN (R 4.3.2)
+ RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.3.2)
+ Rcpp                   1.0.12     2024-01-09 [2] CRAN (R 4.3.2)
+ RcppAnnoy              0.0.22     2024-01-23 [2] CRAN (R 4.3.2)
+ RcppHNSW               0.6.0      2024-02-04 [2] CRAN (R 4.3.2)
+ RCurl                  1.98-1.14  2024-01-09 [2] CRAN (R 4.3.2)
+ reshape                0.8.9      2022-04-12 [2] CRAN (R 4.3.2)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.3.2)
+ reticulate             1.35.0     2024-01-31 [2] CRAN (R 4.3.2)
+ rhdf5                * 2.46.1     2023-11-29 [2] Bioconductor 3.18 (R 4.3.2)
+ rhdf5filters           1.14.1     2023-11-06 [2] Bioconductor
+ Rhdf5lib               1.24.2     2024-02-07 [2] Bioconductor 3.18 (R 4.3.2)
+ rlang                  1.1.3      2024-01-10 [2] CRAN (R 4.3.2)
+ ROCR                   1.0-11     2020-05-02 [2] CRAN (R 4.3.2)
+ rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
+ RSpectra               0.16-1     2022-04-24 [2] CRAN (R 4.3.2)
+ rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.3.2)
+ Rtsne                  0.17       2023-12-07 [2] CRAN (R 4.3.2)
+ S4Arrays             * 1.2.0      2023-10-24 [2] Bioconductor
+ S4Vectors            * 0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
+ ScaledMatrix           1.10.0     2023-10-24 [2] Bioconductor
+ scales                 1.3.0      2023-11-28 [1] CRAN (R 4.3.2)
+ scattermore            1.2        2023-06-12 [1] CRAN (R 4.3.2)
+ scry                   1.14.0     2023-10-24 [2] Bioconductor
+ sctransform            0.4.1      2023-10-19 [1] CRAN (R 4.3.2)
+ scuttle                1.12.0     2023-10-24 [2] Bioconductor
+ sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
+ Seurat                 5.0.1      2023-11-17 [1] CRAN (R 4.3.2)
+ SeuratObject           5.0.1      2023-11-17 [1] CRAN (R 4.3.2)
+ shiny                  1.8.0      2023-11-17 [2] CRAN (R 4.3.2)
+ SingleCellExperiment * 1.24.0     2023-10-24 [2] Bioconductor
+ sp                     2.1-3      2024-01-30 [2] CRAN (R 4.3.2)
+ spam                   2.10-0     2023-10-23 [2] CRAN (R 4.3.2)
+ SparseArray          * 1.2.3      2023-12-25 [1] Bioconductor 3.18 (R 4.3.2)
+ sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
+ spatstat.data          3.0-3      2023-10-24 [1] CRAN (R 4.3.2)
+ spatstat.explore       3.2-5      2023-10-22 [1] CRAN (R 4.3.2)
+ spatstat.geom          3.2-7      2023-10-20 [1] CRAN (R 4.3.2)
+ spatstat.random        3.2-1      2023-10-21 [1] CRAN (R 4.3.2)
+ spatstat.sparse        3.0-3      2023-10-24 [1] CRAN (R 4.3.2)
+ spatstat.utils         3.0-4      2023-10-24 [1] CRAN (R 4.3.2)
+ stringi                1.8.2      2023-11-23 [1] CRAN (R 4.3.2)
+ stringr                1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
+ SummarizedExperiment * 1.32.0     2023-10-24 [2] Bioconductor
+ survival               3.5-7      2023-08-14 [3] CRAN (R 4.3.2)
+ tensor                 1.5        2012-05-05 [1] CRAN (R 4.3.2)
+ tibble                 3.2.1      2023-03-20 [2] CRAN (R 4.3.2)
+ tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.3.2)
+ tidyselect             1.2.0      2022-10-10 [2] CRAN (R 4.3.2)
+ utf8                   1.2.4      2023-10-22 [2] CRAN (R 4.3.2)
+ uwot                   0.1.16     2023-06-29 [2] CRAN (R 4.3.2)
+ varhandle              2.0.6      2023-09-30 [1] CRAN (R 4.3.2)
+ vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.3.2)
+ viridisLite            0.4.2      2023-05-02 [2] CRAN (R 4.3.2)
+ xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.3.2)
+ XVector                0.42.0     2023-10-24 [2] Bioconductor
+ zlibbioc               1.48.0     2023-10-24 [2] Bioconductor
+ zoo                    1.8-12     2023-04-13 [2] CRAN (R 4.3.2)
+
+ [1] /users/lhuuki/R/4.3.x
+ [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Feb 12 09:12:50 PM EST 2024
