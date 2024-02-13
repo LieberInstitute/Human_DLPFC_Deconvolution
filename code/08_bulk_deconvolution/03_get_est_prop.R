@@ -107,7 +107,7 @@ est_prop_hspe |> count(marker)
 
 #### BayesPrism ####
 fn_bayes <- list.files(here("processed-data","08_bulk_deconvolution", "06_deconvolution_BayesPrism"), pattern = ".Rdata", full.names = TRUE)
-names(fn_bayes) <- gsub("est_prop_bayes-(.*?).Rdata","\\1",basename(fn_bayes))
+names(fn_bayes) <- gsub("est_prop_BayesPrism-(.*?).Rdata","\\1",basename(fn_bayes))
 
 est_prop_bayes <- map(fn_bayes, ~get(load(.x)[1]))
 
@@ -125,12 +125,11 @@ est_prop_bayes |> count(marker)
 
 
 #### Compile data ####
-prop_long <- prop_long_bisque |>
-  bind_rows(prop_long_music) |>
-  bind_rows(prop_long_hspe) |>
-  bind_rows(prop_long_dwls) |> 
-  bind_rows(prop_long_bayes) |>
-  # left_join(pd2) |> 
+prop_long <- est_prop_bisque |>
+  bind_rows(est_prop_music) |>
+  bind_rows(est_prop_hspe) |>
+  bind_rows(est_prop_dwls) |> 
+  bind_rows(est_prop_bayes) |>
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
   mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
          Sample = paste0(BrNum, "_", tolower(pos))) |>
