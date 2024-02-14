@@ -79,7 +79,7 @@ est_prop_music <- map2(est_prop_music, names(est_prop_music), ~.x$Est.prop.weigh
                         as.data.frame() |>
                         rownames_to_column("SAMPLE_ID") |>
                         pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
-                        mutate(method = "music", marker = .y))
+                        mutate(method = "MuSiC", marker = .y))
 
 est_prop_music <- do.call("rbind", est_prop_music)
 
