@@ -1,5 +1,6 @@
 
 library("SingleCellExperiment")
+library("purrr")
 library("here")
 library("sessioninfo")
 
@@ -26,7 +27,7 @@ rse_counts[1:5,1:3]
 # 4 ENSG00000269981                             1                             1
 # 5 ENSG00000279457                           131                           210
 
-write.table(rse_counts, file = here(data_dir, "DLPFC_bulk_counts.txt"), sep = "\t")
+write.table(rse_counts, file = here(data_dir, "DLPFC_bulk_counts.txt"), sep = "\t", quote = FALSE)
 
 ## 
 ## sce data
@@ -40,62 +41,37 @@ sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
 
 sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 table(sce$cellType_broad_hc)
-
 rownames(sce) <- rowData(sce)$gene_id
+# colnames(sce) <- colData(sce)$cellType_broad_hc ## colnames as cell type cat
 
-## Export full dataset
-# message(Sys.time(), " - Format sce counts")
-# sce_counts <- assays(sce)$counts |>
-#   as.data.frame() |>
-#   tibble::rownames_to_column("GeneSymbol")
-# 
-# sce_counts[1:5,1:3]
-# 
-# message(Sys.time(), " - Export sce counts to ", data_dir)
-# write.table(sce_counts, file = here(data_dir, "DLPFC_sc_counts.txt"), sep = "\t")
+## subset marker genes
+marker_files <- list(MeanRatio_top25 = "markers_MeanRatio_top25.txt", `1vALL_top25` = "markers_1vALL_top25.txt")
+marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "08_bulk_deconvolution", .x), what="", sep="\n"))
+marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
 
-## Export just marker genes
-load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
+map_int(marker_gene_sets, length)
 
-## find common genes
-common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
-length(common_genes)
+walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
+  
+  message(Sys.time(), " - Format sce counts ", name)
+  sce_counts <- assays(sce)$counts[marker_gene_sets$MeanRatio_top25,] |>
+    as.data.frame() |>
+    tibble::rownames_to_column("GeneSymbol") |>
+    as.matrix()
 
-# marker_stats
-marker_stats |>
-  dplyr::filter(gene %in% common_genes,
-                rank_ratio <= 25) |>
-  dplyr::count(cellType.target)
+  dim(sce_counts)
+  colnames(sce_counts) <- c("GeneSymbol", as.character(sce$cellType_broad_hc))
+  # sce_counts[1:5,1:5]
 
-# cellType.target     n
-# <fct>           <int>
-# 1 Astro              24
-# 2 EndoMural          24
-# 3 Micro              17
-# 4 Oligo              25
-# 5 OPC                18
-# 6 Excit              23
-# 7 Inhib              20
-
-markers <- marker_stats |> 
-  dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
-  dplyr::pull(gene)
-
-sce <- sce[markers,]
-dim(sce)
-
-message(Sys.time(), " - Format sce counts")
-sce_counts <- assays(sce)$counts |>
-  as.data.frame() |>
-  tibble::rownames_to_column("GeneSymbol")
-
-sce_counts[1:5,1:3]
-
-message(Sys.time(), " - Export marker sce counts to ", data_dir)
-write.table(sce_counts, file = here(data_dir, "DLPFC_sc_counts_marker25.txt"), sep = "\t", quote = FALSE)
+  message(Sys.time(), " - Export")
+  write.table(sce_counts, file = here(data_dir, paste0("DLPFC_sc_counts-",name,".txt")), sep = "\t", quote = FALSE)
+})
 
 
-# slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_prep", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 07_deconvolution_CIBERSORTx_prep.R")
+# slurmjobs::job_single(name = "07_prep_CIBERSORTx", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 07_prep_CIBERSORTx.R")
+
+# slurmjobs::job_single(name = "07_CIBERSORTx", memory = "25G", cores = 1, create_shell = TRUE, command = "TBD")
+
 
 ## Reproducibility information
 print("Reproducibility information:")
