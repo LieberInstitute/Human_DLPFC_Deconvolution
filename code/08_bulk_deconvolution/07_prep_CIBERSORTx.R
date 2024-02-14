@@ -54,7 +54,7 @@ map_int(marker_gene_sets, length)
 walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
   
   message(Sys.time(), " - Format sce counts ", name)
-  sce_counts <- assays(sce)$counts[marker_gene_sets$MeanRatio_top25,] |>
+  sce_counts <- assays(sce)$counts[set,] |>
     as.data.frame() |>
     tibble::rownames_to_column("GeneSymbol") |>
     as.matrix()
