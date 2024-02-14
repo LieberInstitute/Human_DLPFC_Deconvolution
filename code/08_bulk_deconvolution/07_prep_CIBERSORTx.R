@@ -92,7 +92,7 @@ sce_counts <- assays(sce)$counts |>
 sce_counts[1:5,1:3]
 
 message(Sys.time(), " - Export marker sce counts to ", data_dir)
-write.table(sce_counts, file = here(data_dir, "DLPFC_sc_counts_marker25.txt"), sep = "\t")
+write.table(sce_counts, file = here(data_dir, "DLPFC_sc_counts_marker25.txt"), sep = "\t", quote = FALSE)
 
 
 # slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_prep", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 07_deconvolution_CIBERSORTx_prep.R")
