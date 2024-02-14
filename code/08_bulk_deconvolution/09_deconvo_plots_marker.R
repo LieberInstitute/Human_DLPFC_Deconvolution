@@ -146,45 +146,13 @@ ggsave(prop_bar_SAMPLE_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_facet.
 ggsave(prop_bar_SAMPLE_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_facet.pdf"), width = 12, height = 9)
 
 
-## filter to Nuc + RiboZero
-prop_bar_Nuc_RiboZero <- prop_long |> 
-  filter(library_prep == "Nuc", 
-         library_type == "RiboZeroGold",
-         marker == "MR_top25") |>
-  ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~method, ncol = 1) +
-  scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Cell Type Proportion", fill = "Cell Type", title = "RiboZeroGold - Nuc") +
-  theme_bw() +
-  theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.png"))
-ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.pdf"))
-
-prop_bar_Bulk_RiboZero <- prop_long |> 
-  filter(library_prep == "Bulk", 
-         library_type == "RiboZeroGold",
-         marker == "MR_top25") |>
-  ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~method, ncol = 1) +
-  scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Cell Type Proportion", fill = "Cell Type", title = "RiboZeroGold - Bulk") +
-  theme_bw() +
-  theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.png"))
-ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.pdf"))
-
-
 ## Scatter plots
 ## all points
 est_prop_v_RNAscope_scatter <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot() +
   scale_color_manual(values = cell_type_colors_broad) +
-  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
+  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library_combo)) +
   geom_text(data = cor_check, aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
   facet_grid(marker~method) +
