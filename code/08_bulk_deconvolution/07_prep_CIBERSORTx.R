@@ -70,8 +70,10 @@ walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
 
 # slurmjobs::job_single(name = "07_prep_CIBERSORTx", memory = "100G", cores = 1, create_shell = TRUE, command = "Rscript 07_prep_CIBERSORTx.R")
 
-# slurmjobs::job_single(name = "07_CIBERSORTx", memory = "25G", cores = 1, create_shell = TRUE, command = "TBD")
-
+## CIBERSORTx Runs
+# slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_FULL", memory = "25G", cores = 1, create_shell = TRUE, command = "TBD")
+# slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_MeanRatio_top25", memory = "25G", cores = 1, create_shell = TRUE, command = "TBD")
+# slurmjobs::job_single(name = "07_deconvolution_CIBERSORTx_1vALL_top25", memory = "25G", cores = 1, create_shell = TRUE, command = "TBD")
 
 ## Reproducibility information
 print("Reproducibility information:")
