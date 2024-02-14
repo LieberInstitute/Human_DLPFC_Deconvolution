@@ -3,8 +3,8 @@
 #SBATCH --mem=25G
 #SBATCH --job-name=07_CIBERSORTx
 #SBATCH -c 1
-#SBATCH -o logs/07_CIBERSORTx.txt
-#SBATCH -e logs/07_CIBERSORTx.txt
+#SBATCH -o logs/07_deconvolution_CIBERSORTx_test.txt
+#SBATCH -e logs/07_deconvolution_CIBERSORTx_test.txt
 #SBATCH --mail-type=ALL
 
 set -e
