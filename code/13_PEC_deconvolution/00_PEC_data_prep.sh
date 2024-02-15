@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 03_get_est_prop.R
+Rscript 00_PEC_data_prep.R
 
 echo "**** Job ends ****"
 date
