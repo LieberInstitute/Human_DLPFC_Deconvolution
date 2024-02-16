@@ -17,10 +17,10 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
 rse_counts <- assays(rse_gene)$counts |>
   as.data.frame() |>
-  tibble::rownames_to_column("GeneSymbol")
+  tibble::rownames_to_column("GeneSym")
 
 rse_counts[1:5,1:3]
-#   GeneSymbol 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291_Br2720_Mid_Cyto
+#           GeneSym 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291_Br2720_Mid_Cyto
 # 1 ENSG00000227232                            42                            72
 # 2 ENSG00000278267                             6                             3
 # 3 ENSG00000268903                             2                             7
@@ -56,11 +56,11 @@ walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
   message(Sys.time(), " - Format sce counts ", name)
   sce_counts <- assays(sce)$counts[set,] |>
     as.data.frame() |>
-    tibble::rownames_to_column("GeneSymbol") |>
+    tibble::rownames_to_column("gene") |>
     as.matrix()
 
   dim(sce_counts)
-  colnames(sce_counts) <- c("GeneSymbol", as.character(sce$cellType_broad_hc))
+  colnames(sce_counts) <- c("gene", as.character(sce$cellType_broad_hc))
   # sce_counts[1:5,1:5]
 
   message(Sys.time(), " - Export")
