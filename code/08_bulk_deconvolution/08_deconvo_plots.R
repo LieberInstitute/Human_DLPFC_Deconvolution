@@ -15,10 +15,12 @@ load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
 # cell_type_colors_broad
 
+load(here("processed-data","00_data_prep","method_colors.Rdata"), verbose = TRUE)
+# method_colors
 
 #### load data ####
 load(here("processed-data", "08_bulk_deconvolution", "03_get_est_prop","prop_long.Rdata"), verbose = TRUE)
-head(prop_long)
+prop_long
 # SAMPLE_ID                     Dataset       BrNum  pos   library_prep cell_type   prop method marker   Sample     RNAscope_prop library_type
 # <chr>                         <chr>         <chr>  <chr> <chr>        <chr>      <dbl> <chr>  <chr>    <chr>              <dbl> <chr>       
 # 1 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291 Br2720 Mid   Bulk         Astro     0.0343 Bisque MR_top25 Br2720_mid            NA polyA       
@@ -28,13 +30,18 @@ head(prop_long)
 # 5 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291 Br2720 Mid   Bulk         OPC       0.0554 Bisque MR_top25 Br2720_mid            NA polyA       
 # 6 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291 Br2720 Mid   Bulk         Excit     0.384  Bisque MR_top25 Br2720_mid            NA polyA  
 
-## filter to just MR_top25 for this script
+## filter to just MeanRatio_top25 for this script
 prop_long <- prop_long |> 
-  filter(marker == "MR_top25")|>
-  mutate(library_combo = paste0(library_type, "_",library_prep),
-         cell_type = factor(cell_type, levels = names(cell_type_colors_broad)))
+  filter(marker == "MeanRatio_top25")
 
-prop_long |> count(method, is.na(RNAscope_prop))
+prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
+# method         n
+# <chr>      <int>
+# 1 BayesPrism   434
+# 2 Bisque       434
+# 3 DWLS         434
+# 4 MuSiC        434
+# 5 hspe         434
 
 #### compare to RNAscope ####
 
@@ -108,24 +115,14 @@ ggsave(cor_rmse_dot, filename = here(plot_dir, "cor_rmse_dot_MRtop25.png"), widt
 ggsave(cor_rmse_dot, filename = here(plot_dir, "cor_rmse_dot_MRtop25.pdf"), width = 10, height = 3.4)
 
 ## non facet version
-cor_check_library |>
-  filter(marker == "MR_top25") |>
-  ggplot() +
-  geom_point(aes(x = method, y =library, size = 1/rmse, color = cor)) +
-  scale_color_viridis(option = "plasma", direction = -1) +
-  theme_bw() +
-  labs(x = "Deconvolution Method", y = "Library")
-
-cor_check_ct |>
-  filter(marker == "MR_top25") |>
-  ggplot() +
-  geom_point(aes(x = , y =library, size = 1/rmse, color = cor)) +
-  scale_color_viridis(option = "plasma", direction = -1) +
-  theme_bw() +
-  labs(x = "RNA Extraction", y = "Library Type")
+# cor_check_library |>
+#   ggplot() +
+#   geom_point(aes(x = method, y =library, size = 1/rmse, color = cor)) +
+#   scale_color_viridis(option = "plasma", direction = -1) +
+#   theme_bw() +
+#   labs(x = "Deconvolution Method", y = "Library")
 
 cor_rmse_dot_ct <- cor_check_ct |>
-  filter(marker == "MR_top25") |>
   ggplot() +
   geom_point(aes(x = library_type, y =library_prep, size = 1/rmse, color = cor)) +
   facet_grid(cell_type~method) +
@@ -137,14 +134,14 @@ ggsave(cor_rmse_dot_ct, filename = here(plot_dir, "cor_rmse_dot_ct_MRtop25.png")
 ggsave(cor_rmse_dot_ct, filename = here(plot_dir, "cor_rmse_dot_ct_MRtop25.pdf"), width = 10, height = 3)
 
 ## cor check line/rank plot
-## TODO method color pallet
 cor_rmse_line <- cor_check_library |>
-  ggplot(aes(x = library, y = cor, color= method, group = method)) +
-  geom_point(aes(size = 1/rmse), alpha = .7) +
+  ggplot(aes(x = library, y = cor, color = method, group = method)) +
+  geom_point(aes(size = rmse), alpha = .7) +
   geom_line() +
   scale_size(range = c(1,8)) +
   theme_bw() +
-  labs(x = "Library Type + RNA Extraction")
+  labs(x = "Library Type + RNA Extraction") +
+  scale_color_manual(values = method_colors)
 
 ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.png"), width = 10, height = 3.4)
 ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.pdf"), width = 10, height = 3.4)
@@ -182,8 +179,7 @@ ggsave(prop_bar_SAMPLE_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_facet.
 ## filter to Nuc + RiboZero
 prop_bar_Nuc_RiboZero <- prop_long |> 
   filter(library_prep == "Nuc", 
-         library_type == "RiboZeroGold",
-         marker == "MR_top25") |>
+         library_type == "RiboZeroGold") |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   facet_wrap(~method, ncol = 1) +
@@ -197,8 +193,7 @@ ggsave(prop_bar_Nuc_RiboZero, filename = here(plot_dir, "Bulk_prop_Nuc_RiboZero.
 
 prop_bar_Bulk_RiboZero <- prop_long |> 
   filter(library_prep == "Bulk", 
-         library_type == "RiboZeroGold",
-         marker == "MR_top25") |>
+         library_type == "RiboZeroGold") |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   facet_wrap(~method, ncol = 1) +
@@ -233,7 +228,7 @@ est_prop_v_RNAscope_scatter_top25 <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot() +
   scale_color_manual(values = cell_type_colors_broad) +
-  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library)) +
+  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library_combo)) +
   geom_text(data = cor_check, 
             aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
@@ -264,7 +259,7 @@ ggsave(est_prop_v_RNAscope_scatter_top25_library, filename = here(plot_dir, "est
 ggsave(est_prop_v_RNAscope_scatter_top25_library, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_top25_library.pdf"), width = 10, height = 9)
 
 est_prop_v_RNAscope_scatter_library_prep <- prop_long |>
-  filter(marker == "MR_top25", !is.na(RNAscope_prop)) |>
+  filter(!is.na(RNAscope_prop)) |>
   ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
   scale_color_manual(values = cell_type_colors_broad) +
   geom_point() +
@@ -277,15 +272,13 @@ ggsave(est_prop_v_RNAscope_scatter_library_prep, filename = here(plot_dir, "est_
 
 est_prop_v_RNAscope_scatter_Bulk_RiboZero <- prop_long |>
   filter(library_prep == "Bulk", 
-         library_type == "RiboZeroGold",
-         marker == "MR_top25") |>
+         library_type == "RiboZeroGold") |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot() +
   scale_color_manual(values = cell_type_colors_broad) +
   geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
   geom_text(data = cor_check_library |> filter(library_prep == "Bulk", 
-                                               library_type == "RiboZeroGold",
-                                               marker == "MR_top25"), 
+                                               library_type == "RiboZeroGold"), 
             aes(label = cor_anno,x = .5, y = .85),
             vjust = "inward", hjust = "inward",
             size = 3) +
@@ -310,7 +303,6 @@ cor_vs_rmse <- cor_check_ct |>
 ggsave(cor_vs_rmse, filename = here(plot_dir, "cor_vs_rmse.png"))
 
 cor_vs_rmse_top25 <- cor_check_ct |>
-  filter(marker == "MR_top25") |>
   ggplot(aes(cor, 1/rmse, color = cell_type, shape = library)) +
   geom_point() +
   scale_color_manual(values = cell_type_colors_broad) +
@@ -326,7 +318,8 @@ cor_vs_rmse_method <- cor_check_ct |>
   # scale_color_manual(values = cell_type_colors_broad) +
   geom_point() +
   facet_wrap(~cell_type) +
-  theme_bw()
+  theme_bw() +
+  scale_color_manual(values = method_colors)
 
 ggsave(cor_vs_rmse_method, filename = here(plot_dir, "cor_vs_rmse_method.png"))
 
