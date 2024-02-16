@@ -5,9 +5,12 @@ library(jaffelab)
 
 data_dir <- here("processed-data" , "08_bulk_deconvolution", "07_deconvolution_CIBERSORTx_prep")
 
+list.files(data_dir)
+
 #### Example with sce_test ####
 first_line <- readLines(file(here(data_dir, "sce_counts_test.txt"), "r"),n=1)
-first_line
+first_line_top25 <- readLines(file(here(data_dir, "DLPFC_sc_counts_marker25.txt"), "r"),n=1)
+first_line_top25
 sce_test <- read.delim(here(data_dir, "sce_counts_test.txt"))
 dim(sce_test)
 corner(sce_test)
@@ -57,7 +60,7 @@ pheno_classes
 #### check example data ####
 scRNA_tutorial <- read.delim(here(data_dir, "tutorial_data", "scRNA-Seq_reference_melanoma_Tirosh_Fig2b-d.txt"))
 first_line_tutorial <- readLines(file(here(data_dir, "tutorial_data", "scRNA-Seq_reference_melanoma_Tirosh_Fig2b-d.txt"), "r"),n=1)
-first_line
+first_line_tutorial
 dim(scRNA_tutorial)
 scRNA_tutorial[1:5,1:5]
 

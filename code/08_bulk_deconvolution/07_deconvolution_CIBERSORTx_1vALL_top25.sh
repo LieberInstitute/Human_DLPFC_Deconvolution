@@ -33,7 +33,7 @@ singularity exec \
 --username louise.huuki@libd.org \
 --token $CIBERSORT_TOKEN \
 --single_cell TRUE \
---refsample "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_sc_counts-1vALL_top25.txt" \
+--refsample /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_sc_counts-1vALL_top25.txt \
 --mixture /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_bulk_counts.txt \
 --fraction 0 \
 --rmbatchSmode TRUE \
