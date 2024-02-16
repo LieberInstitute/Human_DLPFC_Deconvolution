@@ -48,6 +48,9 @@ library_combo_colors <- c(polyA_Nuc  = "#363457",
                           RiboZeroGold_Nuc = "#785318",
                           RiboZeroGold_Bulk = "#d4af35",
                           RiboZeroGold_Cyto = "#e2d878")
+## with "Full"
+library_combo_colors2 <- library_combo_colors
+names(library_combo_colors2) <- gsub("Bulk", "Full", names(library_combo_colors2))
 
 # gold purple 
 # c("#363457","#735290","#c0a5cc","#785318","#d4af35","#e2d878")
@@ -55,7 +58,7 @@ library_combo_colors <- c(polyA_Nuc  = "#363457",
 # pink green
 # c("#AF4D98","#D66BA0","#DDA7B4","#337357","#06D6A0","#74FBD7")
 
-save(library_combo_colors, library_prep_colors, library_type_colors, file = here("processed-data","00_data_prep","bulk_colors.Rdata"))
+save(library_combo_colors, library_combo_colors2, library_prep_colors, library_type_colors, file = here("processed-data","00_data_prep","bulk_colors.Rdata"))
 
 ## Define plotting theme
 
