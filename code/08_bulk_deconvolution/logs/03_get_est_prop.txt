@@ -1,16 +1,16 @@
 **** Job starts ****
-Tue Feb 13 03:36:51 PM EST 2024
+Fri Feb 16 11:48:34 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 1989140
+Job id: 2050866
 Job name: 03_get_est_prop
-Node name: compute-153
+Node name: compute-095
 Task id: 
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-23.3.1
-  2) JHPCE_tools/3.0            4) conda_R/4.3.x
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
 
  
 
@@ -106,21 +106,21 @@ Joining with `by = join_by(Dataset)`
  7 DWLS       1vALL_top25       770
  8 DWLS       FULL              770
  9 DWLS       MeanRatio_top25   770
-10 hspe       1vALL_top25       770
-11 hspe       FULL              770
-12 hspe       MeanRatio_top25   770
-13 music      1vALL_top25       770
-14 music      FULL              770
-15 music      MeanRatio_top25   770
+10 MuSiC      1vALL_top25       770
+11 MuSiC      FULL              770
+12 MuSiC      MeanRatio_top25   770
+13 hspe       1vALL_top25       770
+14 hspe       FULL              770
+15 hspe       MeanRatio_top25   770
 # A tibble: 2 × 2
   `!is.na(RNAscope_prop)`     n
   <lgl>                   <int>
 1 FALSE                    6510
 2 TRUE                     5040
 [1] "Reproducibility information:"
-[1] "2024-02-13 15:37:07 EST"
+[1] "2024-02-16 11:49:08 EST"
    user  system elapsed 
- 10.865   0.697  13.587 
+ 23.362   1.369  30.954 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -131,7 +131,7 @@ Joining with `by = join_by(Dataset)`
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-13
+ date     2024-02-16
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -143,7 +143,6 @@ Joining with `by = join_by(Dataset)`
  bigmemory.sri          0.1.8      2024-01-10 [2] CRAN (R 4.3.2)
  Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
  BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
- BiocManager            1.30.22    2023-08-08 [2] CRAN (R 4.3.2)
  BiocNeighbors          1.20.2     2024-01-07 [2] Bioconductor 3.18 (R 4.3.2)
  BiocParallel           1.36.0     2023-10-24 [2] Bioconductor
  BiocSingular           1.18.0     2023-10-24 [2] Bioconductor
@@ -163,12 +162,12 @@ Joining with `by = join_by(Dataset)`
  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.3.2)
  dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
  dqrng                  0.3.2      2023-11-29 [1] CRAN (R 4.3.2)
- edgeR                  4.0.2      2023-11-19 [1] Bioconductor 3.18 (R 4.3.2)
+ edgeR                  4.0.15     2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
  fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
  forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
  generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
- GenomeInfoDb           1.38.5     2023-12-28 [1] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDb           1.38.6     2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
  GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
  GenomicRanges          1.54.1     2023-10-29 [2] Bioconductor
  ggplot2              * 3.4.4      2023-10-12 [2] CRAN (R 4.3.2)
@@ -195,7 +194,7 @@ Joining with `by = join_by(Dataset)`
  matrixStats            1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
  metapod                1.10.1     2023-12-24 [2] Bioconductor 3.18 (R 4.3.2)
  munsell                0.5.0      2018-06-12 [2] CRAN (R 4.3.2)
- NMF                  * 0.26       2023-03-20 [1] CRAN (R 4.3.2)
+ NMF                  * 0.27       2024-02-08 [1] CRAN (R 4.3.2)
  pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.3.2)
@@ -221,10 +220,10 @@ Joining with `by = join_by(Dataset)`
  SingleCellExperiment   1.24.0     2023-10-24 [2] Bioconductor
  snow                 * 0.4-4      2021-10-27 [2] CRAN (R 4.3.2)
  snowfall             * 1.84-6.3   2023-11-26 [1] CRAN (R 4.3.2)
- SparseArray            1.2.3      2023-12-25 [1] Bioconductor 3.18 (R 4.3.2)
+ SparseArray            1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
  sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
  statmod                1.5.0      2023-01-06 [2] CRAN (R 4.3.2)
- stringi                1.8.2      2023-11-23 [1] CRAN (R 4.3.2)
+ stringi                1.8.3      2023-12-11 [1] CRAN (R 4.3.2)
  stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
  SummarizedExperiment   1.32.0     2023-10-24 [2] Bioconductor
  synchronicity        * 1.3.10     2024-01-10 [2] CRAN (R 4.3.2)
@@ -248,4 +247,4 @@ Joining with `by = join_by(Dataset)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Feb 13 03:37:08 PM EST 2024
+Fri Feb 16 11:49:10 AM EST 2024
