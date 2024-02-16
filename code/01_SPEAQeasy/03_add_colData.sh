@@ -1,22 +1,25 @@
 #!/bin/bash
-#$ -cwd
-#$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
-#$ -N add_colData
-#$ -o logs/03_add_colData.txt
-#$ -e logs/03_add_colData.txt
-#$ -m e
+#SBATCH -p shared
+#SBATCH --mem=5G
+#SBATCH --job-name=03_add_colData
+#SBATCH -c 1
+#SBATCH -o logs/03_add_colData.txt
+#SBATCH -e logs/03_add_colData.txt
+#SBATCH --mail-type=ALL
+
+set -e
 
 echo "**** Job starts ****"
 date
 
 echo "**** JHPCE info ****"
 echo "User: ${USER}"
-echo "Job id: ${JOB_ID}"
-echo "Job name: ${JOB_NAME}"
-echo "Hostname: ${HOSTNAME}"
-echo "Task id: ${SGE_TASK_ID}"
+echo "Job id: ${SLURM_JOB_ID}"
+echo "Job name: ${SLURM_JOB_NAME}"
+echo "Node name: ${SLURMD_NODENAME}"
+echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
-## Load the R module (absent since the JHPCE upgrade to CentOS v7)
+## Load the R module
 module load conda_R/4.3
 
 ## List current modules for reproducibility
@@ -28,5 +31,5 @@ Rscript 03_add_colData.R
 echo "**** Job ends ****"
 date
 
-## This script was made using sgejobs version 0.99.1
-## available from http://research.libd.org/sgejobs/
+## This script was made using slurmjobs version 1.1.0
+## available from http://research.libd.org/slurmjobs/

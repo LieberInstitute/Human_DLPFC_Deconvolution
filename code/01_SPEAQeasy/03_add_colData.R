@@ -100,7 +100,7 @@ dim(rse_tx)
 # [1] 246624    113
 save(rse_tx, file = here(new_rse_dir, "rse_tx_preQC.Rdata"))
 
-# sgejobs::job_single('03_add_colData', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_add_colData.R")
+# slurmjobs::job_single('03_add_colData', create_shell = TRUE, memory = '5G', command = "Rscript 03_add_colData.R")
 
 ## Reproducibility information
 print("Reproducibility information:")

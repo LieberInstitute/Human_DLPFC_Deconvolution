@@ -143,7 +143,7 @@ save(rse_exon, file = here("processed-data","rse", "rse_exon.Rdata"))
 save(rse_jx, file = here("processed-data","rse", "rse_jx.Rdata"))
 save(rse_tx, file = here("processed-data","rse", "rse_tx.Rdata"))
 
-# sgejobs::job_single('04_get_expression_cutoff', create_shell = TRUE, queue= 'bluejay', memory = '50G', command = "Rscript 04_get_expression_cutoff.R")
+# slurmjobs::job_single('04_get_expression_cutoff', create_shell = TRUE, memory = '50G', command = "Rscript 04_get_expression_cutoff.R")
 
 ## Reproducibility information
 print('Reproducibility information:')
