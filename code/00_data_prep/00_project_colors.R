@@ -112,25 +112,41 @@ test_pallet_plots(cell_type_colors_halo, "TREG Colors")
 dev.off()
 
 # method_colors <- c("#f3423b",
-#                    # "#ffa687",
-#                    # "#CE6C47",
+#                    "#ffa687",
+#                    "#CE6C47",
 #                    "#e59900",
 #                    "#44e172",
 #                    "#723f7a",
 #                    "#e022a0",
 #                    "#7A82DA")
+# 
+# #### method colors ####
+# method_colors <- c(BayesPrism = "#c95a80",
+#                    Bisque = "#c7703c",
+#                    CIBERSORTx  = "#83a444",
+#                    DWLS = "#4aac8b",
+#                    MuSiC = "#6187e3",
+#                    hspe = "#9d63cb")
 
-#### method colors ####
-method_colors <- c(BayesPrism = "#c95a80",
-                   Bisque = "#c7703c",
-                   CIBERSORTx  = "#83a444",
-                   DWLS = "#4aac8b",
-                   MuSiC = "#6187e3",
-                   hspe = "#9d63cb")
+method_colors <- c(BayesPrism = "#E85EBA",
+                   Bisque = "#FF9985",
+                   CIBERSORTx  = "#FFB41F",
+                   DWLS = "#50E27C",
+                   MuSiC = "#80DADB",
+                   hspe = "#C885FF")
 
 pdf(here("plots", "00_data_prep","method_color_test_plots.pdf"))
 test_pallet_plots(pallet = method_colors, "Method Colors")
 dev.off()
 
 save(method_colors, file = here("processed-data","00_data_prep","method_colors.Rdata"))
+
+library_combo_shapes <- c(polyA_Bulk=16, #filled circle
+                          polyA_Cyto=17, # filled triangle
+                          polyA_Nuc=15, # filled square
+                          RiboZeroGold_Bulk=1, #open circle
+                          RiboZeroGold_Cyto=2, #open triangle 
+                          RiboZeroGold_Nuc=0 # open square
+                          ) 
+save(library_combo_shapes, file = here("processed-data","00_data_prep","library_combo_shapes.Rdata"))
 
