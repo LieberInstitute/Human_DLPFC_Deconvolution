@@ -84,6 +84,27 @@ cor_check_ct <- prop_long |>
 # 5 hspe   MR_top25     0.513 
 
 
+## cor vs rmse ##
+cor_rmse_scater <- cor_check_library |>
+  ggplot(aes(x= cor, y = rmse, color= method, shape = library_combo)) +
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~marker)
+
+ggsave(cor_rmse_scater, filename = here(plot_dir, "cor_rmse_scater.png"), width = 10, height = 3.4)
+# ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_scater.pdf"), width = 10, height = 3.4)
+
+cor_rmse_scater_method <- cor_check_library |>
+  ggplot(aes(x= cor, y = rmse, color= marker, shape = library_combo)) +
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~method, nrow = 1)
+
+ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.png"), width = 10, height = 3.4)
+# ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.pdf"), width = 10, height = 3.4)
+
+
+
 ## cor check line/rank plot
 ## TODO method color pallet
 cor_rmse_line <- cor_check_library |>
@@ -102,9 +123,9 @@ ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.pdf"), wi
 
 cor_rmse_line_facet <- cor_check_library |>
   ggplot(aes(x = library_combo, y = cor, color= method)) +
-  geom_point(aes(size = 1/rmse), alpha = .7) +
+  geom_point(aes(size = rmse), alpha = .7) +
   geom_line(aes(group = method)) +
-  # scale_size(range = c(1,8)) +
+  scale_size(range = c(1,8)) +
   theme_bw() +
   scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction") +
@@ -113,6 +134,36 @@ cor_rmse_line_facet <- cor_check_library |>
 
 ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.png"), width = 10, height = 7)
 ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.pdf"), width = 10, height = 3.4)
+
+
+cor_rmse_line_facet2 <- cor_check_library |>
+  filter(marker != "MeanRatio_top25") |>
+  ggplot(aes(x = library_combo, y = cor, color= method)) +
+  geom_point(aes(size = rmse), alpha = .7) +
+  geom_line(aes(group = method)) +
+  scale_size(range = c(1,8)) +
+  theme_bw() +
+  scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
+  labs(x = "Library Type + RNA Extraction") +
+  facet_wrap(~marker) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.png"), width = 10, height = 7)
+ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.pdf"), width = 10, height = 3.4)
+
+rmse_line_facet <- cor_check_library |>
+  ggplot(aes(x = library_combo, y = rmse, color= method)) +
+  geom_point(aes(size = cor), alpha = .7) +
+  geom_line(aes(group = method)) +
+  scale_size(range = c(1,8)) +
+  theme_bw() +
+  scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
+  labs(x = "Library Type + RNA Extraction") +
+  facet_wrap(~marker) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.png"), width = 10, height = 7)
+ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 3.4)
 
 
 #### proportion data ####
@@ -164,22 +215,6 @@ est_prop_v_RNAscope_scatter <- prop_long |>
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"), width = 10)
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.pdf"), width = 10)
 
-est_prop_v_RNAscope_scatter_top25 <- prop_long |>
-  filter(!is.na(RNAscope_prop)) |>
-  ggplot() +
-  scale_color_manual(values = cell_type_colors_broad) +
-  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library)) +
-  geom_text(data = cor_check, 
-            aes(label = cor_anno,x = .5, y = 1),
-            vjust = "inward", hjust = "inward") +
-  facet_wrap(~method, nrow = 1) +
-  geom_abline() +
-  coord_equal() +
-  theme_bw() +
-  labs( x = "RNAscope Proportion", y = "Estimated Proportion")
-
-ggsave(est_prop_v_RNAscope_scatter_top25, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_top25.png"), width = 10, height = 4)
-ggsave(est_prop_v_RNAscope_scatter_top25, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_top25.pdf"), width = 10, height = 4)
 
 est_prop_v_RNAscope_scatter_top25_library <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
