@@ -51,9 +51,9 @@ qc_tb |>
 # 3    AN00000906_Br8492_Mid_Nuc     FALSE      TRUE     warn     TRUE
 
 ## save preQC col data
-# bulk_qc <- as.data.frame(colData(rse_list$gene)) |>
-#   dplyr::left_join(qc_tb)
-# write.csv(bulk_qc, here("processed-data", "02_quality_control", "preQC_colData.csv"), row.names = FALSE)
+bulk_qc <- as.data.frame(colData(rse_list$gene)) |>
+  dplyr::left_join(qc_tb)
+write.csv(bulk_qc, here("processed-data", "02_quality_control", "preQC_colData.csv"), row.names = FALSE)
 
 
 rse_list <- map(rse_list, function(rse){
