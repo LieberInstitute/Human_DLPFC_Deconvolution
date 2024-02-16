@@ -27,7 +27,7 @@ rse_counts[1:5,1:3]
 # 4 ENSG00000269981                             1                             1
 # 5 ENSG00000279457                           131                           210
 
-write.table(rse_counts, file = here(data_dir, "DLPFC_bulk_counts.txt"), sep = "\t", quote = FALSE)
+write.table(rse_counts, file = here(data_dir, "DLPFC_bulk_counts.txt"), sep = "\t", quote = FALSE, row.names = FALSE)
 
 ## 
 ## sce data
@@ -64,7 +64,7 @@ walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
   # sce_counts[1:5,1:5]
 
   message(Sys.time(), " - Export")
-  write.table(sce_counts, file = here(data_dir, paste0("DLPFC_sc_counts-",name,".txt")), sep = "\t", quote = FALSE)
+  write.table(sce_counts, file = here(data_dir, paste0("DLPFC_sc_counts-",name,".txt")), sep = "\t", quote = FALSE, row.names = FALSE)
 })
 
 
