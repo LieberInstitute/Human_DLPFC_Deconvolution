@@ -64,5 +64,52 @@ first_line_tutorial
 dim(scRNA_tutorial)
 scRNA_tutorial[1:5,1:5]
 
+## 
+list.files((here(data_dir, "tutorial_data", "Fig2ab-NSCLC_PBMCs")))
+cs_sn_test <- read.delim(here(data_dir, "tutorial_data", "Fig2ab-NSCLC_PBMCs", "Fig2ab-NSCLC_PBMCs_scRNAseq_refsample.txt"))
+corner(cs_sn_test)
+# gene T.cells.CD8 T.cells.CD8.1 T.cells.CD8.2 Monocytes Monocytes.1
+# 1  RP11.34P13.7           0             0             0         0           0
+# 2    AL627309.1           0             0             0         0           0
+# 3    AP006222.2           0             0             0         0           0
+# 4 RP4.669L17.10           0             0             0         0           0
+# 5  RP5.857K21.3           0             0             0         0           0
+# 6 RP11.206L10.3           0             0             0         0           0
+
+cs_bulk_test <- read.delim(here(data_dir, "tutorial_data", "Fig2ab-NSCLC_PBMCs", "Fig2b-WholeBlood_RNAseq.txt"))
+corner(cs_bulk_test)
+# GeneSym W070517001156 W070517001157 W070517001159 W070517001160 W070517001161
+# 1 5_8S_rRNA    0.00000000     0.0000000    0.00000000     0.0000000    0.00000000
+# 2   5S_rRNA    0.00000000     0.0000000    0.00000000     0.0000000    0.00000000
+# 3       7SK    0.00000000     0.0000000    0.00000000     0.0000000    0.00000000
+# 4      A1BG    1.52458880     1.1982094    2.28110130     2.5109631    1.75268600
+# 5  A1BG-AS1    0.21001956     0.2630730    0.41086500     0.5714840    0.13972470
+# 6      A1CF    0.00707868     0.1093625    0.02942712     0.0129127    0.02266773
 
 
+DLPFC_bulk <- read.delim(here(data_dir, "DLPFC_bulk_counts.txt"))
+corner(DLPFC_bulk)
+# GeneSymbol X2107UNHS.0291_Br2720_Mid_Bulk X2107UNHS.0291_Br2720_Mid_Cyto X2107UNHS.0291_Br2720_Mid_Nuc
+# 1 ENSG00000227232                             42                             72                           128
+# 2 ENSG00000278267                              6                              3                            23
+# 3 ENSG00000268903                              2                              7                             2
+# 4 ENSG00000269981                              1                              1                             3
+# 5 ENSG00000279457                            131                            210                           365
+# 6 ENSG00000228463                            101                             46                            56
+# X2107UNHS.0291_Br6432_Ant_Bulk X2107UNHS.0291_Br6432_Ant_Cyto
+# 1                            146                             70
+# 2                             24                              5
+# 3                             50                              7
+# 4                             15                              1
+# 5                            354                            193
+# 6                            277                             96
+
+DLPFC_sc <- read.delim(here(data_dir, "sce_counts_test.txt"))
+corner(DLPFC_sc)
+# Excit Oligo Oligo.1 Inhib Excit.1 Inhib.1
+# ENSG00000237765     2     0       0     1       1       1
+# ENSG00000229649     0     0       0     0       0       0
+# ENSG00000273360     0     0       0     0       0       0
+# ENSG00000286885     0     0       0     0       1       0
+# ENSG00000255250     0     0       0     0       0       0
+# ENSG00000263923     0     0       0     0       0       0
