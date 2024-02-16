@@ -49,6 +49,9 @@ marker_files <- list(MeanRatio_top25 = "markers_MeanRatio_top25.txt", `1vALL_top
 marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "08_bulk_deconvolution", .x), what="", sep="\n"))
 marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
 
+# Drop cells with all 0 counts (likely causes internal issues with SVD)
+sce = sce[,colSums(assays(sce)$counts > 0) > 0]
+
 map_int(marker_gene_sets, length)
 
 walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
