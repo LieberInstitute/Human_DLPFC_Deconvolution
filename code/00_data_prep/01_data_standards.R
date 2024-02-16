@@ -13,15 +13,16 @@ pos_df <- tibble(Position = c("Anterior", "Middle", "Posterior"),
                 pos = c("ant", "mid", "post"))
 
 #### Review terms in snRNA-seq ####
-load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
-
-sce_pd <- colData(sce) |> as.data.frame()
-
-## save colData for eazy access
-save(sce_pd, file = here("processed-data", "sce", "sce_pd.Rdata"))
+# load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
+# 
+# sce_pd <- colData(sce) |> as.data.frame()
+# 
+# ## save colData for eazy access
+# save(sce_pd, file = here("processed-data", "sce", "sce_pd.Rdata"))
+load(here("processed-data", "sce", "sce_pd.Rdata"))
 
 sn_samples <- sce_pd |>
-  count(Sample, SAMPLE_ID, Position, pos, round, BrNum, age, sex) 
+  dplyr::count(Sample, SAMPLE_ID, Position, pos, round, BrNum, age, sex) 
 
 #         Sample SAMPLE_ID  Position  pos  round  BrNum   age sex    n
 # 1   Br2720_mid      1c-k    Middle  mid round1 Br2720 48.22   F 3101
@@ -44,11 +45,8 @@ sn_samples <- sce_pd |>
 # 18  Br8667_ant     18c_k  Anterior  ant round5 Br8667 37.33   F 5774
 # 19  Br8667_mid     13c_k    Middle  mid round4 Br8667 37.33   F 4123
 
-## need to fix:
-# round -> Round (?)
-
 sn_n_samp <- sn_samples |>
-  count(Sample, Position, BrNum) |>
+  dplyr::count(Sample, Position, BrNum) |>
   mutate(data_type = "snRNA-seq")
 
 #### Bulk info ####
@@ -62,7 +60,11 @@ head(bulk_samples)[,1:7]
 # 5  2107UNHS-0291_Br6432_Ant_Nuc 2107UNHS-0291 Br6432      Ant          Nuc        polyA     1
 # 6      2107UNHS-0291_Br6432_Ant 2107UNHS-0291 Br6432      Ant         Bulk        polyA     1
 
-bulk_samples |> count(location)
+bulk_samples |> dplyr::count(location)
+# location  n
+# 1      Ant 42
+# 2      Mid 47
+# 3     Post 24
 
 ## Add Sample(?) BrXXXX_mid to match other data - how to handle Library prep?
 # round -> Round (?)
