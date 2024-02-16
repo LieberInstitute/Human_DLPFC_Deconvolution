@@ -28,21 +28,22 @@ module list
 # Define input and output directories
 in_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/tutorial_data/Fig2ab-NSCLC_PBMCs
 out_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/tutorial_data/Fig2ab-NSCLC_PBMCs/output
+ref=${in_dir}/Fig2ab-NSCLC_PBMCs_scRNAseq_refsample.txt
+mix=${in_dir}/Fig2b-WholeBlood_RNAseq.txt
 
 # Run CIBERSORTxFractions
 singularity exec \
--B ${in_dir}:/src/data \
--B ${out_dir}:/src/outdir \
-/jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions \
---username louise.huuki@libd.org \
---token $CIBERSORT_TOKEN \
---single_cell TRUE \
---refsample ${in_dir}/Fig2ab-NSCLC_PBMCs_scRNAseq_refsample.txt \
---mixture ${in_dir}/Fig2b-WholeBlood_RNAseq.txt \
---fraction 0 \
---rmbatchSmode TRUE \
---outdir ${out_dir}
-
+    -B ${in_dir}:/src/data \
+    -B ${out_dir}:/src/outdir \
+    /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions \
+        --username louise.huuki@libd.org \
+        --token $CIBERSORT_TOKEN \
+        --single_cell TRUE \
+        --refsample $ref \
+        --mixture $mix \
+        --fraction 0 \
+        --rmbatchSmode TRUE \
+        --outdir ${out_dir}
 
 echo "**** Job ends ****"
 date

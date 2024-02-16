@@ -29,20 +29,22 @@ module list
 in_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep
 out_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_MeanRatio_top25
 
+ref=${in_dir}/DLPFC_sc_counts-MeanRatio_top25.txt
+mix=${in_dir}/DLPFC_bulk_counts.txt
+
 # Run CIBERSORTxFractions
 singularity exec \
--B ${in_dir}:/src/data \
--B ${out_dir}/:/src/outdir \
-/jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions \
---username louise.huuki@libd.org \
---token $CIBERSORT_TOKEN \
---single_cell TRUE \
---refsample ${in_dir}/DLPFC_sc_counts-MeanRatio_top25.txt \
---mixture ${in_dir}/DLPFC_bulk_counts.txt \
---fraction 0 \
---rmbatchSmode TRUE \
---outdir ${out_dir}
-
+    -B ${in_dir}:/src/data \
+    -B ${out_dir}:/src/outdir \
+    /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions \
+        --username louise.huuki@libd.org \
+        --token $CIBERSORT_TOKEN \
+        --single_cell TRUE \
+        --refsample $ref \
+        --mixture $mix \
+        --fraction 0 \
+        --rmbatchSmode TRUE \
+        --outdir ${out_dir}
 
 echo "**** Job ends ****"
 date
