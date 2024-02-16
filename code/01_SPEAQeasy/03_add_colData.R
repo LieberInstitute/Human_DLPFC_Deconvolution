@@ -29,11 +29,12 @@ data_info <- read.csv(here("processed-data", "01_SPEAQeasy", "data_info.csv")) |
     mutate(
         pos = tolower(location),
         Sample = paste0(BrNum, "_", pos),
-        library_combo = paste0(library_type, "_", library_prep)
+        library_combo = paste0(library_type, "_", library_prep),
+        library_combo2 = paste0(library_type, "_", rna_extract) ##library_combo2 matches language in paper
     ) |>
     left_join(pos_df) |>
     column_to_rownames("SAMPLE_ID") |>
-    select(Sample, BrNum, pos, Position, library_prep, library_type, library_combo, batch = Dataset, round, fastq1, fastq2)
+    select(Sample, BrNum, pos, Position, library_prep, library_type, rna_extract, library_combo,library_combo2, batch = Dataset, round, fastq1, fastq2)
 
 #### add to rse objects ####
 dim(data_info)
