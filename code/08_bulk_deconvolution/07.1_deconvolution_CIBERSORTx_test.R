@@ -104,6 +104,7 @@ corner(DLPFC_bulk)
 # 5                            354                            193
 # 6                            277                             96
 
+## I prevoulsy made this
 DLPFC_sc <- read.delim(here(data_dir, "sce_counts_test.txt"))
 corner(DLPFC_sc)
 # Excit Oligo Oligo.1 Inhib Excit.1 Inhib.1
@@ -113,3 +114,14 @@ corner(DLPFC_sc)
 # ENSG00000286885     0     0       0     0       1       0
 # ENSG00000255250     0     0       0     0       0       0
 # ENSG00000263923     0     0       0     0       0       0
+
+## new format for sc data matches
+DLPFC_sc <- read.delim(here(data_dir, "DLPFC_sc_counts-MeanRatio_top25.txt"))
+corner(DLPFC_sc)
+# GeneSymbol Inhib Oligo OPC Inhib.1 Oligo.1
+# 1 ENSG00000136750    20     0   0       9       0
+# 2 ENSG00000150556     6     0   0       6       0
+# 3 ENSG00000189056     9     0   0      18       0
+# 4 ENSG00000144596     6     0   0      12       0
+# 5 ENSG00000151136    20     0   0      28       0
+# 6 ENSG00000157404    15     0   0      12       0
