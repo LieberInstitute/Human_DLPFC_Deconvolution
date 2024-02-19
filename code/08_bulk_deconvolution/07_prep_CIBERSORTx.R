@@ -84,6 +84,7 @@ walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
 
 ## Reproducibility information
 print("Reproducibility information:")
+gc()
 Sys.time()
 proc.time()
 options(width = 120)
