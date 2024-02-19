@@ -49,21 +49,25 @@ marker_files <- list(MeanRatio_top25 = "markers_MeanRatio_top25.txt", `1vALL_top
 marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "08_bulk_deconvolution", .x), what="", sep="\n"))
 marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
 
-# Drop cells with all 0 counts (likely causes internal issues with SVD)
-sce = sce[,colSums(assays(sce)$counts > 0) > 0]
-
 map_int(marker_gene_sets, length)
 
 walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
-  
+  # First, subset to keep just the marker genes. Then keep cells where 10% of
+  # the markers have nonzero expression (this prevents errors in SVD due to
+  # insufficient column-wise variance)
+  sce_sub = sce[set,]
+  sce_sub = sce_sub[
+    , colSums(assays(sce_sub)$counts > 0) >= 0.1 * length(set)
+  ]
+
   message(Sys.time(), " - Format sce counts ", name)
-  sce_counts <- assays(sce)$counts[set,] |>
+  sce_counts <- assays(sce_sub)$counts |>
     as.data.frame() |>
     tibble::rownames_to_column("gene") |>
     as.matrix()
 
   dim(sce_counts)
-  colnames(sce_counts) <- c("gene", as.character(sce$cellType_broad_hc))
+  colnames(sce_counts) <- c("gene", as.character(sce_sub$cellType_broad_hc))
   # sce_counts[1:5,1:5]
 
   message(Sys.time(), " - Export")
