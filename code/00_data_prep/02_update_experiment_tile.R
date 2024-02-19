@@ -1,6 +1,6 @@
 
 library("tidyverse")
-library("SingleCellExperiment")
+# library("SingleCellExperiment")
 library("here")
 library("sessioninfo")
 
@@ -33,8 +33,8 @@ load(here("processed-data","rse","rse_gene.Rdata"), verbose = TRUE)
 
 bulk_samples <- colData(rse_gene) |>
   as.data.frame() |>
-  select(Sample, SAMPLE_ID, Position, pos, library_type, library_prep, library_combo, round, BrNum, age, sex) |>
-  mutate(library_prep = factor(library_prep, levels = c("Nuc", "Bulk", "Cyto")))
+  select(Sample, SAMPLE_ID, Position, pos, library_type, rna_extract, library_combo2, round, BrNum, age, sex) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Nuc", "Total", "Cyto")))
 
 bulk_n_samp <- bulk_samples |>
   dplyr::count(Sample, Position, BrNum, library_type) |>
@@ -43,17 +43,17 @@ bulk_n_samp <- bulk_samples |>
 
 ## type x prep
 library_prep_type_count <- bulk_samples |>
-  dplyr::count(library_prep, library_type, library_combo)
+  dplyr::count(rna_extract, library_type, library_combo2)
 
 bulk_tile <- library_prep_type_count |>
   mutate(library_type = gsub("RiboZeroGold", "RiboZero\nGold", library_type))|>
-  ggplot(aes(library_prep, library_type, fill = library_combo)) +
+  ggplot(aes(rna_extract, library_type, fill = library_combo2)) +
   geom_tile() +
   geom_text(aes(label = n), color = "white", fontface = "bold") +
-  scale_fill_manual(values = library_combo_colors) +
+  scale_fill_manual(values = library_combo_colors2) +
   theme_bw() + 
   theme(legend.position='none') +
-  labs(x = "Library Prep", y = "Library Type") +
+  labs(x = "RNA Extraction", y = "Library Type") +
   coord_flip()
   
 ggsave(bulk_tile, filename = here(plot_dir, "bulk_sample_tile.png"), height = 3, width = 2)
@@ -104,17 +104,12 @@ ggsave(experiment_tile +
 
 #### simplify n plot ####
 
-## snRNA-seq 
-# "#2f7ec0"
-
-colorRampPalette(library_type_colors)(3)
-# "#735290" "#A38062" "#D4AF35"
 all_dlpfc |>
   dplyr::group_by(data_type) |>
   summarize(sum = sum(n))
 
 bulk_count <- bulk_samples |>
-  dplyr::count(fraction = library_prep, library_type, fill = library_combo) |>
+  dplyr::count(fraction = rna_extract, library_type, fill = library_combo2) |>
   mutate(data_type = "Bulk RNA-seq")
 # 
 # fraction library_type              fill  n    data_type
@@ -142,8 +137,8 @@ simple_count |> group_by(data_type) |> summarize(sum = sum(n))
 simple_tile <- simple_count |>
   ggplot(aes(fraction, library_type, fill = fill)) +
   geom_tile() +
-  geom_text(aes(label = n)) +
-  scale_fill_manual(values = c(library_combo_colors, `snRNA-seq` = "#417B5A", Star = "#247FBC", Circle = "#E94F37")) +
+  geom_text(aes(label = n), color = "white") +
+  scale_fill_manual(values = c(library_combo_colors2, `snRNA-seq` = "#2f7ec0", Star = "cyan", Circle = "pink")) +
   theme_bw() + 
   facet_wrap(~data_type, ncol = 1, scales = "free") +
   theme(legend.position='none') 
@@ -153,10 +148,10 @@ ggsave(simple_tile, filename = here(plot_dir, "simple_sample_tile.png"), height 
 #### by tissue block ####
 bulk_qc <- read_csv(here("processed-data", "02_quality_control", "preQC_colData.csv")) |>
   mutate(pass_qc = !(auto_drop | drop_pca),
-         data_type = "Bulk RNA")|>
-  select(BrNum, Sample, data_type, pass_qc, subsample = library_combo)
+         data_type = "Bulk RNA-seq")|>
+  select(BrNum, Sample, data_type, pass_qc, subsample = library_combo2)
 
-bulk_qc |> count(pass_qc)
+bulk_qc |> dplyr::count(pass_qc)
 
 qc_tab <- sn_n_samp |>
   select(BrNum, Sample, data_type) |>
@@ -167,7 +162,7 @@ qc_tab <- sn_n_samp |>
                  data_type = "RNAScope/IF") |>
           select(BrNum, Sample, data_type, pass_qc, subsample)) |>
   rbind(bulk_qc) |>
-  mutate(data_type = factor(data_type, levels= c("RNAScope/IF","snRNA-seq","Bulk RNA")))
+  mutate(data_type = factor(data_type, levels= c("RNAScope/IF","snRNA-seq","Bulk RNA-seq")))
 
 length(unique(qc_tab$Sample))
 # [1] 22
@@ -182,28 +177,28 @@ qc_count_assay <- qc_tab |>
             postQC = sum(pass_qc)) |>
   mutate(data_type_anno = paste0(data_type,"\n(n=", preQC, ":", postQC, ")")) |>
   mutate(data_type_anno = fct_reorder(data_type_anno, as.integer(data_type)))
-# data_type preQC postQc
-# <fct>     <int>  <int>
-# 1 Bulk RNA    113    110
-# 2 snRNA-seq    19     19
-# 3 RNAscope     42     25
+# data_type   preQC postQC data_type_anno          
+# <fct>       <int>  <int> <fct>                   
+# 1 RNAScope/IF    42     25 "RNAScope/IF\n(n=42:25)"
+# 2 snRNA-seq      19     19 "snRNA-seq\n(n=19:19)"  
+# 3 Bulk RNA      113    110 "Bulk RNA\n(n=113:110)" 
 
 qc_count_sub <- qc_tab |> 
   group_by(data_type, subsample) |> 
   summarise(preQC = n(), 
             postQC = sum(pass_qc)) |>
   mutate(subsample_anno = paste0(subsample," (n=", preQC, ":", postQC, ")"))
-# data_type subsample         preQC postQC
-# <fct>     <chr>             <int>  <int>
-# 1 Bulk RNA  RiboZeroGold_Bulk    19     19
-# 2 Bulk RNA  RiboZeroGold_Cyto    19     19
-# 3 Bulk RNA  RiboZeroGold_Nuc     19     17
-# 4 Bulk RNA  polyA_Bulk           19     19
-# 5 Bulk RNA  polyA_Cyto           19     18
-# 6 Bulk RNA  polyA_Nuc            18     18
-# 7 snRNA-seq snRNA-seq            19     19
-# 8 RNAscope  Circle               21     12
-# 9 RNAscope  Star                 21     13
+#   data_type   subsample         preQC postQC subsample_anno             
+#   <fct>       <chr>             <int>  <int> <chr>                      
+# 1 RNAScope/IF Circle                21     12 Circle (n=21:12)            
+# 2 RNAScope/IF Star                  21     13 Star (n=21:13)              
+# 3 snRNA-seq   snRNA-seq             19     19 snRNA-seq (n=19:19)         
+# 4 Bulk RNA    RiboZeroGold_Cyto     19     19 RiboZeroGold_Cyto (n=19:19) 
+# 5 Bulk RNA    RiboZeroGold_Nuc      19     17 RiboZeroGold_Nuc (n=19:17)  
+# 6 Bulk RNA    RiboZeroGold_Total    19     19 RiboZeroGold_Total (n=19:19)
+# 7 Bulk RNA    polyA_Cyto            19     18 polyA_Cyto (n=19:18)        
+# 8 Bulk RNA    polyA_Nuc             18     18 polyA_Nuc (n=18:18)         
+# 9 Bulk RNA    polyA_Total           19     19 polyA_Total (n=19:19)  
 
 qc_tile <- qc_tab |> 
   left_join(qc_count_assay |> select(-preQC, -postQC)) |>
@@ -220,5 +215,5 @@ qc_tile <- qc_tab |>
         legend.position = "bottom") +
   labs(x = "Tissue Blocks (n=22)", y = "")
 
-ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5)
-ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5)
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5, width = 7.25)
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5, width = 7.25)

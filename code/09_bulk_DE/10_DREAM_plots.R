@@ -52,7 +52,10 @@ DREAM_library_type_long <- map2_dfr(DREAM_library_type, names(DREAM_library_type
   group_by(library_prep, DE_class) |>
   arrange(-abs(logFC)) |>
   mutate(rank_fc = ifelse(DE_class != "None", row_number(), NA),
-         library_prep = factor(library_prep, levels = c("Cyto", "Bulk", "Nuc"))) |> 
+         library_prep = factor(library_prep, levels = c("Cyto", "Bulk", "Nuc")),
+         DE_class = gsub("Bulk", "Total", DE_class),
+         rna_extract = factor(gsub("Bulk", "Total", library_prep), levels = c("Cyto", "Total", "Nuc"))
+         ) |> 
   left_join(marker_genes_top25_simple)
 
 DREAM_library_type_long |> count()
@@ -74,6 +77,7 @@ DREAM_library_prep_long <- map2_dfr(DREAM_library_prep, names(DREAM_library_prep
   return(DE)
 }) |>
   as_tibble() |>
+  mutate(library_prep_pair = gsub("Bulk", "Total", library_prep_pair)) |>
   separate(library_prep_pair, into = c("down", "up"), remove = FALSE) |>
   group_by(library_prep_pair, library_type) |>
   arrange(adj.P.Val) |>
@@ -109,62 +113,89 @@ ggsave(library_prep_pval_histo, filename = here(plot_dir, "library_prep_pval_his
 
 DREAM_library_type_long |> count(DE_class)
 
-DREAM_library_type_long |> 
-  group_by(library_prep, DE_class) |>
+DREAM_library_type_count <- DREAM_library_type_long |> 
+  group_by(rna_extract, DE_class) |>
   summarise(n_DE = n()) |>
-  group_by(library_prep) |>
-  mutate(percent = 100*n_DE/sum(n_DE))|>
-  write_csv(here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type_summary_FDR05.csv"))
+  group_by(rna_extract) |>
+  mutate(percent = 100*n_DE/sum(n_DE))
 
-# library_prep DE_class           n_DE percent
-# <fct>        <chr>             <int>   <dbl>
-# 1 Cyto         None               9687   44.5 
-# 2 Cyto         RiboZeroGold_Cyto  7109   32.7 
-# 3 Cyto         polyA_Cyto         4949   22.8 
-# 4 Bulk         None              19744   90.8 
-# 5 Bulk         RiboZeroGold_Bulk   996    4.58
-# 6 Bulk         polyA_Bulk         1005    4.62
-# 7 Nuc          None              11840   54.4 
-# 8 Nuc          RiboZeroGold_Nuc   5821   26.8 
-# 9 Nuc          polyA_Nuc          4084   18.8 
+write_csv(DREAM_library_type_count, here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type_summary_FDR05.csv"))
+
+# rna_extract DE_class            n_DE percent
+# <chr>       <chr>              <int>   <dbl>
+# 1 Cyto        None                9687   44.5 
+# 2 Cyto        RiboZeroGold_Cyto   7109   32.7 
+# 3 Cyto        polyA_Cyto          4949   22.8 
+# 4 Nuc         None               11840   54.4 
+# 5 Nuc         RiboZeroGold_Nuc    5821   26.8 
+# 6 Nuc         polyA_Nuc           4084   18.8 
+# 7 Total       None               19744   90.8 
+# 8 Total       RiboZeroGold_Total   996    4.58
+# 9 Total       polyA_Total         1005    4.62
+  
+DREAM_library_type_anno <- DREAM_library_type_count |>
+  filter(DE_class != "None") |>
+  mutate(upreg = grepl("RiboZeroGold", DE_class),
+         anno_n = sprintf("\n%1d (%.1f%%)", n_DE, percent),
+         anno_d = ifelse(upreg, 
+                         "RiboZeroGold →", 
+                         "← polyA"),
+         anno = paste0(anno_d, anno_n),
+         anno_x = ifelse(upreg, 1, -1),
+         anno_y = 0) 
 
 
-DREAM_library_prep_long |> 
-  group_by(library_type, library_prep_pair, DE_class) |>
+## prep 
+DREAM_library_prep_count <- DREAM_library_prep_long |> 
+  group_by(library_type, library_prep_pair, DE_class, up, down) |>
   summarise(n_DE = n()) |>
   group_by(library_type, library_prep_pair) |>
-  mutate(percent = 100*n_DE/sum(n_DE)) |>
-  write_csv(here("processed-data", "09_bulk_DE","09_DREAM_library-prep", "DREAM_library-prep_summary_FDR05.csv"))
+  mutate(percent = 100*n_DE/sum(n_DE))
+
+write_csv(DREAM_library_prep_count, file = here("processed-data", "09_bulk_DE","09_DREAM_library-prep", "DREAM_library-prep_summary_FDR05.csv"))
 
 # library_type library_prep_pair DE_class           n_DE percent
 # <chr>        <chr>             <chr>             <int>   <dbl>
-#   1 RiboZeroGold Bulk_Cyto         None              18800  86.5  
-# 2 RiboZeroGold Bulk_Cyto         RiboZeroGold_Bulk  2698  12.4  
-# 3 RiboZeroGold Bulk_Cyto         RiboZeroGold_Cyto   247   1.14 
-# 4 RiboZeroGold Bulk_Nuc          None              21182  97.4  
-# 5 RiboZeroGold Bulk_Nuc          RiboZeroGold_Bulk   346   1.59 
-# 6 RiboZeroGold Bulk_Nuc          RiboZeroGold_Nuc    217   0.998
-# 7 RiboZeroGold Cyto_Nuc          None              17083  78.6  
-# 8 RiboZeroGold Cyto_Nuc          RiboZeroGold_Cyto  1887   8.68 
-# 9 RiboZeroGold Cyto_Nuc          RiboZeroGold_Nuc   2775  12.8  
-# 10 polyA        Bulk_Cyto         None              15837  72.8  
-# 11 polyA        Bulk_Cyto         polyA_Bulk         3269  15.0  
-# 12 polyA        Bulk_Cyto         polyA_Cyto         2639  12.1  
-# 13 polyA        Bulk_Nuc          None              20341  93.5  
-# 14 polyA        Bulk_Nuc          polyA_Bulk          556   2.56 
-# 15 polyA        Bulk_Nuc          polyA_Nuc           848   3.90 
-# 16 polyA        Cyto_Nuc          None              16975  78.1  
-# 17 polyA        Cyto_Nuc          polyA_Cyto         2449  11.3  
-# 18 polyA        Cyto_Nuc          polyA_Nuc          2321  10.7 
+# 1 RiboZeroGold Cyto_Nuc          None               17083  78.6  
+# 2 RiboZeroGold Cyto_Nuc          RiboZeroGold_Cyto   1887   8.68 
+# 3 RiboZeroGold Cyto_Nuc          RiboZeroGold_Nuc    2775  12.8  
+# 4 RiboZeroGold Total_Cyto        None               18800  86.5  
+# 5 RiboZeroGold Total_Cyto        RiboZeroGold_Cyto    247   1.14 
+# 6 RiboZeroGold Total_Cyto        RiboZeroGold_Total  2698  12.4  
+# 7 RiboZeroGold Total_Nuc         None               21182  97.4  
+# 8 RiboZeroGold Total_Nuc         RiboZeroGold_Nuc     217   0.998
+# 9 RiboZeroGold Total_Nuc         RiboZeroGold_Total   346   1.59 
+# 10 polyA        Cyto_Nuc          None               16975  78.1  
+# 11 polyA        Cyto_Nuc          polyA_Cyto          2449  11.3  
+# 12 polyA        Cyto_Nuc          polyA_Nuc           2321  10.7  
+# 13 polyA        Total_Cyto        None               15837  72.8  
+# 14 polyA        Total_Cyto        polyA_Cyto          2639  12.1  
+# 15 polyA        Total_Cyto        polyA_Total         3269  15.0  
+# 16 polyA        Total_Nuc         None               20341  93.5  
+# 17 polyA        Total_Nuc         polyA_Nuc            848   3.90 
+# 18 polyA        Total_Nuc         polyA_Total          556   2.56
 
+
+DREAM_library_type_anno <- DREAM_library_prep_count |>
+  filter(DE_class != "None") |>
+  mutate(upreg = grepl(up, DE_class),
+         anno_n = sprintf("\n%1d (%.1f%%)", n_DE, percent),
+         anno_d = ifelse(upreg, 
+                        paste(up, "→"), 
+                        paste("←", down)),
+         anno = paste0(anno_d, anno_n),
+         anno_x = ifelse(upreg, 1, -1),
+         anno_y = 0) 
 
 #### Volcano Plots ####
 
 type_max_pval <- DREAM_library_type_long |>
+  ungroup() |>
+  group_by(rna_extract) |>
   filter(adj.P.Val < 0.05) |>
   arrange(-P.Value) |>
   slice(1) |>
-  select(library_prep, P.Value, adj.P.Val) |>
+  select(rna_extract, P.Value, adj.P.Val) |>
   mutate(logP = -log10(P.Value))
  
 library_type_volcano <- DREAM_library_type_long |>
@@ -174,24 +205,19 @@ library_type_volcano <- DREAM_library_type_long |>
                   size = 2, 
                   show.legend=FALSE,
                   color = "black") +
-  scale_color_manual(values = c(library_combo_colors, "Other" = "darkgray")) +
+  scale_color_manual(values = c(library_combo_colors2, "Other" = "darkgray")) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
-  facet_wrap(~library_prep, nrow = 1) +
+  geom_text(data = DREAM_library_type_anno, aes(label = anno, x = 15*anno_x, y = anno_y), color = "black", size = 2) +
+  facet_wrap(~rna_extract, nrow = 1) +
   theme_bw() +
   theme(legend.position = "none")
 
 ggsave(library_type_volcano, filename = here(plot_dir, "library_type_Volcano_small.png"), width = 6 , height = 4)
 ggsave(library_type_volcano, filename = here(plot_dir, "library_type_Volcano.png"), width = 12)
 
-DREAM_library_type_long |>
-  count(gene_type) |>
-  arrange(library_prep, DE_class, -n) |>
-  print(n = 100)
-
 ## library prep
-
 prep_max_pval <- DREAM_library_prep_long |>
   filter(adj.P.Val < 0.05) |>
   arrange(-P.Value) |>
@@ -206,9 +232,10 @@ library_prep_volcano <- DREAM_library_prep_long |>
                   size = 3, 
                   show.legend=FALSE,
                   color = "black") +
-  scale_color_manual(values = c(library_combo_colors, "Other" = "darkgray")) +
+  scale_color_manual(values = c(library_combo_colors2, "Other" = "darkgray")) +
   # scale_color_manual(values = c(Bulk = "#688E26", Cyto = "#FBB337", Nuc = "#104F55", Other = "darkgray")) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_text(data = DREAM_library_type_anno, aes(label = anno2, x = 5*anno_x, y = anno_y), color = "black", size = 3) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = prep_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_grid(library_type~library_prep_pair) +
@@ -330,10 +357,10 @@ library_type_volcano_ct <- DREAM_library_type_long |>
                   show.legend=FALSE,
                   color = "black") +
   scale_color_manual(values = cell_type_colors_broad) +
-  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_text(data = DREAM_library_type_anno, aes(label = anno_d, x = 4*anno_x, y = anno_y), color = "black", size = 5) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
-  facet_wrap(~library_prep, nrow = 1) +
+  facet_wrap(~rna_extract, nrow = 1) +
   theme_bw() +
   theme(legend.position = "bottom")
 
@@ -349,7 +376,7 @@ library_prep_volcano_ct <- DREAM_library_prep_long |>
                   show.legend=FALSE,
                   color = "black") +
   scale_color_manual(values = cell_type_colors_broad) +
-  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_text(data = DREAM_library_type_anno, aes(label = anno_d, x = 1.5*anno_x, y = anno_y), color = "black", size = 5) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = prep_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_grid(library_type~library_prep_pair) +
