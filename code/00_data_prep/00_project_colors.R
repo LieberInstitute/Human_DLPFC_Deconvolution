@@ -50,7 +50,7 @@ library_combo_colors <- c(polyA_Nuc  = "#363457",
                           RiboZeroGold_Cyto = "#e2d878")
 ## with "Full"
 library_combo_colors2 <- library_combo_colors
-names(library_combo_colors2) <- gsub("Bulk", "Full", names(library_combo_colors2))
+names(library_combo_colors2) <- gsub("Bulk", "Total", names(library_combo_colors2))
 
 # gold purple 
 # c("#363457","#735290","#c0a5cc","#785318","#d4af35","#e2d878")
