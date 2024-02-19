@@ -1,28 +1,10 @@
-Refreshing JHPCE_ROCKY9_DEFAULT_ENV
-  Module ERROR: Magic cookie '#%Module' missing
-    In '/jhpce/shared/jhpce/modulefiles/JHPCE_ROCKY9_DEFAULT_ENV.lua'
-    Please contact <root@localhost>
-
-Refreshing ruby/3.2.2
-  Module ERROR: Magic cookie '#%Module' missing
-    In '/jhpce/shared/libd/modulefiles/ruby/3.2.2.lua'
-    Please contact <root@localhost>
-
-Refreshing rmate/1.5.10
-  Module ERROR: Magic cookie '#%Module' missing
-    In '/jhpce/shared/libd/modulefiles/rmate/1.5.10.lua'
-    Please contact <root@localhost>
-Loading LIBD module for rmate/1.5.10
-Loading LIBD module for ruby/3.2.2
-Loading LIBD module for rmate/1.5.10
-Loading LIBD module for ruby/3.2.2
 **** Job starts ****
-Mon Oct  2 01:57:55 PM EDT 2023
+Mon Feb 19 11:40:36 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 290484
-Job name: get_expression_cutoff
-Hostname: compute-141.cm.cluster
+Job id: 2074259
+Job name: 04_get_expression_cutoff
+Node name: compute-124
 Task id: 
 Loading conda_R/4.3
 
@@ -117,11 +99,50 @@ The following object is masked from ‘package:IRanges’:
 
     reduce
 
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:GenomeInfoDb’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, union
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
 Setting options('download.file.method.GEOquery'='auto')
 Setting options('GEOquery.inmemory.gpl'=FALSE)
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
 Loading required package: rafalib
-2023-10-02 13:58:11.414766 - Load data
+2024-02-19 11:40:51.918783 - Load data
 Original Dimesions
 $gene
 [1] 61544   113
@@ -136,25 +157,30 @@ $tx
 [1] 246624    113
 
 [1] TRUE
-2023-10-02 13:59:32.399029 - Drop Samples identified in QC
+2024-02-19 11:42:03.069271 - Drop Samples identified in QC
+                     SAMPLE_ID auto_drop auto_warn qc_class drop_pca
+1 2107UNHS-0293_Br2720_Mid_Nuc      TRUE     FALSE     drop    FALSE
+2   AN00000904_Br2743_Ant_Cyto      TRUE      TRUE     drop    FALSE
+3    AN00000906_Br8492_Mid_Nuc     FALSE      TRUE     warn     TRUE
+Joining with `by = join_by(SAMPLE_ID)`
 Number of Samples post-filter
 gene exon   jx   tx 
  110  110  110  110 
-2023-10-02 13:59:45.500548 - Get RPKM
-2023-10-02 14:00:09.6529 - Get Expression Cutoff
+2024-02-19 11:42:10.936049 - Get RPKM
+2024-02-19 11:42:26.497835 - Get Expression Cutoff
 GENE
-2023-10-02 14:00:11.303357 the suggested expression cutoff is 0.25
+2024-02-19 11:42:27.837362 the suggested expression cutoff is 0.25
 0.28 0.22
 EXON
-2023-10-02 14:00:37.912846 the suggested expression cutoff is 0.26
+2024-02-19 11:42:46.077518 the suggested expression cutoff is 0.26
 0.29 0.24
 JX
-2023-10-02 14:01:17.790805 the suggested expression cutoff is 0.28
+2024-02-19 11:43:17.352079 the suggested expression cutoff is 0.28
 0.22 0.34
 TX
-2023-10-02 14:01:21.967708 the suggested expression cutoff is 0.33
+2024-02-19 11:43:20.309217 the suggested expression cutoff is 0.33
 0.35 0.31
-2023-10-02 14:01:21.973225 - Drop features below cutoff
+2024-02-19 11:43:20.314483 - Drop features below cutoff
 gene - Filter out 39799 features (0.65%)
 exon - Filter out 262248 features (0.4%)
 jx - Filter out 4868877 features (0.93%)
@@ -177,12 +203,12 @@ Object Sizes:
 404.5 Mb
 634.7 Mb
 234.7 Mb
-2023-10-02 14:01:27.293684 - Calc Logcounts
-2023-10-02 14:01:31.919609 - Save Data
+2024-02-19 11:43:24.114908 - Calc Logcounts
+2024-02-19 11:43:27.327693 - Save Data
 [1] "Reproducibility information:"
-[1] "2023-10-02 14:03:04 EDT"
+[1] "2024-02-19 11:44:47 EST"
    user  system elapsed 
-265.127  30.917 306.589 
+233.188   7.487 248.983 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.1 Patched (2023-07-19 r84711)
@@ -193,7 +219,7 @@ Object Sizes:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-10-02
+ date     2024-02-19
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -222,7 +248,7 @@ Object Sizes:
  codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.1)
  colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.1)
  crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
- curl                   5.0.2     2023-08-14 [2] CRAN (R 4.3.1)
+ curl                   5.1.0     2023-10-02 [1] CRAN (R 4.3.1)
  data.table             1.14.8    2023-02-17 [2] CRAN (R 4.3.1)
  DBI                    1.1.3     2022-06-18 [2] CRAN (R 4.3.1)
  dbplyr                 2.3.3     2023-07-07 [2] CRAN (R 4.3.1)
@@ -232,7 +258,7 @@ Object Sizes:
  digest                 0.6.33    2023-07-07 [2] CRAN (R 4.3.1)
  doRNG                  1.8.6     2023-01-16 [2] CRAN (R 4.3.1)
  downloader             0.4       2015-07-09 [2] CRAN (R 4.3.1)
- dplyr                  1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
+ dplyr                * 1.1.3     2023-09-03 [2] CRAN (R 4.3.1)
  evaluate               0.21      2023-05-05 [2] CRAN (R 4.3.1)
  fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
  fastmap                1.1.1     2023-02-24 [2] CRAN (R 4.3.1)
@@ -283,7 +309,7 @@ Object Sizes:
  nnet                   7.3-19    2023-05-03 [3] CRAN (R 4.3.1)
  pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.1)
  pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.1)
- plyr                   1.8.8     2022-11-11 [2] CRAN (R 4.3.1)
+ plyr                   1.8.9     2023-10-02 [1] CRAN (R 4.3.1)
  png                    0.1-8     2022-11-29 [2] CRAN (R 4.3.1)
  prettyunits            1.1.1     2020-01-24 [2] CRAN (R 4.3.1)
  progress               1.2.2     2019-05-16 [2] CRAN (R 4.3.1)
@@ -338,4 +364,4 @@ Object Sizes:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Oct  2 02:03:09 PM EDT 2023
+Mon Feb 19 11:44:48 AM EST 2024
