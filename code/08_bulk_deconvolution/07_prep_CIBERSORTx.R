@@ -52,21 +52,28 @@ marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
 map_int(marker_gene_sets, length)
 
 walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
+  message(Sys.time(), " - Format sce counts ", name)
   # First, subset to keep just the marker genes. Then keep cells where 10% of
   # the markers have nonzero expression (this prevents errors in SVD due to
   # insufficient column-wise variance)
   sce_sub = sce[set,]
-  sce_sub = sce_sub[
-    , colSums(assays(sce_sub)$counts > 0) >= 0.1 * length(set)
-  ]
+  keep_indices = colSums(assays(sce_sub)$counts > 0) >= 0.1 * length(set)
+  message(
+    sprintf(
+      "Retaining %s%% of cells after filtering low expression",
+      round(100 * mean(keep_indices), 1)
+    )
+  )
+  sce_sub = sce_sub[, keep_indices]
+  message("Remaining cells of each type:")
+  print(table(sce_sub$cellType_broad_hc))
 
-  message(Sys.time(), " - Format sce counts ", name)
   sce_counts <- assays(sce_sub)$counts |>
     as.data.frame() |>
     tibble::rownames_to_column("gene") |>
     as.matrix()
 
-  dim(sce_counts)
+  print(dim(sce_counts))
   colnames(sce_counts) <- c("gene", as.character(sce_sub$cellType_broad_hc))
   # sce_counts[1:5,1:5]
 
