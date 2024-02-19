@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=30G
 #SBATCH --job-name=07_prep_CIBERSORTx
 #SBATCH -c 1
 #SBATCH -o logs/07_prep_CIBERSORTx.txt
