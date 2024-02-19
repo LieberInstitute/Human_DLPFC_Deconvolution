@@ -148,7 +148,7 @@ ggsave(simple_tile, filename = here(plot_dir, "simple_sample_tile.png"), height 
 #### by tissue block ####
 bulk_qc <- read_csv(here("processed-data", "02_quality_control", "preQC_colData.csv")) |>
   mutate(pass_qc = !(auto_drop | drop_pca),
-         data_type = "Bulk RNA")|>
+         data_type = "Bulk RNA-seq")|>
   select(BrNum, Sample, data_type, pass_qc, subsample = library_combo2)
 
 bulk_qc |> dplyr::count(pass_qc)
@@ -162,7 +162,7 @@ qc_tab <- sn_n_samp |>
                  data_type = "RNAScope/IF") |>
           select(BrNum, Sample, data_type, pass_qc, subsample)) |>
   rbind(bulk_qc) |>
-  mutate(data_type = factor(data_type, levels= c("RNAScope/IF","snRNA-seq","Bulk RNA")))
+  mutate(data_type = factor(data_type, levels= c("RNAScope/IF","snRNA-seq","Bulk RNA-seq")))
 
 length(unique(qc_tab$Sample))
 # [1] 22
@@ -215,5 +215,5 @@ qc_tile <- qc_tab |>
         legend.position = "bottom") +
   labs(x = "Tissue Blocks (n=22)", y = "")
 
-ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5)
-ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5)
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5, width = 7.25)
+ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5, width = 7.25)
