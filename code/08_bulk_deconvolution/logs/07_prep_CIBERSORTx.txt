@@ -1,8 +1,8 @@
 **** Job starts ****
-Wed Feb 14 04:17:43 PM EST 2024
+Mon Feb 19 10:34:46 AM EST 2024
 **** JHPCE info ****
-User: lhuuki
-Job id: 2027027
+User: neagles
+Job id: 2073816
 Job name: 07_prep_CIBERSORTx
 Node name: compute-153
 Task id: 
@@ -14,8 +14,8 @@ The following have been reloaded with a version change:
 
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) singularity/3.11.4      5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) cibersortx/04_04_2020   6) conda_R/4.3
 
  
 
@@ -109,7 +109,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 Loading objects:
   rse_gene
 [1] 21745   110
-       GeneSymbol 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291_Br2720_Mid_Cyto
+          GeneSym 2107UNHS-0291_Br2720_Mid_Bulk 2107UNHS-0291_Br2720_Mid_Cyto
 1 ENSG00000227232                            42                            72
 2 ENSG00000278267                             6                             3
 3 ENSG00000268903                             2                             7
@@ -166,16 +166,19 @@ Read 151 items
 Read 145 items
 MeanRatio_top25     1vALL_top25            FULL 
             151             145           36601 
-2024-02-14 16:18:06.875019 - Format sce counts MeanRatio_top25
-2024-02-14 16:19:23.42919 - Export
-2024-02-14 16:19:26.003337 - Format sce counts 1vALL_top25
-2024-02-14 16:20:39.909194 - Export
-2024-02-14 16:20:42.426382 - Format sce counts FULL
-2024-02-14 16:40:21.9163 - Export
+2024-02-19 10:36:16.412086 - Format sce counts MeanRatio_top25
+2024-02-19 10:37:26.146216 - Export
+2024-02-19 10:38:32.407127 - Format sce counts 1vALL_top25
+2024-02-19 10:39:43.618878 - Export
+2024-02-19 10:42:20.673043 - Format sce counts FULL
+2024-02-19 10:53:04.327662 - Export
 [1] "Reproducibility information:"
-[1] "2024-02-14 16:50:38 EST"
+           used  (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells  7271732 388.4   12389455   661.7   12389455   661.7
+Vcells 49522117 377.9 3076676736 23473.2 3203354073 24439.7
+[1] "2024-02-19 10:57:02 EST"
     user   system  elapsed 
-1933.749   30.845 1973.056 
+1307.949   16.824 1332.545 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.1 Patched (2023-07-19 r84711)
@@ -186,7 +189,7 @@ MeanRatio_top25     1vALL_top25            FULL
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-14
+ date     2024-02-19
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -203,10 +206,10 @@ MeanRatio_top25     1vALL_top25            FULL
  crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
  DelayedArray         * 0.26.7    2023-07-28 [2] Bioconductor
  DelayedMatrixStats     1.22.6    2023-08-28 [2] Bioconductor
- fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
+ fansi                  1.0.5     2023-10-08 [1] CRAN (R 4.3.1)
  GenomeInfoDb         * 1.36.3    2023-09-07 [2] Bioconductor
  GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
- GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
+ GenomicRanges        * 1.52.1    2023-10-08 [1] Bioconductor
  glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
  HDF5Array            * 1.28.1    2023-05-01 [2] Bioconductor
  here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
@@ -229,7 +232,7 @@ MeanRatio_top25     1vALL_top25            FULL
  rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
  rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
  rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.1)
- S4Arrays             * 1.0.6     2023-08-30 [2] Bioconductor
+ S4Arrays             * 1.2.0     2023-10-24 [1] Bioconductor
  S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
  ScaledMatrix           1.8.1     2023-05-03 [2] Bioconductor
  scry                   1.12.0    2023-04-25 [2] Bioconductor
@@ -240,14 +243,14 @@ MeanRatio_top25     1vALL_top25            FULL
  SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
  tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
  utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
- vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
+ vctrs                  0.6.4     2023-10-12 [1] CRAN (R 4.3.1)
  XVector                0.40.0    2023-04-25 [2] Bioconductor
  zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
 
- [1] /users/lhuuki/R/4.3
+ [1] /users/neagles/R/4.3
  [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
  [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb 14 04:50:40 PM EST 2024
+Mon Feb 19 10:57:03 AM EST 2024
