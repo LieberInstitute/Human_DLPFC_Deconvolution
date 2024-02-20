@@ -247,27 +247,19 @@ ggsave(library_prep_volcano, filename = here(plot_dir, "library_prep_Volcano.png
 
 #### Upset Plot ####
 DREAM_library_type_filter <- DREAM_library_type_long |> 
-  filter(DE_class != "None") |>
-  mutate(prep_class = paste0(DE_class, "_", library_prep))
+  filter(DE_class != "None") 
 
-DREAM_library_type_filter |>
-  count(prep_class)
-# # Groups:   library_prep, DE_class [6]
-# library_prep DE_class     prep_class            n
-# <chr>        <chr>        <chr>             <int>
-#   1 Bulk         RiboZeroGold RiboZeroGold_Bulk   996
-# 2 Bulk         polyA        polyA_Bulk         1005
-# 3 Cyto         RiboZeroGold RiboZeroGold_Cyto  7109
-# 4 Cyto         polyA        polyA_Cyto         4949
-# 5 Nuc          RiboZeroGold RiboZeroGold_Nuc   5821
-# 6 Nuc          polyA        polyA_Nuc          4084
-
-DE_libray_type_geneList <- map(splitit(DREAM_library_type_filter$prep_class), ~DREAM_library_type_filter$ensemblID[.x])
+DE_libray_type_geneList <- map(splitit(DREAM_library_type_filter$DE_class), ~DREAM_library_type_filter$ensemblID[.x])
 map_int(DE_libray_type_geneList, length)
 
 pdf(here(plot_dir, "library_type_upset.pdf"))
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
-upset(fromList(DE_libray_type_geneList), order.by = "freq", sets = names(DE_libray_type_geneList), keep.order = TRUE)
+ups <- upset(fromList(DE_libray_type_geneList), 
+      order.by = "freq", 
+      sets = names(DE_libray_type_geneList), 
+      keep.order = TRUE,
+      # shade.color = library_combo_colors2[names(DE_libray_type_geneList)] ## TODO fix colors
+                                        )
 dev.off()
 
 ## library_prep
