@@ -85,8 +85,40 @@ data_type_pval_histo <- DREAM_data_type_long |>
 
 ggsave(data_type_pval_histo, filename = here(plot_dir, "data_type_pval_histogram.png"))
 
-#### Volcano Plots ####
+#### DEG counts ####
 
+DREAM_data_type_long |> count(DE_class)
+
+DREAM_data_type_count <- DREAM_data_type_long |> 
+  group_by(library_type, DE_class) |>
+  summarise(n_DE = n()) |>
+  group_by(library_type) |>
+  mutate(percent = 100*n_DE/sum(n_DE))
+
+# library_type DE_class      n_DE percent
+# <chr>        <chr>        <int>   <dbl>
+# 1 RiboZeroGold None          8902    50.4
+# 2 RiboZeroGold RiboZeroGold  4423    25.0
+# 3 RiboZeroGold snRNA-seq     4335    24.5
+# 4 polyA        None          6402    36.3
+# 5 polyA        polyA         5509    31.2
+# 6 polyA        snRNA-seq     5749    32.6
+
+write_csv(DREAM_data_type_count, here("processed-data", "10_bulk_vs_sn_DE","03_DREAM_sn_v_bulk", "DREAM_sn_v_bulk_summary_FDR05.csv"))
+
+DREAM_data_type_anno <- DREAM_data_type_count |>
+  filter(DE_class != "None") |>
+  mutate(upreg = grepl("snRNA-seq", DE_class),
+         anno_n = sprintf("\n%1d (%.1f%%)", n_DE, percent),
+         anno_d = ifelse(upreg, 
+                         "sn →", 
+                         "← Bulk"),
+         anno = paste0(anno_d, anno_n),
+         anno_x = ifelse(upreg, 1, -1),
+         anno_y = 0) 
+
+
+#### Volcano Plots ####
 type_max_pval <- DREAM_data_type_long |>
   group_by(library_type) |>
   filter(adj.P.Val < 0.05) |>
@@ -105,7 +137,7 @@ data_type_volcano <- DREAM_data_type_long |>
                   color = "black") +
   scale_color_manual(values = c(library_type_colors, "Other" = "darkgray", "snRNA-seq" = "#2f7ec0")) +
   # scale_color_manual(values = c("Bulk" = "#8D6E53", "snRNA-seq" = "#417B5A", "Other" = "darkgray")) +
-  # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_text(data = DREAM_data_type_anno, aes(label = anno, x = 5*anno_x, y = anno_y), color = "black", size = 2) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_wrap(~library_type, nrow = 1) +
@@ -154,14 +186,14 @@ data_type_volcano_ct <- DREAM_data_type_long |>
                   color = "black") +
   scale_color_manual(values = cell_type_colors_broad) +
   # geom_vline(xintercept = rep(c(1,0,-1), 3), linetype = rep(c("dashed", "solid","dashed"),3)) +
+  geom_text(data = DREAM_data_type_anno, aes(label = anno_d, x = 2*anno_x, y = anno_y), color = "black", size = 3) +
   geom_vline(xintercept = c(1, -1), linetype = "dashed") +
   geom_hline(data = type_max_pval, aes(yintercept = logP), linetype = "dashed") +
   facet_wrap(~library_type, nrow = 1) +
   theme_bw() +
   theme(legend.position = "bottom")
 
-ggsave(data_type_volcano_ct, filename = here(plot_dir, "data_type_Volcano_cellType_markers.png"), height = 12, width = 12)
-
+ggsave(data_type_volcano_ct, filename = here(plot_dir, "data_type_Volcano_cellType_markers.png"), height = 10, width = 10)
 
 
 # slurmjobs::job_single(name = "04_DREAM_plots_sn", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 04_DREAM_plots_sn.R")
