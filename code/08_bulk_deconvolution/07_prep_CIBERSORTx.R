@@ -53,11 +53,11 @@ map_int(marker_gene_sets, length)
 
 walk2(marker_gene_sets, names(marker_gene_sets), function(set, name){
   message(Sys.time(), " - Format sce counts ", name)
-  # First, subset to keep just the marker genes. Then keep cells where 10% of
+  # First, subset to keep just the marker genes. Then keep cells where 5% of
   # the markers have nonzero expression (this prevents errors in SVD due to
   # insufficient column-wise variance)
   sce_sub = sce[set,]
-  keep_indices = colSums(assays(sce_sub)$counts > 0) >= 0.1 * length(set)
+  keep_indices = colSums(assays(sce_sub)$counts > 0) >= 0.05 * length(set)
   message(
     sprintf(
       "Retaining %s%% of cells after filtering low expression",
