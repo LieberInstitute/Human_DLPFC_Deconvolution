@@ -34,12 +34,14 @@ halo_prop_long |> count(method)
 
 ## what data exists?
 list.files(here("processed-data","08_bulk_deconvolution"))
-# [1] "01_deconvolution_Bisque"           "02_deconvolution_MuSiC"            "03_get_est_prop"                   "04_deconvolution_DWLS"            
-# [5] "05_deconvolution_hspe"             "06_deconvolution_BayesPrism"
+# [1] "01_deconvolution_Bisque"          "02_deconvolution_MuSiC"                          
+# [4] "04_deconvolution_DWLS"            "05_deconvolution_hspe"            "06_deconvolution_BayesPrism"     
+# [7] "07_deconvolution_CIBERSORTx_prep"
 
 #### DWLS ####
 fn_dwls <- list.files(here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS"), pattern = ".Rdata", full.names = TRUE)
 names(fn_dwls) <- gsub("est_prop_dwls-(.*?).Rdata","\\1",basename(fn_dwls))
+map_chr(fn_dwls, basename)
 
 est_prop_dwls <- map(fn_dwls, ~get(load(.x)[1]))
 
@@ -56,6 +58,7 @@ est_prop_dwls |> count(marker)
 #### Bisque ####
 fn_bisque <- list.files(here("processed-data","08_bulk_deconvolution", "01_deconvolution_Bisque"), pattern = ".Rdata", full.names = TRUE)
 names(fn_bisque) <- gsub("est_prop_bisque-(.*?).Rdata","\\1",basename(fn_bisque))
+map_chr(fn_bisque, basename)
 
 est_prop_bisque <- map(fn_bisque, ~get(load(.x)[1]))
 
@@ -72,6 +75,7 @@ est_prop_bisque |> count(marker)
 #### MuSiC ####
 fn_music <- list.files(here("processed-data","08_bulk_deconvolution", "02_deconvolution_MuSiC"), pattern = ".Rdata", full.names = TRUE)
 names(fn_music) <- gsub("est_prop_music-(.*?).Rdata","\\1",basename(fn_music))
+map_chr(fn_music, basename)
 
 est_prop_music <- map(fn_music, ~get(load(.x)[1]))
 
@@ -86,7 +90,22 @@ est_prop_music <- do.call("rbind", est_prop_music)
 est_prop_music |> count(marker)
 
 #### CIBERSORTx ####
-## TODO 
+fn_ciber <- list.files(here("processed-data","08_bulk_deconvolution", "07_deconvolution_CIBERSORTx_prep"), pattern = "CIBERSORTx_Adjusted.txt", full.names = TRUE, recursive = TRUE)
+## keep an eye on this
+fn_ciber <- fn_ciber[!grepl("tutorial|test",fn_ciber)]
+names(fn_ciber) <- gsub(".*?/output_(.*?)/CIBERSORTx_Adjusted.txt","\\1",fn_ciber)
+map_chr(fn_ciber, basename)
+
+est_prop_ciber <- map(fn_ciber, read.delim)
+est_prop_ciber <- map2(est_prop_ciber, names(est_prop_ciber), ~.x |>
+                         rename(SAMPLE_ID = Mixture) |>
+                         select(-`P.value`, -Correlation, -RMSE) |>
+                         pivot_longer(!SAMPLE_ID, names_to = "cell_type", values_to = "prop") |>
+                         mutate(method = "CIBERSORTx", marker = .y)
+                       )
+
+est_prop_ciber <- do.call("rbind", est_prop_ciber)
+est_prop_ciber |> count(marker)
 
 #### hspe ####
 fn_hspe <- list.files(here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe"), pattern = ".Rdata", full.names = TRUE)
@@ -130,6 +149,7 @@ prop_long <- est_prop_bisque |>
   bind_rows(est_prop_hspe) |>
   bind_rows(est_prop_dwls) |> 
   bind_rows(est_prop_bayes) |>
+  bind_rows(est_prop_ciber) |>
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
   mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
          Sample = paste0(BrNum, "_", tolower(pos))) |>
