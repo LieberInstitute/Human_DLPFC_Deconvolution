@@ -15,24 +15,24 @@ library(sessioninfo)
 
 
 ## Results of DGE analysis for library type (polyA vs RZ) in Total/Cyto/Nuclear samples
-de_results_polyA_vs_RZ_Total <- read.csv('raw-data/DGE_results_library_type/DREAM_library-type_gene_Bulk.csv')
-de_results_polyA_vs_RZ_Cyto <- read.csv('raw-data/DGE_results_library_type/DREAM_library-type_gene_Cyto.csv')
-de_results_polyA_vs_RZ_Nuc <- read.csv('raw-data/DGE_results_library_type/DREAM_library-type_gene_Nuc.csv')
+de_results_polyA_vs_RZ_Total <- read.csv('processed-data/09_bulk_DE/08_DREAM_library-type/DREAM_library-type_gene_Bulk.csv')
+de_results_polyA_vs_RZ_Cyto <- read.csv('processed-data/09_bulk_DE/08_DREAM_library-type/DREAM_library-type_gene_Cyto.csv')
+de_results_polyA_vs_RZ_Nuc <- read.csv('processed-data/09_bulk_DE/08_DREAM_library-type/DREAM_library-type_gene_Nuc.csv')
 
 ## Results of DGE analysis for RNA extraction (Total/Cyto/Nuclear) type in polyA and RZ samples
-de_results_Total_vs_Cyto_polyA <- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_polyA_Bulk_Cyto.csv')
-de_results_Total_vs_Nuc_polyA <- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_polyA_Bulk_Nuc.csv')
-de_results_Cyto_vs_Nuc_polyA <- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_polyA_Cyto_Nuc.csv')
-de_results_Total_vs_Cyto_RZ<- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_RiboZeroGold_Bulk_Cyto.csv')
-de_results_Total_vs_Nuc_RZ <- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_RiboZeroGold_Bulk_Nuc.csv')
-de_results_Cyto_vs_Nuc_RZ <- read.csv('raw-data/DGE_results_library_prep/DREAM_library-prep_gene_RiboZeroGold_Cyto_Nuc.csv')
+de_results_Total_vs_Cyto_polyA <- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_polyA_Bulk_Cyto.csv')
+de_results_Total_vs_Nuc_polyA <- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_polyA_Bulk_Nuc.csv')
+de_results_Cyto_vs_Nuc_polyA <- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_polyA_Cyto_Nuc.csv')
+de_results_Total_vs_Cyto_RZ<- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_RiboZeroGold_Bulk_Cyto.csv')
+de_results_Total_vs_Nuc_RZ <- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_RiboZeroGold_Bulk_Nuc.csv')
+de_results_Cyto_vs_Nuc_RZ <- read.csv('processed-data/09_bulk_DE/09_DREAM_library-prep/DREAM_library-prep_gene_RiboZeroGold_Cyto_Nuc.csv')
 
 ## Results of DGE analysis for data type (polyA/RZ bulk RNA-seq vs snRNA-seq data)
-de_results_bulk_Total_polyA_vs_sn <- read.csv('raw-data/DGE_results_data_type/DREAM_data-type_gene_polyA.csv')
-de_results_bulk_Total_RZ_vs_sn <- read.csv('raw-data/DGE_results_data_type/DREAM_data-type_gene_RiboZeroGold.csv')
+de_results_bulk_Total_polyA_vs_sn <- read.csv('processed-data/10_bulk_vs_sn_DE/03_DREAM_sn_v_bulk/DREAM_data-type_gene_polyA.csv')
+de_results_bulk_Total_RZ_vs_sn <- read.csv('processed-data/10_bulk_vs_sn_DE/03_DREAM_sn_v_bulk/DREAM_data-type_gene_RiboZeroGold.csv')
 
 ## Load rse data 
-load(here('raw-data/rse_gene.Rdata'))
+load(here('processed-data/rse/rse_gene.Rdata'))
 
 
 ## Function to identify the GO & KEGG enriched terms in each cluster of DEGs 
