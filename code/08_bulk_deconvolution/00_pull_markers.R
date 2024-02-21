@@ -31,6 +31,8 @@ length(common_genes)
 # [1] 17804
 
 
+#### Mean Ratio ####
+## top 25
 markers_mean_ratio_top25 <- marker_stats |> 
   filter(rank_ratio <= 25) |>
   mutate(in_bulk = gene %in% rowData(rse_gene)$ensemblID)
@@ -57,6 +59,47 @@ markers_mean_ratio_top25 <- marker_stats |>
 
 cat(markers_mean_ratio_top25, sep = "\n", file = here("processed-data","08_bulk_deconvolution", "markers_MeanRatio_top25.txt"))
 save(markers_mean_ratio_top25, file = here("processed-data","08_bulk_deconvolution", "markers_mean_ratio_top25.Rdata"))
+
+## 3 MADs
+
+markers_mean_ratio_MAD3 <- marker_stats |>
+  filter(gene %in% common_genes, ratio > 1) |>
+  group_by(cellType.target) |>
+  filter(ratio > median(ratio) + 3*mad(ratio)) |>
+  dplyr::pull(gene)
+
+# cellType.target     n
+# <fct>           <int>
+# 1 Astro              35
+# 2 EndoMural          49
+# 3 Micro              39
+# 4 Oligo              50
+# 5 OPC                67
+# 6 Excit             157
+# 7 Inhib             123
+length(markers_mean_ratio_MAD3) #[1] 520
+cat(markers_mean_ratio_MAD3, sep = "\n", file = here("processed-data","08_bulk_deconvolution", "markers_MeanRatio_MAD3.txt"))
+
+
+## MeanRatio > 2
+markers_mean_ratio_2 <- marker_stats |>
+  filter(gene %in% common_genes, ratio > 2) |>
+  # count(cellType.target) |>
+  dplyr::pull(gene)
+
+# cellType.target     n
+# <fct>           <int>
+# 1 Astro              58
+# 2 EndoMural          74
+# 3 Micro              87
+# 4 Oligo              81
+# 5 OPC                68
+# 6 Excit             137
+# 7 Inhib              52
+
+length(markers_mean_ratio_2) #[1] 557
+cat(markers_mean_ratio_2, sep = "\n", file = here("processed-data","08_bulk_deconvolution", "markers_MeanRatio_over2.txt"))
+
 
 ## 1vALL top25
 markers_1vALL_top25 <- marker_stats |> 

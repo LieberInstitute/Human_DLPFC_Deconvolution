@@ -50,6 +50,7 @@ common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
 length(common_genes)
 # [1] 17804
 
+## subset markers
 if(marker_label == "FULL"){
   markers <- common_genes
 } else {
@@ -141,6 +142,9 @@ save(est_prop_BayesPrism_marker, diff.exp.stat, file = here(data_dir,paste0("est
 
 
 # slurmjobs::job_single('06_deconvolution_BayesPrism_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# slurmjobs::job_single('06_deconvolution_BayesPrism_MeanRatio_MAD3', create_shell = TRUE, memory = '75G', command = "Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_MAD3 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_MAD3.txt")
+# slurmjobs::job_single('06_deconvolution_BayesPrism_MeanRatio_over2', create_shell = TRUE, memory = '75G', command = "Rscript 06_deconvolution_BayesPrism_marker.R MeanRatio_over2 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_over2.txt")
+
 # slurmjobs::job_single('06_deconvolution_BayesPrism_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 06_deconvolution_BayesPrism_marker.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
 
 ## Reproducibility information

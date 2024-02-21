@@ -100,7 +100,11 @@ est_prop_dwls <- t(est_prop_dwls)
 save(est_prop_dwls, Signature, file = here(data_dir, paste0("est_prop_dwls-", marker_label, ".Rdata")))
 
 # slurmjobs::job_single('04_deconvolution_DWLS_FULL', create_shell = TRUE, memory = '100G', command = "Rscript 04_deconvolution_DWLS.R FULL")
+
 # slurmjobs::job_single('04_deconvolution_DWLS_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 04_deconvolution_DWLS.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# slurmjobs::job_single('04_deconvolution_DWLS_MeanRatio_MAD3', create_shell = TRUE, memory = '10G', command = "Rscript 04_deconvolution_DWLS.R MeanRatio_MAD3 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_MAD3.txt")
+# slurmjobs::job_single('04_deconvolution_DWLS_MeanRatio_over2', create_shell = TRUE, memory = '10G', command = "Rscript 04_deconvolution_DWLS.R MeanRatio_over2 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_over2.txt")
+
 # slurmjobs::job_single('04_deconvolution_DWLS_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 04_deconvolution_DWLS.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
 
 ## Reproducibility information
