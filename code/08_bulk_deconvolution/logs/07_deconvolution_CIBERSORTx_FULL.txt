@@ -1,12 +1,11 @@
 **** Job starts ****
-Thu Feb 15 12:00:56 PM EST 2024
+Wed Feb 21 10:45:05 AM EST 2024
 **** JHPCE info ****
-User: lhuuki
-Job id: 2032568
+User: neagles
+Job id: 2178843
 Job name: 07_deconvolution_CIBERSORTx_FULL
-Node name: compute-127
+Node name: compute-053
 Task id: 
-Unloading LIBD SLURM module for cibersortx/04_04_2020
 Loading LIBD SLURM module for cibersortx/04_04_2020
 
 Software is invoked by calling 'CIBERSORTxFractions'. It runs inside a
@@ -18,11 +17,10 @@ To mount custom paths or manually access the Singularity image directly, use
     singularity exec
 /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif
 /src/CIBERSORTxFractions 
-/usr/share/lmod/lmod/init/bash: line 125: unalias: CIBERSORTxFractions: not found
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) singularity/3.11.4
-  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) cibersortx/04_04_2020
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) singularity/3.11.4
+  2) JHPCE_tools/3.0            4) cibersortx/04_04_2020
 
  
 
@@ -34,7 +32,10 @@ Currently Loaded Modules:
 >[Options] mixture: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_bulk_counts.txt
 >[Options] fraction: 0
 >[Options] rmbatchSmode: TRUE
->[Options] outdir: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_FULL/
-terminate called after throwing an instance of 'std::invalid_argument'
-  what():  stod
-/var/spool/slurm/d/job2032568/slurm_script: line 40: 572939 Aborted                 (core dumped) singularity exec -B /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/:/src/data -B /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_FULL/:/src/outdir /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions --username louise.huuki@libd.org --token $CIBERSORT_TOKEN --single_cell TRUE --refsample "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_sc_counts-FULL.txt" --mixture /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_bulk_counts.txt --fraction 0 --rmbatchSmode TRUE --outdir /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_FULL/
+>[Options] outdir: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_FULL
+>single_cell is set to TRUE, so quantile normalization is set to FALSE, and the default parameters for building the signature matrix have been set to the following values:
+	- G.min <- 300
+	- G.max <- 500
+	- q.value <- 0.01
+/var/spool/slurm/d/job2178843/slurm_script: line 47: 3345299 Killed                  singularity exec -B ${in_dir}:/src/data -B ${out_dir}:/src/outdir /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions --username louise.huuki@libd.org --token $CIBERSORT_TOKEN --single_cell TRUE --refsample $ref --mixture $mix --fraction 0 --rmbatchSmode TRUE --outdir ${out_dir}
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=2178843.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.

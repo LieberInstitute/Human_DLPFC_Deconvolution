@@ -1,11 +1,12 @@
 **** Job starts ****
-Fri Feb 16 11:48:34 AM EST 2024
+Wed Feb 21 03:41:47 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2050866
+Job id: 2327180
 Job name: 03_get_est_prop
-Node name: compute-095
+Node name: compute-105
 Task id: 
+Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -59,68 +60,73 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
  [3] "03_get_est_prop"                  "04_deconvolution_DWLS"           
  [5] "05_deconvolution_hspe"            "06_deconvolution_BayesPrism"     
  [7] "07_deconvolution_CIBERSORTx_prep" "example_data"                    
- [9] "markers_1vALL_top25.txt"          "markers_MeanRatio_top25.txt"     
-[11] "markers_top25.csv"                "markers_top25.Rdata"             
-[13] "markers_top25.txt"                "old"                             
+ [9] "markers_1vALL_top25.txt"          "markers_MeanRatio_MAD3.txt"      
+[11] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
+[13] "markers_top25.csv"                "markers_top25.Rdata"             
+[15] "markers_top25.txt"                "old"                             
+# A tibble: 5 × 2
+  marker              n
+  <chr>           <int>
+1 1vALL_top25       770
+2 FULL              770
+3 MeanRatio_MAD3    770
+4 MeanRatio_over2   770
+5 MeanRatio_top25   770
+# A tibble: 5 × 2
+  marker              n
+  <chr>           <int>
+1 1vALL_top25       770
+2 FULL              770
+3 MeanRatio_MAD3    770
+4 MeanRatio_over2   770
+5 MeanRatio_top25   770
 # A tibble: 3 × 2
   marker              n
   <chr>           <int>
 1 1vALL_top25       770
 2 FULL              770
 3 MeanRatio_top25   770
-# A tibble: 3 × 2
+# A tibble: 5 × 2
   marker              n
   <chr>           <int>
 1 1vALL_top25       770
 2 FULL              770
-3 MeanRatio_top25   770
-# A tibble: 3 × 2
+3 MeanRatio_MAD3    770
+4 MeanRatio_over2   770
+5 MeanRatio_top25   770
+# A tibble: 5 × 2
   marker              n
   <chr>           <int>
 1 1vALL_top25       770
 2 FULL              770
-3 MeanRatio_top25   770
-# A tibble: 3 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_top25   770
-# A tibble: 3 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_top25   770
+3 MeanRatio_MAD3    770
+4 MeanRatio_over2   770
+5 MeanRatio_top25   770
 Joining with `by = join_by(cell_type, Sample)`
 Joining with `by = join_by(Dataset)`
-# A tibble: 15 × 3
+# A tibble: 23 × 3
    method     marker              n
    <chr>      <chr>           <int>
  1 BayesPrism 1vALL_top25       770
  2 BayesPrism FULL              770
- 3 BayesPrism MeanRatio_top25   770
- 4 Bisque     1vALL_top25       770
- 5 Bisque     FULL              770
- 6 Bisque     MeanRatio_top25   770
- 7 DWLS       1vALL_top25       770
- 8 DWLS       FULL              770
- 9 DWLS       MeanRatio_top25   770
-10 MuSiC      1vALL_top25       770
-11 MuSiC      FULL              770
-12 MuSiC      MeanRatio_top25   770
-13 hspe       1vALL_top25       770
-14 hspe       FULL              770
-15 hspe       MeanRatio_top25   770
+ 3 BayesPrism MeanRatio_MAD3    770
+ 4 BayesPrism MeanRatio_over2   770
+ 5 BayesPrism MeanRatio_top25   770
+ 6 Bisque     1vALL_top25       770
+ 7 Bisque     FULL              770
+ 8 Bisque     MeanRatio_MAD3    770
+ 9 Bisque     MeanRatio_over2   770
+10 Bisque     MeanRatio_top25   770
+# ℹ 13 more rows
 # A tibble: 2 × 2
   `!is.na(RNAscope_prop)`     n
   <lgl>                   <int>
-1 FALSE                    6510
-2 TRUE                     5040
+1 FALSE                    9982
+2 TRUE                     7728
 [1] "Reproducibility information:"
-[1] "2024-02-16 11:49:08 EST"
+[1] "2024-02-21 15:42:12 EST"
    user  system elapsed 
- 23.362   1.369  30.954 
+ 16.064   1.123  21.782 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -131,7 +137,7 @@ Joining with `by = join_by(Dataset)`
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-16
+ date     2024-02-21
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -162,7 +168,7 @@ Joining with `by = join_by(Dataset)`
  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.3.2)
  dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
  dqrng                  0.3.2      2023-11-29 [1] CRAN (R 4.3.2)
- edgeR                  4.0.15     2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
+ edgeR                  4.0.16     2024-02-18 [1] Bioconductor 3.18 (R 4.3.2)
  fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
  forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
@@ -247,4 +253,4 @@ Joining with `by = join_by(Dataset)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Feb 16 11:49:10 AM EST 2024
+Wed Feb 21 03:42:14 PM EST 2024
