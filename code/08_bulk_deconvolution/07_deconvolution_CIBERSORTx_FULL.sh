@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=50G
+#SBATCH --mem=100G
 #SBATCH --job-name=07_deconvolution_CIBERSORTx_FULL
 #SBATCH -c 1
 #SBATCH -o logs/07_deconvolution_CIBERSORTx_FULL.txt
