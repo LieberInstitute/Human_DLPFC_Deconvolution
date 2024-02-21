@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 05_deconvolution_hspe.R MAD3
+Rscript 05_deconvolution_hspe.R MeanRatio_MAD3
 
 echo "**** Job ends ****"
 date
