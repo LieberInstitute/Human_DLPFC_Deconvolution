@@ -80,7 +80,11 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
 save(est_prop_bisque, file = here(data_dir, paste0("est_prop_bisque-",marker_label,".Rdata")))
 
 # slurmjobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '100G', command = "Rscript 01_deconvolution_Bisque.R FULL")
+
 # slurmjobs::job_single('01_deconvolution_Bisque_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_top25.txt")
+# slurmjobs::job_single('01_deconvolution_Bisque_MeanRatio_MAD3', create_shell = TRUE, memory = '10G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_MAD3 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_MAD3.txt")
+# slurmjobs::job_single('01_deconvolution_Bisque_MeanRatio_over2', create_shell = TRUE, memory = '10G', command = "Rscript 01_deconvolution_Bisque.R MeanRatio_over2 ../../processed-data/08_bulk_deconvolution/markers_MeanRatio_over2.txt")
+
 # slurmjobs::job_single('01_deconvolution_Bisque_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 01_deconvolution_Bisque.R 1vALL_top25 ../../processed-data/08_bulk_deconvolution/markers_1vALL_top25.txt")
 
 ## Reproducibility information
