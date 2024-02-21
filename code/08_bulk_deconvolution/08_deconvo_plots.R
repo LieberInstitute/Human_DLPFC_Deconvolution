@@ -156,8 +156,8 @@ cor_rmse_line <- cor_check_library |>
   labs(x = "Library Type + RNA Extraction") +
   scale_color_manual(values = method_colors)
 
-ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.png"), width = 10, height = 3.4)
-ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.pdf"), width = 10, height = 3.4)
+ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.png"), width = 10, height = 4)
+ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.pdf"), width = 10, height = 4)
 
 #### proportion data ####
 
