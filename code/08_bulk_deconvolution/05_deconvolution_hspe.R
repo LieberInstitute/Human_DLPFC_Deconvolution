@@ -99,7 +99,11 @@ message(Sys.time(), "- Saving")
 save(est_prop_hspe, file = here(data_dir,paste0("est_prop_hspe-",marker_label,".Rdata")))
 
 # slurmjobs::job_single('05_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R FULL")
+
 # slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R MeanRatio_top25")
+slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_MAD3', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R MAD3")
+slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_over2', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R over2")
+
 # slurmjobs::job_single('05_deconvolution_hspe_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R 1vALL_top25")
 
 ## Reproducibility information
