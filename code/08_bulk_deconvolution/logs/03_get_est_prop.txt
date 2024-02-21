@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Feb 21 03:41:47 PM EST 2024
+Wed Feb 21 03:56:47 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2327180
+Job id: 2340128
 Job name: 03_get_est_prop
-Node name: compute-105
+Node name: compute-109
 Task id: 
 Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
@@ -64,6 +64,12 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 [11] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
 [13] "markers_top25.csv"                "markers_top25.Rdata"             
 [15] "markers_top25.txt"                "old"                             
+                          1vALL_top25                                  FULL 
+    "est_prop_dwls-1vALL_top25.Rdata"            "est_prop_dwls-FULL.Rdata" 
+                       MeanRatio_MAD3                       MeanRatio_over2 
+ "est_prop_dwls-MeanRatio_MAD3.Rdata" "est_prop_dwls-MeanRatio_over2.Rdata" 
+                      MeanRatio_top25 
+"est_prop_dwls-MeanRatio_top25.Rdata" 
 # A tibble: 5 × 2
   marker              n
   <chr>           <int>
@@ -72,6 +78,12 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 3 MeanRatio_MAD3    770
 4 MeanRatio_over2   770
 5 MeanRatio_top25   770
+                            1vALL_top25                                    FULL 
+    "est_prop_bisque-1vALL_top25.Rdata"            "est_prop_bisque-FULL.Rdata" 
+                         MeanRatio_MAD3                         MeanRatio_over2 
+ "est_prop_bisque-MeanRatio_MAD3.Rdata" "est_prop_bisque-MeanRatio_over2.Rdata" 
+                        MeanRatio_top25 
+"est_prop_bisque-MeanRatio_top25.Rdata" 
 # A tibble: 5 × 2
   marker              n
   <chr>           <int>
@@ -80,12 +92,23 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 3 MeanRatio_MAD3    770
 4 MeanRatio_over2   770
 5 MeanRatio_top25   770
+                           1vALL_top25                                   FULL 
+    "est_prop_music-1vALL_top25.Rdata"            "est_prop_music-FULL.Rdata" 
+                       MeanRatio_top25 
+"est_prop_music-MeanRatio_top25.Rdata" 
 # A tibble: 3 × 2
   marker              n
   <chr>           <int>
 1 1vALL_top25       770
 2 FULL              770
 3 MeanRatio_top25   770
+              1vALL_top25           MeanRatio_top25 
+"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
+# A tibble: 2 × 2
+  marker              n
+  <chr>           <int>
+1 1vALL_top25       770
+2 MeanRatio_top25   770
 # A tibble: 5 × 2
   marker              n
   <chr>           <int>
@@ -104,7 +127,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 5 MeanRatio_top25   770
 Joining with `by = join_by(cell_type, Sample)`
 Joining with `by = join_by(Dataset)`
-# A tibble: 23 × 3
+# A tibble: 25 × 3
    method     marker              n
    <chr>      <chr>           <int>
  1 BayesPrism 1vALL_top25       770
@@ -117,16 +140,16 @@ Joining with `by = join_by(Dataset)`
  8 Bisque     MeanRatio_MAD3    770
  9 Bisque     MeanRatio_over2   770
 10 Bisque     MeanRatio_top25   770
-# ℹ 13 more rows
+# ℹ 15 more rows
 # A tibble: 2 × 2
   `!is.na(RNAscope_prop)`     n
   <lgl>                   <int>
-1 FALSE                    9982
-2 TRUE                     7728
+1 FALSE                   10850
+2 TRUE                     8400
 [1] "Reproducibility information:"
-[1] "2024-02-21 15:42:12 EST"
+[1] "2024-02-21 15:57:10 EST"
    user  system elapsed 
- 16.064   1.123  21.782 
+ 16.129   1.087  20.421 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -253,4 +276,4 @@ Joining with `by = join_by(Dataset)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb 21 03:42:14 PM EST 2024
+Wed Feb 21 03:57:11 PM EST 2024
