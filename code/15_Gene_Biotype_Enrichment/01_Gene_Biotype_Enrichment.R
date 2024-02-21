@@ -17,9 +17,9 @@ library(sessioninfo)
 ## and scRNA-seq data
 
 
-## Locally load rse and pseudobulked sce data (both already filtered by gene expression)
-load(here('raw-data/rse_gene.Rdata')) 
-load(here('raw-data/sce_pb_sample.Rdata'), verbose = TRUE)
+## Load rse and pseudobulked sce data (both already filtered by gene expression)
+load(here('processed-data/rse/rse_gene.Rdata'))
+load(here('processed-data/10_bulk_vs_sn_DE/sce_pb_sample.Rdata'), verbose = TRUE)
   
   
 # ------------------------------------------------------------------------------
