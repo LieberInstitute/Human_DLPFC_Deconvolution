@@ -20,11 +20,11 @@ if(marker_label == "FULL"){
 }
 
 #### data output folder ####
-data_dir <- here("processed-data","08_bulk_deconvolution", "04_deoncvolution_DWLS")
+data_dir <- here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 ## for marker data from subsets
-data_dir_marker <- here("processed-data","08_bulk_deconvolution", "04_deoncvolution_DWLS", marker_label)
+data_dir_marker <- here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS", marker_label)
 if(!dir.exists(data_dir_marker)) dir.create(data_dir_marker)
 
 #### load data ####
