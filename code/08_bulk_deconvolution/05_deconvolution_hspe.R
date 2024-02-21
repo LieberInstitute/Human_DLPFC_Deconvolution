@@ -4,16 +4,17 @@
 library("hspe")
 library("SingleCellExperiment")
 library("jaffelab")
+library("tidyverse")
 library("here")
 library("sessioninfo")
 
 ## get args
 args = commandArgs(trailingOnly=TRUE)
 marker_label <- args[1]
-marker_file <- NULL
 
 ## not using txt list of marker genes, methods needs named list
-stopifnot(marker_label %in% c("MeanRatio_top25", "1vALL_top25", "FULL"))
+marker_sets <- c("MeanRatio_top25", "1vALL_top25", "MeanRatio_MAD3", "MeanRatio_over2")
+stopifnot(marker_label %in% c(marker_sets, "FULL"))
 
 #### data output folder ####
 data_dir <- here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe")
@@ -62,25 +63,47 @@ if(marker_label == "FULL"){
                        pure_samples = pure_samples,
                        seed =10524)
 
-} else if(marker_label %in% c("MeanRatio_top25", "1vALL_top25")){ ## Run with our markers 
+} else if(marker_label %in% marker_sets){ ## Run with our markers 
   
   ## load marker gene data
   load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
   marker_tab <- NULL
   
   if(marker_label == "MeanRatio_top25"){
+    
     marker_tab <- marker_stats |> 
-      dplyr::filter(gene %in% common_genes, rank_ratio <= 25) 
+      dplyr::filter(gene %in% common_genes, 
+                    rank_ratio <= 25) 
+    
+  } else if(marker_label == "MeanRatio_MAD3"){
+    
+    marker_tab <- marker_stats |>
+      dplyr::filter(gene %in% common_genes, ratio > 1) |>
+      dplyr::group_by(cellType.target) |>
+      dplyr::filter(ratio > median(ratio) + 3*mad(ratio))
+    
+  }else if(marker_label == "MeanRatio_over2"){
+    
+    marker_tab <- marker_stats |> 
+      dplyr::filter(gene %in% common_genes, 
+                    ratio > 2) 
+    
+  }else if(marker_label == "1vALL_top25"){
+    
+    marker_tab <- marker_stats |> 
+      dplyr::filter(gene %in% common_genes, 
+                    rank_marker <= 25) 
+    
   } else {
-    marker_tab <- marker_stats |> 
-      dplyr::filter(gene %in% common_genes, rank_marker <= 25) 
+    stop("non-valid marker label: ", marker_label)
   }
   
   marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x])
-  
+    
   marker_genes <- marker_genes[names(pure_samples)]
   
   message(Sys.time(), "- hspe w/ markers ", marker_label)
+  purrr::map_int(marker_genes, length)
   
   ## notes
   
@@ -101,8 +124,8 @@ save(est_prop_hspe, file = here(data_dir,paste0("est_prop_hspe-",marker_label,".
 # slurmjobs::job_single('05_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R FULL")
 
 # slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R MeanRatio_top25")
-slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_MAD3', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R MAD3")
-slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_over2', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R over2")
+# slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_MAD3', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R MAD3")
+# slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_over2', create_shell = TRUE, memory = '5G', command = "Rscript 05_deconvolution_hspe.R over2")
 
 # slurmjobs::job_single('05_deconvolution_hspe_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R 1vALL_top25")
 
