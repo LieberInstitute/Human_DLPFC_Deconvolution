@@ -151,5 +151,9 @@ library_combo_shapes <- c(polyA_Bulk=16, #filled circle
                           RiboZeroGold_Cyto=2, #open triangle 
                           RiboZeroGold_Nuc=0 # open square
                           ) 
-save(library_combo_shapes, file = here("processed-data","00_data_prep","library_combo_shapes.Rdata"))
+
+library_combo_shapes2 <- library_combo_shapes
+names(library_combo_shapes2) <- gsub("Bulk", "Total", names(library_combo_shapes2)) 
+
+save(library_combo_shapes, library_combo_shapes2, file = here("processed-data","00_data_prep","library_combo_shapes.Rdata"))
 
