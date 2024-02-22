@@ -9,7 +9,7 @@ load(here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"),
 
 ## drop cell types 
 sce <- sce[, sce$cellType_broad != "drop"]
-sce$cellType_broad <- droplevels(sce$cellType_broad)
+# sce$cellType_broad <- droplevels(sce$cellType_broad)
 
 table(sce$cellType_broad)
 # Astro EndoMural     Excit     Inhib     Micro     Oligo       OPC 
