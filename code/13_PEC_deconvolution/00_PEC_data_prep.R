@@ -59,7 +59,7 @@ dx_key <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 ct_key <- read.csv(here("processed-data", "13_PEC_deconvolution","PEC_cell_types.csv"))
 
 sce$primaryDiagnosis <- dx_key$primaryDiagnosis[match(sce$individualID, dx_key$individualID)]
-sce$cellType_broad <- ct_key$cellType.broad[match(sce$cellType, ct_key$cellType)]
+sce$cellType_broad <- ct_key$cellType_broad[match(sce$cellType, ct_key$cellType)]
 
 colData(sce)
 table(sce$cellType, sce$cellType_broad)
