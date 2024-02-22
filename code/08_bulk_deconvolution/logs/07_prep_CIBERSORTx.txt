@@ -1,16 +1,16 @@
 **** Job starts ****
-Tue Feb 20 04:24:18 PM EST 2024
+Thu Feb 22 11:50:56 AM EST 2024
 **** JHPCE info ****
-User: neagles
-Job id: 2135443
+User: lhuuki
+Job id: 2630282
 Job name: 07_prep_CIBERSORTx
-Node name: compute-057
+Node name: compute-109
 Task id: 
 Loading conda_R/4.3
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-23.3.1
-  2) JHPCE_tools/3.0            4) conda_R/4.3
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3
 
  
 
@@ -158,40 +158,34 @@ The following object is masked from ‘package:rhdf5’:
     Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
      3979      2157      1601     10894      1940     24809     11067 
 Read 151 items
+Read 520 items
+Read 557 items
 Read 145 items
-MeanRatio_top25     1vALL_top25            FULL 
-            151             145           36601 
-2024-02-20 16:25:01.271433 - Format sce counts MeanRatio_top25
-Retaining 94.4% of cells after filtering low expression
+ MeanRatio_MAD3 MeanRatio_over2 
+            520             557 
+2024-02-22 11:51:28.448806 - Format sce counts MeanRatio_MAD3
+Retaining 98.6% of cells after filtering low expression
 Remaining cells of each type:
 
     Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-     3635      2055      1496     10572      1914     22762     10875 
-[1]   151 53310
-2024-02-20 16:30:10.470713 - Export
-2024-02-20 16:30:16.210241 - Format sce counts 1vALL_top25
-Retaining 99.6% of cells after filtering low expression
+     3594      2118      1541     10736      1933     24699     11032 
+[1]   520 55654
+2024-02-22 11:54:54.683278 - Export
+2024-02-22 11:55:06.513066 - Format sce counts MeanRatio_over2
+Retaining 99.1% of cells after filtering low expression
 Remaining cells of each type:
 
     Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-     3927      2141      1587     10869      1939     24738     11037 
-[1]   145 56239
-2024-02-20 16:35:11.786499 - Export
-2024-02-20 16:35:17.192313 - Format sce counts FULL
-Retaining 77.8% of cells after filtering low expression
-Remaining cells of each type:
-
-    Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-     2089      1372       698      5951      1606     21488     10733 
-[1] 36601 43938
-2024-02-20 17:27:19.212491 - Export
+     3739      2139      1596     10839      1935     24670     11018 
+[1]   557 55937
+2024-02-22 11:58:21.220934 - Export
 [1] "Reproducibility information:"
-           used  (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells  7272069 388.4   12389475   661.7   12389475   661.7
-Vcells 49523152 377.9 4691414183 35792.7 4885490951 37273.4
-[1] "2024-02-20 17:51:46 EST"
-    user   system  elapsed 
-5023.958  122.087 5243.827 
+           used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells  7274302 388.5   13895695  742.2  13895695  742.2
+Vcells 49526840 377.9  169504649 1293.3 211880719 1616.6
+[1] "2024-02-22 11:58:34 EST"
+   user  system elapsed 
+441.954   6.688 456.110 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.1 Patched (2023-07-19 r84711)
@@ -202,7 +196,7 @@ Vcells 49523152 377.9 4691414183 35792.7 4885490951 37273.4
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-20
+ date     2024-02-22
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -219,10 +213,10 @@ Vcells 49523152 377.9 4691414183 35792.7 4885490951 37273.4
  crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.1)
  DelayedArray         * 0.26.7    2023-07-28 [2] Bioconductor
  DelayedMatrixStats     1.22.6    2023-08-28 [2] Bioconductor
- fansi                  1.0.5     2023-10-08 [1] CRAN (R 4.3.1)
+ fansi                  1.0.4     2023-01-22 [2] CRAN (R 4.3.1)
  GenomeInfoDb         * 1.36.3    2023-09-07 [2] Bioconductor
  GenomeInfoDbData       1.2.10    2023-07-20 [2] Bioconductor
- GenomicRanges        * 1.52.1    2023-10-08 [1] Bioconductor
+ GenomicRanges        * 1.52.0    2023-04-25 [2] Bioconductor
  glue                   1.6.2     2022-02-24 [2] CRAN (R 4.3.1)
  HDF5Array            * 1.28.1    2023-05-01 [2] Bioconductor
  here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.1)
@@ -245,7 +239,7 @@ Vcells 49523152 377.9 4691414183 35792.7 4885490951 37273.4
  rlang                  1.1.1     2023-04-28 [2] CRAN (R 4.3.1)
  rprojroot              2.0.3     2022-04-02 [2] CRAN (R 4.3.1)
  rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.1)
- S4Arrays             * 1.2.0     2023-10-24 [1] Bioconductor
+ S4Arrays             * 1.0.6     2023-08-30 [2] Bioconductor
  S4Vectors            * 0.38.1    2023-05-02 [2] Bioconductor
  ScaledMatrix           1.8.1     2023-05-03 [2] Bioconductor
  scry                   1.12.0    2023-04-25 [2] Bioconductor
@@ -256,14 +250,14 @@ Vcells 49523152 377.9 4691414183 35792.7 4885490951 37273.4
  SummarizedExperiment * 1.30.2    2023-06-06 [2] Bioconductor
  tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.1)
  utf8                   1.2.3     2023-01-31 [2] CRAN (R 4.3.1)
- vctrs                  0.6.4     2023-10-12 [1] CRAN (R 4.3.1)
+ vctrs                  0.6.3     2023-06-14 [2] CRAN (R 4.3.1)
  XVector                0.40.0    2023-04-25 [2] Bioconductor
  zlibbioc               1.46.0    2023-04-25 [2] Bioconductor
 
- [1] /users/neagles/R/4.3
+ [1] /users/lhuuki/R/4.3
  [2] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/site-library
  [3] /jhpce/shared/community/core/conda_R/4.3/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Feb 20 05:51:50 PM EST 2024
+Thu Feb 22 11:58:36 AM EST 2024
