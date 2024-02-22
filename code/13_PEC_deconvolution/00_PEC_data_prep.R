@@ -55,8 +55,16 @@ counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 table(sce$cellType)
 
-save(sce, file = here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"))
+dx_key <- read.csv("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/primaryDiagnosis_PTSDBrainomics.csv")
+ct_key <- read.csv(here("processed-data", "13_PEC_deconvolution","PEC_cell_types.csv"))
 
+sce$primaryDiagnosis <- dx_key$primaryDiagnosis[match(sce$individualID, dx_key$individualID)]
+sce$cellType_broad <- ct_key$cellType.broad[match(sce$cellType, ct_key$cellType)]
+
+colData(sce)
+table(sce$cellType, sce$cellType_broad)
+
+save(sce, file = here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"))
 
 # slurmjobs::job_single(name = "00_PEC_data_prep", memory = "50G", cores = 1, create_shell = TRUE, command = "Rscript 00_PEC_data_perp.R")
 
