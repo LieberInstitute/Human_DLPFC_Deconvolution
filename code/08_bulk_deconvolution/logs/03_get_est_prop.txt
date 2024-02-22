@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Feb 22 10:08:47 AM EST 2024
+Thu Feb 22 01:45:05 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2601863
+Job id: 2692735
 Job name: 03_get_est_prop
-Node name: compute-110
+Node name: compute-054
 Task id: 
 Loading conda_R/4.3.x
 
@@ -35,249 +35,29 @@ Warning messages:
 1: replacing previous import ‘gplots::lowess’ by ‘stats::lowess’ when loading ‘BayesPrism’ 
 2: replacing previous import ‘BiocParallel::register’ by ‘NMF::register’ when loading ‘BayesPrism’ 
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
-# A tibble: 12 × 3
-   method   cell_type     n
-   <chr>    <chr>     <int>
- 1 RNAscope Astro        12
- 2 RNAscope Endo         12
- 3 RNAscope Excit        13
- 4 RNAscope Inhib        12
- 5 RNAscope Micro        13
- 6 RNAscope Oligo        13
- 7 sn       Astro        19
- 8 sn       Endo         19
- 9 sn       Excit        15
-10 sn       Inhib        19
-11 sn       Micro        15
-12 sn       Oligo        14
-# A tibble: 2 × 2
-  method       n
-  <chr>    <int>
-1 RNAscope    75
-2 sn         101
- [1] "01_deconvolution_Bisque"          "02_deconvolution_MuSiC"          
- [3] "03_get_est_prop"                  "04_deconvolution_DWLS"           
- [5] "05_deconvolution_hspe"            "06_deconvolution_BayesPrism"     
- [7] "07_deconvolution_CIBERSORTx_prep" "example_data"                    
- [9] "markers_1vALL_top25.txt"          "markers_MeanRatio_MAD3.txt"      
-[11] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
-[13] "markers_top25.csv"                "markers_top25.Rdata"             
-[15] "markers_top25.txt"                "old"                             
-                          1vALL_top25                                  FULL 
-    "est_prop_dwls-1vALL_top25.Rdata"            "est_prop_dwls-FULL.Rdata" 
-                       MeanRatio_MAD3                       MeanRatio_over2 
- "est_prop_dwls-MeanRatio_MAD3.Rdata" "est_prop_dwls-MeanRatio_over2.Rdata" 
-                      MeanRatio_top25 
-"est_prop_dwls-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-                            1vALL_top25                                    FULL 
-    "est_prop_bisque-1vALL_top25.Rdata"            "est_prop_bisque-FULL.Rdata" 
-                         MeanRatio_MAD3                         MeanRatio_over2 
- "est_prop_bisque-MeanRatio_MAD3.Rdata" "est_prop_bisque-MeanRatio_over2.Rdata" 
-                        MeanRatio_top25 
-"est_prop_bisque-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-                           1vALL_top25                                   FULL 
-    "est_prop_music-1vALL_top25.Rdata"            "est_prop_music-FULL.Rdata" 
-                        MeanRatio_MAD3                        MeanRatio_over2 
- "est_prop_music-MeanRatio_MAD3.Rdata" "est_prop_music-MeanRatio_over2.Rdata" 
-                       MeanRatio_top25 
-"est_prop_music-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-              1vALL_top25                      FULL           MeanRatio_top25 
-"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
-# A tibble: 3 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_top25   770
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-Joining with `by = join_by(cell_type, Sample)`
-Joining with `by = join_by(Dataset)`
-# A tibble: 28 × 3
-   method     marker              n
-   <chr>      <chr>           <int>
- 1 BayesPrism 1vALL_top25       770
- 2 BayesPrism FULL              770
- 3 BayesPrism MeanRatio_MAD3    770
- 4 BayesPrism MeanRatio_over2   770
- 5 BayesPrism MeanRatio_top25   770
- 6 Bisque     1vALL_top25       770
- 7 Bisque     FULL              770
- 8 Bisque     MeanRatio_MAD3    770
- 9 Bisque     MeanRatio_over2   770
-10 Bisque     MeanRatio_top25   770
-# ℹ 18 more rows
-# A tibble: 2 × 2
-  `!is.na(RNAscope_prop)`     n
-  <lgl>                   <int>
-1 FALSE                   12152
-2 TRUE                     9408
-[1] "Reproducibility information:"
-[1] "2024-02-22 10:09:10 EST"
-   user  system elapsed 
- 14.334   1.035  20.172 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.3.2 Patched (2024-02-08 r85876)
- os       Rocky Linux 9.2 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2024-02-22
- pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package              * version    date (UTC) lib source
- abind                  1.4-5      2016-07-21 [2] CRAN (R 4.3.2)
- BayesPrism           * 2.1.1      2023-12-06 [1] Github (Danko-Lab/BayesPrism@f98bd4d)
- beachmat               2.18.0     2023-10-24 [2] Bioconductor
- bigmemory            * 4.6.4      2024-01-09 [2] CRAN (R 4.3.2)
- bigmemory.sri          0.1.8      2024-01-10 [2] CRAN (R 4.3.2)
- Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
- BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
- BiocNeighbors          1.20.2     2024-01-07 [2] Bioconductor 3.18 (R 4.3.2)
- BiocParallel           1.36.0     2023-10-24 [2] Bioconductor
- BiocSingular           1.18.0     2023-10-24 [2] Bioconductor
- bit                    4.0.5      2022-11-15 [2] CRAN (R 4.3.2)
- bit64                  4.0.5      2020-08-30 [2] CRAN (R 4.3.2)
- bitops                 1.0-7      2021-04-24 [2] CRAN (R 4.3.2)
- bluster                1.12.0     2023-10-24 [2] Bioconductor
- caTools                1.18.2     2021-03-28 [2] CRAN (R 4.3.2)
- cli                    3.6.2      2023-12-11 [1] CRAN (R 4.3.2)
- cluster              * 2.1.6      2023-12-01 [3] CRAN (R 4.3.2)
- codetools              0.2-19     2023-02-01 [3] CRAN (R 4.3.2)
- colorspace             2.1-0      2023-01-23 [2] CRAN (R 4.3.2)
- crayon                 1.5.2      2022-09-29 [2] CRAN (R 4.3.2)
- DelayedArray           0.28.0     2023-10-24 [2] Bioconductor
- DelayedMatrixStats     1.24.0     2023-10-24 [2] Bioconductor
- digest                 0.6.34     2024-01-11 [2] CRAN (R 4.3.2)
- doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.3.2)
- dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
- dqrng                  0.3.2      2023-11-29 [1] CRAN (R 4.3.2)
- edgeR                  4.0.16     2024-02-18 [1] Bioconductor 3.18 (R 4.3.2)
- fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
- forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
- foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
- generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
- GenomeInfoDb           1.38.6     2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
- GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
- GenomicRanges          1.54.1     2023-10-29 [2] Bioconductor
- ggplot2              * 3.4.4      2023-10-12 [2] CRAN (R 4.3.2)
- glue                   1.7.0      2024-01-09 [2] CRAN (R 4.3.2)
- gplots                 3.1.3.1    2024-02-02 [2] CRAN (R 4.3.2)
- gridBase               0.4-7      2014-02-24 [1] CRAN (R 4.3.2)
- gtable                 0.3.4      2023-08-21 [2] CRAN (R 4.3.2)
- gtools                 3.9.5      2023-11-20 [1] CRAN (R 4.3.2)
- here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.3.2)
- hms                    1.1.3      2023-03-21 [2] CRAN (R 4.3.2)
- igraph                 2.0.1.9008 2024-02-09 [2] Github (igraph/rigraph@39158c6)
- IRanges                2.36.0     2023-10-24 [2] Bioconductor
- irlba                  2.3.5.1    2022-10-03 [2] CRAN (R 4.3.2)
- iterators              1.0.14     2022-02-05 [2] CRAN (R 4.3.2)
- KernSmooth             2.23-22    2023-07-10 [3] CRAN (R 4.3.2)
- lattice                0.22-5     2023-10-24 [3] CRAN (R 4.3.2)
- lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.3.2)
- limma                  3.58.1     2023-10-31 [2] Bioconductor
- locfit                 1.5-9.8    2023-06-11 [2] CRAN (R 4.3.2)
- lubridate            * 1.9.3      2023-09-27 [2] CRAN (R 4.3.2)
- magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.3.2)
- Matrix                 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
- MatrixGenerics         1.14.0     2023-10-24 [2] Bioconductor
- matrixStats            1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
- metapod                1.10.1     2023-12-24 [2] Bioconductor 3.18 (R 4.3.2)
- munsell                0.5.0      2018-06-12 [2] CRAN (R 4.3.2)
- NMF                  * 0.27       2024-02-08 [1] CRAN (R 4.3.2)
- pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
- pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
- plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.3.2)
- purrr                * 1.0.2      2023-08-10 [2] CRAN (R 4.3.2)
- R6                     2.5.1      2021-08-19 [2] CRAN (R 4.3.2)
- RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.3.2)
- Rcpp                   1.0.12     2024-01-09 [2] CRAN (R 4.3.2)
- RCurl                  1.98-1.14  2024-01-09 [2] CRAN (R 4.3.2)
- readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.3.2)
- registry             * 0.5-1      2019-03-05 [2] CRAN (R 4.3.2)
- reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.3.2)
- rlang                  1.1.3      2024-01-10 [2] CRAN (R 4.3.2)
- rngtools             * 1.5.2      2021-09-20 [2] CRAN (R 4.3.2)
- rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
- rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.3.2)
- S4Arrays               1.2.0      2023-10-24 [2] Bioconductor
- S4Vectors              0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
- ScaledMatrix           1.10.0     2023-10-24 [2] Bioconductor
- scales                 1.3.0      2023-11-28 [1] CRAN (R 4.3.2)
- scran                  1.30.2     2024-01-22 [2] Bioconductor 3.18 (R 4.3.2)
- scuttle                1.12.0     2023-10-24 [2] Bioconductor
- sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
- SingleCellExperiment   1.24.0     2023-10-24 [2] Bioconductor
- snow                 * 0.4-4      2021-10-27 [2] CRAN (R 4.3.2)
- snowfall             * 1.84-6.3   2023-11-26 [1] CRAN (R 4.3.2)
- SparseArray            1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
- sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
- statmod                1.5.0      2023-01-06 [2] CRAN (R 4.3.2)
- stringi                1.8.3      2023-12-11 [1] CRAN (R 4.3.2)
- stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
- SummarizedExperiment   1.32.0     2023-10-24 [2] Bioconductor
- synchronicity        * 1.3.10     2024-01-10 [2] CRAN (R 4.3.2)
- tibble               * 3.2.1      2023-03-20 [2] CRAN (R 4.3.2)
- tidyr                * 1.3.1      2024-01-24 [2] CRAN (R 4.3.2)
- tidyselect             1.2.0      2022-10-10 [2] CRAN (R 4.3.2)
- tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.3.2)
- timechange             0.3.0      2024-01-18 [2] CRAN (R 4.3.2)
- tzdb                   0.4.0      2023-05-12 [2] CRAN (R 4.3.2)
- utf8                   1.2.4      2023-10-22 [2] CRAN (R 4.3.2)
- uuid                   1.2-0      2024-01-14 [2] CRAN (R 4.3.2)
- vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.3.2)
- vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.3.2)
- withr                  3.0.0      2024-01-16 [2] CRAN (R 4.3.2)
- XVector                0.42.0     2023-10-24 [2] Bioconductor
- zlibbioc               1.48.0     2023-10-24 [2] Bioconductor
+ *** caught illegal operation ***
+address 0x7ff35cf228d5, cause 'illegal operand'
 
- [1] /users/lhuuki/R/4.3.x
- [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
-
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Thu Feb 22 10:09:12 AM EST 2024
+Traceback:
+ 1: strwrap2_ctl(x = x, width = width, indent = indent, exdent = exdent,     prefix = prefix, simplify = simplify, initial = initial,     warn = warn, term.cap = term.cap, ctl = ctl, normalize = normalize,     carry = carry, terminate = terminate)
+ 2: fansi::strwrap_ctl(x, width = max(width, 0), indent = indent,     exdent = indent + 2)
+ 3: strwrap2(x, width - get_extent(prefix), indent)
+ 4: FUN(X[[i]], ...)
+ 5: vapply(.x, .f, .mold, ..., USE.NAMES = FALSE)
+ 6: map_mold(.x, .f, character(1), ...)
+ 7: map_chr(x, wrap, prefix = "# ", width = min(width, cli::console_width()))
+ 8: format_comment(header, width = setup$width)
+ 9: rep_along(x, "")
+10: style_subtle(format_comment(header, width = setup$width))
+11: tbl_format_header.tbl(x, setup)
+12: tbl_format_header(x, setup)
+13: format_tbl(x, width, ..., n = n, max_extra_cols = max_extra_cols,     max_footer_lines = max_footer_lines)
+14: format.tbl(x, width = width, ..., n = n, max_extra_cols = max_extra_cols,     max_footer_lines = max_footer_lines)
+15: format(x, width = width, ..., n = n, max_extra_cols = max_extra_cols,     max_footer_lines = max_footer_lines)
+16: writeLines(format(x, width = width, ..., n = n, max_extra_cols = max_extra_cols,     max_footer_lines = max_footer_lines))
+17: print_tbl(x, width, ..., n = n, max_extra_cols = max_extra_cols,     max_footer_lines = max_footer_lines)
+18: print.tbl(x)
+19: (function (x, ...) UseMethod("print"))(x)
+An irrecoverable exception occurred. R is aborting now ...
+/var/spool/slurm/d/job2692735/slurm_script: line 29: 1467438 Illegal instruction     (core dumped) Rscript 03_get_est_prop.R

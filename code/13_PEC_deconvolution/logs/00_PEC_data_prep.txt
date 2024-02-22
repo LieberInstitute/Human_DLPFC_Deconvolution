@@ -1,0 +1,229 @@
+**** Job starts ****
+Thu Feb 22 12:25:32 PM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 2657006
+Job name: 00_PEC_data_prep
+Node name: compute-093
+Task id: 
+Loading conda_R/4.3.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
+
+ 
+
+Registered S3 methods overwritten by 'zellkonverter':
+  method                                             from      
+  py_to_r.numpy.ndarray                              reticulate
+  py_to_r.pandas.core.arrays.categorical.Categorical reticulate
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+2024-02-22 12:25:47.818083 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/PTSDBrainomics_annotated.h5ad
+Warning messages:
+1: The names of these selected uns$uns_dict items have been modified to match R
+conventions: 'sc1_D19-6588_DLPFC' -> 'sc1_D19.6588_DLPFC',
+'sc11_D19-6574_DLPFC' -> 'sc11_D19.6574_DLPFC', 'sc12_D19-6577_DLPFC' ->
+'sc12_D19.6577_DLPFC', 'sc13_D19-5544_DLPFC' -> 'sc13_D19.5544_DLPFC',
+'sc18_D19-6586_DLPFC' -> 'sc18_D19.6586_DLPFC', 'sc2_D19-6571_DLPFC' ->
+'sc2_D19.6571_DLPFC', 'sc21_D19-6580_DLPFC' -> 'sc21_D19.6580_DLPFC',
+'sc3_D19-6592_DLPFC' -> 'sc3_D19.6592_DLPFC', 'sc31_D19-1934_DLPFC' ->
+'sc31_D19.1934_DLPFC', 'sc31_D19-6579_DLPFC' -> 'sc31_D19.6579_DLPFC',
+'sc32_D19-5546_DLPFC' -> 'sc32_D19.5546_DLPFC', 'sc33_D19-6587_DLPFC' ->
+'sc33_D19.6587_DLPFC', 'sc34_D19-5542_DLPFC' -> 'sc34_D19.5542_DLPFC',
+'sc35_D19-5545_DLPFC' -> 'sc35_D19.5545_DLPFC', 'sc42_D19-6589_DLPFC' ->
+'sc42_D19.6589_DLPFC', 'sc43_D19-6575_DLPFC' -> 'sc43_D19.6575_DLPFC',
+'sc44_D19-6584_DLPFC' -> 'sc44_D19.6584_DLPFC', 'sc5_D19-6590_DLPFC' ->
+'sc5_D19.6590_DLPFC', 'sc6_D19-5539_DLPFC' -> 'sc6_D19.5539_DLPFC', and
+'sc7 [... truncated] 
+2: The names of these selected uns$var_dict items have been modified to match R
+conventions: 'sc1_D19-6588_DLPFC' -> 'sc1_D19.6588_DLPFC',
+'sc11_D19-6574_DLPFC' -> 'sc11_D19.6574_DLPFC', 'sc12_D19-6577_DLPFC' ->
+'sc12_D19.6577_DLPFC', 'sc13_D19-5544_DLPFC' -> 'sc13_D19.5544_DLPFC',
+'sc18_D19-6586_DLPFC' -> 'sc18_D19.6586_DLPFC', 'sc2_D19-6571_DLPFC' ->
+'sc2_D19.6571_DLPFC', 'sc21_D19-6580_DLPFC' -> 'sc21_D19.6580_DLPFC',
+'sc3_D19-6592_DLPFC' -> 'sc3_D19.6592_DLPFC', 'sc31_D19-1934_DLPFC' ->
+'sc31_D19.1934_DLPFC', 'sc31_D19-6579_DLPFC' -> 'sc31_D19.6579_DLPFC',
+'sc32_D19-5546_DLPFC' -> 'sc32_D19.5546_DLPFC', 'sc33_D19-6587_DLPFC' ->
+'sc33_D19.6587_DLPFC', 'sc34_D19-5542_DLPFC' -> 'sc34_D19.5542_DLPFC',
+'sc35_D19-5545_DLPFC' -> 'sc35_D19.5545_DLPFC', 'sc42_D19-6589_DLPFC' ->
+'sc42_D19.6589_DLPFC', 'sc43_D19-6575_DLPFC' -> 'sc43_D19.6575_DLPFC',
+'sc44_D19-6584_DLPFC' -> 'sc44_D19.6584_DLPFC', 'sc5_D19-6590_DLPFC' ->
+'sc5_D19.6590_DLPFC', 'sc6_D19-5539_DLPFC' -> 'sc6_D19.5539_DLPFC', and
+'sc7 [... truncated] 
+3: The names of these selected uns items have been modified to match R
+conventions: '_attr2type' -> 'X_attr2type' 
+
+SCE Dimesions:
+[1]  33877 198572
+[1] "n_genes"      "n_counts"     "Channel"      "anno"         "subclass"    
+[6] "azimuth"      "sampleID"     "individualID"
+Cell Types:
+
+     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
+     17605       1498        838        241      44560      10415       1872 
+     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
+       535      13803       2345       9497       1342       1760       3284 
+Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
+      1295       9419      35866      10498        614       1046       9804 
+       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
+       141       1714       9112         79       9242        147 
+2024-02-22 12:30:43.022277 revert to counts
+
+     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
+     17605       1498        838        241      44560      10415       1872 
+     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
+       535      13803       2345       9497       1342       1760       3284 
+Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
+      1295       9419      35866      10498        614       1046       9804 
+       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
+       141       1714       9112         79       9242        147 
+[1] "Reproducibility information:"
+[1] "2024-02-22 12:59:25 EST"
+    user   system  elapsed 
+1940.297   43.305 2030.213 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.2 Patched (2024-02-08 r85876)
+ os       Rocky Linux 9.2 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2024-02-22
+ pandoc   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.2)
+ basilisk               1.14.3    2024-01-29 [2] Bioconductor 3.18 (R 4.3.2)
+ basilisk.utils         1.14.1    2023-11-20 [2] Bioconductor 3.18 (R 4.3.2)
+ Biobase              * 2.62.0    2023-10-24 [2] Bioconductor
+ BiocGenerics         * 0.48.1    2023-11-01 [2] Bioconductor
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.2)
+ cli                    3.6.2     2023-12-11 [1] CRAN (R 4.3.2)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.2)
+ DelayedArray           0.28.0    2023-10-24 [2] Bioconductor
+ dir.expiry             1.10.0    2023-10-24 [2] Bioconductor
+ filelock               1.0.3     2023-12-11 [2] CRAN (R 4.3.2)
+ GenomeInfoDb         * 1.38.6    2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDbData       1.2.11    2024-02-09 [2] Bioconductor
+ GenomicRanges        * 1.54.1    2023-10-29 [2] Bioconductor
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.2)
+ IRanges              * 2.36.0    2023-10-24 [2] Bioconductor
+ jsonlite               1.8.8     2023-12-04 [1] CRAN (R 4.3.2)
+ lattice                0.22-5    2023-10-24 [3] CRAN (R 4.3.2)
+ Matrix                 1.6-5     2024-01-11 [3] CRAN (R 4.3.2)
+ MatrixGenerics       * 1.14.0    2023-10-24 [2] Bioconductor
+ matrixStats          * 1.2.0     2023-12-11 [1] CRAN (R 4.3.2)
+ png                    0.1-8     2022-11-29 [2] CRAN (R 4.3.2)
+ Rcpp                   1.0.12    2024-01-09 [2] CRAN (R 4.3.2)
+ RCurl                  1.98-1.14 2024-01-09 [2] CRAN (R 4.3.2)
+ reticulate             1.35.0    2024-01-31 [2] CRAN (R 4.3.2)
+ rlang                  1.1.3     2024-01-10 [2] CRAN (R 4.3.2)
+ rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.3.2)
+ S4Arrays               1.2.0     2023-10-24 [2] Bioconductor
+ S4Vectors            * 0.40.2    2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.2)
+ SingleCellExperiment * 1.24.0    2023-10-24 [2] Bioconductor
+ SparseArray            1.2.4     2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
+ SummarizedExperiment * 1.32.0    2023-10-24 [2] Bioconductor
+ withr                  3.0.0     2024-01-16 [2] CRAN (R 4.3.2)
+ XVector                0.42.0    2023-10-24 [2] Bioconductor
+ zellkonverter        * 1.12.1    2023-11-14 [1] Bioconductor
+ zlibbioc               1.48.0    2023-10-24 [2] Bioconductor
+
+ [1] /users/lhuuki/R/4.3.x
+ [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
+
+─ Python configuration ───────────────────────────────────────────────────────────────────────────────────────────────
+ python:         /users/lhuuki/.cache/R/basilisk/1.14.3/zellkonverter/1.12.1/zellkonverterAnnDataEnv-0.10.2/bin/python
+ libpython:      /users/lhuuki/.cache/R/basilisk/1.14.3/zellkonverter/1.12.1/zellkonverterAnnDataEnv-0.10.2/lib/libpython3.11.so
+ pythonhome:     /users/lhuuki/.cache/R/basilisk/1.14.3/zellkonverter/1.12.1/zellkonverterAnnDataEnv-0.10.2:/users/lhuuki/.cache/R/basilisk/1.14.3/zellkonverter/1.12.1/zellkonverterAnnDataEnv-0.10.2
+ version:        3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]
+ numpy:          /users/lhuuki/.cache/R/basilisk/1.14.3/zellkonverter/1.12.1/zellkonverterAnnDataEnv-0.10.2/lib/python3.11/site-packages/numpy
+ numpy_version:  1.26.0
+ 
+ NOTE: Python version was forced by use_python() function
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Feb 22 12:59:26 PM EST 2024

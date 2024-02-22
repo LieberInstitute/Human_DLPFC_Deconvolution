@@ -2,3 +2,6 @@ tutorial_data/scRNA-Seq_reference_melanoma_Tirosh_Fig2b-d.txt
 webtool_test
 DLPFC_sc_counts-FULL.txt
 tutorial_data/Fig2ab-NSCLC_PBMCs/
+DLPFC_sc_counts-MeanRatio_over2.txt
+DLPFC_sc_counts-MeanRatio_MAD3.txt
+temp*
