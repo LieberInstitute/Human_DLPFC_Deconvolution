@@ -1,0 +1,28 @@
+subclass,cellType,cellType.broad
+Astro,Astro,Astro
+Endo,Endo,EndoMural
+Immune,Immune,drop
+Micro,Micro,Micro
+OPC,OPC,OPC
+Oligo,Oligo,Oligo
+PC,PC,drop
+SMC,SMC,drop
+VLMC,VLMC,EndoMural
+L2/3 IT,L2.3.IT,Excit
+L4 IT,L4.IT,Excit
+L5 ET,L5.ET,Excit
+L5 IT,L5.IT,Excit
+L5/6 NP,L5.6.NP,Excit
+L6 CT,L6.CT,Excit
+L6 IT,L6.IT,Excit
+L6 IT Car3,L6.IT.Car3,Excit
+L6b,L6b,Excit
+Chandelier,Chandelier,Inhib
+Lamp5,Lamp5,Inhib
+Lamp5 Lhx6,Lamp5.Lhx6,Inhib
+Pax6,Pax6,Inhib
+Pvalb,Pvalb,Inhib
+Sncg,Sncg,Inhib
+Sst,Sst,Inhib
+Sst Chodl,Sst.Chodl,Inhib
+Vip,Vip,Inhib
