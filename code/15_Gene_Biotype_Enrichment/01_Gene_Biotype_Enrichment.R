@@ -1,5 +1,5 @@
 library(here)
-library(tidyverse)
+library(SummarizedExperiment)
 library(reshape2)
 library(rlang)
 library(ggplot2)
