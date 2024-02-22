@@ -1,4 +1,4 @@
-subclass,cellType,cellType.broad
+subclass,cellType,cellType_broad
 Astro,Astro,Astro
 Endo,Endo,EndoMural
 Immune,Immune,drop
