@@ -29,7 +29,8 @@ marker_stats <- mean_ratio |> left_join(markers_1vALL)
 message(Sys.time(), " Save marker gene data")
 save(marker_stats, file = here("processed-data", "13_PEC_deconvolution", "01_find_markers_PEC", "PEC_marker_stats_broad.Rdata"))
 
-# sgejobs::job_single('03_find_markers_broad', create_shell = TRUE, queue= 'bluejay', memory = '25G', command = "Rscript 03_find_markers_broad.R")
+# slurmjobs::job_single('01_find_markers_PEC', create_shell = TRUE, memory = '100G', command = "Rscript 01_find_markers_PEC.R")
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
