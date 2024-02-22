@@ -55,7 +55,7 @@ counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 table(sce$cellType)
 
-save(sce, filename = here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"))
+save(sce, file = here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"))
 
 
 # slurmjobs::job_single(name = "00_PEC_data_prep", memory = "50G", cores = 1, create_shell = TRUE, command = "Rscript 00_PEC_data_perp.R")
