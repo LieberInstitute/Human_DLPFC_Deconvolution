@@ -54,7 +54,7 @@ marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "08_bulk_deco
 marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
 
 ## temp create 2 new inputs
-marker_gene_sets <- marker_files[c("MeanRatio_MAD3", "MeanRatio_over2")]
+marker_gene_sets <- marker_gene_sets[c("MeanRatio_MAD3", "MeanRatio_over2")]
 
 map_int(marker_gene_sets, length)
 
