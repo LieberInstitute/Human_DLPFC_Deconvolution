@@ -45,9 +45,16 @@ rownames(sce) <- rowData(sce)$gene_id
 # colnames(sce) <- colData(sce)$cellType_broad_hc ## colnames as cell type cat
 
 ## subset marker genes
-marker_files <- list(MeanRatio_top25 = "markers_MeanRatio_top25.txt", `1vALL_top25` = "markers_1vALL_top25.txt")
+marker_files <- list(MeanRatio_top25 = "markers_MeanRatio_top25.txt", 
+                     MeanRatio_MAD3 = "markers_MeanRatio_MAD3.txt", 
+                     MeanRatio_over2 = "markers_MeanRatio_over2.txt", 
+                     `1vALL_top25` = "markers_1vALL_top25.txt")
+
 marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "08_bulk_deconvolution", .x), what="", sep="\n"))
 marker_gene_sets <- c(marker_gene_sets, list(FULL = rownames(sce)))
+
+## temp create 2 new inputs
+marker_gene_sets <- marker_files[c("MeanRatio_MAD3", "MeanRatio_over2")]
 
 map_int(marker_gene_sets, length)
 
