@@ -53,7 +53,7 @@ markers_mean_ratio_top25 <- marker_stats |>
   dplyr::filter(MeanRatio_top25) |>
   dplyr::pull(gene)
 
-cat(markers_mean_ratio_top25, sep = "\n", file = here("processed-data","12_Tran_deconvolution", "Tran_markers_MeanRatio_top25.txt"))
+cat(markers_mean_ratio_top25, sep = "\n", file = here("processed-data","12_tran_deconvolution", "Tran_markers_MeanRatio_top25.txt"))
 
 ## hockey stick plots 
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)

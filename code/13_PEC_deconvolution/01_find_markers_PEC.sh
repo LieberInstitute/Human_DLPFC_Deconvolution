@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=100G
+#SBATCH --mem=200G
 #SBATCH --job-name=01_find_markers_PEC
 #SBATCH -c 1
 #SBATCH -o logs/01_find_markers_PEC.txt
