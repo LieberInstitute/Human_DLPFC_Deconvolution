@@ -4,18 +4,20 @@ library("here")
 library("tidyverse")
 library("sessioninfo")
 
+n_cores = 8
+n_runs = 1000
 marker_label <- 'MeanRatio_top25'
 marker_file <- here(
     'processed-data', '08_bulk_deconvolution', 'markers_MeanRatio_top25.txt'
 )
 sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
 bulk_path = here("processed-data","rse", "rse_gene.Rdata")
-out_dir <- here(
-    "processed-data", "08_bulk_deconvolution", "01_deconvolution_Bisque"
+out_path <- here(
+    "processed-data", "08_bulk_deconvolution", "01_deconvolution_Bisque",
+    sprintf("est_prop_bisque_%s_%s.csv", marker_label, n_runs)
 )
 
 message("Using ", marker_label," marker genes from:", marker_file)
-if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
 ## load bulk data
@@ -75,7 +77,7 @@ exp_set_bulk <- ExpressionSet(
     )
 )
 
-run_bisque = function(sce, exp_set_bulk, i) {
+run_bisque = function(i, sce, exp_set_bulk) {
     subset_keys = colData(sce) |>
         as_tibble() |>
         group_by(cellType_broad_hc) |>
@@ -109,6 +111,18 @@ run_bisque = function(sce, exp_set_bulk, i) {
     
     return(props_df)
 }
+
+props_df_list = bplapply(
+    1:n_runs,
+    run_bisque,
+    sce,
+    exp_set_bulk,
+    BPPARAM = MulticoreParam(n_cores)
+)
+
+#   Export a combined CSV of all runs
+do.call(rbind, props_df_list) |>
+    write_csv(out_path)
 
 ## Reproducibility information
 print("Reproducibility information:")
