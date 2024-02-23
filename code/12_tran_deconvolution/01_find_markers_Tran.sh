@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 01_find_markers_Tran
+Rscript 01_find_markers_Tran.R
 
 echo "**** Job ends ****"
 date
