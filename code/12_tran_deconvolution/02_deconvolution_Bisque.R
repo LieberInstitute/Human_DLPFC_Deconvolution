@@ -18,7 +18,7 @@ if(marker_label == "FULL"){
 }
 
 #### data output folder ####
-data_dir <- here("processed-data","12_tran_deconvolution", "01_deconvolution_Bisque")
+data_dir <- here("processed-data","12_tran_deconvolution", "02_deconvolution_Bisque")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
