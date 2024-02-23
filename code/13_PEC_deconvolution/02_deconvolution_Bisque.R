@@ -18,7 +18,7 @@ if(marker_label == "FULL"){
 }
 
 #### data output folder ####
-data_dir <- here("processed-data","12_tran_deconvolution", "02_deconvolution_Bisque")
+data_dir <- here("processed-data","13_PEC_deconvolution", "02_deconvolution_Bisque")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
@@ -30,7 +30,8 @@ dim(rse_gene)
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
 ## sce data
-load(here("processed-data", "12_tran_deconvolution", "sce.dlpfc.tran.Rdata"), verbose = TRUE)
+## load PEC PTSD Brainomics DLPFC data
+load(here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"), verbose = TRUE)
 table(sce$cellType_broad)
 
 ## find common genes
@@ -57,7 +58,7 @@ exp_set_bulk <- ExpressionSet(assayData = assays(rse_gene)$counts[markers,],
 
 exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,]),
                              phenoData=AnnotatedDataFrame(
-                               as.data.frame(colData(sce)[,c("donor", "cellType_broad")])))
+                               as.data.frame(colData(sce)[,c("individualID", "cellType_broad")])))
 
 ### run Bisque ####
 exp_set_sce_temp <- exp_set_sce[markers,]
@@ -70,10 +71,10 @@ message(Sys.time(), " - Bisque deconvolution")
 est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,],
                                                sc.eset = exp_set_sce_temp,
                                                cell.types = "cellType_broad",
-                                               subject.names = "donor",
+                                               subject.names = "individualID",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, file = here(data_dir, paste0("Tran_est_prop_bisque-",marker_label,".Rdata")))
+save(est_prop_bisque, file = here(data_dir, paste0("PEC_est_prop_bisque-",marker_label,".Rdata")))
 
 # slurmjobs::job_single('01_deconvolution_Bisque_FULL', create_shell = TRUE, memory = '100G', command = "Rscript 01_deconvolution_Bisque.R FULL")
 
