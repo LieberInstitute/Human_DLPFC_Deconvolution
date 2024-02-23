@@ -1,6 +1,7 @@
 library("SingleCellExperiment")
 library("BisqueRNA")
 library("here")
+library("tidyverse")
 library("sessioninfo")
 
 marker_label <- 'MeanRatio_top25'
@@ -27,6 +28,7 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 ## sce data
 load(sce_path, verbose = TRUE)
 rownames(sce) <- rowData(sce)$gene_id
+colnames(sce) = sce$key
 
 #   Drop ambiguous cells
 sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
@@ -47,12 +49,22 @@ if(!all(markers %in% common_genes)) {
 }
 markers <- intersect(markers, common_genes)
 
+
+
 message(Sys.time(), " - Prep data with ", length(markers), " genes")
 
 #   Subset to markers and cells with at least some gene expression
 nonempty_cells = colSums(assays(sce)$counts[markers,]) > 0
 sce = sce[markers, nonempty_cells]
 message("Excluding ", sum(!nonempty_cells), " zero-expression cells")
+
+#   The number of cells present for the cell type with the least cells
+min_n_cells = colData(sce) |>
+    as_tibble() |>
+    group_by(cellType_broad_hc) |>
+    summarize(n = n()) |>
+    pull(n) |>
+    min()
 
 #### Build Expression sets ####
 message(Sys.time(), " - Prep Bisque Data (bulk data)")
@@ -63,22 +75,40 @@ exp_set_bulk <- ExpressionSet(
     )
 )
 
-exp_set_sce <- ExpressionSet(
-    assayData = as.matrix(assays(sce)$counts),
-    phenoData = AnnotatedDataFrame(
-    as.data.frame(colData(sce)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")]))
-)
+run_bisque = function(sce, exp_set_bulk, i) {
+    subset_keys = colData(sce) |>
+        as_tibble() |>
+        group_by(cellType_broad_hc) |>
+        slice_sample(n = min_n_cells) |>
+        pull(key)
+    sce_sub = sce[, subset_keys]
 
-a = Sys.time()
-est_prop_bisque <- ReferenceBasedDecomposition(
-    bulk.eset = exp_set_bulk,
-    sc.eset = exp_set_sce,
-    cell.types = "cellType_broad_hc",
-    subject.names = "Sample",
-    use.overlap = FALSE
-)
+    exp_set_sce <- ExpressionSet(
+        assayData = as.matrix(assays(sce_sub)$counts),
+        phenoData = AnnotatedDataFrame(
+        as.data.frame(colData(sce_sub)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")]))
+    )
 
-Sys.time() - a
+    est_prop_bisque <- ReferenceBasedDecomposition(
+        bulk.eset = exp_set_bulk,
+        sc.eset = exp_set_sce,
+        cell.types = "cellType_broad_hc",
+        subject.names = "Sample",
+        use.overlap = FALSE
+    )
+    props_df = est_prop_bisque$bulk.props |>
+        as.data.frame() |>
+        rownames_to_column('cell_type') |>
+        as_tibble() |>
+        pivot_longer(
+            cols = !matches('cell_type'),
+            names_to = 'sample_id',
+            values_to = 'prop'
+        ) |>
+        mutate(subset_run = i)
+    
+    return(props_df)
+}
 
 ## Reproducibility information
 print("Reproducibility information:")
