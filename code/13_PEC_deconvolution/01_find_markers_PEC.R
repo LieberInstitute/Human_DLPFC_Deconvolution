@@ -38,7 +38,7 @@ message(Sys.time(), " Find Mean Ratio Genes")
 mean_ratio <- get_mean_ratio2(sce, cellType_col = "cellType_broad", assay_name = "X",add_symbol = TRUE)
 
 message(Sys.time(), " Find 1vAll genes")
-markers_1vALL <- findMarkers_1vAll(sce, cellType_col = "cellType_broad", mod = "~BrNum", assay_name = "counts")
+markers_1vALL <- findMarkers_1vAll(sce, cellType_col = "cellType_broad", mod = "~individualID", assay_name = "counts")
 
 marker_stats <- mean_ratio |> 
   left_join(markers_1vALL) |>
@@ -47,13 +47,18 @@ marker_stats <- mean_ratio |>
 
 message(Sys.time(), " Save marker gene data")
 save(marker_stats, file = here(data_dir, "PEC_marker_stats_broad.Rdata"))
+write_csv(marker_stats, file = here(data_dir, "PEC_marker_stats_broad.csv"))
 
 ## pull marker sets 
+marker_stats |> 
+  dplyr::filter(MeanRatio_top25) |>
+  count(cellType.target)
+
 markers_mean_ratio_top25 <- marker_stats |> 
   dplyr::filter(gene %in% common_genes, rank_ratio <= 25) |>
   dplyr::pull(gene)
 
-cat(markers_mean_ratio_top25, sep = "\n", file = here("processed-data","08_bulk_deconvolution", "PEC_markers_MeanRatio_top25.txt"))
+cat(markers_mean_ratio_top25, sep = "\n", file = here("processed-data","13_PEC_deconvolution", "PEC_markers_MeanRatio_top25.txt"))
 
 ## hockey stick plots 
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
