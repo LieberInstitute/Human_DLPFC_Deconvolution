@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=5G
-#SBATCH --job-name=03_get_est_prop
+#SBATCH --job-name=04_get_est_prop
 #SBATCH -c 1
-#SBATCH -o logs/03_get_est_prop.txt
-#SBATCH -e logs/03_get_est_prop.txt
+#SBATCH -o logs/04_get_est_prop.txt
+#SBATCH -e logs/04_get_est_prop.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 03_get_est_prop.R
+Rscript 04_get_est_prop.R
 
 echo "**** Job ends ****"
 date

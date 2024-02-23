@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=25G
-#SBATCH --job-name=05_deconvolution_hspe_MeanRatio_top25
+#SBATCH --job-name=03_deconvolution_hspe_MeanRatio_top25
 #SBATCH -c 1
-#SBATCH -o logs/05_deconvolution_hspe_MeanRatio_top25.txt
-#SBATCH -e logs/05_deconvolution_hspe_MeanRatio_top25.txt
+#SBATCH -o logs/03_deconvolution_hspe_MeanRatio_top25.txt
+#SBATCH -e logs/03_deconvolution_hspe_MeanRatio_top25.txt
 #SBATCH --mail-type=ALL
 
 set -e
@@ -26,7 +26,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 05_deconvolution_hspe.R MeanRatio_top25
+Rscript 03_deconvolution_hspe.R MeanRatio_top25
 
 echo "**** Job ends ****"
 date
