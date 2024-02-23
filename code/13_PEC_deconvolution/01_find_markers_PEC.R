@@ -1,6 +1,7 @@
 library("DeconvoBuddies")
 library("SingleCellExperiment")
 library("tidyverse")
+library("ggrepel")
 library("here")
 library("sessioninfo")
 
@@ -21,13 +22,12 @@ sce <- sce[, sce$cellType_broad != "drop"]
 table(sce$cellType_broad)
 # Astro EndoMural     Excit     Inhib     Micro     Oligo       OPC 
 # 17605       985     86129     36642      9419     35866     10498 
+message("any NA: ", any(is.na(sce$cellType_broad)))
 
-## load bulk data
+## load bulk data find common genes
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
-
-## find common genes
 common_genes <- intersect(rowData(sce)$featureid, rowData(rse_gene)$ensemblID)
-length(common_genes)
+message("Common genes with bulk data: ", length(common_genes))
 # [1] 16734
 rm(rse_gene)
 
@@ -67,7 +67,7 @@ mean_ratio_v_logFC <- marker_stats |>
   mutate(top25 = rank_ratio <= 25) |>
   ggplot(aes(x = ratio, y = std.logFC, color = top25)) +
   geom_point(alpha = 0.5) +
-  geom_text_repel(aes(label = ifelse(rank_ratio ==1 | rank_marker ==1 , Symbol, "")), 
+  ggrepel::geom_text_repel(aes(label = ifelse(rank_ratio ==1 | rank_marker ==1 , Symbol, "")), 
                   size = 2.5, 
                   color = "black") +
   facet_wrap(~cellType.target, scales = "free_x", nrow = 1) +
@@ -76,8 +76,8 @@ mean_ratio_v_logFC <- marker_stats |>
   theme_bw()
 # theme(legend.position = "bottom")
 
-ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.png"), width = 12, height = 2.5)
-ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "mean_ratio_v_logFC_free.pdf"), width = 12, height = 2.5)
+ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "PEC_mean_ratio_v_logFC_free.png"), width = 12, height = 2.5)
+ggsave(mean_ratio_v_logFC, filename = here(plot_dir, "PEC_mean_ratio_v_logFC_free.pdf"), width = 12, height = 2.5)
 
 # slurmjobs::job_single('01_find_markers_PEC', create_shell = TRUE, memory = '100G', command = "Rscript 01_find_markers_PEC.R")
 
