@@ -9,7 +9,7 @@ library("sessioninfo")
 data_dir <- here("processed-data", "12_tran_deconvolution", "01_find_markers_Tran")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
-plot_dir <- here("processed-data", "12_tran_deconvolution", "01_find_markers_Tran")
+plot_dir <- here("plots", "12_tran_deconvolution", "01_find_markers_Tran")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 ## load data

@@ -4,6 +4,7 @@
 library("hspe")
 library("SingleCellExperiment")
 library("jaffelab")
+library("spatialLIBD")
 library("here")
 library("sessioninfo")
 
@@ -16,7 +17,7 @@ marker_file <- NULL
 stopifnot(marker_label %in% c("MeanRatio_top25", "1vALL_top25", "FULL"))
 
 #### data output folder ####
-data_dir <- here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe")
+data_dir <- here("processed-data","12_tran_deconvolution", "03_deconvolution_hspe")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
@@ -27,14 +28,31 @@ dim(rse_gene)
 
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
-## pseudobulk sce data
-sce_pb <- readRDS(here("processed-data", "sce","sce_broad_pseudobulk.rds"))
-table(sce_pb$cellType_broad_hc)
-# Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-# 18        17        18        18        19        19        19
+#### pseudobulk data if needed ####
+sce_pb <- NULL
 
-## use ensemblIDs
-rownames(sce_pb) <- rowData(sce_pb)$gene_id
+if(!file.exists(here(data_dir, "Tran_sce_pb.Rdata"))){
+  message(Sys.time(), " - Pseudobulk data")
+  
+  load(here("processed-data", "12_tran_deconvolution", "sce.dlpfc.tran.Rdata"), verbose = TRUE)
+  sce_pb <- spatialLIBD::registration_pseudobulk(
+    sce,
+    var_registration = "cellType_broad",
+    var_sample_id = "donor",
+    covars = NULL,
+    min_ncells = 10,
+    pseudobulk_rds_file = NULL
+  )
+  
+  save(sce_pb, file = here(data_dir, "Tran_sce_pb.Rdata"))
+} else {
+  message(Sys.time(), " - Load pseudobulk data")
+  load(here(data_dir, "Tran_sce_pb.Rdata"), verbose = TRUE)
+}
+
+table(sce_pb$cellType_broad)
+# Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
+# 3         1         3         3         3         3         3 
 
 ## find common genes
 common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene)$ensemblID)
@@ -44,7 +62,7 @@ message("common genes: ", length(common_genes))
 # we can instead explicitly pass a list of markers to hspe specifying the marker genes
 # elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
 
-pure_samples = rafalib::splitit(sce_pb$cellType_broad_hc)
+pure_samples = rafalib::splitit(sce_pb$cellType_broad)
 # hspe assumes log2 transformed expressions
 mixture_samples = t(assays(rse_gene)$logcounts[common_genes,])
 reference_samples = t(assays(sce_pb)$logcounts[common_genes,])
@@ -96,7 +114,7 @@ if(marker_label == "FULL"){
 }
 
 message(Sys.time(), "- Saving")
-save(est_prop_hspe, file = here(data_dir,paste0("est_prop_hspe-",marker_label,".Rdata")))
+save(est_prop_hspe, file = here(data_dir,paste0("Tran_est_prop_hspe-",marker_label,".Rdata")))
 
 # slurmjobs::job_single('05_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R FULL")
 # slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R MeanRatio_top25")
