@@ -19,22 +19,65 @@ out_path <- here(
 
 message("Using ", marker_label," marker genes from:", marker_file)
 
-#### load data ####
+################################################################################
+#   Function definitions
+################################################################################
+
+run_bisque = function(i, sce, exp_set_bulk) {
+    #   Randomly subset cells of the sce such that each cell type is equally
+    #   represented
+    subset_keys = colData(sce) |>
+        as_tibble() |>
+        group_by(cellType_broad_hc) |>
+        slice_sample(n = min_n_cells) |>
+        pull(key)
+    sce_sub = sce[, subset_keys]
+
+    #   Convert to ExpressionSet as required for Bisque
+    exp_set_sce <- ExpressionSet(
+        assayData = as.matrix(assays(sce_sub)$counts),
+        phenoData = AnnotatedDataFrame(
+        as.data.frame(colData(sce_sub)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")]))
+    )
+
+    #   Deconvolve bulk using Bisque
+    est_prop_bisque <- ReferenceBasedDecomposition(
+        bulk.eset = exp_set_bulk,
+        sc.eset = exp_set_sce,
+        cell.types = "cellType_broad_hc",
+        subject.names = "Sample",
+        use.overlap = FALSE
+    )
+
+    #   Re-format estimated bulk cell-type proportions to be long and tidy
+    props_df = est_prop_bisque$bulk.props |>
+        as.data.frame() |>
+        rownames_to_column('cell_type') |>
+        as_tibble() |>
+        pivot_longer(
+            cols = !matches('cell_type'),
+            names_to = 'sample_id',
+            values_to = 'prop'
+        ) |>
+        mutate(subset_run = i)
+    
+    return(props_df)
+}
+
+################################################################################
+#   Load bulk data, single-cell data, and top-25 mean-ratio markers
+################################################################################
+
 ## load bulk data
 load(bulk_path, verbose = TRUE)
+rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 dim(rse_gene)
 # [1] 21745   110
-
-rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
 ## sce data
 load(sce_path, verbose = TRUE)
 rownames(sce) <- rowData(sce)$gene_id
 colnames(sce) = sce$key
-
-#   Drop ambiguous cells
-sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
-sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 
 ## find common genes
 common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
@@ -51,9 +94,28 @@ if(!all(markers %in% common_genes)) {
 }
 markers <- intersect(markers, common_genes)
 
+################################################################################
+#   Subset and prepare data for Bisque
+################################################################################
 
+#-------------------------------------------------------------------------------
+#   Bulk data
+#-------------------------------------------------------------------------------
 
-message(Sys.time(), " - Prep data with ", length(markers), " genes")
+exp_set_bulk <- ExpressionSet(
+    assayData = assays(rse_gene)$counts[markers,],
+    phenoData = AnnotatedDataFrame(
+        as.data.frame(colData(rse_gene))[c("SAMPLE_ID")]
+    )
+)
+
+#-------------------------------------------------------------------------------
+#   Single-cell data
+#-------------------------------------------------------------------------------
+
+#   Drop ambiguous cells
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 
 #   Subset to markers and cells with at least some gene expression
 nonempty_cells = colSums(assays(sce)$counts[markers,]) > 0
@@ -68,55 +130,16 @@ min_n_cells = colData(sce) |>
     pull(n) |>
     min()
 
-#### Build Expression sets ####
-message(Sys.time(), " - Prep Bisque Data (bulk data)")
-exp_set_bulk <- ExpressionSet(
-    assayData = assays(rse_gene)$counts[markers,],
-    phenoData = AnnotatedDataFrame(
-        as.data.frame(colData(rse_gene))[c("SAMPLE_ID")]
-    )
-)
+################################################################################
+#   Run Bisque and export results
+################################################################################
 
-run_bisque = function(i, sce, exp_set_bulk) {
-    subset_keys = colData(sce) |>
-        as_tibble() |>
-        group_by(cellType_broad_hc) |>
-        slice_sample(n = min_n_cells) |>
-        pull(key)
-    sce_sub = sce[, subset_keys]
-
-    exp_set_sce <- ExpressionSet(
-        assayData = as.matrix(assays(sce_sub)$counts),
-        phenoData = AnnotatedDataFrame(
-        as.data.frame(colData(sce_sub)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")]))
-    )
-
-    est_prop_bisque <- ReferenceBasedDecomposition(
-        bulk.eset = exp_set_bulk,
-        sc.eset = exp_set_sce,
-        cell.types = "cellType_broad_hc",
-        subject.names = "Sample",
-        use.overlap = FALSE
-    )
-    props_df = est_prop_bisque$bulk.props |>
-        as.data.frame() |>
-        rownames_to_column('cell_type') |>
-        as_tibble() |>
-        pivot_longer(
-            cols = !matches('cell_type'),
-            names_to = 'sample_id',
-            values_to = 'prop'
-        ) |>
-        mutate(subset_run = i)
-    
-    return(props_df)
-}
-
+#   Run Bisque on the many different subsets in parallel
 props_df_list = bplapply(
     1:n_runs,
     run_bisque,
-    sce,
-    exp_set_bulk,
+    sce = sce,
+    exp_set_bulk = exp_set_bulk,
     BPPARAM = MulticoreParam(n_cores)
 )
 
