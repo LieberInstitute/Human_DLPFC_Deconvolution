@@ -230,6 +230,26 @@ est_prop_v_RNAscope_scatter <- prop_long |>
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"), width = 10, height = 5)
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.pdf"), width = 10, height = 5)
 
+## Other mean ratio approaches 
+est_prop_v_RNAscope_scatter_MR <- prop_long |>
+  filter(!is.na(RNAscope_prop),
+         marker %in% c("MeanRatio_MAD3", "MeanRatio_over2")) |>
+  ggplot() +
+  geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library_combo)) +
+  geom_text(data = cor_check |> 
+              filter(marker %in% c("MeanRatio_MAD3", "MeanRatio_over2")) , 
+            aes(label = cor_anno,x = .5, y = 1),
+            vjust = "inward", hjust = "inward") +
+  scale_shape_manual(values = library_combo_shapes2) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  facet_grid(marker~method) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw() +
+  labs( x = "RNAscope Proportion", y = "Estimated Proportion")
+
+ggsave(est_prop_v_RNAscope_scatter_MR, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_MR.png"), width = 10, height = 5)
+ggsave(est_prop_v_RNAscope_scatter_MR, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_MR.pdf"), width = 10, height = 5)
 
 est_prop_v_RNAscope_scatter_top25_library <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
@@ -318,23 +338,33 @@ cor_vs_rmse_method <- cor_check_ct |>
 ggsave(cor_vs_rmse_method, filename = here(plot_dir, "cor_vs_rmse_method.png"))
 
 #### ggpair plots ####
-
 sn_prop <- read_csv(here("processed-data", "03_HALO", "08_explore_proportions","snRNA_cell_type_proportions.csv")) |>
   select(Sample, cell_type, prop_sn) |>
   mutate(cell_type = gsub("Endo", "EndoMural", cell_type))
 
-prop_wide <- prop_long |>
-  left_join(sn_prop) |>
-  select(SAMPLE_ID, library_prep, cell_type, method, RNAscope = RNAscope_prop, `snRNA-seq` = prop_sn, prop) |>
-  pivot_wider(names_from = "method", values_from = "prop")
+marker_sets <- unique(prop_long$marker)
 
-gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", as.character(cor_check$method)), aes(colour = cell_type)) +
-  scale_color_manual(values = cell_type_colors_broad) +
-  scale_fill_manual(values = cell_type_colors_broad) +
-  theme_bw()
+method_gg_prop <- map(levels(prop_long$method), function(.x){
+  prop_wide <- prop_long |>
+    filter(method == .x) |>
+    left_join(sn_prop) |>
+    select(SAMPLE_ID, library_combo, cell_type, marker, RNAscope = RNAscope_prop, `snRNA-seq` = prop_sn, prop) |>
+    pivot_wider(names_from = "marker", values_from = "prop")
+  
+  message(.x)
+  
+  gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", marker_sets), aes(color = cell_type)) +
+    scale_color_manual(values = cell_type_colors_broad) +
+    scale_fill_manual(values = cell_type_colors_broad) +
+    theme_bw() +
+    labs(title = .x)
+  
+  ggsave(gg_prop, filename = here(plot_dir, paste0("ggpairs_prop_",.x,".png")), height = 10, width = 10)
+  return(gg_prop)
+  }
+)
 
-ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.png"), height = 10, width = 10)
-ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.pdf"), height = 10, width = 10)
+ggsave(method_gg_prop$hspe, )
 
 # sgejobs::job_single('09_deconvo_plots_marker', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 09_deconvo_plots_marker.R")
 ## Reproducibility information
