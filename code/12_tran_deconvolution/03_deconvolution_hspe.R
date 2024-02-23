@@ -116,9 +116,9 @@ if(marker_label == "FULL"){
 message(Sys.time(), "- Saving")
 save(est_prop_hspe, file = here(data_dir,paste0("Tran_est_prop_hspe-",marker_label,".Rdata")))
 
-# slurmjobs::job_single('05_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R FULL")
-# slurmjobs::job_single('05_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R MeanRatio_top25")
-# slurmjobs::job_single('05_deconvolution_hspe_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 05_deconvolution_hspe.R 1vALL_top25")
+# slurmjobs::job_single('03_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R FULL")
+# slurmjobs::job_single('03_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R MeanRatio_top25")
+# slurmjobs::job_single('03_deconvolution_hspe_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R 1vALL_top25")
 
 ## Reproducibility information
 print("Reproducibility information:")
