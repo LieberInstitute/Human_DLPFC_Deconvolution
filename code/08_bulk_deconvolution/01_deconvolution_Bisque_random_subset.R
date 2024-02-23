@@ -14,7 +14,10 @@ sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
 bulk_path = here("processed-data","rse", "rse_gene.Rdata")
 out_path <- here(
     "processed-data", "08_bulk_deconvolution", "01_deconvolution_Bisque",
-    sprintf("est_prop_bisque_%s_%s.csv", marker_label, n_runs)
+    sprintf("est_prop_bisque_%s_%s_random_subsets.csv", marker_label, n_runs)
+)
+sce_coldata_cols = c(
+    "key", "Sample", "BrNum", "cellType_broad_hc", "cellType_hc"
 )
 
 message("Using ", marker_label," marker genes from:", marker_file)
@@ -35,9 +38,10 @@ run_bisque = function(i, sce, exp_set_bulk) {
 
     #   Convert to ExpressionSet as required for Bisque
     exp_set_sce <- ExpressionSet(
-        assayData = as.matrix(assays(sce_sub)$counts),
+        assayData = assays(sce_sub)$counts,
         phenoData = AnnotatedDataFrame(
-        as.data.frame(colData(sce_sub)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")]))
+            as.data.frame(colData(sce_sub)[,sce_coldata_cols])
+        )
     )
 
     #   Deconvolve bulk using Bisque
@@ -121,6 +125,9 @@ sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
 nonempty_cells = colSums(assays(sce)$counts[markers,]) > 0
 sce = sce[markers, nonempty_cells]
 message("Excluding ", sum(!nonempty_cells), " zero-expression cells")
+
+#   Bring into memory to greatly speed up random subsetting later
+assays(sce)$counts = as.matrix(assays(sce)$counts)
 
 #   The number of cells present for the cell type with the least cells
 min_n_cells = colData(sce) |>
