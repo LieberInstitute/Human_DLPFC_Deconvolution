@@ -14,15 +14,16 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
 # cell_type_colors_broad
-
+load(here("processed-data","00_data_prep","method_colors.Rdata"), verbose = TRUE)
+# method_colors
+load(here("processed-data","00_data_prep","library_combo_shapes.Rdata"), verbose = TRUE)
+# library_combo_shapes
+# library_combo_shapes2
 
 #### load data ####
 load(here("processed-data", "08_bulk_deconvolution", "03_get_est_prop","prop_long.Rdata"), verbose = TRUE)
 
-## filter to just MR_top25 for this script - now in 03_get_est_prop
-# prop_long <- prop_long |> 
-#   mutate(library_combo = paste0(library_type, "_",library_prep),
-#          cell_type = factor(cell_type, levels = names(cell_type_colors_broad)))
+prop_long |>  count(method, marker)|> count(marker)
 
 prop_long |>  filter(!is.na(RNAscope_prop)) |> count(method, marker)
 
@@ -36,14 +37,18 @@ prop_long |>  filter(!is.na(RNAscope_prop)) |> count(method, marker)
              rmse = Metrics::rmse(RNAscope_prop, prop))  |>
    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
    arrange(-cor))
-# method     marker               cor  rmse cor_anno                
-# <chr>      <chr>              <dbl> <dbl> <chr>                   
-# 1 hspe       1vALL_top25      0.575   0.223 "cor:0.575\nrmse:0.223" 
-# 2 BayesPrism FULL             0.523   0.162 "cor:0.523\nrmse:0.162" 
-# 3 hspe       MeanRatio_top25  0.513   0.151 "cor:0.513\nrmse:0.151" 
-# 4 Bisque     MeanRatio_top25  0.508   0.148 "cor:0.508\nrmse:0.148" 
-# 5 Bisque     FULL             0.488   0.149 "cor:0.488\nrmse:0.149" 
-
+# method     marker            cor  rmse cor_anno               
+# <chr>      <chr>           <dbl> <dbl> <chr>                  
+# 1 CIBERSORTx FULL            0.581 0.169 "cor:0.581\nrmse:0.169"
+# 2 hspe       MeanRatio_over2 0.579 0.233 "cor:0.579\nrmse:0.233"
+# 3 hspe       1vALL_top25     0.575 0.223 "cor:0.575\nrmse:0.223"
+# 4 hspe       MeanRatio_MAD3  0.570 0.229 "cor:0.570\nrmse:0.229"
+# 5 CIBERSORTx MeanRatio_over2 0.557 0.209 "cor:0.557\nrmse:0.209"
+# 6 CIBERSORTx MeanRatio_MAD3  0.539 0.206 "cor:0.539\nrmse:0.206"
+# 7 CIBERSORTx 1vALL_top25     0.528 0.169 "cor:0.528\nrmse:0.169"
+# 8 BayesPrism FULL            0.523 0.162 "cor:0.523\nrmse:0.162"
+# 9 hspe       MeanRatio_top25 0.513 0.151 "cor:0.513\nrmse:0.151"
+# 10 Bisque     MeanRatio_top25 0.508 0.148 "cor:0.508\nrmse:0.148"
 ## factor method by overall cor in FULL
 method_levels <- cor_check |> filter(marker == "MeanRatio_top25") |> arrange(cor) |> pull(method)
 
@@ -52,30 +57,35 @@ prop_long$method <- factor(prop_long$method, levels = method_levels)
 
 (cor_check_library <- prop_long |>
     filter(!is.na(RNAscope_prop)) |>
-    group_by(marker, method, library_type, library_prep, library_combo) |>
+    group_by(marker, method, library_combo) |>
     summarize(cor = cor(RNAscope_prop, prop),
               rmse = Metrics::rmse(RNAscope_prop, prop)) |>
-    # arrange(-cor) |>
+    arrange(-cor) |>
     mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3))) 
 )
-# method      library_type library_prep   cor  rmse cor_anno                library          
-# <fct>       <chr>        <chr>        <dbl> <dbl> <chr>                   <chr>            
-# 1 Bisque      polyA        Cyto         0.672 0.131 "cor:0.672\nrmse:0.131" polyA_Cyto       
-# 2 hspe        polyA        Cyto         0.598 0.144 "cor:0.598\nrmse:0.144" polyA_Cyto       
-# 3 BayesPrisim polyA        Cyto         0.579 0.219 "cor:0.579\nrmse:0.219" polyA_Cyto       
-# 4 Bisque      polyA        Nuc          0.560 0.136 "cor:0.560\nrmse:0.136" polyA_Nuc        
-# 5 BayesPrisim polyA        Nuc          0.523 0.193 "cor:0.523\nrmse:0.193" polyA_Nuc  
+#   marker          method     library_combo   cor  rmse cor_anno               
+# <chr>           <fct>      <chr>         <dbl> <dbl> <chr>                  
+# 1 MeanRatio_over2 CIBERSORTx polyA_Cyto    0.686 0.272 "cor:0.686\nrmse:0.272"
+# 2 MeanRatio_over2 hspe       polyA_Cyto    0.682 0.234 "cor:0.682\nrmse:0.234"
+# 3 1vALL_top25     hspe       polyA_Cyto    0.673 0.222 "cor:0.673\nrmse:0.222"
+# 4 MeanRatio_top25 Bisque     polyA_Cyto    0.672 0.131 "cor:0.672\nrmse:0.131"
+# 5 MeanRatio_MAD3  hspe       polyA_Cyto    0.662 0.231 "cor:0.662\nrmse:0.231"
+# 6 FULL            CIBERSORTx polyA_Cyto    0.661 0.182 "cor:0.661\nrmse:0.182"
+# 7 MeanRatio_MAD3  CIBERSORTx polyA_Cyto    0.659 0.254 "cor:0.659\nrmse:0.254"
+# 8 MeanRatio_MAD3  Bisque     polyA_Cyto    0.645 0.141 "cor:0.645\nrmse:0.141"
+# 9 MeanRatio_over2 Bisque     polyA_Cyto    0.644 0.144 "cor:0.644\nrmse:0.144"
+# 10 MeanRatio_top25 CIBERSORTx polyA_Cyto    0.636 0.190 "cor:0.636\nrmse:0.190"
 
 
 ## TODO reletive cell type error (divide by mean RNAscope prop)
-cor_check_ct <- prop_long |>
-  filter(!is.na(RNAscope_prop)) |>
-  group_by(method, marker, library_type, library_prep, library_combo, cell_type) |>
-  summarize(cor = cor(RNAscope_prop, prop),
-            rmse = Metrics::rmse(RNAscope_prop, prop))|>
-  mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)),
-         library = paste0(library_type, "_",library_prep))
-# method marker   correlation
+# cor_check_ct <- prop_long |>
+#   filter(!is.na(RNAscope_prop)) |>
+#   group_by(method, marker, library_type, library_prep, library_combo, cell_type) |>
+#   summarize(cor = cor(RNAscope_prop, prop),
+#             rmse = Metrics::rmse(RNAscope_prop, prop))|>
+#   mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)),
+#          library = paste0(library_type, "_",library_prep))
+# # method marker   correlation
 # <chr>  <chr>          <dbl>
 #   1 Bisque MR_top25     0.508  
 # 2 DWLS   MR_top25    -0.00684
@@ -89,21 +99,22 @@ cor_rmse_scater <- cor_check_library |>
   ggplot(aes(x= cor, y = rmse, color= method, shape = library_combo)) +
   geom_point() +
   theme_bw() +
-  facet_wrap(~marker)
+  facet_wrap(~marker, nrow = 1) +
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = library_combo_shapes2) 
 
 ggsave(cor_rmse_scater, filename = here(plot_dir, "cor_rmse_scater.png"), width = 10, height = 3.4)
-# ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_scater.pdf"), width = 10, height = 3.4)
+ggsave(cor_rmse_scater, filename = here(plot_dir, "cor_rmse_scater.pdf"), width = 10, height = 3.4)
 
 cor_rmse_scater_method <- cor_check_library |>
-  ggplot(aes(x= cor, y = rmse, color= marker, shape = library_combo)) +
+  ggplot(aes(x= cor, y = rmse, color = marker, shape = library_combo)) +
   geom_point() +
   theme_bw() +
-  facet_wrap(~method, nrow = 1)
-
-ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.png"), width = 10, height = 3.4)
-# ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.pdf"), width = 10, height = 3.4)
-
-
+  facet_wrap(~method, nrow = 1) +
+  scale_shape_manual(values = library_combo_shapes2) 
+  
+ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.png"), width = 11, height = 4)
+ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.pdf"), width = 11, height = 4)
 
 ## cor check line/rank plot
 ## TODO method color pallet
@@ -127,29 +138,30 @@ cor_rmse_line_facet <- cor_check_library |>
   geom_line(aes(group = method)) +
   scale_size(range = c(1,8)) +
   theme_bw() +
-  scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
+  scale_color_manual(values = method_colors) +
+  # scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction") +
-  facet_wrap(~marker) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  facet_wrap(~marker, ncol = 1)
 
-ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.png"), width = 10, height = 7)
-ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.pdf"), width = 10, height = 3.4)
+ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.png"), width = 10, height = 9)
+ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.pdf"), width = 10, height = 9)
 
 
 cor_rmse_line_facet2 <- cor_check_library |>
-  filter(marker != "MeanRatio_top25") |>
-  ggplot(aes(x = library_combo, y = cor, color= method)) +
-  geom_point(aes(size = rmse), alpha = .7) +
+  # filter(marker != "MeanRatio_top25") |>
+  ggplot(aes(x = library_combo, y = rmse, color= method)) +
+  geom_point(aes(size = cor), alpha = .7) +
   geom_line(aes(group = method)) +
   scale_size(range = c(1,8)) +
   theme_bw() +
-  scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
+  scale_color_manual(values = method_colors) +
+  # scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction") +
-  facet_wrap(~marker) +
+  facet_wrap(~marker, ncol =1) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.png"), width = 10, height = 7)
-ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.pdf"), width = 10, height = 3.4)
+ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.png"), width = 10, height = 9)
+ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.pdf"), width = 10, height = 9)
 
 rmse_line_facet <- cor_check_library |>
   ggplot(aes(x = library_combo, y = rmse, color= method)) +
@@ -157,17 +169,15 @@ rmse_line_facet <- cor_check_library |>
   geom_line(aes(group = method)) +
   scale_size(range = c(1,8)) +
   theme_bw() +
-  scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
+  # scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction") +
   facet_wrap(~marker) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.png"), width = 10, height = 7)
-ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 3.4)
-
+ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 7)
 
 #### proportion data ####
-
 ## Composition bar plots
 # prop_bar_SAMPLE_ID <- prop_long |> 
 #   ggplot(aes(x = SAMPLE_ID, y = prop, fill = cell_type)) +
@@ -182,6 +192,7 @@ ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf")
 # ggsave(prop_bar_SAMPLE_ID, filename = here(plot_dir, "Bulk_prop_SAMPLE_ID_MRtop25.png"), width = 8, height = 9)
 
 prop_bar_SAMPLE_facet <- prop_long |> 
+  filter(marker %in% c("1vALL_top25", "FULL")) |>
   mutate(Sample = gsub("_","\n", Sample),
          marker = gsub("_","\n", marker)) |>
   ggplot(aes(x = library_combo, y = prop, fill = cell_type)) +
@@ -200,20 +211,24 @@ ggsave(prop_bar_SAMPLE_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_facet.
 ## Scatter plots
 ## all points
 est_prop_v_RNAscope_scatter <- prop_long |>
-  filter(!is.na(RNAscope_prop)) |>
+  filter(!is.na(RNAscope_prop),
+         marker %in% c("1vALL_top25", "FULL")) |>
   ggplot() +
-  scale_color_manual(values = cell_type_colors_broad) +
   geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type, shape = library_combo)) +
-  geom_text(data = cor_check, aes(label = cor_anno,x = .5, y = 1),
+  geom_text(data = cor_check |> 
+              filter(marker %in% c("1vALL_top25", "FULL")) , 
+            aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
+  scale_shape_manual(values = library_combo_shapes2) +
+  scale_color_manual(values = cell_type_colors_broad) +
   facet_grid(marker~method) +
   geom_abline() +
   coord_equal() +
   theme_bw() +
   labs( x = "RNAscope Proportion", y = "Estimated Proportion")
 
-ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"), width = 10)
-ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.pdf"), width = 10)
+ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.png"), width = 10, height = 5)
+ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter.pdf"), width = 10, height = 5)
 
 
 est_prop_v_RNAscope_scatter_top25_library <- prop_long |>
@@ -251,11 +266,13 @@ est_prop_v_RNAscope_scatter_Bulk_RiboZero <- prop_long |>
          marker == "MR_top25") |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot() +
+  scale_shape_manual(values = library_combo_shapes2) +
   scale_color_manual(values = cell_type_colors_broad) +
   geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
-  geom_text(data = cor_check_library |> filter(library_prep == "Bulk", 
-                                               library_type == "RiboZeroGold",
-                                               marker == "MR_top25"), 
+  geom_text(data = cor_check_library |> 
+              filter(library_prep == "Bulk", 
+                     library_type == "RiboZeroGold",
+                     marker == "MR_top25"), 
             aes(label = cor_anno,x = .5, y = .85),
             vjust = "inward", hjust = "inward",
             size = 3) +
