@@ -1,13 +1,14 @@
 
 library("recount3")
 library("SingleCellExperiment")
-library("xbioc")
-library("MuSiC")
 library("BisqueRNA")
 library("tidyverse")
 library("here")
 library("sessioninfo")
 # library(DeconvoBuddies)
+
+data_dir <- here("processed-data",  "07_GTEx", "01_GTEx_deconvolution")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load GTEx data with recount3 ####
 
@@ -115,19 +116,6 @@ exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,])
                              phenoData=AnnotatedDataFrame(
                                as.data.frame(colData(sce)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")])))
 
-
-#### Run MuSiC ####
-message(Sys.time(), " - MuSiC deconvolution")
-est_prop_music <- music_prop(bulk.mtx = assays(rse_gene_brain_gtex)$counts,
-                             sc.sce = sce,
-                             markers = markers,
-                             clusters = "cellType_broad_hc",
-                             samples = "Sample")
-
-names(est_prop_music)
-# [1] "Est.prop.weighted" "Est.prop.allgene"  "Weight.gene"       "r.squared.full"    "Var.prop"
-head(est_prop_music$Est.prop.weighted)
-
 ### run Bisque ####
 message(Sys.time(), " - Bisque Prep")
 exp_set_sce_temp <- exp_set_sce[markers,]
@@ -142,9 +130,9 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
                                                subject.names = "Sample",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, est_prop_music, GTEx_pd, file = here("processed-data","07_GTEx","01_GTEx_deconvolution.Rdata"))
+save(est_prop_bisque, est_prop_music, GTEx_pd, file = here(data_dir, "GTEx_est_prop_Bisque.Rdata"))
 
-# sgejobs::job_single('01_GTEx_deconvolution', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_deconvolution.R")
+slurmjobs::job_single('01_GTEx_Bisque', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_Bisque.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
