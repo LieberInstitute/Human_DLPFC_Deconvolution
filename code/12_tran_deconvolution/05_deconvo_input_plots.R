@@ -155,17 +155,17 @@ input_gg_prop <- map(unique(prop_long$method), function(.x){
     select(SAMPLE_ID, library_combo, cell_type, input, RNAscope = RNAscope_prop, `snRNA-seq` = snRNA_prop, prop) |>
     pivot_wider(names_from = "input", values_from = "prop")
   
-  return(prop_wide)
-  # message(.x)
-  # 
-  # gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", input_datasets), aes(color = cell_type)) +
-  #   scale_color_manual(values = cell_type_colors_broad) +
-  #   scale_fill_manual(values = cell_type_colors_broad) +
-  #   theme_bw() +
-  #   labs(title = .x)
-  # 
-  # ggsave(gg_prop, filename = here(plot_dir, paste0("ggpairs_prop_input_",.x,".png")), height = 10, width = 10)
-  # return(gg_prop)
+  # return(prop_wide)
+  message(.x)
+
+  gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", input_datasets), aes(color = cell_type)) +
+    scale_color_manual(values = cell_type_colors_broad) +
+    scale_fill_manual(values = cell_type_colors_broad) +
+    theme_bw() +
+    labs(title = .x)
+
+  ggsave(gg_prop, filename = here(plot_dir, paste0("ggpairs_prop_input_",.x,".png")), height = 10, width = 10)
+  return(gg_prop)
 }
 )
 
