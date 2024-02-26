@@ -7,7 +7,7 @@ library("here")
 library("sessioninfo")
 # library(DeconvoBuddies)
 
-data_dir <- here("processed-data",  "07_GTEx", "01_GTEx_deconvolution")
+data_dir <- here("processed-data",  "07_GTEx", "01_GTEx_Bisque")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 #### Load GTEx data with recount3 ####
@@ -64,7 +64,13 @@ length(unique(rowData(rse_gene_brain_gtex)$ensembl))
 
 rownames(rse_gene_brain_gtex) <- rowData(rse_gene_brain_gtex)$ensembl
 
-GTEx_pd <- colData(rse_gene_brain_gtex) |> as.data.frame() |> as_tibble()
+## save pd for plot access
+GTEx_pd <- colData(rse_gene_brain_gtex) |> 
+  as.data.frame() |> 
+  as_tibble() |>
+  select(gtex.sampid, study, gtex.subjid, gtex.sex, gtex.age, gtex.smtsd)
+
+write_csv(GTEx_pd, file = here(data_dir, "GTEx_pd.csv"))
 
 #### sce data ####
 load(here("processed-data", "sce", "sce_DLPFC.Rdata"), verbose = TRUE)
@@ -105,6 +111,9 @@ marker_stats |>
 markers <- marker_stats |> 
   filter(gene %in% common_genes, rank_ratio <= 25) |>
   pull(gene)
+
+cat(markers, sep = "\n", file = here(data_dir, "GTEx_markers_MeanRatio_top25.txt"))
+
                
 #### Build Expression sets ####
 
