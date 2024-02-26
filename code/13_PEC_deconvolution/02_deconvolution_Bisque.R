@@ -34,10 +34,11 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 load(here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"), verbose = TRUE)
 table(sce$cellType_broad)
 
-## find common genes
-common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
-length(common_genes)
+rownames(sce) <- rowData(sce)$featureid
 
+## find common genes
+common_genes <- intersect(rowData(sce)$featureid, rowData(rse_gene)$ensemblID)
+message("Common genes with bulk data: ", length(common_genes))
 
 if(marker_label == "FULL"){
   markers <- common_genes
@@ -64,7 +65,7 @@ exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,])
 exp_set_sce_temp <- exp_set_sce[markers,]
 zero_cell_filter <- colSums(exprs(exp_set_sce_temp)) != 0
 message("Exclude ",sum(!zero_cell_filter), " cells")
-# Exclude 33 cells
+
 exp_set_sce_temp <- exp_set_sce_temp[,zero_cell_filter]
 
 message(Sys.time(), " - Bisque deconvolution")
