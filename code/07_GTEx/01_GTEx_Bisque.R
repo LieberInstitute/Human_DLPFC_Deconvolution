@@ -139,7 +139,7 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
                                                subject.names = "Sample",
                                                use.overlap = FALSE)
 
-save(est_prop_bisque, est_prop_music, GTEx_pd, file = here(data_dir, "GTEx_est_prop_Bisque.Rdata"))
+save(est_prop_bisque, file = here(data_dir, "GTEx_est_prop_Bisque.Rdata"))
 
 slurmjobs::job_single('01_GTEx_Bisque', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_Bisque.R")
 ## Reproducibility information
