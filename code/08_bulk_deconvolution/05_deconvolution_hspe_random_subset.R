@@ -4,9 +4,10 @@ library("jaffelab")
 library("tidyverse")
 library("here")
 library("sessioninfo")
+library("spatialLIBD")
 
 marker_label <- "MeanRatio_top25"
-sce_path = here("processed-data", "sce","sce_broad_pseudobulk.rds")
+sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
 bulk_path = here("processed-data", "rse", "rse_gene.Rdata")
 marker_stats_path = here(
     "processed-data", "06_marker_genes", "03_find_markers_broad",
@@ -24,15 +25,31 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 dim(rse_gene)
 # [1] 21745   110
 
-## pseudobulk sce data
-sce_pb = readRDS(sce_path)
-rownames(sce_pb) <- rowData(sce_pb)$gene_id
-# rownames(sce) <- rowData(sce)$gene_id
-# colnames(sce) = sce$key
+load(sce_path, verbose = TRUE)
+rownames(sce) <- rowData(sce)$gene_id
+colnames(sce) = sce$key
 
+#   The number of cells present for the cell type with the least cells
+min_n_cells = colData(sce) |>
+    as_tibble() |>
+    group_by(cellType_broad_hc) |>
+    summarize(n = n()) |>
+    pull(n) |>
+    min()
+
+#   Randomly subset cells of the sce such that each cell type is equally
+#   represented
+subset_keys = colData(sce) |>
+    as_tibble() |>
+    group_by(cellType_broad_hc) |>
+    slice_sample(n = min_n_cells) |>
+    pull(key)
+sce_sub = sce[, subset_keys]
+
+sce_pb = registration_pseudobulk(
+    sce_sub, var_registration = "cellType_broad_hc", var_sample_id = "Sample"
+)
 table(sce_pb$cellType_broad_hc)
-# Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-# 18        17        18        18        19        19        19
 
 ## find common genes
 common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene)$ensemblID)
