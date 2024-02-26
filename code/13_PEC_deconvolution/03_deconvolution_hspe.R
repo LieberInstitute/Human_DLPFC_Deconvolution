@@ -53,7 +53,7 @@ if(!file.exists(here(data_dir, "PEC_sce_pb.Rdata"))){
 table(sce_pb$cellType_broad)
 
 ## find common genes
-common_genes <- intersect(rowData(sce)$featureid, rowData(rse_gene)$ensemblID)
+common_genes <- intersect(rowData(sce_pb)$featureid, rowData(rse_gene)$ensemblID)
 message("Common genes with bulk data: ", length(common_genes))
 # [1] 13311 
 
