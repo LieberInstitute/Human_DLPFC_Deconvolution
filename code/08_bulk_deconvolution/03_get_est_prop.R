@@ -15,10 +15,13 @@ dataset_lt <- tibble(Dataset = c("2107UNHS-0291", "2107UNHS-0293" ,"AN00000904",
 
 #### proportion data ####
 halo_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "HALO_cell_type_proportions.csv")) 
+sn_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "snRNA_cell_type_proportions_opc.csv")) |>
+  select(Sample, cell_type = cell_type_og, snRNA_prop = prop_sn)
 
 halo_prop_simple <- halo_prop |>
   filter(Confidence != "Low" ) |>
-  select(Sample, cell_type, RNAscope_prop = prop) 
+  select(Sample, cell_type, RNAscope_prop = prop) |>
+  full_join(sn_prop)
 
 halo_prop_long <- halo_prop |>
   select(Sample, cell_type, prop, prop_sn, Confidence) |>
