@@ -169,3 +169,12 @@ input_gg_prop <- map(unique(prop_long$method), function(.x){
 }
 )
 
+# slurmjobs::job_single(name = "05_deconvo_input_plots", memory = "5G", cores = 1, create_shell = TRUE, command = "Rscript 05_deconvo_input_plots.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+
