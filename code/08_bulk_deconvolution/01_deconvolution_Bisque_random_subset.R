@@ -3,8 +3,8 @@ library("BisqueRNA")
 library("here")
 library("tidyverse")
 library("sessioninfo")
+library("BiocParallel")
 
-n_cores = 8
 n_runs = 1000
 marker_label <- 'MeanRatio_top25'
 marker_file <- here(
@@ -21,6 +21,7 @@ sce_coldata_cols = c(
 )
 
 message("Using ", marker_label," marker genes from:", marker_file)
+n_cores = as.integer(Sys.getenv('SLURM_CPUS_PER_TASK'))
 
 ################################################################################
 #   Function definitions
