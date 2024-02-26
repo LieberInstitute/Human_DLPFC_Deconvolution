@@ -38,21 +38,22 @@ sce[, sce$cellType_hc != "Ambiguous"]
 dim(sce)
 
 sn_pd <- as.data.frame(colData(sce)) |>
-  mutate(cell_type = factor(ifelse(gsub("Mural","",cellType_broad_hc) %in% halo_ct, 
+  mutate(cell_type_og = gsub("Mural","",cellType_broad_hc), 
+         cell_type = factor(ifelse(cell_type_og %in% halo_ct, 
                                    as.character(gsub("Mural","",cellType_broad_hc)),
                                    "Oligo"), ## OPC to Oligo
                             levels = halo_ct))
 
 sn_pd |>
-  dplyr::count(cellType_broad_hc, cell_type)
-# cellType_broad_hc cell_type     n
-# 1             Astro     Astro  3979
-# 2         EndoMural      Endo  2157
-# 3             Micro     Micro  1601
-# 4             Oligo     Oligo 10894
-# 5               OPC     Oligo  1940
-# 6             Excit     Excit 24809
-# 7             Inhib     Inhib 11067
+  dplyr::count(cellType_broad_hc, cell_type, cell_type_og)
+# cellType_broad_hc cell_type cell_type_og     n
+# 1             Astro     Astro        Astro  3979
+# 2         EndoMural      Endo         Endo  2157
+# 3             Micro     Micro        Micro  1601
+# 4             Oligo     Oligo        Oligo 10894
+# 5               OPC     Oligo          OPC  1940
+# 6             Excit     Excit        Excit 24809
+# 7             Inhib     Inhib        Inhib 11067
 
 sn_ct <- sn_pd |> 
   select(Sample, cell_type) |> 
@@ -78,6 +79,12 @@ sn_ct_prop <- sn_ct |>
   group_by(Sample, Combo) |>
   mutate(prop_sn = n_cell_sn / sum(n_cell_sn)) 
 
+sn_ct_prop_opc <- sn_pd |> 
+  group_by(Sample, cell_type_og) |>
+  summarize(n_cell_sn = n()) |>
+  group_by(Sample) |>
+  mutate(prop_sn = n_cell_sn / sum(n_cell_sn)) 
+
 sn_n_cells <- sn_pd |>
   group_by(Sample)|>
   summarize(total_n_cells_sn = n())
@@ -92,6 +99,7 @@ sn_n_cells <- sn_pd |>
 # 7             Inhib     Inhib 11067
 
 write_csv(sn_ct_prop, file = here(data_dir,"snRNA_cell_type_proportions.csv"))
+write_csv(sn_ct_prop_opc, file = here(data_dir,"snRNA_cell_type_proportions_opc.csv"))
 
 sn_prop_boxplot <- sn_ct_prop |>
   filter(cell_type != "Other") |>
