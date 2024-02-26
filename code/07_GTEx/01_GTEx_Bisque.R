@@ -141,7 +141,7 @@ est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,
 
 save(est_prop_bisque, file = here(data_dir, "GTEx_est_prop_Bisque.Rdata"))
 
-slurmjobs::job_single('01_GTEx_Bisque', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_Bisque.R")
+# slurmjobs::job_single('01_GTEx_Bisque', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_Bisque.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
