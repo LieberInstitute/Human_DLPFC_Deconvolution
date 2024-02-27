@@ -34,8 +34,11 @@ table(rse_gene_brain_gtex$gtex.smafrze)
 # 261    2670
 rse_gene_brain_gtex <- rse_gene_brain_gtex[, rse_gene_brain_gtex$gtex.smafrze != "EXCLUDE"]
 
-## Compute RPKMs
-assay(rse_gene_brain_gtex, "logcounts") <- log2(transform_counts(rse_gene_brain_gtex)+1)
+## Compute logtransformed counts consistent with paired data
+message(Sys.time(), " - get logcounts")
+assay(rse_gene_brain_gtex, "counts") <- transform_counts(rse_gene_brain_gtex)
+assay(rse_gene_brain_gtex, "RPKM") <- recount::getRPKM(rse_gene_brain_gtex)
+assay(rse_gene_brain_gtex, "logcounts") <- log2(assays(rse_gene_brain_gtex)$RPKM +1)
 
 ## Brain region info
 table(rse_gene_brain_gtex$gtex.smtsd)
