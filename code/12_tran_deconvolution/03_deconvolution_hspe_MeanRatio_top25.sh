@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=10G
 #SBATCH --job-name=03_deconvolution_hspe_MeanRatio_top25
 #SBATCH -c 1
 #SBATCH -o logs/03_deconvolution_hspe_MeanRatio_top25.txt
