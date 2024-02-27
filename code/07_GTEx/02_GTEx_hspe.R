@@ -109,6 +109,7 @@ est_prop_hspe = hspe(Y = mixture_samples,
 
 save(est_prop_hspe, file = here(data_dir, "GTEx_est_prop_hspe_MeanRatio_top25_rc.Rdata"))
 
+# slurmjobs::job_single('02_GTEx_hspe_rc', create_shell = TRUE, memory = '25G', command = "Rscript 02_GTEx_hspe.R")
 # slurmjobs::job_single('02_GTEx_hspe', create_shell = TRUE, memory = '25G', command = "Rscript 02_GTEx_hspe.R")
 ## Reproducibility information
 print("Reproducibility information:")
