@@ -7,29 +7,21 @@ library("here")
 #### Load data ####
 
 # DLPFC snRNA-seq cell colors
-load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
-cell_type_colors_broad
-#     Excit       Inhib       Oligo         OPC       Astro       Micro  Endo.Mural Micro.Oligo        drop       Multi 
-# "#247FBC"   "#E94F37"   "#E07000"   "#D2B037"   "#3BB273"   "#663894"   "#FF56AF"   "#AB0091"     "black"   "#4E586A" 
-#    Other 
-# "#90A583
-cell_type_colors_broad[['Other']] <- "#4E586A"
+# load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
+
+cell_type_colors_all <- c(Excit = "#247FBC",
+                          Inhib = "#E83E38", ## changed from spatialDLPFC to improve contrast with Oligo
+                          Oligo = "#F57A00", ## changed from #E07000 to improve contrast
+                          OligoOPC = "#F5AB00",
+                          OPC = "#D2B037",
+                          Astro = "#3BB273",
+                          Micro = "#663894",
+                          EndoMural = "#FF56AF",
+                          Other = "#4E586A")
 
 #### Define cell type colors ####
-cell_types_halo <- c("Astro", "Endo", "Micro", "Oligo", "Excit", "Inhib", "Other")
-cell_types_halo_temp <- c("Astro", "Endo.Mural", "Micro", "Oligo", "Excit", "Inhib", "Other")
-length(cell_types_halo)
-# [1] 12
-
-cell_type_colors_halo <- cell_type_colors_broad[cell_types_halo_temp]
-names(cell_type_colors_halo) <- cell_types_halo
-
-cell_type_colors_broad <- cell_type_colors_broad[c("Astro", "EndoMural", "Micro", "Oligo","OPC", "Excit", "Inhib", "Other")]
-
-#improve contrast in Inhib oligo TODO fix in HALO colors
-## note that there were prevous versions of colors
-cell_type_colors_broad[["Inhib"]] <- "#E83E38"
-cell_type_colors_broad[["Oligo"]] <- "#F57A00"
+cell_type_colors_halo <- cell_type_colors_all[c("Astro", "EndoMural", "Micro", "OligoOPC", "Excit", "Inhib", "Other")]
+cell_type_colors_broad <- cell_type_colors_all[c("Astro", "EndoMural", "Micro", "Oligo","OPC", "Excit", "Inhib", "Other")]
 
 save(cell_type_colors_halo, cell_type_colors_broad, file = here("processed-data","00_data_prep","cell_colors.Rdata"))
 
