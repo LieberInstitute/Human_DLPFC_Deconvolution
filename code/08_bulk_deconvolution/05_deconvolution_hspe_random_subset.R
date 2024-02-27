@@ -29,6 +29,10 @@ load(sce_path, verbose = TRUE)
 rownames(sce) <- rowData(sce)$gene_id
 colnames(sce) = sce$key
 
+#   Drop ambiguous cells
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
+
 #   The number of cells present for the cell type with the least cells
 min_n_cells = colData(sce) |>
     as_tibble() |>
