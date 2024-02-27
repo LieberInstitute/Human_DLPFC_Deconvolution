@@ -35,8 +35,7 @@ table(rse_gene_brain_gtex$gtex.smafrze)
 rse_gene_brain_gtex <- rse_gene_brain_gtex[, rse_gene_brain_gtex$gtex.smafrze != "EXCLUDE"]
 
 ## Compute RPKMs
-assay(rse_gene_brain_gtex, "counts") <- transform_counts(rse_gene_brain_gtex)
-# assay(rse_gene_brain_gtex, "RPKM") <- recount::getRPKM(rse_gene_brain_gtex, length_var = "score")
+assay(rse_gene_brain_gtex, "logcounts") <- log2(transform_counts(rse_gene_brain_gtex)+1)
 
 ## Brain region info
 table(rse_gene_brain_gtex$gtex.smtsd)
@@ -73,7 +72,7 @@ rownames(sce_pb) <- rowData(sce_pb)$gene_id
 ## find common genes
 common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene_brain_gtex)$ensembl)
 message("common genes: ", length(common_genes))
-# [1] 34057
+# 14809
 
 #### prep hspe input ####
 pure_samples = rafalib::splitit(sce_pb$cellType_broad_hc)
@@ -83,56 +82,30 @@ reference_samples = t(assays(sce_pb)$logcounts[common_genes,])
 
 stopifnot(ncol(mixture_samples) == ncol(reference_samples))
 
-## load marker genes
+#### marker genes ####
 load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
-# marker_stats
 
-marker_stats |>
-  filter(gene %in% common_genes,
-         rank_ratio <= 25) |>
-  count(cellType.target)
-
-# cellType.target     n
-# <fct>           <int>
-# 1 Astro              25
-# 2 EndoMural          25
-# 3 Micro              25
-# 4 Oligo              23
-# 5 OPC                23
-# 6 Excit              24
-# 7 Inhib              25
-
-markers <- marker_stats |> 
-  filter(gene %in% common_genes, rank_ratio <= 25) |>
-  pull(gene)
+marker_tab <- marker_stats |> 
+  dplyr::filter(gene %in% common_genes, 
+                rank_ratio <= 25)
                
-#### Build Expression sets ####
+marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x])
 
-exp_set_bulk <- ExpressionSet(assayData = assays(rse_gene_brain_gtex)$counts[markers,],
-                              phenoData=AnnotatedDataFrame(
-                                as.data.frame(colData(rse_gene_brain_gtex))[c("gtex.subjid")]))
+marker_genes <- marker_genes[names(pure_samples)]
 
-exp_set_sce <- ExpressionSet(assayData = as.matrix(assays(sce)$counts[markers,]),
-                             phenoData=AnnotatedDataFrame(
-                               as.data.frame(colData(sce)[,c("key","Sample","BrNum", "cellType_broad_hc", "cellType_hc")])))
+message(Sys.time(), "- hspe w/ Mean Ratio top25 markers")
+purrr::map_int(marker_genes, length)
 
-### run Bisque ####
-message(Sys.time(), " - Bisque Prep")
-exp_set_sce_temp <- exp_set_sce[markers,]
-zero_cell_filter <- colSums(exprs(exp_set_sce_temp)) != 0
-message("Exclude ",sum(!zero_cell_filter), " cells")
-exp_set_sce_temp <- exp_set_sce_temp[,zero_cell_filter]
+est_prop_hspe = hspe(Y = mixture_samples,
+                     reference = reference_samples,
+                     pure_samples = pure_samples,
+                     markers = marker_genes,
+                     seed = 10524)
 
-message(Sys.time(), " - Bisque deconvolution")
-est_prop_bisque <- ReferenceBasedDecomposition(bulk.eset = exp_set_bulk[markers,],
-                                               sc.eset = exp_set_sce_temp,
-                                               cell.types = "cellType_broad_hc",
-                                               subject.names = "Sample",
-                                               use.overlap = FALSE)
 
-save(est_prop_bisque, est_prop_music, GTEx_pd, file = here(data_dir, "GTEx_est_prop_Bisque.Rdata"))
+save(est_prop_hspe, file = here(data_dir, "GTEx_est_prop_hspe_MeanRatio_top25.Rdata"))
 
-slurmjobs::job_single('01_GTEx_Bisque', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_Bisque.R")
+slurmjobs::job_single('01_GTEx_hspe', create_shell = TRUE, memory = '50G', command = "Rscript 01_GTEx_hspe.R")
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
