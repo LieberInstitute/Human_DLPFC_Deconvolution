@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Feb 27 06:16:08 PM EST 2024
+Tue Feb 27 06:28:13 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2816620
+Job id: 2816666
 Job name: 01_import_HALO_data
-Node name: compute-153
+Node name: compute-093
 Task id: 
 Loading conda_R/4.3
 
@@ -407,7 +407,7 @@ $Sep22_2023
 [1] FALSE FALSE FALSE FALSE FALSE FALSE
    cell_type      n
 1:     Astro 167441
-2:      Endo  47488
+2: EndoMural  47488
 3:     Inhib  77530
 4:     Other 474934
 $Br2720P_STAR
@@ -1278,9 +1278,9 @@ using the `.groups` argument.
 3 Low            9
 4 Excluded       8
 [1] "Reproducibility information:"
-[1] "2024-02-27 18:17:45 EST"
+[1] "2024-02-27 18:30:27 EST"
    user  system elapsed 
- 58.773   1.541  94.572 
+ 99.921   2.756 132.038 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.1 Patched (2023-07-19 r84711)
@@ -1390,4 +1390,4 @@ using the `.groups` argument.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Feb 27 06:17:45 PM EST 2024
+Tue Feb 27 06:30:28 PM EST 2024
