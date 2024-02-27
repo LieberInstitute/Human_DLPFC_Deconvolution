@@ -334,7 +334,7 @@ halo_star <- halo_star |>
             n_marker > 1 ~ "Multi",
             SLC17A7 == 1 ~ "Excit",
             TMEM119 == 1 ~ "Micro",
-            OLIG2 == 1 ~ "Oligo",
+            OLIG2 == 1 ~ "OligoOPC",
             TRUE ~ "Other"
         )
     )
