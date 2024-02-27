@@ -67,7 +67,7 @@ rownames(rse_gene_brain_gtex) <- rowData(rse_gene_brain_gtex)$ensembl
 GTEx_pd <- colData(rse_gene_brain_gtex) |> 
   as.data.frame() |> 
   as_tibble() |>
-  select(gtex.sampid, study, gtex.subjid, gtex.sex, gtex.age, gtex.smtsd)
+  select(external_id, study, gtex.subjid, gtex.sex, gtex.age, gtex.smtsd)
 
 write_csv(GTEx_pd, file = here(data_dir, "GTEx_pd.csv"))
 
