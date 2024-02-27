@@ -29,6 +29,32 @@ load(sce_path, verbose = TRUE)
 rownames(sce) <- rowData(sce)$gene_id
 colnames(sce) = sce$key
 
+#   Drop ambiguous cells
+sce <- sce[,sce$cellType_broad_hc != "Ambiguous"]
+sce$cellType_broad_hc <- droplevels(sce$cellType_broad_hc)
+
+## find common genes
+common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
+message("common genes: ", length(common_genes))
+# common genes: 17804 
+
+## load marker gene data
+load(marker_stats_path, verbose = TRUE) 
+marker_tab <- marker_stats |> 
+    filter(gene %in% common_genes, rank_ratio <= 25)
+
+marker_genes <- purrr::map(
+    rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x]
+)
+marker_genes <- marker_genes[levels(sce$cellType_broad_hc)]
+
+#   Subset to markers, drop unused assays and pull counts assay into memory
+sce = sce[unlist(marker_genes), ]
+assays(sce) = list(counts = as.matrix(assays(sce)$counts))
+
+#   Bring into memory to greatly speed up random subsetting later
+assays(sce)$counts = as.matrix(assays(sce)$counts)
+
 #   The number of cells present for the cell type with the least cells
 min_n_cells = colData(sce) |>
     as_tibble() |>
@@ -51,32 +77,21 @@ sce_pb = registration_pseudobulk(
 )
 table(sce_pb$cellType_broad_hc)
 
-## find common genes
-common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene)$ensemblID)
-message("common genes: ", length(common_genes))
-# [1] 13311 
+#   Pseudobulking performs gene filtering, but markers should all be
+#   well-expressed
+stopifnot(all(unlist(marker_genes) %in% rownames(sce_pb)))
 
 # we can instead explicitly pass a list of markers to hspe specifying the marker genes
 # elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
 
 pure_samples = rafalib::splitit(sce_pb$cellType_broad_hc)
 # hspe assumes log2 transformed expressions
-mixture_samples = t(assays(rse_gene)$logcounts[common_genes,])
-reference_samples = t(assays(sce_pb)$logcounts[common_genes,])
+mixture_samples = t(assays(rse_gene)$logcounts[unlist(marker_genes),])
+reference_samples = t(assays(sce_pb)$logcounts[unlist(marker_genes),])
 
 stopifnot(ncol(mixture_samples) == ncol(reference_samples))
 
 est_prop_hspe <- NULL
-
-## load marker gene data
-load(marker_stats_path, verbose = TRUE) 
-marker_tab <- marker_stats |> 
-    dplyr::filter(gene %in% common_genes, rank_ratio <= 25)
-
-marker_genes <- purrr::map(
-    rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x]
-)
-marker_genes <- marker_genes[names(pure_samples)]
   
 message(Sys.time(), "- hspe w/ markers ", marker_label)
 purrr::map_int(marker_genes, length)
