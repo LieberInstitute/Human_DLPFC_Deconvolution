@@ -6,6 +6,9 @@ library("here")
 library("sessioninfo")
 library("spatialLIBD")
 
+seed = as.integer(Sys.getenv("SLURM_ARRAY_TASK_ID"))
+set.seed(seed)
+
 marker_label <- "MeanRatio_top25"
 sce_path = here(
     "processed-data", "08_bulk_deconvolution", "05_deconvolution_hspe",
@@ -100,7 +103,8 @@ est_prop_hspe = hspe(
     Y = mixture_samples,
     reference = reference_samples,
     pure_samples = pure_samples,
-    markers = marker_genes
+    markers = marker_genes,
+    seed = seed
 )
 
 ## Reproducibility information
