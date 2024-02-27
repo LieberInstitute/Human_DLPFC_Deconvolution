@@ -7,7 +7,10 @@ library("sessioninfo")
 library("spatialLIBD")
 
 marker_label <- "MeanRatio_top25"
-sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
+sce_path = here(
+    "processed-data", "08_bulk_deconvolution", "05_deconvolution_hspe",
+    "sce_filtered.rds"
+)
 bulk_path = here("processed-data", "rse", "rse_gene.Rdata")
 marker_stats_path = here(
     "processed-data", "06_marker_genes", "03_find_markers_broad",
@@ -25,7 +28,7 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 dim(rse_gene)
 # [1] 21745   110
 
-load(sce_path, verbose = TRUE)
+sce = readRDS(sce_path)
 rownames(sce) <- rowData(sce)$gene_id
 colnames(sce) = sce$key
 
@@ -51,9 +54,6 @@ marker_genes <- marker_genes[levels(sce$cellType_broad_hc)]
 #   Subset to markers, drop unused assays and pull counts assay into memory
 sce = sce[unlist(marker_genes), ]
 assays(sce) = list(counts = as.matrix(assays(sce)$counts))
-
-#   Bring into memory to greatly speed up random subsetting later
-assays(sce)$counts = as.matrix(assays(sce)$counts)
 
 #   The number of cells present for the cell type with the least cells
 min_n_cells = colData(sce) |>

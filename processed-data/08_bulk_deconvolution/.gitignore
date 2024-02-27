@@ -1,4 +1,5 @@
 example_data
 bayes_prism_example.Rdata
 
- 06_deconvolution_BayesPrism/est_prop_BayesPrism-FULL.Rdata
+06_deconvolution_BayesPrism/est_prop_BayesPrism-FULL.Rdata
+05_deconvolution_hspe/sce_filtered.rds
