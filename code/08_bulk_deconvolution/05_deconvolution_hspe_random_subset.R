@@ -26,6 +26,10 @@ out_path = here(
 
 dir.create(dirname(out_path), showWarnings = FALSE)
 
+################################################################################
+#   Load bulk data, single-cell data, and markers
+################################################################################
+
 #### load data ####
 ## load bulk data
 load(bulk_path, verbose = TRUE)
@@ -56,9 +60,9 @@ marker_genes <- purrr::map(
 )
 marker_genes <- marker_genes[levels(sce$cellType_broad_hc)]
 
-#   Subset to markers, drop unused assays and pull counts assay into memory
-sce = sce[unlist(marker_genes), ]
-assays(sce) = list(counts = as.matrix(assays(sce)$counts))
+################################################################################
+#   Randomly subset single-cell data then pseudobulk
+################################################################################
 
 #   The number of cells present for the cell type with the least cells
 min_n_cells = colData(sce) |>
@@ -86,13 +90,17 @@ table(sce_pb$cellType_broad_hc)
 #   well-expressed
 stopifnot(all(unlist(marker_genes) %in% rownames(sce_pb)))
 
+################################################################################
+#   Run hspe and export estimates to CSV
+################################################################################
+
 # we can instead explicitly pass a list of markers to hspe specifying the marker genes
 # elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
 
 pure_samples = rafalib::splitit(sce_pb$cellType_broad_hc)
 # hspe assumes log2 transformed expressions
 mixture_samples = t(assays(rse_gene)$logcounts[unlist(marker_genes),])
-reference_samples = t(assays(sce_pb)$logcounts[unlist(marker_genes),])
+reference_samples = t(assays(sce_pb)$logcounts)
 
 stopifnot(ncol(mixture_samples) == ncol(reference_samples))
   
