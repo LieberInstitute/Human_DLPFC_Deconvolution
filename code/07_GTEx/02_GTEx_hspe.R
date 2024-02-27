@@ -36,7 +36,8 @@ rse_gene_brain_gtex <- rse_gene_brain_gtex[, rse_gene_brain_gtex$gtex.smafrze !=
 
 ## Compute logtransformed counts consistent with paired data
 message(Sys.time(), " - get logcounts")
-assay(rse_gene_brain_gtex, "counts") <- transform_counts(rse_gene_brain_gtex)
+# assay(rse_gene_brain_gtex, "counts") <- transform_counts(rse_gene_brain_gtex)
+assay(rse_gene_brain_gtex, "counts") <- compute_read_counts(rse_gene_brain_gtex)
 assay(rse_gene_brain_gtex, "RPKM") <- recount::getRPKM(rse_gene_brain_gtex)
 assay(rse_gene_brain_gtex, "logcounts") <- log2(assays(rse_gene_brain_gtex)$RPKM +1)
 
@@ -106,7 +107,7 @@ est_prop_hspe = hspe(Y = mixture_samples,
                      seed = 10524)
 
 
-save(est_prop_hspe, file = here(data_dir, "GTEx_est_prop_hspe_MeanRatio_top25.Rdata"))
+save(est_prop_hspe, file = here(data_dir, "GTEx_est_prop_hspe_MeanRatio_top25_rc.Rdata"))
 
 # slurmjobs::job_single('02_GTEx_hspe', create_shell = TRUE, memory = '25G', command = "Rscript 02_GTEx_hspe.R")
 ## Reproducibility information
