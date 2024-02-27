@@ -66,6 +66,16 @@ table(sce$cellType, sce$cellType_broad)
 
 save(sce, file = here("processed-data", "13_PEC_deconvolution", "sce_PTSDBrainomics.Rdata"))
 
+## cell type prop
+ct_prop <- colData(sce) |>
+  as.data.frame() |>
+  dplyr::group_by(donor = individualID, cellType_broad, dx = primaryDiagnosis) |>
+  dplyr::count() |>
+  dplyr::group_by(donor, dx) |>
+  dplyr::mutate(prop = n/sum(n))
+
+write.csv(ct_prop, file = here("processed-data", "13_PEC_deconvolution", "PEC_ct_prop.csv"))
+
 # slurmjobs::job_single(name = "00_PEC_data_prep", memory = "50G", cores = 1, create_shell = TRUE, command = "Rscript 00_PEC_data_perp.R")
 
 ## Reproducibility information

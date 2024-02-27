@@ -44,6 +44,17 @@ rownames(sce.dlpfc.tran) <- rowData(sce.dlpfc.tran)$gene_id
 sce <- sce.dlpfc.tran
 save(sce, file = here("processed-data", "12_tran_deconvolution", "sce.dlpfc.tran.Rdata"))
 
+## cell type prop
+ct_prop <- colData(sce) |>
+  as.data.frame() |>
+  dplyr::group_by(donor, cellType_broad) |>
+  dplyr::count() |>
+  dplyr::group_by(donor) |>
+  dplyr::mutate(prop = n/sum(n), 
+         dx = "Control")
+
+write.csv(ct_prop, file = here("processed-data", "12_tran_deconvolution", "tran_ct_prop.csv"))
+
 # slurmjobs::job_single('00_data_prep_Tran', create_shell = TRUE, memory = '10G', command = "Rscript 00_data_prep_Tran.R")
 
 ## Reproducibility information
