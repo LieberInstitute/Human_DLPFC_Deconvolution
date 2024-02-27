@@ -6,8 +6,8 @@ library("here")
 library("sessioninfo")
 library("spatialLIBD")
 
-seed = as.integer(Sys.getenv("SLURM_ARRAY_TASK_ID"))
-set.seed(seed)
+task_id = as.integer(Sys.getenv("SLURM_ARRAY_TASK_ID"))
+set.seed(task_id)
 
 marker_label <- "MeanRatio_top25"
 sce_path = here(
@@ -19,10 +19,12 @@ marker_stats_path = here(
     "processed-data", "06_marker_genes", "03_find_markers_broad",
     "marker_stats_broad.Rdata"
 )
+out_path = here(
+    "processed-data", "08_bulk_deconvolution", "05_deconvolution_hspe",
+    "random_subset_runs", sprintf("est_prop_%s.csv", task_id)
+)
 
-#### data output folder ####
-data_dir <- here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe")
-if(!dir.exists(data_dir)) dir.create(data_dir)
+dir.create(dirname(out_path), showWarnings = FALSE)
 
 #### load data ####
 ## load bulk data
@@ -93,8 +95,6 @@ mixture_samples = t(assays(rse_gene)$logcounts[unlist(marker_genes),])
 reference_samples = t(assays(sce_pb)$logcounts[unlist(marker_genes),])
 
 stopifnot(ncol(mixture_samples) == ncol(reference_samples))
-
-est_prop_hspe <- NULL
   
 message(Sys.time(), "- hspe w/ markers ", marker_label)
 purrr::map_int(marker_genes, length)
@@ -104,8 +104,21 @@ est_prop_hspe = hspe(
     reference = reference_samples,
     pure_samples = pure_samples,
     markers = marker_genes,
-    seed = seed
+    seed = task_id
 )
+
+#   Tidy up and export to CSV
+est_prop_hspe$estimates |>
+    as.data.frame() |>
+    rownames_to_column('sample_id') |>
+    as_tibble() |>
+    pivot_longer(
+        cols = !matches('sample_id'),
+        names_to = 'cell_type',
+        values_to = 'prop'
+    ) |>
+    mutate(subset_run = task_id) |>
+    write_csv(out_path)
 
 ## Reproducibility information
 print("Reproducibility information:")
