@@ -260,7 +260,7 @@ halo_circle <- halo_circle |>
             n_marker > 1 ~ "Multi",
             GAD1 == 1 ~ "Inhib",
             GFAP == 1 ~ "Astro",
-            CLDN5 == 1 ~ "Endo",
+            CLDN5 == 1 ~ "EndoMural",
             TRUE ~ "Other"
         )
     )
