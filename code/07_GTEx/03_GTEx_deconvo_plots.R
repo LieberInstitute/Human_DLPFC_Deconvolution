@@ -61,6 +61,7 @@ prop_long_region <- prop_long |>
 # ggsave(prop_bar_region, filename = here(plot_dir, "GTEx_prop_bar_region.png"), width = 12)
 
 prop_bar_region <- prop_long_region |> 
+  mutate(Region = gsub(" \\(", "\n\\(", Region)) |> 
   ggplot(aes(x = Region, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = ifelse(prop > 0.1, round(prop, 3), "")), 
