@@ -15,23 +15,18 @@ dataset_lt <- tibble(Dataset = c("2107UNHS-0291", "2107UNHS-0293" ,"AN00000904",
 
 #### proportion data ####
 halo_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "HALO_cell_type_proportions.csv")) 
-sn_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "snRNA_cell_type_proportions_opc.csv")) |>
-  select(Sample, cell_type = cell_type_og, snRNA_prop = prop_sn)
-                    
+sn_prop <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "snRNA_cell_type_proportions.csv")) |>
+  select(Sample, cell_type, snRNA_prop = prop_sn)
+
+## read in sn data since there are unique tissue blocks
+setequal(unique(sn_prop$Sample), unique(halo_prop$Sample))
+
 halo_prop_simple <- halo_prop |>
   filter(Confidence != "Low" ) |>
   select(Sample, cell_type, RNAscope_prop = prop) |>
-  full_join(sn_prop)
+  full_join(sn_prop, by = join_by(Sample, cell_type))
 
-halo_prop_long <- halo_prop |>
-  select(Sample, cell_type, prop, prop_sn, Confidence) |>
-  pivot_longer(!c(Sample, cell_type, Confidence), names_to = "method", values_to = "prop") |>
-  mutate(method = ifelse(grepl("sn", method), "sn", "RNAscope")) |>
-  filter((Confidence != "Low" | method != "RNAscope"), cell_type != "Other") |>
-  select(!Confidence)
-
-halo_prop_long |> count(method, cell_type)
-halo_prop_long |> count(method)
+length(unique(halo_prop_simple$Sample))
 
 #### Deconvolution output ####
 
@@ -131,25 +126,47 @@ est_prop_hspe |> count(marker)
 
 
 #### Compile data ####
-prop_long <- est_prop_bisque |>
+prop_long_opc <- est_prop_bisque |>
   # bind_rows(est_prop_music) |>
   bind_rows(est_prop_hspe) |>
   # bind_rows(est_prop_dwls) |> 
   # bind_rows(est_prop_bayes) |>
   separate(SAMPLE_ID, into = c("Dataset", "BrNum", "pos", "library_prep"), sep = "_", remove = FALSE) |>
-  mutate(cell_type = factor(cell_type, levels = c("Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC")),
-         Sample = paste0(BrNum, "_", tolower(pos))) |>
+  mutate(Sample = paste0(BrNum, "_", tolower(pos)))
+
+prop_long_opc |> count(cell_type)
+
+## sum OPC & Oligo add data
+prop_long <- prop_long_opc |>
+  mutate(cell_type = ifelse(cell_type %in% c("OPC", "Oligo"),
+                            "OligoOPC", 
+                            cell_type))|>
+  group_by(SAMPLE_ID, Sample, Dataset, BrNum, pos, library_prep, method, marker, cell_type)|>
+  summarise(prop = sum(prop)) |>
+  ungroup() |>
   left_join(halo_prop_simple) |>
-  left_join(dataset_lt) |>
+  left_join(dataset_lt) |> 
+  mutate(rna_extract = gsub("Bulk", "Total", library_prep),
+         library_combo = paste0(library_type, "_",rna_extract),
+         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","OligoOPC","Excit","Inhib")))
+
+prop_long |> count(cell_type)
+prop_long |> count(method, marker)
+prop_long |> count(!is.na(RNAscope_prop), !is.na(snRNA_prop))
+
+## add data to prop_long_opc
+sn_prop_opc <- read.csv(here("processed-data", "03_HALO", "08_explore_proportions", "snRNA_cell_type_proportions_opc.csv")) |>
+  select(Sample, cell_type = cellType_broad_hc, snRNA_prop = prop_sn)
+
+prop_long_opc <- prop_long_opc |>
+  left_join(dataset_lt) |> 
+  left_join(sn_prop_opc) |>
   mutate(rna_extract = gsub("Bulk", "Total", library_prep),
          library_combo = paste0(library_type, "_",rna_extract),
          cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","Oligo","OPC","Excit","Inhib")))
 
-prop_long |> count(method, marker)
-prop_long |> count(!is.na(RNAscope_prop))
-
 ## export this data
-save(prop_long, file = here(data_dir, "PEC_prop_long.Rdata"))
+save(prop_long, prop_long_opc, file = here(data_dir, "PEC_prop_long.Rdata"))
 
 ## as csv
 write_csv(prop_long, file = here(data_dir, "PEC_prop_long.csv"))
