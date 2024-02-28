@@ -293,7 +293,7 @@ legend <- get_legend(
 prop_plot <- plot_grid(bulk_prop_comparisons + guides(fill='none'), NULL, sn_prop_comparisons,
                        ncol=3, rel_widths = c(1,0.04,0.25), align = 'vh', axis = 'btlr')
 plot_grid(prop_plot, legend, align = 'h', axis = 'btlr')
-ggsave(filename = 'plots/02_Gene_Biotype_Enrichment/Proportions_biotypes.pdf', width = 15, height = 5.3)
+ggsave(filename = 'plots/15_Gene_Biotype_Enrichment/Proportions_biotypes.pdf', width = 15, height = 5.3)
 
 
 ## Plot with numbers
@@ -315,7 +315,7 @@ sn_num_comparisons <- ggplot(data_type_nums, aes(x = '', y = number, fill = gene
 num_plot <- plot_grid(bulk_num_comparisons + guides(fill='none'), NULL, sn_num_comparisons,
                        ncol=3, rel_widths = c(1,0.04,0.27), align = 'vh', axis = 'btlr')
 plot_grid(num_plot, legend, align = 'h', axis = 'btlr')
-ggsave(filename = 'plots/02_Gene_Biotype_Enrichment/Numbers_biotypes.pdf', width = 15, height = 5.3)
+ggsave(filename = 'plots/15_Gene_Biotype_Enrichment/Numbers_biotypes.pdf', width = 15, height = 5.3)
 
 
 
@@ -372,7 +372,7 @@ ggplot(all_polyA_vs_RiboZero_props, aes(x=polyA, y=RiboZeroGold, fill=gene_bioty
     axis.title = element_text(size = (14)),
     strip.text = element_text(size=12))
 
-ggsave(filename='plots/02_gene_Biotype_Enrichment/Corr_biotype_props_polyA_vs_RZ.pdf', height = 2.6, width = 9.6)
+ggsave(filename='plots/15_gene_Biotype_Enrichment/Corr_biotype_props_polyA_vs_RZ.pdf', height = 2.6, width = 9.6)
 
 
 
@@ -396,7 +396,7 @@ for(sample_group in names(table(rse_gene$library_combo))){
 }
 
 upset_plot <- upset(fromList(pc_genes_samples), order.by = "freq", nsets = 6)
-pdf('plots/02_gene_Biotype_Enrichment/UpSetplot_protein_coding_expressed_genes.pdf', height = 5, width = 6)
+pdf('plots/15_Gene_Biotype_Enrichment/UpSetplot_protein_coding_expressed_genes.pdf', height = 5, width = 6)
 upset_plot 
 dev.off()
 
