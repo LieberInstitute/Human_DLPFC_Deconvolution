@@ -12,7 +12,7 @@ library("here")
 cell_type_colors_all <- c(Excit = "#247FBC",
                           Inhib = "#E83E38", ## changed from spatialDLPFC to improve contrast with Oligo
                           Oligo = "#F57A00", ## changed from #E07000 to improve contrast
-                          OligoOPC = "#F5AB00",
+                          OligoOPC = "#FF961F",
                           OPC = "#D2B037",
                           Astro = "#3BB273",
                           Micro = "#663894",
