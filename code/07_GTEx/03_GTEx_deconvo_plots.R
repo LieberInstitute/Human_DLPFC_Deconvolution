@@ -11,11 +11,9 @@ if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 ## load colors
 load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
+# cell_type_colors_broad
 
 ## load data ##
-load(here("processed-data","07_GTEx","01_GTEx_Bisque", "GTEx_est_prop_Bisque_MeanRatio_top25.Rdata"), verbose = TRUE)
-# est_prop_bisque
-
 GTEx_pd <- read_csv(here("processed-data","07_GTEx","01_GTEx_Bisque", "GTEx_pd.csv"))
 
 GTEx_pd2 <- GTEx_pd |> 
@@ -24,13 +22,14 @@ GTEx_pd2 <- GTEx_pd |>
 
 GTEx_pd2 |> count(Region)
 
+## est_prop
+load(here("processed-data","07_GTEx","01_GTEx_Bisque", "GTEx_est_prop_Bisque_MeanRatio_top25.Rdata"), verbose = TRUE)
+# est_prop_bisque
+load(here("processed-data","07_GTEx","02_GTEx_hspe", "GTEx_est_prop_hspe_MeanRatio_top25_rc.Rdata"), verbose = TRUE)
+# est_prop_hspe
+
 #### make prop long ####
-
-names(est_prop_bisque)
-
-est_prop_bisque$bulk.props <- t(est_prop_bisque$bulk.props)
-
-prop_long_bisque <- est_prop_bisque$bulk.props |>
+prop_long_bisque <- t(est_prop_bisque$bulk.props) |>
   as.data.frame() |>
   rownames_to_column("Sample") |>
   pivot_longer(!Sample, names_to = "cell_type", values_to = "prop") |>
@@ -38,8 +37,7 @@ prop_long_bisque <- est_prop_bisque$bulk.props |>
          method = "Bisque") |>
   left_join(GTEx_pd2)
 
-## temp until hspe run is done
-prop_long_hspe <- est_prop_bisque$bulk.props |> #TODO fix!!
+prop_long_hspe <- est_prop_hspe$estimates |>
   as.data.frame() |>
   rownames_to_column("Sample") |>
   pivot_longer(!Sample, names_to = "cell_type", values_to = "prop") |>
@@ -76,10 +74,10 @@ prop_bar_region <- prop_long_region |>
 ggsave(prop_bar_region, filename = here(plot_dir, "GTEx_prop_bar_region.png"), width = 8, height = 6)
 ggsave(prop_bar_region, filename = here(plot_dir, "GTEx_prop_bar_region.pdf"), width = 8, height = 6)
 
-prop_long_PFC <- prop_long |> filter(Region == "Frontal Cortex (BA9)")
-
-PFC_samples <- unique(prop_long_PFC$Sample)
-length(PFC_samples)
+# prop_long_PFC <- prop_long |> filter(Region == "Frontal Cortex (BA9)")
+# 
+# PFC_samples <- unique(prop_long_PFC$Sample)
+# length(PFC_samples)
 # [1] 209
 
 # prop_bar_pfc_sample <- plot_composition_bar(prop_long_PFC, 
@@ -102,4 +100,20 @@ length(PFC_samples)
 #   theme(axis.text.x = element_text(angle = 45, hjust=1))
 # 
 # ggsave(prop_bar_pfc_sample, filename = here(plot_dir, "GTEx_prop_pfc_sample.png"), width = 12)
+
+#### Compare Bisque vs. hspe values ###
+
+prop_wide <- prop_long  |>
+  pivot_wider(names_from = "method", values_from = "prop")
+
+prop_scater_facet <- prop_wide |>
+  ggplot(aes(x = Bisque, y = hspe, color = cell_type)) +
+  geom_point() +
+  scale_color_manual(values = cell_type_colors_broad) +
+  facet_wrap(~Region) +
+  geom_abline() +
+  theme_bw()
+  
+ggsave(prop_scater_facet, filename = here(plot_dir, "GTEx_prop_scater_facet.png"), width = 9, height = 9)
+
 
