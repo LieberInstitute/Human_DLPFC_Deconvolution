@@ -120,7 +120,7 @@ ggplot(data=marker_DEGs_nums_melted, aes(x=DE_in_lib_combo, y=cell_type, label=n
         axis.title = element_text(size = (14)),
         axis.text.y = element_text(size=12))
 
-ggsave('plots/03_CellTypeMarker_enrichment_DEGs/Num_marker_DEGs_byLibType.pdf', height = 5, width = 4.6)
+ggsave('plots/16_CellTypeMarker_enrichment_DEGs/Num_marker_DEGs_byLibType.pdf', height = 5, width = 4.6)
 
 
 
@@ -170,7 +170,7 @@ ggplot(data=marker_DEGs_nums_melted, aes(x=DE_in_RNA_extraction, y=cell_type, la
         axis.title = element_text(size = (14)),
         axis.text.y = element_text(size=12))
 
-ggsave('plots/03_CellTypeMarker_enrichment_DEGs/Num_marker_DEGs_byRNAextraction.pdf', height = 5, width = 5.6)
+ggsave('plots/16_CellTypeMarker_enrichment_DEGs/Num_marker_DEGs_byRNAextraction.pdf', height = 5, width = 5.6)
 
 
 
@@ -273,7 +273,7 @@ h <- Heatmap(log_p_values,
 
 h <- h + row_anno
 
-pdf(file='plots/03_CellTypeMarker_enrichment_DEGs/Enrich_cellTypeMarkers_in_DEGs_byLibType.pdf', height = 5, width = 4.6)
+pdf(file='plots/16_CellTypeMarker_enrichment_DEGs/Enrich_cellTypeMarkers_in_DEGs_byLibType.pdf', height = 5, width = 4.6)
 h
 dev.off()
 
@@ -319,7 +319,7 @@ h <- Heatmap(log_p_values,
 
 h <- h + row_anno
 
-pdf(file='plots/03_CellTypeMarker_enrichment_DEGs/Enrich_cellTypeMarkers_in_DEGs_byRNAextraction.pdf', height = 5, width = 4.6)
+pdf(file='plots/16_CellTypeMarker_enrichment_DEGs/Enrich_cellTypeMarkers_in_DEGs_byRNAextraction.pdf', height = 5, width = 4.6)
 h
 dev.off()
 
