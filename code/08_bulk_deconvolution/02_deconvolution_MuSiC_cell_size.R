@@ -17,9 +17,9 @@ marker_file <- here(
 sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
 bulk_path = here("processed-data","rse", "rse_gene.Rdata")
 halo_path = here("processed-data", "03_HALO", "halo_all.Rdata")
-out_path <- here(
+out_path = here(
     "processed-data", "08_bulk_deconvolution", "02_deconvolution_MuSiC",
-    sprintf("est_prop_bisque_%s_%s_random_subsets.csv", marker_label, n_runs)
+    sprintf("est_prop_cell_size_%s.csv", cell_size_opt)
 )
 
 message("Using ", marker_label," marker genes from: ", marker_file)
@@ -117,7 +117,18 @@ est_prop_music <- music_prop(
     cell_size = cell_size_df
 )
 
-save(est_prop_music, file = here(data_dir,paste0("est_prop_music-", marker_label, ".Rdata")))
+#   Tidy up and export to CSV
+est_prop_music$Est.prop.weighted |>
+    as.data.frame() |>
+    rownames_to_column('sample_id') |>
+    as_tibble() |>
+    pivot_longer(
+        cols = !matches('sample_id'),
+        names_to = 'cell_type',
+        values_to = 'prop'
+    ) |>
+    mutate(cell_size_opt = {{ cell_size_opt }}) |>
+    write_csv(out_path)
 
 ## Reproducibility information
 print("Reproducibility information:")
