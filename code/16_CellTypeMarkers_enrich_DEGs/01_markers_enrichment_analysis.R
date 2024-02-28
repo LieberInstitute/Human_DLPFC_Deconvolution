@@ -15,33 +15,33 @@ library(sessioninfo)
 ## Analysis to find groups of DEGs (by library type or RNA fraction) enriched with marker genes for certain cell types
 
 ## Load DEGs for library type 
-load(here('processed-data/01_ORA/de_genes_RZ_Total.Rdata'))
-load(here('processed-data/01_ORA/de_genes_polyA_Total.Rdata'))
-load(here('processed-data/01_ORA/de_genes_RZ_Cyto.Rdata'))
-load(here('processed-data/01_ORA/de_genes_polyA_Cyto.Rdata'))
-load(here('processed-data/01_ORA/de_genes_RZ_Nuc.Rdata'))
-load(here('processed-data/01_ORA/de_genes_polyA_Nuc.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_RZ_Total.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_polyA_Total.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_RZ_Cyto.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_polyA_Cyto.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_RZ_Nuc.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_polyA_Nuc.Rdata'))
 
 ## Load DEGs for RNA extraction 
-load(here('processed-data/01_ORA/de_genes_Total_for_TotalvsCyto_polyA.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Cyto_for_TotalvsCyto_polyA.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Total_for_TotalvsNuc_polyA.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Nuc_for_TotalvsNuc_polyA.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Cyto_for_CytovsNuc_polyA.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Nuc_for_CytovsNuc_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsCyto_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_TotalvsCyto_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsNuc_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_TotalvsNuc_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_CytovsNuc_polyA.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_CytovsNuc_polyA.Rdata'))
 
-load(here('processed-data/01_ORA/de_genes_Total_for_TotalvsCyto_RZ.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Cyto_for_TotalvsCyto_RZ.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Total_for_TotalvsNuc_RZ.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Nuc_for_TotalvsNuc_RZ.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Cyto_for_CytovsNuc_RZ.Rdata'))
-load(here('processed-data/01_ORA/de_genes_Nuc_for_CytovsNuc_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsCyto_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_TotalvsCyto_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsNuc_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_TotalvsNuc_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_CytovsNuc_RZ.Rdata'))
+load(here('processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_CytovsNuc_RZ.Rdata'))
 
 ## Load rse data 
-load(here('raw-data/rse_gene.Rdata'))
+load(here('processed-data/rse/rse_gene.Rdata'))
 
 ## Load list of cell type marker genes (Mean Ratio Top25)
-load(here('raw-data/marker_genes_top25.Rdata'), verbose = TRUE)
+load(here('processed-data/06_marker_genes/marker_genes_top25.Rdata'), verbose = TRUE)
 # Loading objects:
 #   marker_genes_top25
 #   marker_genes_top25_simple
