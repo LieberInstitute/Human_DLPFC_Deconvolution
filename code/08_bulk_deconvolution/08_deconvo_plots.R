@@ -7,7 +7,7 @@ library("viridis")
 library("GGally")
 
 ## prep dirs ##
-plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots")
+plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots_OligoOPC")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## load colors & shapes
@@ -34,11 +34,13 @@ prop_long
 
 ## filter to just MeanRatio_top25 for this script
 prop_long <- prop_long |> 
-  filter(marker == "MeanRatio_top25") |> 
-  mutate(rna_extract = gsub("Bulk", "Total", library_prep), ## temp fix in get_est_prop
-         library_combo = paste0(library_type, "_",rna_extract),
-         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","Oligo","OPC","Excit","Inhib")))
+  filter(marker == "MeanRatio_top25")
 
+prop_long_opc <- prop_long_opc |> 
+  filter(marker == "MeanRatio_top25")
+
+prop_long |> count(cell_type)
+prop_long_opc |> count(cell_type)
 
 prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
 # # A tibble: 6 × 2
@@ -61,40 +63,31 @@ prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
              rmse = Metrics::rmse(RNAscope_prop, prop))  |>
    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
    arrange(cor))
-# method          cor  rmse cor_anno                
-# <chr>         <dbl> <dbl> <chr>                   
-# 1 DWLS       -0.00684 0.231 "cor:-0.007\nrmse:0.231"
-# 2 MuSiC       0.0292  0.209 "cor:0.029\nrmse:0.209" 
-# 3 BayesPrism  0.181   0.134 "cor:0.181\nrmse:0.134" 
-# 4 CIBERSORTx  0.501   0.150 "cor:0.501\nrmse:0.150" 
-# 5 Bisque      0.508   0.148 "cor:0.508\nrmse:0.148" 
-# 6 hspe        0.513   0.151 "cor:0.513\nrmse:0.151" 
+# method            cor  rmse cor_anno                
+# <chr>           <dbl> <dbl> <chr>                   
+#   1 DWLS       -0.0000600 0.228 "cor:-0.000\nrmse:0.228"
+# 2 BayesPrism  0.00922   0.159 "cor:0.009\nrmse:0.159" 
+# 3 MuSiC       0.0509    0.200 "cor:0.051\nrmse:0.200" 
+# 4 CIBERSORTx  0.490     0.154 "cor:0.490\nrmse:0.154" 
+# 5 hspe        0.532     0.143 "cor:0.532\nrmse:0.143" 
+# 6 Bisque      0.538     0.141 "cor:0.538\nrmse:0.141"
 
 ## factor method by overall cor
 cor_check$method <- factor(cor_check$method, levels = cor_check$method)
 prop_long$method <- factor(prop_long$method, levels = cor_check$method)
 
-
-(cor_check_library <- prop_long |>
-    filter(!is.na(RNAscope_prop)) |>
-    group_by(method, library_type, rna_extract, library_combo) |>
-    summarize(cor = cor(RNAscope_prop, prop),
-              rmse = Metrics::rmse(RNAscope_prop, prop)) |>
-    arrange(-cor) |>
-    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))
-)
-# method     library_type rna_extract library_combo        cor   rmse cor_anno               
-# <fct>      <chr>        <chr>       <chr>              <dbl>  <dbl> <chr>                  
-# 1 Bisque     polyA        Cyto        polyA_Cyto         0.672 0.131  "cor:0.672\nrmse:0.131"
-# 2 CIBERSORTx polyA        Cyto        polyA_Cyto         0.636 0.190  "cor:0.636\nrmse:0.190"
-# 3 hspe       polyA        Cyto        polyA_Cyto         0.598 0.144  "cor:0.598\nrmse:0.144"
-# 4 Bisque     polyA        Nuc         polyA_Nuc          0.560 0.136  "cor:0.560\nrmse:0.136"
-# 5 CIBERSORTx polyA        Nuc         polyA_Nuc          0.556 0.213  "cor:0.556\nrmse:0.213"
-# 6 hspe       RiboZeroGold Total       RiboZeroGold_Total 0.522 0.152  "cor:0.522\nrmse:0.152"
-# 7 CIBERSORTx RiboZeroGold Nuc         RiboZeroGold_Nuc   0.518 0.109  "cor:0.518\nrmse:0.109"
-# 8 hspe       polyA        Nuc         polyA_Nuc          0.510 0.142  "cor:0.510\nrmse:0.142"
-# 9 CIBERSORTx polyA        Total       polyA_Total        0.508 0.147  "cor:0.508\nrmse:0.147"
-# 10 CIBERSORTx RiboZeroGold Total       RiboZeroGold_Total 0.508 0.0962 "cor:0.508\nrmse:0.096"
+# method     library_type rna_extract library_combo        cor  rmse cor_anno               
+# <fct>      <chr>        <chr>       <chr>              <dbl> <dbl> <chr>                  
+#  1 Bisque     polyA        Cyto        polyA_Cyto         0.683 0.123 "cor:0.683\nrmse:0.123"
+# 2 CIBERSORTx polyA        Cyto        polyA_Cyto         0.645 0.185 "cor:0.645\nrmse:0.185"
+# 3 hspe       polyA        Cyto        polyA_Cyto         0.605 0.138 "cor:0.605\nrmse:0.138"
+# 4 Bisque     polyA        Nuc         polyA_Nuc          0.587 0.127 "cor:0.587\nrmse:0.127"
+# 5 CIBERSORTx polyA        Nuc         polyA_Nuc          0.564 0.195 "cor:0.564\nrmse:0.195"
+# 6 hspe       RiboZeroGold Total       RiboZeroGold_Total 0.549 0.143 "cor:0.549\nrmse:0.143"
+# 7 hspe       polyA        Nuc         polyA_Nuc          0.529 0.134 "cor:0.529\nrmse:0.134"
+# 8 hspe       RiboZeroGold Nuc         RiboZeroGold_Nuc   0.525 0.157 "cor:0.525\nrmse:0.157"
+# 9 hspe       RiboZeroGold Cyto        RiboZeroGold_Cyto  0.518 0.145 "cor:0.518\nrmse:0.145"
+# 10 Bisque     RiboZeroGold Nuc         RiboZeroGold_Nuc   0.513 0.167 "cor:0.513\nrmse:0.167"
 
 
 ## TODO reletive cell type error (divide by mean RNAscope prop)
@@ -162,7 +155,7 @@ ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.pdf"), wi
 #### proportion data ####
 
 ## Composition bar plots
-prop_bar_SAMPLE_ID <- prop_long |> 
+prop_bar_SAMPLE_ID <- prop_long_opc |> 
   ggplot(aes(x = SAMPLE_ID, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   facet_wrap(~method, ncol = 1) +
@@ -174,7 +167,7 @@ prop_bar_SAMPLE_ID <- prop_long |>
 
 ggsave(prop_bar_SAMPLE_ID, filename = here(plot_dir, "Bulk_prop_SAMPLE_ID_MRtop25.png"), width = 8, height = 9)
 
-prop_bar_SAMPLE_facet <- prop_long |> 
+prop_bar_SAMPLE_facet <- prop_long_opc |> 
   mutate(Sample = gsub("_","\n", Sample)) |>
   ggplot(aes(x = library_combo, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
@@ -190,7 +183,7 @@ ggsave(prop_bar_SAMPLE_facet, filename = here(plot_dir, "Bulk_prop_SAMPLE_facet.
 
 
 ## filter to Nuc + RiboZero
-prop_bar_Nuc_RiboZero <- prop_long |> 
+prop_bar_Nuc_RiboZero <- prop_long_opc |> 
   filter(library_prep == "Nuc", 
          library_type == "RiboZeroGold") |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
@@ -224,7 +217,7 @@ ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZer
 est_prop_v_RNAscope_scatter <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot() +
-  scale_color_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
   geom_point(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
   geom_text(data = cor_check, aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
@@ -245,7 +238,7 @@ est_prop_v_RNAscope_scatter_top25 <- prop_long |>
             aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
   facet_wrap(~method, nrow = 1) +
-  scale_color_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
   scale_shape_manual(values = library_combo_shapes2) +
   geom_abline() +
   coord_equal() +
@@ -262,7 +255,7 @@ est_prop_v_RNAscope_scatter_top25_library <- prop_long |>
   geom_text(data = cor_check_library,
             aes(label = cor_anno,x = .5, y = 1),
             vjust = "inward", hjust = "inward") +
-  scale_color_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
   scale_shape_manual(values = library_combo_shapes2) +
   facet_grid(library_combo~method) +
   geom_abline() +
@@ -276,7 +269,7 @@ ggsave(est_prop_v_RNAscope_scatter_top25_library, filename = here(plot_dir, "est
 est_prop_v_RNAscope_scatter_library_prep <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   ggplot(aes(x = RNAscope_prop, y = prop, color = cell_type)) +
-  scale_color_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
   geom_point() +
   facet_grid(library_prep~method) +
   geom_abline() +
@@ -319,23 +312,58 @@ ggsave(est_prop_v_RNAscope_scatter_library_prep, filename = here(plot_dir, "est_
 # ggsave(cor_vs_rmse_method, filename = here(plot_dir, "cor_vs_rmse_method.png"))
 
 #### ggpair plots ####
-
-sn_prop <- read_csv(here("processed-data", "03_HALO", "08_explore_proportions","snRNA_cell_type_proportions.csv")) |>
-  select(Sample, cell_type, prop_sn) |>
-  mutate(cell_type = gsub("Endo", "EndoMural", cell_type))
+# 
+# sn_prop <- read_csv(here("processed-data", "03_HALO", "08_explore_proportions","snRNA_cell_type_proportions.csv")) |>
+#   select(Sample, cell_type, prop_sn) |>
+#   mutate(cell_type = gsub("Endo", "EndoMural", cell_type))
 
 prop_wide <- prop_long |>
-  left_join(sn_prop) |>
-  select(SAMPLE_ID, rna_extract, cell_type, method, RNAscope = RNAscope_prop, `snRNA-seq` = prop_sn, prop) |>
+  select(SAMPLE_ID, rna_extract, cell_type, method, RNAscope = RNAscope_prop, `snRNA-seq` = snRNA_prop, prop) |>
   pivot_wider(names_from = "method", values_from = "prop")
 
 gg_prop <- ggpairs(prop_wide, columns = c("RNAscope", "snRNA-seq", as.character(cor_check$method)), aes(colour = cell_type)) +
-  scale_color_manual(values = cell_type_colors_broad) +
-  scale_fill_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  scale_fill_manual(values = cell_type_colors_halo) +
   theme_bw()
 
-ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.png"), height = 10, width = 10)
-ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.pdf"), height = 10, width = 10)
+ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.png"), height = 12, width = 12)
+ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.pdf"), height = 11, width = 11)
+
+
+## est_prop vs. snRNA props?
+prop_long_opc
+
+(cor_check_sn <- prop_long_opc |>
+    filter(!is.na(snRNA_prop)) |>
+    group_by(method) |>
+    summarize(cor = cor(snRNA_prop, prop),
+              rmse = Metrics::rmse(snRNA_prop, prop))  |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+    arrange(cor))
+
+## factor method by overall cor
+cor_check_sn$method <- factor(cor_check_sn$method, levels = cor_check_sn$method)
+prop_long_opc$method <- factor(prop_long_opc$method, levels = cor_check_sn$method)
+
+est_prop_v_sn_scatter_top25 <- prop_long_opc |>
+  filter(!is.na(snRNA_prop)) |>
+  ggplot() +
+  geom_point(aes(x = snRNA_prop, y = prop, color = cell_type, shape = library_combo)) +
+  geom_text(data = cor_check_sn, 
+            aes(label = cor_anno,x = .8, y = 1),
+            vjust = "inward", hjust = "inward") +
+  facet_wrap(~method, nrow = 1) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  scale_shape_manual(values = library_combo_shapes2) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw() +
+  labs( x = "snRNA-seq Proportion", y = "Estimated Proportion")
+
+ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.png"), width = 10, height = 4)
+ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.pdf"), width = 10, height = 4)
+
+
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
