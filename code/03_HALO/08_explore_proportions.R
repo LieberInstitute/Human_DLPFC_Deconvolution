@@ -19,13 +19,13 @@ if (!dir.exists(data_dir)) dir.create(data_dir)
 ## colors
 load(here("processed-data", "00_data_prep", "cell_colors.Rdata"), verbose = TRUE)
 # cell_type_colors_halo
+# cell_type_colors_broad
 
 halo_ct <- names(cell_type_colors_halo)
+# [1] "Astro"     "EndoMural" "Micro"     "OligoOPC"  "Excit"     "Inhib"     "Other"  
 
 halo_ct_tb <- tibble(
-  cell_type = c("Endo", "Astro", "Inhib", "Excit", "Micro", "Oligo"),
-  # Other = rep(c("Other_Star", "Other_Circle"), each = 3),
-  # marker = c("CLDN5", "GFAP", "GAD1", "SLC17A7", "TMEM119", "OLIG2"),
+  cell_type = c("EndoMural", "Astro", "Inhib", "Excit", "Micro", "OligoOPC"),
   Combo = rep(c("Circle", "Star"), each = 3)
 )
 
@@ -38,35 +38,26 @@ sce[, sce$cellType_hc != "Ambiguous"]
 dim(sce)
 
 sn_pd <- as.data.frame(colData(sce)) |>
-  mutate(cell_type_og = gsub("Mural","",cellType_broad_hc), 
-         cell_type = factor(ifelse(cell_type_og %in% halo_ct, 
-                                   as.character(gsub("Mural","",cellType_broad_hc)),
-                                   "Oligo"), ## OPC to Oligo
-                            levels = halo_ct))
+  mutate(cell_type = factor(ifelse(cellType_broad_hc %in% c("Oligo", "OPC"), 
+                                   "OligoOPC",
+                                   as.character(cellType_broad_hc)),
+                            levels = names(cell_type_colors_halo)))
 
 sn_pd |>
-  dplyr::count(cellType_broad_hc, cell_type, cell_type_og)
-# cellType_broad_hc cell_type cell_type_og     n
-# 1             Astro     Astro        Astro  3979
-# 2         EndoMural      Endo         Endo  2157
-# 3             Micro     Micro        Micro  1601
-# 4             Oligo     Oligo        Oligo 10894
-# 5               OPC     Oligo          OPC  1940
-# 6             Excit     Excit        Excit 24809
-# 7             Inhib     Inhib        Inhib 11067
+  dplyr::count(cellType_broad_hc, cell_type)
+# cellType_broad_hc cell_type     n
+# 1             Astro     Astro  3979
+# 2         EndoMural EndoMural  2157
+# 3             Micro     Micro  1601
+# 4             Oligo  OligoOPC 10894
+# 5               OPC  OligoOPC  1940
+# 6             Excit     Excit 24809
+# 7             Inhib     Inhib 11067
 
 sn_ct <- sn_pd |> 
   select(Sample, cell_type) |> 
   left_join(halo_ct_tb) |> 
-  bind_rows(sn_pd |> 
-              select(Sample, cell_type) |> 
-              left_join(tibble(
-                cell_type = c("Endo", "Astro", "Inhib", "Excit", "Micro", "Oligo"),
-                Combo = rep(c("Star", "Circle"), each = 3)
-              ))|>
-              mutate(cell_type = "Other")) |>
   as_tibble()
-
 
 head(sn_ct)
 
@@ -74,16 +65,21 @@ sn_ct |> dplyr::count(cell_type)
 
 ## calculate prop for halo cell types
 sn_ct_prop <- sn_ct |>
-  group_by(Sample, cell_type, Combo) |>
+  group_by(Sample, cell_type) |>
   summarize(n_cell_sn = n()) |>
-  group_by(Sample, Combo) |>
-  mutate(prop_sn = n_cell_sn / sum(n_cell_sn)) 
+  group_by(Sample) |>
+  mutate(prop_sn = n_cell_sn / sum(n_cell_sn))
+
+## all == 1
+sn_ct_prop |> summarise(sum_one = sum(prop_sn) == 1) |> pull(sum_one) |> all()
 
 sn_ct_prop_opc <- sn_pd |> 
-  group_by(Sample, cell_type_og) |>
+  group_by(Sample, cellType_broad_hc) |>
   summarize(n_cell_sn = n()) |>
   group_by(Sample) |>
   mutate(prop_sn = n_cell_sn / sum(n_cell_sn)) 
+
+sn_ct_prop_opc |> summarise(sum_one = sum(prop_sn) == 1) |> pull(sum_one) |> all()
 
 sn_n_cells <- sn_pd |>
   group_by(Sample)|>
@@ -101,6 +97,12 @@ sn_n_cells <- sn_pd |>
 write_csv(sn_ct_prop, file = here(data_dir,"snRNA_cell_type_proportions.csv"))
 write_csv(sn_ct_prop_opc, file = here(data_dir,"snRNA_cell_type_proportions_opc.csv"))
 
+rm(sce)
+
+#### Use sn ct props ####
+# sn_ct_prop <- read_csv(here(data_dir,"snRNA_cell_type_proportions.csv")) |>
+#   mutate(cell_type = factor(cell_type, levels = names(cell_type_colors_halo)))
+
 sn_prop_boxplot <- sn_ct_prop |>
   filter(cell_type != "Other") |>
   ggplot(aes(x = cell_type, y = prop_sn, fill = cell_type)) +
@@ -115,42 +117,37 @@ sn_prop_boxplot <- sn_ct_prop |>
 ggsave(sn_prop_boxplot, filename = here(plot_dir, "sn_prop_boxplot.png"))
 
 sn_ct_prop |> 
-  select(-Combo, -n_cell_sn) |> 
+  select(-n_cell_sn) |> 
   filter(cell_type != "Other") |> 
   pivot_wider(names_from = "cell_type", values_from = "prop_sn") |>
   summary()
 
-# Sample              Astro               Endo              Excit             Inhib             Micro              Oligo         
+# Sample              Astro            EndoMural            Excit             Inhib             Micro             OligoOPC       
 # Length:19          Min.   :0.002514   Min.   :0.002514   Min.   :0.06182   Min.   :0.03938   Min.   :0.004944   Min.   :0.009428  
 # Class :character   1st Qu.:0.048339   1st Qu.:0.024908   1st Qu.:0.38352   1st Qu.:0.06819   1st Qu.:0.025223   1st Qu.:0.167950  
 # Mode  :character   Median :0.063607   Median :0.038208   Median :0.47881   Median :0.10275   Median :0.029891   Median :0.213340  
-# Mean   :0.072243   Mean   :0.038965   Mean   :0.43741   Mean   :0.18744   Mean   :0.031759   Mean   :0.233853  
-# 3rd Qu.:0.080744   3rd Qu.:0.048462   3rd Qu.:0.56496   3rd Qu.:0.15765   3rd Qu.:0.043661   3rd Qu.:0.303292  
-# Max.   :0.155498   Max.   :0.081568   Max.   :0.67375   Max.   :0.77813   Max.   :0.054713   Max.   :0.525431  
-#                                                                                              NA's   :1   
-
-# sn_ct_prop <- read.csv(here(data_dir,"snRNA_cell_type_proportions.csv"))
+#                    Mean   :0.072243   Mean   :0.038965   Mean   :0.43741   Mean   :0.18744   Mean   :0.031759   Mean   :0.233853  
+#                    3rd Qu.:0.080744   3rd Qu.:0.048462   3rd Qu.:0.56496   3rd Qu.:0.15765   3rd Qu.:0.043661   3rd Qu.:0.303292  
+#                    Max.   :0.155498   Max.   :0.081568   Max.   :0.67375   Max.   :0.77813   Max.   :0.054713   Max.   :0.525431  
+#                    NA's   :1     
 
 ## prop plot with other
 sn_prop_bar_other <- sn_ct_prop |>
   ggplot(aes(x = Sample, y = prop_sn, fill = cell_type)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = cell_type_colors_halo) +
-  facet_wrap(~Combo, ncol = 1)  +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggsave(sn_prop_bar_other, filename = here(plot_dir,"sn_prop_bar_other.png"))
+ggsave(sn_prop_bar_other, filename = here(plot_dir,"sn_prop_bar.png"))
 
-rm(sce)
-
-sn_other_prop <- sn_ct_prop |>
-  mutate(Other = cell_type == "Other") |>
-  group_by(Sample, Combo, Other) |>
-  summarize(n_cell_sn = sum(n_cell_sn),
-            prop_sn = sum(prop_sn)) |>
-  filter(Other)
-
-summary(sn_other_prop)
+# sn_other_prop <- sn_ct_prop |>
+#   mutate(Other = cell_type == "Other") |>
+#   group_by(Sample, Combo, Other) |>
+#   summarize(n_cell_sn = sum(n_cell_sn),
+#             prop_sn = sum(prop_sn)) |>
+#   filter(Other)
+# 
+# summary(sn_other_prop)
 
 #### RNAscope Metadata ####
 metadata <- read.csv(here("processed-data", "03_HALO", "01_import_HALO_data", "HALO_metadata.csv")) |> 
@@ -239,7 +236,7 @@ halo_all |>
 
 halo_all |> 
   filter(Confidence %in% c("OK","High")) |>
-  # group_by(Combo) |> 
+  group_by(Combo) |>
   dplyr::count(large_nuc)
 
 # Combo  large_nuc      n
@@ -270,12 +267,26 @@ halo_all |>
 halo_all |>
   dplyr::count(cell_type)
 
-## six samples w/o pair
+# cell_type      n
+# <chr>      <int>
+# 1 Astro     161898
+# 2 EndoMural  45862
+# 3 Excit     136096
+# 4 Inhib      73933
+# 5 Micro      25737
+# 6 OligoOPC   67697
+# 7 Other     807899
+
+## 4 samples w/o pair
 halo_samples <- halo_all |>
   dplyr::count(SAMPLE_ID, Sample) |>
   group_by(Sample) |>
   dplyr::summarize(n_combo = n()) |>
   mutate(both_combo = n_combo ==2 )
+
+halo_samples |> dplyr::count(both_combo)
+# 1 FALSE          4
+# 2 TRUE          15
 
 samples_both <- halo_samples |> filter(both_combo) |> pull(Sample) 
 
@@ -292,13 +303,6 @@ write_csv(cell_type_prop, file = here(data_dir,"HALO_cell_type_proportions.csv")
 # cell_type_prop <- read_csv(here(data_dir,"HALO_cell_type_proportions.csv"))
 
 ## Adjusted cell type proportions
-sn_ct_prop_adj <- sn_ct_prop |>
-  filter((cell_type != "Other" & Sample %in% samples_both) |
-           (!Sample %in% samples_both & Combo == "Circle"))
-
-# sn_ct_prop_adj |>
-#   group_by(Sample) |>
-#   summarize(sum(prop_sn))
 
 cell_type_prop_adj <- halo_all |>
   filter((cell_type != "Other" & Sample %in% samples_both) | (!Sample %in% samples_both)) |>
@@ -306,13 +310,8 @@ cell_type_prop_adj <- halo_all |>
   summarize(n_cell = n()) |>
   group_by(Sample) |>
   mutate(prop = n_cell / sum(n_cell)) |>
-  left_join(sn_ct_prop_adj) |>
+  left_join(sn_ct_prop) |>
   mutate(cell_type = factor(cell_type, levels = halo_ct))
-
-cell_type_prop_adj |>
-  group_by(Sample) |>
-  summarize(s = sum(prop)) |>
-  summary()
 
 write_csv(cell_type_prop_adj, file = here(data_dir,"HALO_cell_type_proportions_adj.csv"))
 
@@ -375,7 +374,7 @@ cell_type_prop |>
   pivot_wider(names_from = "cell_type", values_from = "prop") |>
   summary()
 
-# SAMPLE_ID            Combo               Astro              Endo             Inhib             Other            Excit       
+# SAMPLE_ID            Combo               Astro          EndoMural             Inhib             Other            Excit       
 # Length:25          Length:25          Min.   :0.05958   Min.   :0.02624   Min.   :0.05132   Min.   :0.3292   Min.   :0.1154  
 # Class :character   Class :character   1st Qu.:0.07875   1st Qu.:0.04042   1st Qu.:0.09709   1st Qu.:0.5532   1st Qu.:0.2073  
 # Mode  :character   Mode  :character   Median :0.09667   Median :0.04667   Median :0.11101   Median :0.6223   Median :0.2336  
@@ -383,7 +382,7 @@ cell_type_prop |>
 #                                       3rd Qu.:0.24435   3rd Qu.:0.06429   3rd Qu.:0.11585   3rd Qu.:0.7121   3rd Qu.:0.3130  
 #                                       Max.   :0.51874   Max.   :0.10070   Max.   :0.14425   Max.   :0.8009   Max.   :0.3248  
 #                                       NA's   :13        NA's   :13        NA's   :13                         NA's   :12      
-# Micro              Oligo        
+# Micro              OligoOPC        
 # Min.   :0.009823   Min.   :0.02099  
 # 1st Qu.:0.017403   1st Qu.:0.05131  
 # Median :0.037707   Median :0.12324  
@@ -399,22 +398,22 @@ cell_type_prop |>
   pivot_wider(names_from = "cell_type", values_from = "prop_sn") |>
   summary()
 
-# SAMPLE_ID            Combo               Astro              Endo             Inhib             Other            Excit       
-# Length:25          Length:25          Min.   :0.04288   Min.   :0.02021   Min.   :0.03938   Min.   :0.1276   Min.   :0.2039  
-# Class :character   Class :character   1st Qu.:0.06524   1st Qu.:0.03674   1st Qu.:0.06140   1st Qu.:0.2239   1st Qu.:0.4226  
-# Mode  :character   Mode  :character   Median :0.07820   Median :0.04722   Median :0.07719   Median :0.2929   Median :0.4819  
-#                                       Mean   :0.09342   Mean   :0.04683   Mean   :0.08691   Mean   :0.4864   Mean   :0.4865  
-#                                       3rd Qu.:0.12763   3rd Qu.:0.05391   3rd Qu.:0.11212   3rd Qu.:0.7703   3rd Qu.:0.6016  
-#                                       Max.   :0.15550   Max.   :0.07753   Max.   :0.13919   Max.   :0.8724   Max.   :0.6737  
-#                                       NA's   :14        NA's   :14        NA's   :14        NA's   :2        NA's   :13      
-#      Micro             Oligo        
-#  Min.   :0.02488   Min.   :0.09688  
-#  1st Qu.:0.02788   1st Qu.:0.19247  
-#  Median :0.03124   Median :0.23837  
-#  Mean   :0.03599   Mean   :0.25369  
-#  3rd Qu.:0.04592   3rd Qu.:0.30767  
-#  Max.   :0.05397   Max.   :0.52543  
-#  NA's   :13        NA's   :13   
+# Sample           SAMPLE_ID            Combo               Astro           EndoMural           Inhib             Other    
+# Length:25          Length:25          Length:25          Min.   :0.04288   Min.   :0.02021   Min.   :0.03938   Min.   : NA  
+# Class :character   Class :character   Class :character   1st Qu.:0.06524   1st Qu.:0.03674   1st Qu.:0.06140   1st Qu.: NA  
+# Mode  :character   Mode  :character   Mode  :character   Median :0.07820   Median :0.04722   Median :0.07719   Median : NA  
+#                                                          Mean   :0.09342   Mean   :0.04683   Mean   :0.08691   Mean   :NaN  
+#                                                          3rd Qu.:0.12763   3rd Qu.:0.05391   3rd Qu.:0.11212   3rd Qu.: NA  
+#                                                          Max.   :0.15550   Max.   :0.07753   Max.   :0.13919   Max.   : NA  
+#                                                          NA's   :14        NA's   :14        NA's   :14        NA's   :25   
+# Excit            Micro            OligoOPC      
+# Min.   :0.2039   Min.   :0.02488   Min.   :0.09688  
+# 1st Qu.:0.4226   1st Qu.:0.02788   1st Qu.:0.19247  
+# Median :0.4819   Median :0.03124   Median :0.23837  
+# Mean   :0.4865   Mean   :0.03599   Mean   :0.25369  
+# 3rd Qu.:0.6016   3rd Qu.:0.04592   3rd Qu.:0.30767  
+# Max.   :0.6737   Max.   :0.05397   Max.   :0.52543  
+# NA's   :13       NA's   :13        NA's   :13  
 
 #### Other proportions ####
 
@@ -569,15 +568,16 @@ prop_boxplot <- cell_type_prop |>
   scale_color_manual(values = cell_type_colors_halo) +
   theme_bw() +
   theme(legend.position = "None") +
-  labs(y = "RNAscope Cell Type Proportion")
+  labs(y = "RNAscope Cell Type Proportion") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.png"), height = 5, width = 7)
 ggsave(prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot.pdf"), height = 5, width = 7)
 
-cell_type_prop |>
-  filter(Confidence %in% c("OK","High")) |> 
-  group_by(cell_type, Sample) |> 
-  summarize(RNAscope = TRUE)
+# cell_type_prop |>
+#   filter(Confidence %in% c("OK","High")) |> 
+#   group_by(cell_type, Sample) |> 
+#   summarize(RNAscope = TRUE)
 
 sn_prop_boxplot <- sn_ct_prop |> 
   filter(cell_type != "Other") |>
@@ -596,7 +596,8 @@ sn_prop_boxplot <- sn_ct_prop |>
   scale_color_manual(values = cell_type_colors_halo) +
   theme_bw()+
   labs(y = "snRNA-seq Cell Type Proportion") +
-  theme(legend.position = "left")
+  theme(legend.position = "left") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave(sn_prop_boxplot + prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot2.png"), height = 5, width = 8)
 ggsave(sn_prop_boxplot + prop_boxplot, filename = here(plot_dir, "halo_prop_boxplot2.pdf"), height = 5, width = 8)
@@ -614,7 +615,6 @@ prop_bar_combine <- cell_type_prop |>
 ggsave(prop_bar_combine, filename = here(plot_dir, "halo_prop_bar_combine.png"))
 
 #### Cell Type Prop Adjusted ####
-
 prop_bar_adj <- cell_type_prop_adj |>
   ggplot(aes(x = Sample, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
@@ -705,27 +705,28 @@ ggsave(halo_vs_sn_prop_filter,  filename = here(plot_dir, "halo_vs_sn_prop_scatt
 # 
 # cell_type    cor   rmse mean_prop rrmse cor_anno                             
 # <chr>      <dbl>  <dbl>     <dbl> <dbl> <chr>                                
-#   1 Inhib      0.813 0.0249    0.103  0.242 "cor:0.813\nrmse:0.025\nrrmse:0.242" 
-# 2 Astro      0.495 0.164     0.187  0.876 "cor:0.495\nrmse:0.164\nrrmse:0.876" 
-# 3 Excit      0.367 0.267     0.248  1.08  "cor:0.367\nrmse:0.267\nrrmse:1.076" 
-# 4 Oligo      0.343 0.182     0.105  1.73  "cor:0.343\nrmse:0.182\nrrmse:1.730" 
-# 5 Other      0.245 0.307     0.627  0.490 "cor:0.245\nrmse:0.307\nrrmse:0.490" 
-# 6 Micro     -0.225 0.0381    0.0437 0.871 "cor:-0.225\nrmse:0.038\nrrmse:0.871"
-# 7 Endo      -0.414 0.0352    0.0569 0.618 "cor:-0.414\nrmse:0.035\nrrmse:0.618"
+# cell_type    cor   rmse mean_prop rrmse cor_anno                             
+# <fct>      <dbl>  <dbl>     <dbl> <dbl> <chr>                                
+# 1 Inhib      0.725 0.300     0.103  2.92  "cor:0.725\nrmse:0.300\nrrmse:2.915" 
+# 2 Astro      0.678 0.246     0.187  1.32  "cor:0.678\nrmse:0.246\nrrmse:1.319" 
+# 3 Excit      0.349 0.403     0.248  1.63  "cor:0.349\nrmse:0.403\nrrmse:1.626" 
+# 4 OligoOPC   0.311 0.262     0.105  2.48  "cor:0.311\nrmse:0.262\nrrmse:2.485" 
+# 5 Micro     -0.172 0.0395    0.0437 0.904 "cor:-0.172\nrmse:0.039\nrrmse:0.904"
+# 6 EndoMural -0.571 0.169     0.0569 2.96  "cor:-0.571\nrmse:0.169\nrrmse:2.964"
 
-ct_cor |> 
-  ggplot(aes(x = cor, y = rrmse, color = cell_type)) + 
-  geom_point() + 
-  scale_color_manual(values = cell_type_colors_halo) +
-  theme_bw() 
+# ct_cor |> 
+#   ggplot(aes(x = cor, y = rrmse, color = cell_type)) + 
+#   geom_point() + 
+#   scale_color_manual(values = cell_type_colors_halo) +
+#   theme_bw() 
 
 ## Split big (Astro, Oligo, and Excit) and little (Endo, Mico, Inhib)
 halo_vs_sn_prop_filter_big <- cell_type_prop |>
-  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Astro", "Oligo", "Excit")) |>
+  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Astro", "OligoOPC", "Excit")) |>
   ggplot() +
   geom_point(aes(x = prop_sn, y = prop, fill = cell_type), shape = 21) +
-  geom_text(data = ct_cor |> filter(cell_type %in% c("Astro", "Oligo", "Excit")), 
-            aes(label = cor_anno,x = .7, y = .48),
+  geom_text(data = ct_cor |> filter(cell_type %in% c("Astro", "OligoOPC", "Excit")), 
+            aes(label = cor_anno,x = .84, y = .5),
             vjust = "inward", hjust = "inward", size = 2.5) +
   scale_fill_manual(values = cell_type_colors_halo) +
   facet_wrap(~cell_type, nrow = 1) +
@@ -737,11 +738,11 @@ halo_vs_sn_prop_filter_big <- cell_type_prop |>
 
 
 halo_vs_sn_prop_filter_little <- cell_type_prop |>
-  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("Endo", "Micro", "Inhib")) |>
+  filter(Confidence %in% c("OK", 'High'), cell_type %in% c("EndoMural", "Micro", "Inhib")) |>
   ggplot() +
   geom_point(aes(x = prop_sn, y = prop, fill = cell_type), shape = 21) +
-  geom_text(data = ct_cor |> filter(cell_type %in% c("Endo", "Micro", "Inhib")), 
-            aes(label = cor_anno,x = .15, y = .1),
+  geom_text(data = ct_cor |> filter(cell_type %in% c("EndoMural", "Micro", "Inhib")), 
+            aes(label = cor_anno, x = .15, y = 0),
             vjust = "inward", hjust = "inward", size = 2.5) +
   scale_fill_manual(values = cell_type_colors_halo) +
   facet_wrap(~cell_type, nrow = 1) +
