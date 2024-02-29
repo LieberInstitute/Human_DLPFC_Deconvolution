@@ -1,0 +1,106 @@
+cohort,cell_type,region,mean,SD,N,Mean_cell,SD_cell
+GTEx,astrocytes,Amygdala,24.9,12.98,152,26.96,13.45
+GTEx,excitatory neurons,Amygdala,32.96,16.16,152,12.44,8.67
+GTEx,inhibitory neurons,Amygdala,7.75,4.72,152,5.42,3.94
+GTEx,microglia,Amygdala,6.5,6.05,152,14.98,10.67
+GTEx,oligodendrocyte progenitor cells,Amygdala,6.39,3.68,152,5.51,2.8
+GTEx,oligodendrocytes,Amygdala,14.87,9.74,152,24.93,13.1
+GTEx,pericytes-endothelial cells,Amygdala,6.63,6.87,152,9.75,7.08
+GTEx,astrocytes,Anterior cingulate cortex (BA24),11.92,8.8,176,17.6,10.36
+GTEx,excitatory neurons,Anterior cingulate cortex (BA24),57.24,16.72,176,31.51,14.46
+GTEx,inhibitory neurons,Anterior cingulate cortex (BA24),12.52,6,176,13.14,7.48
+GTEx,microglia,Anterior cingulate cortex (BA24),2.14,2.94,176,6.75,6.49
+GTEx,oligodendrocyte progenitor cells,Anterior cingulate cortex (BA24),4.04,3.41,176,4.72,2.96
+GTEx,oligodendrocytes,Anterior cingulate cortex (BA24),4.81,7.34,176,10.59,11.24
+GTEx,pericytes-endothelial cells,Anterior cingulate cortex (BA24),7.32,6.64,176,15.68,8.42
+GTEx,astrocytes,Caudate (basal ganglia),23.44,9.64,246,22.59,8.47
+GTEx,excitatory neurons,Caudate (basal ganglia),9.74,7.95,246,3.42,3.8
+GTEx,inhibitory neurons,Caudate (basal ganglia),30.27,10.64,246,18.83,9.57
+GTEx,microglia,Caudate (basal ganglia),4.66,3.66,246,10.31,7.09
+GTEx,oligodendrocyte progenitor cells,Caudate (basal ganglia),4.56,2.49,246,3.58,1.75
+GTEx,oligodendrocytes,Caudate (basal ganglia),17.59,8.98,246,27.47,11.4
+GTEx,pericytes-endothelial cells,Caudate (basal ganglia),9.74,5.08,246,13.8,5.87
+GTEx, astrocytes,Cerebellar Hemisphere,33.48,7.61,215,52.78,7.44
+GTEx,excitatory neurons,Cerebellar Hemisphere,48.77,7.33,215,24.63,5.63
+GTEx,inhibitory neurons,Cerebellar Hemisphere,14.45,2.61,215,13.91,3.3
+GTEx,microglia,Cerebellar Hemisphere,0.98,1.42,215,3.47,4.01
+GTEx,oligodendrocyte progenitor cells,Cerebellar Hemisphere,0.38,0.36,215,0.49,0.43
+GTEx,oligodendrocytes,Cerebellar Hemisphere,0.78,0.99,215,2.02,2.4
+GTEx,pericytes-endothelial cells,Cerebellar Hemisphere,1.16,1.1,215,2.7,2.12
+GTEx,astrocytes,Cerebellum,37.64,8.1,241,57.43,7.7
+GTEx,excitatory neurons,Cerebellum,45.39,7.06,241,22.15,5.24
+GTEx,inhibitory neurons,Cerebellum,13.99,2.62,241,13.05,3.21
+GTEx,microglia,Cerebellum,0.4,0.53,241,1.4,1.79
+GTEx,oligodendrocyte progenitor cells,Cerebellum,0.17,0.15,241,0.21,0.18
+GTEx,oligodendrocytes,Cerebellum,1.06,1.2,241,2.7,2.89
+GTEx,pericytes-endothelial cells,Cerebellum,1.36,1.15,241,3.06,2.31
+GTEx,astrocytes,Cortex,9.24,6.27,255,13.74,7.09
+GTEx,excitatory neurons,Cortex,63.12,13.75,255,33.46,12.88
+GTEx,inhibitory neurons,Cortex,8.03,4.19,255,8.3,4.98
+GTEx,microglia,Cortex,1.69,1.79,255,5.75,4.88
+GTEx,oligodendrocyte progenitor cells,Cortex,1.84,1.49,255,2.24,1.35
+GTEx,oligodendrocytes,Cortex,7.81,8.11,255,18.27,13.66
+GTEx,pericytes-endothelial cells,Cortex,8.27,5.85,255,18.25,8.41
+ROSMAP,astrocytes,Dorsolateral Prefrontal Cortex,13.66,5.8,481,17.86,5.49
+ROSMAP,excitatory neurons,Dorsolateral Prefrontal Cortex,55.13,11.92,481,24.67,9.56
+ROSMAP,inhibitory neurons,Dorsolateral Prefrontal Cortex,7,2.43,481,5.98,2.85
+ROSMAP,microglia,Dorsolateral Prefrontal Cortex,2.97,1.94,481,9,4.68
+ROSMAP,oligodendrocyte progenitor cells,Dorsolateral Prefrontal Cortex,1.6,0.95,481,1.71,0.85
+ROSMAP,oligodendrocytes,Dorsolateral Prefrontal Cortex,10.27,4.44,481,22.28,6.86
+ROSMAP,pericytes-endothelial cells,Dorsolateral Prefrontal Cortex,9.38,3.74,481,18.49,4.64
+GTEx,astrocytes,Frontal Cortex (BA9),11,9.04,209,15.9,9.96
+GTEx,excitatory neurons,Frontal Cortex (BA9),62.14,18.02,209,34.17,15.36
+GTEx,inhibitory neurons,Frontal Cortex (BA9),6.96,3.93,209,7.44,4.79
+GTEx,microglia,Frontal Cortex (BA9),2.02,3.77,209,6.15,7.7
+GTEx,oligodendrocyte progenitor cells,Frontal Cortex (BA9),2.64,2.02,209,3.2,1.76
+GTEx,oligodendrocytes,Frontal Cortex (BA9),7.14,8.54,209,15.86,12.69
+GTEx,pericytes-endothelial cells,Frontal Cortex (BA9),8.1,6.06,209,17.29,7.35
+GTEx,astrocytes,Hippocampus,10.85,6.63,197,10.5,6.67
+GTEx,excitatory neurons,Hippocampus,32.02,19.86,197,11.35,9.3
+GTEx,inhibitory neurons,Hippocampus,5.31,5.14,197,3.52,4.04
+GTEx,microglia,Hippocampus,5.83,5.45,197,11.96,9.01
+GTEx,oligodendrocyte progenitor cells,Hippocampus,3.33,2.32,197,2.57,1.79
+GTEx,oligodendrocytes,Hippocampus,34.14,19.26,197,48.45,18.05
+GTEx,pericytes-endothelial cells,Hippocampus,8.52,4.79,197,11.65,5.54
+GTEx,astrocytes,Hypothalamus ,17.27,9.17,202,16.39,9.14
+GTEx,excitatory neurons,Hypothalamus ,6.4,6.06,202,2.12,2.45
+GTEx,inhibitory neurons,Hypothalamus ,37.29,13.37,202,22.06,10.71
+GTEx,microglia,Hypothalamus ,11.02,7.03,202,22.74,11.8
+GTEx,oligodendrocyte progenitor cells,Hypothalamus ,3.58,2.14,202,2.8,1.75
+GTEx,oligodendrocytes,Hypothalamus ,14.07,12.09,202,19.89,13.98
+GTEx,pericytes-endothelial cells,Hypothalamus ,10.37,6.61,202,14,7.7
+GTEx,astrocytes,Nucleus accumbens (basal ganglia),17.38,9.38,246,20.6,9.27
+GTEx,excitatory neurons,Nucleus accumbens (basal ganglia),15.33,8.12,246,6.31,3.97
+GTEx,inhibitory neurons,Nucleus accumbens (basal ganglia),46.74,10.26,246,35.25,11.76
+GTEx,microglia,Nucleus accumbens (basal ganglia),3.77,3.25,246,10.19,7.48
+GTEx,oligodendrocyte progenitor cells,Nucleus accumbens (basal ganglia),2.89,1.95,246,2.8,1.63
+GTEx,oligodendrocytes,Nucleus accumbens (basal ganglia),7.42,7.22,246,13.86,10.25
+GTEx,pericytes-endothelial cells,Nucleus accumbens (basal ganglia),6.47,5.96,246,11,7.87
+GTEx,astrocytes,Putamen (basal ganglia),16,8.12,205,14.27,6.94
+GTEx,excitatory neurons,Putamen (basal ganglia),7.67,6.95,205,2.45,2.67
+GTEx,inhibitory neurons,Putamen (basal ganglia),30.46,10.77,205,17.31,8.24
+GTEx,microglia,Putamen (basal ganglia),3.91,2.78,205,8.18,5.34
+GTEx,oligodendrocyte progenitor cells,Putamen (basal ganglia),2.58,1.81,205,1.89,1.29
+GTEx,oligodendrocytes,Putamen (basal ganglia),28.2,11.01,205,41.06,11.86
+GTEx,pericytes-endothelial cells,Putamen (basal ganglia),11.18,5.93,205,14.84,6.58
+GTEx,astrocytes,Spinal cord (cervical c-1),6.14,3.66,159,3.88,2.54
+GTEx,excitatory neurons,Spinal cord (cervical c-1),2.66,4.79,159,0.6,1.27
+GTEx,inhibitory neurons,Spinal cord (cervical c-1),2.8,4.28,159,1.16,2.03
+GTEx,microglia,Spinal cord (cervical c-1),15.01,9.69,159,21.25,12.38
+GTEx,oligodendrocyte progenitor cells,Spinal cord (cervical c-1),2.75,1.78,159,1.43,0.99
+GTEx,oligodendrocytes,Spinal cord (cervical c-1),63.55,14.76,159,65.02,14.46
+GTEx,pericytes-endothelial cells,Spinal cord (cervical c-1),7.09,4.46,159,6.67,4.27
+GTEx,astrocytes,Substantia nigra,9.86,7.9,139,6.83,5.81
+GTEx,excitatory neurons,Substantia nigra,2.77,4.98,139,0.67,1.5
+GTEx,inhibitory neurons,Substantia nigra,9.71,7.56,139,4.15,3.67
+GTEx,microglia,Substantia nigra,11.93,8.24,139,18.32,11.35
+GTEx,oligodendrocyte progenitor cells,Substantia nigra,3.31,2.05,139,1.85,1.19
+GTEx,oligodendrocytes,Substantia nigra,49.49,14.5,139,54.92,13.97
+GTEx,pericytes-endothelial cells,Substantia nigra,12.92,6.56,139,13.26,6.71
+Mayo,astrocytes,Temporal Cortex,17.72,8.47,263,19.76,7.79
+Mayo,excitatory neurons,Temporal Cortex,43.7,17.76,263,17.51,10.44
+Mayo,inhibitory neurons,Temporal Cortex,3.76,3.06,263,3.01,2.97
+Mayo,microglia,Temporal Cortex,3.21,3.87,263,7.98,6.11
+Mayo,oligodendrocyte progenitor cells,Temporal Cortex,2.22,1.31,263,2.04,1.1
+Mayo,oligodendrocytes,Temporal Cortex,20.74,13.51,263,35.74,16.45
+Mayo,pericytes-endothelial cells,Temporal Cortex,8.64,5.17,263,13.96,6.24
