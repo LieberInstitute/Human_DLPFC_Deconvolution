@@ -65,7 +65,7 @@ prop_bar_SAMPLE_facet <- prop_long_subset_summary_opc |>
   geom_bar(stat = "identity") +
   facet_grid(method~Sample) +
   scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Mean Cell Type Proportion", x = "Library Type & RNA Extraction Prep", fill = "Cell Type", title = "Subset Experiment") +
+  labs(y = "Mean Estimated Proportion (1k reps)", x = "Library Type & RNA Extraction Prep", fill = "Cell Type", title = "Subset Experiment") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         legend.position = "bottom")
