@@ -1,0 +1,3 @@
+slurmstepd: error: run_command: killing slurm task_prolog operation on shutdown
+slurmstepd: error: slurm task_prolog did not exit normally. reason: 
+slurmstepd: error: TaskProlog failed status=1

@@ -1,0 +1,2 @@
+slurmstepd: error: run_command: killing slurm task_prolog operation on shutdown
+slurmstepd: error: execve(): /var/spool/slurm/d/job2816965/slurm_script: No such file or directory
