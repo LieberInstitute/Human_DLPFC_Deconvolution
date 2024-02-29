@@ -73,7 +73,7 @@ dataset_cell_bar <- dataset_prop |>
   #           position = position_stack(vjust = .5)) +
   theme_bw() +
   scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Number of Nuclei", x = NULL)
+  labs(y = "Number of Nuclei")
 
 dataset_prop_bar <- dataset_prop |>
   ggplot(aes(x = dataset, y = prop, fill = cell_type)) +
@@ -85,9 +85,14 @@ dataset_prop_bar <- dataset_prop |>
   scale_fill_manual(values = cell_type_colors_broad) +
   labs(y = "Cell Type Proportion")
 
-data_set_cols <- donor_n_col / dataset_cell_bar /dataset_prop_bar
+# data_set_cols <- donor_n_col / dataset_cell_bar /dataset_prop_bar
+
+data_set_cols <- donor_n_col / (dataset_cell_bar + theme(legend.position = "None") +dataset_prop_bar) +
+  plot_layout(heights = unit(c(2, 1), c('in', 'null')))
+
 ggsave(data_set_cols, filename = here(plot_dir, "dataset_bar_plots.png"), width = 5, height = 7)  
 ggsave(data_set_cols, filename = here(plot_dir, "dataset_bar_plots.pdf"), width = 5, height = 7)  
+
 
 #### load data - combine input datasets ####
 load(here("processed-data", "08_bulk_deconvolution", "03_get_est_prop","prop_long.Rdata"), verbose = TRUE)
@@ -225,7 +230,7 @@ est_prop_v_RNAscope_scatter <- prop_long |>
             aes(label = cor_anno,x = .5, y = .75),
             vjust = "inward", hjust = "inward") +
   scale_shape_manual(values = library_combo_shapes2) +
-  scale_color_manual(values = cell_type_colors_broad) +
+  scale_color_manual(values = cell_type_colors_halo) +
   facet_grid(input~method) +
   # facet_wrap(input~method, ncol = 1) +
   geom_abline() +
