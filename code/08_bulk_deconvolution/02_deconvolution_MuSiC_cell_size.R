@@ -16,7 +16,7 @@ marker_file <- here(
 )
 sce_path = here("processed-data", "sce", "sce_DLPFC.Rdata")
 bulk_path = here("processed-data","rse", "rse_gene.Rdata")
-halo_path = here("processed-data", "03_HALO", "halo_all.Rdata")
+halo_path = here("processed-data", "03_HALO", "12_HALO_cell_size", "MuSiC_cell_size.csv")
 out_path = here(
     "processed-data", "08_bulk_deconvolution", "02_deconvolution_MuSiC",
     sprintf("est_prop_cell_size_%s.csv", cell_size_opt)
@@ -59,35 +59,33 @@ if(!all(markers %in% common_genes)) {
 }
 markers <- intersect(markers, common_genes)
 
-load(halo_path, verbose = TRUE)
 
 ################################################################################
-#   Load HALO data and produce a table of "cell sizes" for each cell type
+#   Load HALO "cell sizes" for each cell type
 ################################################################################
 
 #   Keep only cell types that match the single-cell data; treat "OligoOPC"
 #   as if it's just oligos (later we'll use define OPCs to have the same cell
 #   sizes as oligos, since this category was merged in the HALO data and not
 #   recoverable into distinct categories)
-halo_all = halo_all |>
+
+MuSiC_cell_size <- read.csv(halo_path) |>
     mutate(cell_type = ifelse(cell_type == "OligoOPC", "Oligo", cell_type)) |>
     filter(cell_type != "Other")
+
 stopifnot(all(halo_all$cell_type %in% unique(sce$cellType_broad_hc)))
 
 #   For each cell type, compute an average "cell size" based on some combination
 #   of nuclear area and ATK3 puncta
 if (cell_size_opt == "nuc_area") {
-    cell_size_df = halo_all |>
-        group_by(cell_type) |>
-        summarize(cell_size = mean(Nucleus_Area))
+    cell_size_df = MuSiC_cell_size |>
+        select(cell_type, cell_size = nuc_area)
 } else if (cell_size_opt == "akt3") {
-    cell_size_df = halo_all |>
-        group_by(cell_type) |>
-        summarize(cell_size = mean(DAPI_AKT3))
+  cell_size_df = MuSiC_cell_size |>
+    select(cell_type, cell_size = akt3)
 } else if (cell_size_opt == "nuc_area_akt3") {
-    cell_size_df = halo_all |>
-        group_by(cell_type) |>
-        summarize(cell_size = mean(Nucleus_Area * DAPI_AKT3))
+  cell_size_df = MuSiC_cell_size |>
+    select(cell_type, cell_size = nuc_area_akt3)
 } else {
     stop("Invalid cell-size option.")
 }
