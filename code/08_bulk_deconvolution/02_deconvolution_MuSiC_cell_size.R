@@ -73,7 +73,7 @@ MuSiC_cell_size <- read.csv(halo_path) |>
     mutate(cell_type = ifelse(cell_type == "OligoOPC", "Oligo", cell_type)) |>
     filter(cell_type != "Other")
 
-stopifnot(all(halo_all$cell_type %in% unique(sce$cellType_broad_hc)))
+stopifnot(all(MuSiC_cell_size$cell_type %in% unique(sce$cellType_broad_hc)))
 
 #   For each cell type, compute an average "cell size" based on some combination
 #   of nuclear area and ATK3 puncta
