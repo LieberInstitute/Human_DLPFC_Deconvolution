@@ -330,7 +330,7 @@ ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.png"), height = 12
 ggsave(gg_prop, filename = here(plot_dir, "ggpairs_prop_top25.pdf"), height = 11, width = 11)
 
 
-## est_prop vs. snRNA props?
+#### est_prop vs. snRNA props? ####
 prop_long_opc
 
 (cor_check_sn <- prop_long_opc |>

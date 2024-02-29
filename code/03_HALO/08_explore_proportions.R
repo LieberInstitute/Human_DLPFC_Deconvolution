@@ -8,6 +8,7 @@ library("here")
 library("broom")
 library("patchwork")
 library("Metrics")
+library("DeconvoBuddies")
 
 #### Set-up ####
 plot_dir <- here("plots", "03_HALO", "08_explore_proportions")
@@ -97,6 +98,13 @@ sn_n_cells <- sn_pd |>
 write_csv(sn_ct_prop, file = here(data_dir,"snRNA_cell_type_proportions.csv"))
 write_csv(sn_ct_prop_opc, file = here(data_dir,"snRNA_cell_type_proportions_opc.csv"))
 
+## plot violin plots for RNAscope markers ##
+
+rnascope_genes <- c("SLC17A7", "TMEM119", "OLIG2", "GFAP", "CLDN5", "GAD1")
+all(rnascope_genes %in% rownames(sce))
+rnascope_violin <- plot_gene_express(sce, genes = rnascope_genes, cat = "cellType_broad_hc", color_pal = cell_type_colors_broad)
+ggsave(rnascope_violin, filename = here(plot_dir, "rnascope_gene_violin.png"))
+ggsave(rnascope_violin, filename = here(plot_dir, "rnascope_gene_violin.pdf"))
 rm(sce)
 
 #### Use sn ct props ####
