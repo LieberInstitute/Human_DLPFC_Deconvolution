@@ -5,7 +5,7 @@
 #SBATCH -c 1
 #SBATCH -o logs/05_deconvolution_hspe_random_subset_%a.txt
 #SBATCH -e logs/05_deconvolution_hspe_random_subset_%a.txt
-#SBATCH --array=36,37,38,39,40,41,42,43,44,45,46,48,49,50,55,252,254,407,410,411,414,415,416,417,418,420,421,428,429,430,838,841,844,849,851,853,855,857,859,861,863,865,867,870,872,878,882,886,889,909,911,915,918,921,924,931,933,935,937,939,942,944,950,953,956,958,960,961,964,966,968,969,973,975,977,978,981,983,987,988,992,996,999%15
+#SBATCH --array=418,429,853,859,863,882,918,924,935,953,958,964,969,983,988,992,996,999%15
 
 set -e
 
@@ -21,6 +21,9 @@ echo "Task id: ${SLURM_ARRAY_TASK_ID}"
 
 ## Load the R module
 module load conda_R/4.3.x
+
+#   Circumvent temporary issues with /tmp being full on some compute nodes
+export TMPDIR=$MYSCRATCH
 
 ## List current modules for reproducibility
 module list
