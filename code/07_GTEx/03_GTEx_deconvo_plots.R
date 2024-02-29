@@ -121,8 +121,8 @@ prop_bar_region_k <- prop_long_region_k |>
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust=1))
 
-ggsave(prop_bar_region, filename = here(plot_dir, "GTEx_prop_bar_region_SPLITR.png"), width = 8, height = 6)
-ggsave(prop_bar_region, filename = here(plot_dir, "GTEx_prop_bar_region_SPLITR.pdf"), width = 8, height = 6)
+ggsave(prop_bar_region_k, filename = here(plot_dir, "GTEx_prop_bar_region_SPLITR.png"), width = 8, height = 8)
+ggsave(prop_bar_region_k, filename = here(plot_dir, "GTEx_prop_bar_region_SPLITR.pdf"), width = 8, height = 8)
 
 ## scatter vs. splitr
 scater_v_SPLITR <- prop_long_region |> 
@@ -136,7 +136,7 @@ scater_v_SPLITR <- prop_long_region |>
   geom_abline() +
   theme_bw()
 
-ggsave(scater_v_SPLITR, filename = here(plot_dir, "GTEx_scater_v_SPLITR.pdf"))
+ggsave(scater_v_SPLITR, filename = here(plot_dir, "GTEx_scater_v_SPLITR.png"))
 
 
 # prop_long_PFC <- prop_long |> filter(Region == "Frontal Cortex (BA9)")
