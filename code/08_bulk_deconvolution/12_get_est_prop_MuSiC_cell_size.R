@@ -75,7 +75,7 @@ save(prop_long_opc, prop_long , file = here(data_dir, "prop_long_MuSiC_cell_size
 ## as csv
 write_csv(prop_long , file = here(data_dir, "prop_long_MuSiC_cell_size.csv"))
 
-# slurmjobs::job_single(name = "10_get_est_prop_subset", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 10_get_est_prop_subset.R")
+# slurmjobs::job_single(name = "12_get_est_prop_MuSiC_cell_size", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 12_get_est_prop_MuSiC_cell_size.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
