@@ -194,3 +194,11 @@ est_prop_v_sn_scatter <- prop_long_opc |>
 ggsave(est_prop_v_sn_scatter, filename = here(plot_dir, "est_prop_v_sn_scatter_MuSiC_cell_size.png"), width = 10, height = 4)
 ggsave(est_prop_v_sn_scatter, filename = here(plot_dir, "est_prop_v_sn_scatter_MuSiC_cell_size.pdf"), width = 10, height = 4)
 
+# slurmjobs::job_single(name = "13_deconvo_plots_MuSiC_cell_size", memory = "10G", cores = 1, create_shell = TRUE, command = "Rscript 13_deconvo_plots_MuSiC_cell_size.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
