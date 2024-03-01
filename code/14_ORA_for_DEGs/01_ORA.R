@@ -186,7 +186,7 @@ GO_KEGG<- function(sigGeneList, geneUniverse, name, folder){
   else{
     plot_grid(p1, p2, p3, p4, ncol=2, align = 'vh')
   }
-  ggsave(paste("plots/01_ORA/", folder, "/GO_KEGG_", name, ".pdf", sep=""), height = height, width = width)
+  ggsave(paste("plots/14_ORA_for_DEGs/", folder, "/GO_KEGG_", name, ".pdf", sep=""), height = height, width = width)
   
   
   ## Return results
@@ -209,12 +209,12 @@ GO_KEGG<- function(sigGeneList, geneUniverse, name, folder){
 
 ## DEGs in RZ and polyA for Total samples
 de_genes_RZ_Total <- subset(de_results_polyA_vs_RZ_Total, adj.P.Val<0.05 & logFC>1)
-save(de_genes_RZ_Total, file = 'processed-data/01_ORA/de_genes_RZ_Total.Rdata')
+save(de_genes_RZ_Total, file = 'processed-data/14_ORA_for_DEGs/de_genes_RZ_Total.Rdata')
 dim(de_genes_RZ_Total)
 # [1] 996   8
 
 de_genes_polyA_Total <- subset(de_results_polyA_vs_RZ_Total, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_polyA_Total, file = 'processed-data/01_ORA/de_genes_polyA_Total.Rdata')
+save(de_genes_polyA_Total, file = 'processed-data/14_ORA_for_DEGs/de_genes_polyA_Total.Rdata')
 dim(de_genes_polyA_Total)
 # [1] 1005    8
 
@@ -222,12 +222,12 @@ dim(de_genes_polyA_Total)
 
 ## DEGs in RZ and polyA for Cyto samples
 de_genes_RZ_Cyto <- subset(de_results_polyA_vs_RZ_Cyto, adj.P.Val<0.05 & logFC>1)
-save(de_genes_RZ_Cyto, file = 'processed-data/01_ORA/de_genes_RZ_Cyto.Rdata')
+save(de_genes_RZ_Cyto, file = 'processed-data/14_ORA_for_DEGs/de_genes_RZ_Cyto.Rdata')
 dim(de_genes_RZ_Cyto)
 # [1] 7109    8
 
 de_genes_polyA_Cyto <- subset(de_results_polyA_vs_RZ_Cyto, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_polyA_Cyto, file = 'processed-data/01_ORA/de_genes_polyA_Cyto.Rdata')
+save(de_genes_polyA_Cyto, file = 'processed-data/14_ORA_for_DEGs/de_genes_polyA_Cyto.Rdata')
 dim(de_genes_polyA_Cyto)
 # [1] 4949    8
 
@@ -235,12 +235,12 @@ dim(de_genes_polyA_Cyto)
 
 ## DEGs in RZ and polyA for Nuc samples
 de_genes_RZ_Nuc <- subset(de_results_polyA_vs_RZ_Nuc, adj.P.Val<0.05 & logFC>1)
-save(de_genes_RZ_Nuc, file = 'processed-data/01_ORA/de_genes_RZ_Nuc.Rdata')
+save(de_genes_RZ_Nuc, file = 'processed-data/14_ORA_for_DEGs/de_genes_RZ_Nuc.Rdata')
 dim(de_genes_RZ_Nuc)
 # [1] 5821    8
 
 de_genes_polyA_Nuc <- subset(de_results_polyA_vs_RZ_Nuc, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_polyA_Nuc, file = 'processed-data/01_ORA/de_genes_polyA_Nuc.Rdata')
+save(de_genes_polyA_Nuc, file = 'processed-data/14_ORA_for_DEGs/de_genes_polyA_Nuc.Rdata')
 dim(de_genes_polyA_Nuc)
 # [1] 4084    8
 
@@ -270,7 +270,7 @@ sigGeneList <- list("polyA"= de_genes_polyA_Total_entrez_ids,
                     "RiboZeroGold"=de_genes_RZ_Total_entrez_ids)
 
 goList_lib_type_Total_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'lib_type_Total_DEGs', '01_ORA_for_library_types')
-save(goList_lib_type_Total_DEGs, file="processed-data/01_ORA/goList_lib_type_Total_DEGs.Rdata")
+save(goList_lib_type_Total_DEGs, file="processed-data/14_ORA_for_DEGs/goList_lib_type_Total_DEGs.Rdata")
 
 
 
@@ -282,7 +282,7 @@ sigGeneList <- list("polyA"= de_genes_polyA_Cyto_entrez_ids,
                     "RiboZeroGold"=de_genes_RZ_Cyto_entrez_ids)
 
 goList_lib_type_Cyto_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'lib_type_Cyto_DEGs', '01_ORA_for_library_types')
-save(goList_lib_type_Cyto_DEGs, file="processed-data/01_ORA/goList_lib_type_Cyto_DEGs.Rdata")
+save(goList_lib_type_Cyto_DEGs, file="processed-data/14_ORA_for_DEGs/goList_lib_type_Cyto_DEGs.Rdata")
 
 
 
@@ -294,7 +294,7 @@ sigGeneList <- list("polyA"= de_genes_polyA_Nuc_entrez_ids,
                     "RiboZeroGold"= de_genes_RZ_Nuc_entrez_ids)
 
 goList_lib_type_Nuc_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'lib_type_Nuc_DEGs', '01_ORA_for_library_types')
-save(goList_lib_type_Nuc_DEGs, file="processed-data/01_ORA/goList_lib_type_Nuc_DEGs.Rdata")
+save(goList_lib_type_Nuc_DEGs, file="processed-data/14_ORA_for_DEGs/goList_lib_type_Nuc_DEGs.Rdata")
 
 
 
@@ -310,7 +310,7 @@ sigGeneList <- list("Cyto_polyA"= de_genes_polyA_Cyto_entrez_ids,
                     "Nuc_RZ"= de_genes_RZ_Nuc_entrez_ids)
 
 goList_lib_type_all_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'lib_type_all_DEGs', '01_ORA_for_library_types')
-save(goList_lib_type_all_DEGs, file="processed-data/01_ORA/goList_lib_type_all_DEGs.Rdata")
+save(goList_lib_type_all_DEGs, file="processed-data/14_ORA_for_DEGs/goList_lib_type_all_DEGs.Rdata")
 
 ## CC plot 
 pA <- dotplot_CC(goList_lib_type_all_DEGs$CC, title='lib_type_all_DEGs', n_terms=2)
@@ -325,13 +325,13 @@ pA <- dotplot_CC(goList_lib_type_all_DEGs$CC, title='lib_type_all_DEGs', n_terms
 ## DEGs between total and cytoplasmic RNA for polyA samples
 ## In total:
 de_genes_Total_for_TotalvsCyto_polyA <- subset(de_results_Total_vs_Cyto_polyA, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Total_for_TotalvsCyto_polyA, file = 'processed-data/01_ORA/de_genes_Total_for_TotalvsCyto_polyA.Rdata')
+save(de_genes_Total_for_TotalvsCyto_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsCyto_polyA.Rdata')
 dim(de_genes_Total_for_TotalvsCyto_polyA)
 # [1] 3269    8
 
 ## In cytoplasmic:
 de_genes_Cyto_for_TotalvsCyto_polyA <- subset(de_results_Total_vs_Cyto_polyA, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Cyto_for_TotalvsCyto_polyA, file = 'processed-data/01_ORA/de_genes_Cyto_for_TotalvsCyto_polyA.Rdata')
+save(de_genes_Cyto_for_TotalvsCyto_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_TotalvsCyto_polyA.Rdata')
 dim(de_genes_Cyto_for_TotalvsCyto_polyA)
 # [1] 2639    8
 
@@ -339,13 +339,13 @@ dim(de_genes_Cyto_for_TotalvsCyto_polyA)
 ## DEGs between total and nuclear RNA for polyA samples
 ## In total:
 de_genes_Total_for_TotalvsNuc_polyA <- subset(de_results_Total_vs_Nuc_polyA, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Total_for_TotalvsNuc_polyA, file = 'processed-data/01_ORA/de_genes_Total_for_TotalvsNuc_polyA.Rdata')
+save(de_genes_Total_for_TotalvsNuc_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsNuc_polyA.Rdata')
 dim(de_genes_Total_for_TotalvsNuc_polyA)
 # [1] 556   8
 
 ## In nuclear:
 de_genes_Nuc_for_TotalvsNuc_polyA <- subset(de_results_Total_vs_Nuc_polyA, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Nuc_for_TotalvsNuc_polyA, file = 'processed-data/01_ORA/de_genes_Nuc_for_TotalvsNuc_polyA.Rdata')
+save(de_genes_Nuc_for_TotalvsNuc_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_TotalvsNuc_polyA.Rdata')
 dim(de_genes_Nuc_for_TotalvsNuc_polyA)
 # [1] 848   8
 
@@ -353,13 +353,13 @@ dim(de_genes_Nuc_for_TotalvsNuc_polyA)
 ## DEGs between cytoplasmic and nuclear RNA for polyA samples
 ## In cytoplasmic:
 de_genes_Cyto_for_CytovsNuc_polyA <- subset(de_results_Cyto_vs_Nuc_polyA, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Cyto_for_CytovsNuc_polyA, file = 'processed-data/01_ORA/de_genes_Cyto_for_CytovsNuc_polyA.Rdata')
+save(de_genes_Cyto_for_CytovsNuc_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_CytovsNuc_polyA.Rdata')
 dim(de_genes_Cyto_for_CytovsNuc_polyA)
 # [1] 2449    8
 
 ## In nuclear:
 de_genes_Nuc_for_CytovsNuc_polyA <- subset(de_results_Cyto_vs_Nuc_polyA, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Nuc_for_CytovsNuc_polyA, file = 'processed-data/01_ORA/de_genes_Nuc_for_CytovsNuc_polyA.Rdata')
+save(de_genes_Nuc_for_CytovsNuc_polyA, file = 'processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_CytovsNuc_polyA.Rdata')
 dim(de_genes_Nuc_for_CytovsNuc_polyA)
 # [1] 2321    8
 
@@ -368,13 +368,13 @@ dim(de_genes_Nuc_for_CytovsNuc_polyA)
 ## DEGs between total and cytoplasmic RNA for RZ samples
 ## In total:
 de_genes_Total_for_TotalvsCyto_RZ <- subset(de_results_Total_vs_Cyto_RZ, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Total_for_TotalvsCyto_RZ, file = 'processed-data/01_ORA/de_genes_Total_for_TotalvsCyto_RZ.Rdata')
+save(de_genes_Total_for_TotalvsCyto_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsCyto_RZ.Rdata')
 dim(de_genes_Total_for_TotalvsCyto_RZ)
 # [1] 2698    8
 
 ## In cytoplasmic:
 de_genes_Cyto_for_TotalvsCyto_RZ<- subset(de_results_Total_vs_Cyto_RZ, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Cyto_for_TotalvsCyto_RZ, file = 'processed-data/01_ORA/de_genes_Cyto_for_TotalvsCyto_RZ.Rdata')
+save(de_genes_Cyto_for_TotalvsCyto_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_TotalvsCyto_RZ.Rdata')
 dim(de_genes_Cyto_for_TotalvsCyto_RZ)
 # [1] 247   8
 
@@ -382,13 +382,13 @@ dim(de_genes_Cyto_for_TotalvsCyto_RZ)
 ## DEGs between total and nuclear RNA for RZ samples
 ## In total:
 de_genes_Total_for_TotalvsNuc_RZ <- subset(de_results_Total_vs_Nuc_RZ, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Total_for_TotalvsNuc_RZ, file = 'processed-data/01_ORA/de_genes_Total_for_TotalvsNuc_RZ.Rdata')
+save(de_genes_Total_for_TotalvsNuc_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Total_for_TotalvsNuc_RZ.Rdata')
 dim(de_genes_Total_for_TotalvsNuc_RZ)
 # [1] 346   8
 
 ## In nuclear:
 de_genes_Nuc_for_TotalvsNuc_RZ <- subset(de_results_Total_vs_Nuc_RZ, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Nuc_for_TotalvsNuc_RZ, file = 'processed-data/01_ORA/de_genes_Nuc_for_TotalvsNuc_RZ.Rdata')
+save(de_genes_Nuc_for_TotalvsNuc_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_TotalvsNuc_RZ.Rdata')
 dim(de_genes_Nuc_for_TotalvsNuc_RZ)
 # [1] 217   8
 
@@ -396,13 +396,13 @@ dim(de_genes_Nuc_for_TotalvsNuc_RZ)
 ## DEGs between cytoplasmic and nuclear RNA for RZ samples
 ## In cytoplasmic:
 de_genes_Cyto_for_CytovsNuc_RZ <- subset(de_results_Cyto_vs_Nuc_RZ, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Cyto_for_CytovsNuc_RZ, file = 'processed-data/01_ORA/de_genes_Cyto_for_CytovsNuc_RZ.Rdata')
+save(de_genes_Cyto_for_CytovsNuc_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Cyto_for_CytovsNuc_RZ.Rdata')
 dim(de_genes_Cyto_for_CytovsNuc_RZ)
 # [1] 1887    8
 
 ## In nuclear:
 de_genes_Nuc_for_CytovsNuc_RZ <- subset(de_results_Cyto_vs_Nuc_RZ, adj.P.Val<0.05 & logFC>1)
-save(de_genes_Nuc_for_CytovsNuc_RZ, file = 'processed-data/01_ORA/de_genes_Nuc_for_CytovsNuc_RZ.Rdata')
+save(de_genes_Nuc_for_CytovsNuc_RZ, file = 'processed-data/14_ORA_for_DEGs/de_genes_Nuc_for_CytovsNuc_RZ.Rdata')
 dim(de_genes_Nuc_for_CytovsNuc_RZ)
 # [1] 2775    8
 
@@ -430,7 +430,7 @@ sigGeneList <- list("Total"= de_genes_Total_for_TotalvsCyto_polyA_entrez_ids,
                     "Cyto"= de_genes_Cyto_for_TotalvsCyto_polyA_entrez_ids)
 
 goList_TotalvsCyto_polyA_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'TotalvsCyto_polyA_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_TotalvsCyto_polyA_DEGs, file="processed-data/01_ORA/goList_TotalvsCyto_polyA_DEGs.Rdata")
+save(goList_TotalvsCyto_polyA_DEGs, file="processed-data/14_ORA_for_DEGs/goList_TotalvsCyto_polyA_DEGs.Rdata")
 
 
 ################  2.1.2 Total vs Nuclear RNA samples in polyA   ################
@@ -439,7 +439,7 @@ sigGeneList <- list("Total"= de_genes_Total_for_TotalvsNuc_polyA_entrez_ids,
                     "Nuc"= de_genes_Nuc_for_TotalvsNuc_polyA_entrez_ids)
 
 goList_TotalvsNuc_polyA_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'TotalvsNuc_polyA_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_TotalvsNuc_polyA_DEGs, file="processed-data/01_ORA/goList_TotalvsNuc_polyA_DEGs.Rdata")
+save(goList_TotalvsNuc_polyA_DEGs, file="processed-data/14_ORA_for_DEGs/goList_TotalvsNuc_polyA_DEGs.Rdata")
 
 
 #############  2.1.3 Cytoplasmic vs Nuclear RNA samples in polyA   #############
@@ -448,7 +448,7 @@ sigGeneList <- list("Cyto"= de_genes_Cyto_for_CytovsNuc_polyA_entrez_ids,
                     "Nuc"= de_genes_Nuc_for_CytovsNuc_polyA_entrez_ids)
 
 goList_CytovsNuc_polyA_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'CytovsNuc_polyA_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_CytovsNuc_polyA_DEGs, file="processed-data/01_ORA/goList_CytovsNuc_polyA_DEGs.Rdata")
+save(goList_CytovsNuc_polyA_DEGs, file="processed-data/14_ORA_for_DEGs/goList_CytovsNuc_polyA_DEGs.Rdata")
 
 
 ##############  2.1.4 All comparisons for RNA samples in polyA   ###############
@@ -461,7 +461,7 @@ sigGeneList <- list("Cyto_for_CytovsNuc_polyA"= de_genes_Cyto_for_CytovsNuc_poly
                     "Nuc_for_TotalvsNuc_polyA"= de_genes_Nuc_for_TotalvsNuc_polyA_entrez_ids)
 
 goList_RNA_Extraction_all_polyA_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'RNA_Extraction_all_polyA_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_RNA_Extraction_all_polyA_DEGs, file="processed-data/01_ORA/goList_RNA_Extraction_all_polyA_DEGs.Rdata")
+save(goList_RNA_Extraction_all_polyA_DEGs, file="processed-data/14_ORA_for_DEGs/goList_RNA_Extraction_all_polyA_DEGs.Rdata")
 
 ## CC plot
 pB <- dotplot_CC(goList_RNA_Extraction_all_polyA_DEGs$CC, title='RNA_Extraction_all_polyA_DEGs', n_terms=2)
@@ -478,7 +478,7 @@ sigGeneList <- list("Total"= de_genes_Total_for_TotalvsCyto_RZ_entrez_ids,
                     "Cyto"= de_genes_Cyto_for_TotalvsCyto_RZ_entrez_ids)
 
 goList_TotalvsCyto_RZ_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'TotalvsCyto_RZ_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_TotalvsCyto_RZ_DEGs, file="processed-data/01_ORA/goList_TotalvsCyto_RZ_DEGs.Rdata")
+save(goList_TotalvsCyto_RZ_DEGs, file="processed-data/14_ORA_for_DEGs/goList_TotalvsCyto_RZ_DEGs.Rdata")
 
 
 #################  2.2.2 Total vs Nuclear RNA samples in RZ   ##################
@@ -487,7 +487,7 @@ sigGeneList <- list("Total"= de_genes_Total_for_TotalvsNuc_RZ_entrez_ids,
                     "Nuc"= de_genes_Nuc_for_TotalvsNuc_RZ_entrez_ids)
 
 goList_TotalvsNuc_RZ_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'TotalvsNuc_RZ_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_TotalvsNuc_RZ_DEGs, file="processed-data/01_ORA/goList_TotalvsNuc_RZ_DEGs.Rdata")
+save(goList_TotalvsNuc_RZ_DEGs, file="processed-data/14_ORA_for_DEGs/goList_TotalvsNuc_RZ_DEGs.Rdata")
 
 
 ##############  2.2.3 Cytoplasmic vs Nuclear RNA samples in RZ   ###############
@@ -496,7 +496,7 @@ sigGeneList <- list("Cyto"= de_genes_Cyto_for_CytovsNuc_RZ_entrez_ids,
                     "Nuc"= de_genes_Nuc_for_CytovsNuc_RZ_entrez_ids)
 
 goList_CytovsNuc_RZ_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'CytovsNuc_RZ_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_CytovsNuc_RZ_DEGs, file="processed-data/01_ORA/goList_CytovsNuc_RZ_DEGs.Rdata")
+save(goList_CytovsNuc_RZ_DEGs, file="processed-data/14_ORA_for_DEGs/goList_CytovsNuc_RZ_DEGs.Rdata")
 
 
 ###############  2.2.4  All comparisons for RNA samples in RZ  #################
@@ -509,7 +509,7 @@ sigGeneList <- list("Cyto_for_CytovsNuc_RZ"= de_genes_Cyto_for_CytovsNuc_RZ_entr
                     "Nuc_for_TotalvsNuc_RZ"= de_genes_Nuc_for_TotalvsNuc_RZ_entrez_ids)
 
 goList_RNA_Extraction_all_RZ_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'RNA_Extraction_all_RZ_DEGs', '02_ORA_for_RNA_extraction')
-save(goList_RNA_Extraction_all_RZ_DEGs, file="processed-data/01_ORA/goList_RNA_Extraction_all_RZ_DEGs.Rdata")
+save(goList_RNA_Extraction_all_RZ_DEGs, file="processed-data/14_ORA_for_DEGs/goList_RNA_Extraction_all_RZ_DEGs.Rdata")
 
 ## CC plot
 pC <- dotplot_CC(goList_RNA_Extraction_all_RZ_DEGs$CC, title='RNA_Extraction_all_RZ_DEGs', n_terms=2)
@@ -524,13 +524,13 @@ pC <- dotplot_CC(goList_RNA_Extraction_all_RZ_DEGs$CC, title='RNA_Extraction_all
 ## DEGs between bulk Total polyA vs snRNA-seq:
 ## In bulk:
 de_genes_Bulk_for_bulkTotalPolyA_vs_sn <- subset(de_results_bulk_Total_polyA_vs_sn, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Bulk_for_bulkTotalPolyA_vs_sn, file = 'processed-data/01_ORA/de_genes_Bulk_for_bulkTotalPolyA_vs_sn.Rdata')
+save(de_genes_Bulk_for_bulkTotalPolyA_vs_sn, file = 'processed-data/14_ORA_for_DEGs/de_genes_Bulk_for_bulkTotalPolyA_vs_sn.Rdata')
 dim(de_genes_Bulk_for_bulkTotalPolyA_vs_sn)
 # [1] 5509    8
 
 ## In sn:
 de_genes_sn_for_bulkTotalPolyA_vs_sn <- subset(de_results_bulk_Total_polyA_vs_sn, adj.P.Val<0.05 & logFC>1)
-save(de_genes_sn_for_bulkTotalPolyA_vs_sn, file = 'processed-data/01_ORA/de_genes_sn_for_bulkTotalPolyA_vs_sn.Rdata')
+save(de_genes_sn_for_bulkTotalPolyA_vs_sn, file = 'processed-data/14_ORA_for_DEGs/de_genes_sn_for_bulkTotalPolyA_vs_sn.Rdata')
 dim(de_genes_sn_for_bulkTotalPolyA_vs_sn)
 # [1] 5749    8
 
@@ -539,13 +539,13 @@ dim(de_genes_sn_for_bulkTotalPolyA_vs_sn)
 ## DEGs between bulk Total RiboZeroGold vs snRNA-seq:
 ## In bulk:
 de_genes_Bulk_for_bulkTotalRZ_vs_sn <- subset(de_results_bulk_Total_RZ_vs_sn, adj.P.Val<0.05 & logFC<(-1))
-save(de_genes_Bulk_for_bulkTotalRZ_vs_sn, file = 'processed-data/01_ORA/de_genes_Bulk_for_bulkTotalRZ_vs_sn.Rdata')
+save(de_genes_Bulk_for_bulkTotalRZ_vs_sn, file = 'processed-data/14_ORA_for_DEGs/de_genes_Bulk_for_bulkTotalRZ_vs_sn.Rdata')
 dim(de_genes_Bulk_for_bulkTotalRZ_vs_sn)
 # [1] 4423    8
 
 ## In sn:
 de_genes_sn_for_bulkTotalRZ_vs_sn <- subset(de_results_bulk_Total_RZ_vs_sn, adj.P.Val<0.05 & logFC>1)
-save(de_genes_sn_for_bulkTotalRZ_vs_sn, file = 'processed-data/01_ORA/de_genes_sn_for_bulkTotalRZ_vs_sn.Rdata')
+save(de_genes_sn_for_bulkTotalRZ_vs_sn, file = 'processed-data/14_ORA_for_DEGs/de_genes_sn_for_bulkTotalRZ_vs_sn.Rdata')
 dim(de_genes_sn_for_bulkTotalRZ_vs_sn)
 # [1] 4335    8
 
@@ -573,7 +573,7 @@ sigGeneList <- list("Total bulk RNA-seq (polyA)"= de_genes_Bulk_for_bulkTotalPol
                     "snRNA-seq"=de_genes_sn_for_bulkTotalPolyA_vs_sn_entrez_ids)
 
 goList_data_type_polyA_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'data_type_polyA_DEG', '03_ORA_for_data_type')
-save(goList_data_type_polyA_DEGs, file="processed-data/01_ORA/goList_data_type_polyA_DEGs.Rdata")
+save(goList_data_type_polyA_DEGs, file="processed-data/14_ORA_for_DEGs/goList_data_type_polyA_DEGs.Rdata")
 
 
 
@@ -585,7 +585,7 @@ sigGeneList <- list("Total bulk RNA-seq (RiboZeroGold)"= de_genes_Bulk_for_bulkT
                     "snRNA-seq"=de_genes_sn_for_bulkTotalRZ_vs_sn_entrez_ids)
 
 goList_data_type_RZ_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'data_type_RZ_DEG', '03_ORA_for_data_type')
-save(goList_data_type_RZ_DEGs, file="processed-data/01_ORA/goList_data_type_RZ_DEGs.Rdata")
+save(goList_data_type_RZ_DEGs, file="processed-data/14_ORA_for_DEGs/goList_data_type_RZ_DEGs.Rdata")
 
 
 
@@ -599,7 +599,7 @@ sigGeneList <- list("Total bulk RNA-seq polyA"= de_genes_Bulk_for_bulkTotalPolyA
                     "snRNA-seq RZ"=de_genes_sn_for_bulkTotalRZ_vs_sn_entrez_ids)
 
 goList_data_type_all_DEGs <- GO_KEGG(sigGeneList, geneUniverse, 'data_type_all_DEG', '03_ORA_for_data_type')
-save(goList_data_type_all_DEGs, file="processed-data/01_ORA/goList_data_type_all_DEGs.Rdata")
+save(goList_data_type_all_DEGs, file="processed-data/14_ORA_for_DEGs/goList_data_type_all_DEGs.Rdata")
 
 ## CC plot
 pD <- dotplot_CC(goList_data_type_all_DEGs$CC, title='data_type_all_DEG', n_terms=2)
@@ -625,7 +625,7 @@ pD <- pD +
 
 
 plot_grid(pA, pB, pC, pD, ncol=1, align = 'v', labels = c('A', 'B', 'C', 'D'))
-ggsave('plots/01_ORA/CC_plots.pdf', width = 11, height = 13.5)
+ggsave('plots/14_ORA_for_DEGs/CC_plots.pdf', width = 11, height = 13.5)
 
 
 
