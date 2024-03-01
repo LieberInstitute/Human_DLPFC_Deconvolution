@@ -30,8 +30,18 @@ load(here("processed-data", "08_bulk_deconvolution", "12_get_est_prop_MuSiC_cell
 # prop_long_opc
 # prop_long
 
-prop_long <- bind_rows(prop_long, prop_long_none)
-prop_long_opc <- bind_rows(prop_long_opc, prop_long_opc_none)
+prop_long <- bind_rows(prop_long, prop_long_none) |>
+  mutate(cell_size_opt = case_when(cell_size_opt == "akt3" ~ "median(Copies AKT3)",
+                                   cell_size_opt == "nuc_area" ~ "median(Nuclear Area)",
+                                   cell_size_opt == "nuc_area_akt3" ~ "median(Area * Copies)",
+                                   TRUE~"None"
+                                   ))
+prop_long_opc <- bind_rows(prop_long_opc, prop_long_opc_none)|>
+  mutate(cell_size_opt = case_when(cell_size_opt == "akt3" ~ "median(Copies AKT3)",
+                                   cell_size_opt == "nuc_area" ~ "median(Nuclear Area)",
+                                   cell_size_opt == "nuc_area_akt3" ~ "median(Area * Copies)",
+                                   TRUE~"None"
+  ))
 
 prop_long |> count(cell_type)
 prop_long_opc |> count(cell_type)

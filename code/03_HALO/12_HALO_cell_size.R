@@ -121,7 +121,7 @@ cell_size_boxplots <- nuc_area_boxplot + theme(legend.position = "None",axis.tex
   akt3_boxplot + theme(legend.position = "None",axis.text.x = element_text(angle = 45, hjust=1)) +
   areaXakt3_boxplot + theme(legend.position = "None",axis.text.x = element_text(angle = 45, hjust=1))
 
-ggsave(cell_size_boxplots, filename = here(plot_dir, "cell_size_boxplots.png"), width = 10)
+ggsave(cell_size_boxplots, filename = here(plot_dir, "cell_size_boxplots.png"), width = 10, height = 5)
 
 #### scatter plot ####
 area_akt3_scatter <- halo_all |>
