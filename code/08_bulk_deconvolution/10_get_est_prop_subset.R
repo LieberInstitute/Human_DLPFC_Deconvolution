@@ -32,11 +32,11 @@ list.files(here("processed-data", "08_bulk_deconvolution", "05_deconvolution_hsp
 fn_hspe <- list.files(here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe", "random_subset_runs"), pattern = ".csv", full.names = TRUE)
 names(fn_hspe) <- gsub("est_prop_(.*?).csv","run\\1",basename(fn_hspe))
 length(fn_hspe)
-# [1] 917
+# [1] 1000
 
 est_prop_hspe <- map_dfr(fn_hspe, ~suppressMessages(read_csv(.x)))
 dim(est_prop_hspe)
-# [1] 706090      4
+# [1] 770000      4
 
 setdiff(1:1000, est_prop_hspe$subset_run)
 
