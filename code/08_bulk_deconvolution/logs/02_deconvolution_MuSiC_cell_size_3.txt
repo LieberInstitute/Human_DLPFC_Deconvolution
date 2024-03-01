@@ -1,16 +1,17 @@
 **** Job starts ****
-Wed Feb 28 02:59:01 PM EST 2024
+Thu Feb 29 05:23:11 PM EST 2024
 **** JHPCE info ****
-User: neagles
-Job id: 2821565
+User: lhuuki
+Job id: 2838920
 Job name: 02_deconvolution_MuSiC_cell_size
-Node name: compute-153
+Node name: compute-107
 Task id: 3
+Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-23.3.1
-  2) JHPCE_tools/3.0            4) conda_R/4.3.x
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
 
  
 
@@ -181,9 +182,7 @@ Loading objects:
 [1] 17804
 Input Markers:
 Read 151 items
-Loading objects:
-  halo_all
-2024-02-28 14:59:40.930721 - MuSiC deconvolution
+2024-02-29 17:23:44.309589 - MuSiC deconvolution
 Creating Relative Abudance Matrix...
 Creating Variance Matrix...
 Creating Library Size Matrix...
@@ -300,9 +299,9 @@ AN00000906_Br8667_Mid_Bulk has common genes 151 ...
 AN00000906_Br8667_Mid_Cyto has common genes 151 ...
 AN00000906_Br8667_Mid_Nuc has common genes 151 ...
 [1] "Reproducibility information:"
-[1] "2024-02-28 16:03:01 EST"
+[1] "2024-02-29 18:30:17 EST"
     user   system  elapsed 
-3786.385   17.773 3835.546 
+3960.949   19.144 4023.147 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -313,7 +312,7 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-28
+ date     2024-02-29
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -328,7 +327,7 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  bit64                  4.0.5      2020-08-30 [2] CRAN (R 4.3.2)
  bitops                 1.0-7      2021-04-24 [2] CRAN (R 4.3.2)
  class                  7.3-22     2023-05-03 [3] CRAN (R 4.3.2)
- cli                    3.6.2      2023-12-11 [2] CRAN (R 4.3.2)
+ cli                    3.6.2      2023-12-11 [1] CRAN (R 4.3.2)
  coda                   0.19-4.1   2024-01-31 [2] CRAN (R 4.3.2)
  codetools              0.2-19     2023-02-01 [3] CRAN (R 4.3.2)
  colorspace             2.1-0      2023-01-23 [2] CRAN (R 4.3.2)
@@ -340,15 +339,15 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
  e1071                  1.7-14     2023-12-06 [2] CRAN (R 4.3.2)
  EpiDISH              * 2.18.0     2023-10-24 [1] Bioconductor
- fansi                  1.0.6      2023-12-08 [2] CRAN (R 4.3.2)
+ fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
  forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
  generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
- GenomeInfoDb         * 1.38.5     2023-12-28 [2] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDb         * 1.38.6     2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
  GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
  GenomicRanges        * 1.54.1     2023-10-29 [2] Bioconductor
  GGally                 2.2.0      2023-11-22 [2] CRAN (R 4.3.2)
- ggplot2              * 3.5.0      2024-02-23 [1] CRAN (R 4.3.2)
+ ggplot2              * 3.4.4      2023-10-12 [2] CRAN (R 4.3.2)
  ggstats                0.5.1      2023-11-21 [2] CRAN (R 4.3.2)
  glue                   1.7.0      2024-01-09 [2] CRAN (R 4.3.2)
  gtable                 0.3.4      2023-08-21 [2] CRAN (R 4.3.2)
@@ -368,11 +367,11 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  Matrix               * 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
  MatrixGenerics       * 1.14.0     2023-10-24 [2] Bioconductor
  MatrixModels           0.5-3      2023-11-06 [2] CRAN (R 4.3.2)
- matrixStats          * 1.2.0      2023-12-11 [2] CRAN (R 4.3.2)
- mcmc                   0.9-8      2023-11-16 [2] CRAN (R 4.3.2)
+ matrixStats          * 1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
+ mcmc                   0.9-8      2023-11-16 [1] CRAN (R 4.3.2)
  MCMCpack               1.7-0      2024-01-18 [2] CRAN (R 4.3.2)
  munsell                0.5.0      2018-06-12 [2] CRAN (R 4.3.2)
- MuSiC                * 1.0.0      2024-02-28 [1] Github (xuranw/MuSiC@0a3e3af)
+ MuSiC                * 1.0.0      2024-02-21 [1] Github (xuranw/MuSiC@0a3e3af)
  nnls                 * 1.5        2023-09-11 [1] CRAN (R 4.3.2)
  pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
@@ -393,18 +392,18 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
  rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.3.2)
  S4Arrays             * 1.2.0      2023-10-24 [2] Bioconductor
- S4Vectors            * 0.40.2     2023-11-23 [2] Bioconductor 3.18 (R 4.3.2)
+ S4Vectors            * 0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
  ScaledMatrix           1.10.0     2023-10-24 [2] Bioconductor
- scales                 1.3.0      2023-11-28 [2] CRAN (R 4.3.2)
+ scales                 1.3.0      2023-11-28 [1] CRAN (R 4.3.2)
  scry                   1.14.0     2023-10-24 [2] Bioconductor
  scuttle                1.12.0     2023-10-24 [2] Bioconductor
  sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
  SingleCellExperiment * 1.24.0     2023-10-24 [2] Bioconductor
- SparseArray          * 1.2.3      2023-12-25 [2] Bioconductor 3.18 (R 4.3.2)
+ SparseArray          * 1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
  SparseM                1.81       2021-02-18 [2] CRAN (R 4.3.2)
  sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
  statmod                1.5.0      2023-01-06 [2] CRAN (R 4.3.2)
- stringi                1.8.3      2023-12-11 [2] CRAN (R 4.3.2)
+ stringi                1.8.3      2023-12-11 [1] CRAN (R 4.3.2)
  stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
  SummarizedExperiment * 1.32.0     2023-10-24 [2] Bioconductor
  survival               3.5-7      2023-08-14 [3] CRAN (R 4.3.2)
@@ -416,16 +415,16 @@ AN00000906_Br8667_Mid_Nuc has common genes 151 ...
  TOAST                * 1.16.0     2023-10-24 [1] Bioconductor
  tzdb                   0.4.0      2023-05-12 [2] CRAN (R 4.3.2)
  utf8                   1.2.4      2023-10-22 [2] CRAN (R 4.3.2)
- vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.3.2)
+ vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.3.2)
  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.3.2)
  withr                  3.0.0      2024-01-16 [2] CRAN (R 4.3.2)
  XVector                0.42.0     2023-10-24 [2] Bioconductor
  zlibbioc               1.48.0     2023-10-24 [2] Bioconductor
 
- [1] /users/neagles/R/4.3.x
+ [1] /users/lhuuki/R/4.3.x
  [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
  [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb 28 04:03:02 PM EST 2024
+Thu Feb 29 06:30:18 PM EST 2024
