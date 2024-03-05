@@ -255,11 +255,14 @@ row_anno = HeatmapAnnotation(df=left_bars, which = c("row"), show_legend = TRUE,
                              annotation_legend_param = list(cell_type = list(title = "Cell type")),
                              show_annotation_name = FALSE)
 
+column_split <- c(1,1,2,2,3,3)
+
 h <- Heatmap(log_p_values,
              name='-log10(p-value)',
              col= colorRampPalette(c('azure2', 'dodgerblue4'))(50), 
              cluster_rows = FALSE,
              cluster_columns = FALSE, 
+             column_split = column_split,
              border_gp = gpar(col = "gray20", lty = 1),
              rect_gp = gpar(col = "gray20", lwd = 1), 
              column_title = "Over-measured genes", 
@@ -300,12 +303,15 @@ for (cell_type in cell_types){
 
 log_p_values <- -log10(p_values)
 
+column_split <- rep(c(1,2,3,4,5,6), c(2,2,2,2,2,2))
+
 ## Heatmap 
 h <- Heatmap(log_p_values,
              name='-log10(p-value)',
              col= colorRampPalette(c('azure2', 'dodgerblue4'))(50), 
              cluster_rows = FALSE,
              cluster_columns = FALSE, 
+             column_split = column_split,
              border_gp = gpar(col = "gray20", lty = 1),
              rect_gp = gpar(col = "gray20", lwd = 1), 
              column_title = "Over-measured genes", 
