@@ -82,7 +82,7 @@ ct_prop <- colData(sce) |>
 
 write.csv(ct_prop, file = here("processed-data", "12_other_input_deconvolution", "Mathys_ct_prop.csv"))
 
-# slurmjobs::job_single('00_data_prep_Tran', create_shell = TRUE, memory = '10G', command = "Rscript 00_data_prep_Tran.R")
+# slurmjobs::job_single('06_data_prep_Mathys', create_shell = TRUE, memory = '10G', command = "Rscript 06_data_prep_Mathys.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
