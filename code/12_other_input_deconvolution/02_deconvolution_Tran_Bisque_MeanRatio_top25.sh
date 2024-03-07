@@ -25,7 +25,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 02_deconvolution_Bisque.R MeanRatio_top25 ../../processed-data/12_tran_deconvolution/Tran_markers_MeanRatio_top25.txt
+Rscript 02_deconvolution_Tran_Bisque.R MeanRatio_top25 ../../processed-data/12_tran_deconvolution/Tran_markers_MeanRatio_top25.txt
 
 echo "**** Job ends ****"
 date
