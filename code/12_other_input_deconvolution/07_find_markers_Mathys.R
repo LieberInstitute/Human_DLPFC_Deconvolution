@@ -17,18 +17,15 @@ load(here("processed-data", "12_other_input_deconvolution", "sce_Mathys.Rdata"),
 table(sce$cellType_broad)
 table(is.na(sce$cellType_broad))
 # Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-# 782        18       388      5455       572      2388      1580 
+# 3392       288      1920     18235      2627     34976      9196 
 
 ## load bulk data & find common genes 
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
 message("Common genes with bulk data: ", length(common_genes))
-# [1] 16744
 rm(rse_gene)
 
 #### Run Marker Finding ####
-rowData(sce)$Symbol <- rowData(sce)$Symbol.uniq
-
 message(Sys.time(), " Find Mean Ratio Genes")
 mean_ratio <- get_mean_ratio2(sce, cellType_col = "cellType_broad", add_symbol = TRUE)
 
