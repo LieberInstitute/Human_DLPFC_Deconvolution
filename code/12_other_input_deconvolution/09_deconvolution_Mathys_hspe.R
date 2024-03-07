@@ -17,7 +17,7 @@ marker_file <- NULL
 stopifnot(marker_label %in% c("MeanRatio_top25", "1vALL_top25", "FULL"))
 
 #### data output folder ####
-data_dir <- here("processed-data","12_tran_deconvolution", "03_deconvolution_hspe")
+data_dir <- here("processed-data","12_other_input_deconvolution", "03_deconvolution_hspe")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
@@ -31,33 +31,30 @@ rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 #### pseudobulk data if needed ####
 sce_pb <- NULL
 
-if(!file.exists(here(data_dir, "Tran_sce_pb.Rdata"))){
+if(!file.exists(here(data_dir, "Mathys_sce_pb.Rdata"))){
   message(Sys.time(), " - Pseudobulk data")
   
-  load(here("processed-data", "12_tran_deconvolution", "sce.dlpfc.tran.Rdata"), verbose = TRUE)
+  load(here("processed-data", "12_other_input_deconvolution", "sce_Mathys.Rdata"), verbose = TRUE)
   sce_pb <- spatialLIBD::registration_pseudobulk(
     sce,
     var_registration = "cellType_broad",
-    var_sample_id = "donor",
+    var_sample_id = "individualID",
     covars = NULL,
     min_ncells = 10,
     pseudobulk_rds_file = NULL
   )
   
-  save(sce_pb, file = here(data_dir, "Tran_sce_pb.Rdata"))
+  save(sce_pb, file = here(data_dir, "Mathys_sce_pb.Rdata"))
 } else {
   message(Sys.time(), " - Load pseudobulk data")
-  load(here(data_dir, "Tran_sce_pb.Rdata"), verbose = TRUE)
+  load(here(data_dir, "Mathys_sce_pb.Rdata"), verbose = TRUE)
 }
 
 table(sce_pb$cellType_broad)
-# Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-# 3         1         3         3         3         3         3 
 
 ## find common genes
 common_genes <- intersect(rowData(sce_pb)$gene_id, rowData(rse_gene)$ensemblID)
 message("common genes: ", length(common_genes))
-# [1] 13311 
 
 # we can instead explicitly pass a list of markers to hspe specifying the marker genes
 # elements of the list correspond one to each cell type in the same order specified either in elements of pure_samples
@@ -83,7 +80,7 @@ if(marker_label == "FULL"){
 } else if(marker_label %in% c("MeanRatio_top25", "1vALL_top25")){ ## Run with our markers 
   
   ## load marker gene data
-  load(here("processed-data", "12_other_input_deconvolution", "01_find_markers_Tran", "Tran_marker_stats_broad.Rdata"), verbose = TRUE)
+  load(here("processed-data", "12_other_input_deconvolution", "07_find_markers_Mathys", "Mathys_marker_stats_broad.Rdata"), verbose = TRUE)
   marker_tab <- NULL
   
   if(marker_label == "MeanRatio_top25"){
@@ -114,11 +111,9 @@ if(marker_label == "FULL"){
 }
 
 message(Sys.time(), "- Saving")
-save(est_prop_hspe, file = here(data_dir,paste0("Tran_est_prop_hspe-",marker_label,".Rdata")))
+save(est_prop_hspe, file = here(data_dir,paste0("Mathys_est_prop_hspe-",marker_label,".Rdata")))
 
-# slurmjobs::job_single('03_deconvolution_hspe_FULL', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R FULL")
-# slurmjobs::job_single('03_deconvolution_hspe_MeanRatio_top25', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R MeanRatio_top25")
-# slurmjobs::job_single('03_deconvolution_hspe_1vALL_top25', create_shell = TRUE, memory = '25G', command = "Rscript 03_deconvolution_hspe.R 1vALL_top25")
+# slurmjobs::job_single('09_deconvolution_Mathys_hspe', create_shell = TRUE, memory = '25G', command = "Rscript 09_deconvolution_Mathys_hspe MeanRatio_top25")
 
 ## Reproducibility information
 print("Reproducibility information:")
