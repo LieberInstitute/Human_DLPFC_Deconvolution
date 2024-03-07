@@ -44,7 +44,7 @@ write_csv(marker_stats, file = here(data_dir, "Mathys_marker_stats_broad.csv"))
 ## pull marker sets 
 marker_stats |> 
   dplyr::filter(MeanRatio_top25) |>
-  count(cellType.target)
+  dplyr::count(cellType.target)
 
 markers_mean_ratio_top25 <- marker_stats |> 
   dplyr::filter(MeanRatio_top25) |>

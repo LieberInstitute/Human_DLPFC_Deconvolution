@@ -18,7 +18,7 @@ if(marker_label == "FULL"){
 }
 
 #### data output folder ####
-data_dir <- here("processed-data","12_other_input_deconvolution", "08_deconvolution_Mathys")
+data_dir <- here("processed-data","12_other_input_deconvolution", "08_deconvolution_Mathys_Bisque")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
@@ -35,7 +35,7 @@ table(sce$cellType_broad)
 
 ## find common genes
 common_genes <- intersect(rowData(sce)$gene_id, rowData(rse_gene)$ensemblID)
-length(common_genes)
+message("Common genes: ",length(common_genes))
 
 
 if(marker_label == "FULL"){
