@@ -83,7 +83,7 @@ if(marker_label == "FULL"){
 } else if(marker_label %in% c("MeanRatio_top25", "1vALL_top25")){ ## Run with our markers 
   
   ## load marker gene data
-  load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
+  load(here("processed-data", "12_other_input_deconvolution", "01_find_markers_Tran", "Tran_marker_stats_broad.Rdata"), verbose = TRUE)
   marker_tab <- NULL
   
   if(marker_label == "MeanRatio_top25"){
