@@ -6,7 +6,7 @@ library("here")
 library("sessioninfo")
 
 #### prep dirs ####
-data_dir <- here("processed-data", "12_other_input_deconvolution", "01_find_markers_Tran")
+data_dir <- here("processed-data", "12_other_input_deconvolution", "07_find_markers_Mathys")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 plot_dir <- here("plots", "12_other_input_deconvolution", "07_find_markers_Mathys")
