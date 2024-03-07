@@ -65,7 +65,7 @@ sce <- logNormCounts(sce)
 
 ## filter to genes with ensemblIDs
 sce <- sce[!is.na(rowData(sce)$gene_id), ]
-rownames(sce.dlpfc.tran) <- rowData(sce.dlpfc.tran)$gene_id
+rownames(sce) <- rowData(sce)$gene_id
 
 ## save data as sce for downstream compatiabilty 
 save(sce, file = here("processed-data", "12_other_input_deconvolution", "sce_Mathys.Rdata"))
