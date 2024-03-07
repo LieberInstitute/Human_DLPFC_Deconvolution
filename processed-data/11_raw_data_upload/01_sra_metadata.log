@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Mar  7 09:25:56 AM EST 2024
+Thu Mar  7 01:01:24 PM EST 2024
 **** JHPCE info ****
 User: neagles
-Job id: 2937960
+Job id: 2943523
 Job name: 01_sra_metadata
-Node name: compute-153
+Node name: compute-105
 Task id: 
 Loading conda_R/4.3
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
@@ -80,4 +80,4 @@ FASTQ files occupy a total of 759.2GB.
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Mar  7 09:26:19 AM EST 2024
+Thu Mar  7 01:01:41 PM EST 2024
