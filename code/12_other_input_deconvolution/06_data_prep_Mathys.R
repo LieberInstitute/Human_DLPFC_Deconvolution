@@ -5,6 +5,7 @@ library("dplyr")
 library("here")
 library("sessioninfo")
 library("scater")
+library("org.Hs.eg.db")
 #### load Mathy's data #####
 ## read in data
 
@@ -35,9 +36,6 @@ genes = read.delim(paste0(mathys_dir, "filtered_gene_row_names.txt"),header=FALS
 
 colnames(genes) <- "Symbol"
 
-info <- read.csv(paste0(mathys_dir, "ROSMAP_Clinical_2019-05_v3.csv"))
-
-info |> filter(projid %in% pheno$projid) |> count(cogdx, dcfdx_lv)
 
 ensembl <- mapIds(org.Hs.eg.db, keys = genes$Symbol, keytype = "SYMBOL", column = "ENSEMBL")
 length(ensembl) == nrow(genes)
