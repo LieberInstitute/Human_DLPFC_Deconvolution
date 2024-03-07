@@ -36,7 +36,7 @@ meta_df = sample_info_path |>
             library_type == 'RiboZeroGold' ~ 'Inverse rRNA',
             TRUE ~ NA
         ),
-        library_layout = 'Paired-end',
+        library_layout = 'paired',
         platform = 'ILLUMINA',
         instrument_model = 'Illumina NovaSeq 6000',
         design_description = factor(design_description_text),
@@ -48,5 +48,22 @@ stopifnot(all(required_cols %in% colnames(meta_df)))
 meta_df |>
     select(all_of(required_cols)) |>
     write_tsv(out_path)
+
+
+#   Also check disk usage (to make sure we comply with SRA requirements)
+disk_usage = sapply(
+    c(meta_df$filename, meta_df$filename2),
+    function(x) {
+        as.integer(system(sprintf('du -k %s | cut -f 1', x), intern = TRUE))
+    }
+)
+message(
+    sprintf(
+        "FASTQ files occupy a total of %sGB.", round(sum(disk_usage) / 1e6, 1)
+    )
+)
+
+#   Individual files must be less than 100GB
+stopifnot(all(disk_usage < 100e6))
 
 session_info()
