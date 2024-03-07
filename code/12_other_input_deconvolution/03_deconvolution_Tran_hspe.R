@@ -17,7 +17,7 @@ marker_file <- NULL
 stopifnot(marker_label %in% c("MeanRatio_top25", "1vALL_top25", "FULL"))
 
 #### data output folder ####
-data_dir <- here("processed-data","12_tran_deconvolution", "03_deconvolution_hspe")
+data_dir <- here("processed-data","12_other_input_deconvolution", "03_deconvolution_hspe")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
 #### load data ####
@@ -34,7 +34,7 @@ sce_pb <- NULL
 if(!file.exists(here(data_dir, "Tran_sce_pb.Rdata"))){
   message(Sys.time(), " - Pseudobulk data")
   
-  load(here("processed-data", "12_tran_deconvolution", "sce.dlpfc.tran.Rdata"), verbose = TRUE)
+  load(here("processed-data", "12_other_input_deconvolution", "sce.dlpfc.tran.Rdata"), verbose = TRUE)
   sce_pb <- spatialLIBD::registration_pseudobulk(
     sce,
     var_registration = "cellType_broad",
