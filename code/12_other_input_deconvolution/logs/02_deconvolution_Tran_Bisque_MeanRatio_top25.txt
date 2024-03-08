@@ -1,12 +1,11 @@
 **** Job starts ****
-Fri Feb 23 05:15:31 PM EST 2024
+Thu Mar  7 10:57:30 AM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2781928
+Job id: 2938575
 Job name: 02_deconvolution_Bisque_MeanRatio_top25
-Node name: compute-057
+Node name: compute-107
 Task id: 
-Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -91,87 +90,5 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
-Using MeanRatio_top25 marker genes from:../../processed-data/12_tran_deconvolution/Tran_markers_MeanRatio_top25.txt
-Loading objects:
-  rse_gene
-[1] 21745   110
-Loading objects:
-  sce
-
-    Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
-      782        18       388      5455       572      2388      1580 
-[1] 16797
-Input Markers:
-Read 154 items
-2024-02-23 17:16:21.052838 - Prep data with 154 genes
-2024-02-23 17:16:21.054009 - Prep Bisque Data
-Exclude 0 cells
-2024-02-23 17:16:21.927298 - Bisque deconvolution
-Decomposing into 7 cell types.
-Using 154 genes in both bulk and single-cell expression.
-Converting single-cell counts to CPM and filtering zero variance genes.
-Filtered 0 zero variance genes.
-Converting bulk counts to CPM and filtering unexpressed genes.
-Filtered 0 unexpressed genes.
-Generating single-cell based reference from 11183 cells.
-
-Inferring bulk transformation from single-cell alone.
-Applying transformation to bulk samples and decomposing.
-[1] "Reproducibility information:"
-[1] "2024-02-23 17:16:24 EST"
-   user  system elapsed 
- 24.219   1.303  38.034 
-─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.3.2 Patched (2024-02-08 r85876)
- os       Rocky Linux 9.2 (Blue Onyx)
- system   x86_64, linux-gnu
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       US/Eastern
- date     2024-02-23
- pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
-
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package              * version    date (UTC) lib source
- abind                  1.4-5      2016-07-21 [2] CRAN (R 4.3.2)
- Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
- BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
- BisqueRNA            * 1.0.5      2021-05-23 [1] CRAN (R 4.3.2)
- bitops                 1.0-7      2021-04-24 [2] CRAN (R 4.3.2)
- cli                    3.6.2      2023-12-11 [1] CRAN (R 4.3.2)
- crayon                 1.5.2      2022-09-29 [2] CRAN (R 4.3.2)
- DelayedArray           0.28.0     2023-10-24 [2] Bioconductor
- GenomeInfoDb         * 1.38.6     2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
- GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
- GenomicRanges        * 1.54.1     2023-10-29 [2] Bioconductor
- here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.3.2)
- IRanges              * 2.36.0     2023-10-24 [2] Bioconductor
- lattice                0.22-5     2023-10-24 [3] CRAN (R 4.3.2)
- limSolve               1.5.7.1    2024-02-05 [1] CRAN (R 4.3.2)
- lpSolve                5.6.20     2023-12-10 [1] CRAN (R 4.3.2)
- MASS                   7.3-60.0.1 2024-01-13 [3] CRAN (R 4.3.2)
- Matrix                 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
- MatrixGenerics       * 1.14.0     2023-10-24 [2] Bioconductor
- matrixStats          * 1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
- quadprog               1.5-8      2019-11-20 [2] CRAN (R 4.3.2)
- RCurl                  1.98-1.14  2024-01-09 [2] CRAN (R 4.3.2)
- rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
- S4Arrays               1.2.0      2023-10-24 [2] Bioconductor
- S4Vectors            * 0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
- sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
- SingleCellExperiment * 1.24.0     2023-10-24 [2] Bioconductor
- SparseArray            1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
- SummarizedExperiment * 1.32.0     2023-10-24 [2] Bioconductor
- XVector                0.42.0     2023-10-24 [2] Bioconductor
- zlibbioc               1.48.0     2023-10-24 [2] Bioconductor
-
- [1] /users/lhuuki/R/4.3.x
- [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
- [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
-
-──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-**** Job ends ****
-Fri Feb 23 05:16:33 PM EST 2024
+Error: file.exists(marker_file) is not TRUE
+Execution halted
