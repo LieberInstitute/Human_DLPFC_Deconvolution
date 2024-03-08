@@ -1,11 +1,12 @@
 **** Job starts ****
-Thu Mar  7 09:39:43 AM EST 2024
+Thu Mar  7 03:51:50 PM EST 2024
 **** JHPCE info ****
 User: lhuuki
-Job id: 2937973
+Job id: 2944520
 Job name: 07_find_markers_Mathys
 Node name: compute-152
 Task id: 
+Unloading conda_R/4.3.x
 Loading conda_R/4.3.x
 
 Currently Loaded Modules:
@@ -113,9 +114,6 @@ The following objects are masked from ‘package:matrixStats’:
 ✖ dplyr::slice()        masks IRanges::slice()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
-Warning message:
-In dir.create(plot_dir) :
-  cannot create dir '/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/plots/12_other_input_deconvolution/07_find_markers_Mathys', reason 'No such file or directory'
 Loading objects:
   sce
 
@@ -127,32 +125,40 @@ FALSE
 Loading objects:
   rse_gene
 Common genes with bulk data: 12989
-2024-03-07 09:40:08.219163 Find Mean Ratio Genes
+2024-03-07 15:52:15.35357 Find Mean Ratio Genes
 Warning message:
 In asMethod(object) :
   sparse->dense coercion: allocating vector of size 8.7 GiB
-2024-03-07 09:40:36.766309 Find 1vAll genes
-Excit - '2024-03-07 09:40:36.829082
-Oligo - '2024-03-07 10:12:59.427022
-Inhib - '2024-03-07 10:45:17.34317
-Micro - '2024-03-07 11:21:17.388449
-OPC - '2024-03-07 11:52:37.810688
-Astro - '2024-03-07 12:23:13.893993
-EndoMural - '2024-03-07 12:55:09.7443
-Building Table - 2024-03-07 13:27:58.346941
+2024-03-07 15:52:44.304873 Find 1vAll genes
+Excit - '2024-03-07 15:52:44.414937
+Oligo - '2024-03-07 16:28:11.299598
+Inhib - '2024-03-07 17:01:05.424999
+Micro - '2024-03-07 17:35:10.862267
+OPC - '2024-03-07 18:09:16.853568
+Astro - '2024-03-07 18:51:56.069667
+EndoMural - '2024-03-07 19:32:57.400609
+Building Table - 2024-03-07 20:11:07.233032
 ** Done! **
 
 Joining with `by = join_by(gene, cellType.target)`
-2024-03-07 13:27:58.747237 Save marker gene data
-# A tibble: 0 × 2
-# ℹ 2 variables: cellType.target <fct>, n <int>
+2024-03-07 20:11:07.587577 Save marker gene data
+# A tibble: 7 × 2
+  cellType.target     n
+  <fct>           <int>
+1 Astro              25
+2 EndoMural          21
+3 Micro              24
+4 Oligo              25
+5 OPC                25
+6 Excit              25
+7 Inhib              25
 Loading objects:
   cell_type_colors_halo
   cell_type_colors_broad
 [1] "Reproducibility information:"
-[1] "2024-03-07 13:28:01 EST"
-    user   system  elapsed 
-13332.57   297.49 13695.40 
+[1] "2024-03-07 20:11:09 EST"
+     user    system   elapsed 
+15046.448   394.857 15557.025 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -266,4 +272,4 @@ Loading objects:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Mar  7 01:28:01 PM EST 2024
+Thu Mar  7 08:11:10 PM EST 2024

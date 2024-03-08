@@ -1,0 +1,374 @@
+**** Job starts ****
+Thu Mar  7 03:40:39 PM EST 2024
+**** JHPCE info ****
+User: lhuuki
+Job id: 2944405
+Job name: 06_data_prep_Mathys
+Node name: compute-106
+Task id: 
+Unloading conda_R/4.3.x
+Loading conda_R/4.3.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:GenomeInfoDb’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, union
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+Loading required package: scuttle
+Loading required package: ggplot2
+Loading required package: AnnotationDbi
+
+Attaching package: ‘AnnotationDbi’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+
+[1] "filtered_column_metadata.txt"                
+[2] "filtered_count_matrix.mtx"                   
+[3] "filtered_gene_row_names.txt"                 
+[4] "mathys_data.zip"                             
+[5] "mathys_meta.zip"                             
+[6] "snRNAseqPFC_BA10_assay_scRNAseq_metadata.csv"
+[7] "snRNAseqPFC_BA10_biospecimen_metadata.csv"   
+[8] "snRNAseqPFC_BA10_id_mapping.csv"             
+[9] "snRNAseqPFC_BA10_Sample_key.csv"             
+     projid  specimenID organ                         tissue BrodmannArea
+1  10101291 D17-8793_S1 brain dorsolateral prefrontal cortex           10
+2  10101327 D17-8772_S4 brain dorsolateral prefrontal cortex           10
+3  10102206 D17-8787_S3 brain dorsolateral prefrontal cortex           10
+4  10222853 D17-8766_S2 brain dorsolateral prefrontal cortex           10
+5  10248033 D17-8756_S4 brain dorsolateral prefrontal cortex           10
+6  10260309 D17-8755_S3 brain dorsolateral prefrontal cortex           10
+7  10261026 D17-8781_S1 brain dorsolateral prefrontal cortex           10
+8  10288185 D17-8767_S3 brain dorsolateral prefrontal cortex           10
+9  10290265 D17-8760_S4 brain dorsolateral prefrontal cortex           10
+10 10514454 D17-8759_S3 brain dorsolateral prefrontal cortex           10
+11 10536568 D17-8765_S1 brain dorsolateral prefrontal cortex           10
+12 11072071 D17-8797_S1 brain dorsolateral prefrontal cortex           10
+13 11159965 D17-8798_S2 brain dorsolateral prefrontal cortex           10
+14 11200645 D17-8768_S4 brain dorsolateral prefrontal cortex           10
+15 11302830 D17-8800_S4 brain dorsolateral prefrontal cortex           10
+16 11310718 D17-8782_S2 brain dorsolateral prefrontal cortex           10
+17 11336574 D17-8754_S2 brain dorsolateral prefrontal cortex           10
+18 11342432 D17-8771_S3 brain dorsolateral prefrontal cortex           10
+19 11345331 D17-8792_S4 brain dorsolateral prefrontal cortex           10
+20 11399321 D17-8799_S3 brain dorsolateral prefrontal cortex           10
+21 11399871 D17-8791_S3 brain dorsolateral prefrontal cortex           10
+22 11409232 D17-8753_S1 brain dorsolateral prefrontal cortex           10
+23 11609672 D17-8788_S4 brain dorsolateral prefrontal cortex           10
+24 11630705 D17-8794_S2 brain dorsolateral prefrontal cortex           10
+25 20104101 D17-8769_S1 brain dorsolateral prefrontal cortex           10
+26 20112377 D17-8758_S2 brain dorsolateral prefrontal cortex           10
+27 20149910 D17-8783_S3 brain dorsolateral prefrontal cortex           10
+28 20170043 D17-8762_S2 brain dorsolateral prefrontal cortex           10
+29 20173942 D17-8796_S4 brain dorsolateral prefrontal cortex           10
+30 20179164 D17-8775_S3 brain dorsolateral prefrontal cortex           10
+31 20207013 D17-8757_S1 brain dorsolateral prefrontal cortex           10
+32 20249897 D17-8789_S1 brain dorsolateral prefrontal cortex           10
+33 20254740 D17-8779_S3 brain dorsolateral prefrontal cortex           10
+34 20261901 D17-8770_S2 brain dorsolateral prefrontal cortex           10
+35 20275399 D17-8785_S1 brain dorsolateral prefrontal cortex           10
+36 20282398 D17-8786_S2 brain dorsolateral prefrontal cortex           10
+37 20956867 D17-8763_S3 brain dorsolateral prefrontal cortex           10
+38 20963866 D17-8780_S4 brain dorsolateral prefrontal cortex           10
+39 20977678 D17-8777_S1 brain dorsolateral prefrontal cortex           10
+40 20978133 D17-8790_S2 brain dorsolateral prefrontal cortex           10
+41 21126823 D17-8795_S3 brain dorsolateral prefrontal cortex           10
+42 21135554 D17-8784_S4 brain dorsolateral prefrontal cortex           10
+43 21142003 D17-8773_S1 brain dorsolateral prefrontal cortex           10
+44 21159840 D17-8776_S4 brain dorsolateral prefrontal cortex           10
+45 21172121 D17-8764_S4 brain dorsolateral prefrontal cortex           10
+46 21189544 D17-8778_S2 brain dorsolateral prefrontal cortex           10
+47 21412626 D17-8761_S1 brain dorsolateral prefrontal cortex           10
+48 76647134 D17-8774_S2 brain dorsolateral prefrontal cortex           10
+   tissueWeight nucleicAcidSource cellType individualID
+1           0.1    single nucleus       NA     R4012015
+2           0.1    single nucleus       NA     R4379962
+3           0.1    single nucleus       NA     R9551808
+4           0.1    single nucleus       NA     R2895885
+5           0.1    single nucleus       NA     R8608442
+6           0.1    single nucleus       NA     R9307768
+7           0.1    single nucleus       NA     R5816648
+8           0.1    single nucleus       NA     R4689636
+9           0.1    single nucleus       NA     R4146432
+10          0.1    single nucleus       NA     R4439627
+11          0.1    single nucleus       NA     R7721691
+12          0.1    single nucleus       NA     R8598847
+13          0.1    single nucleus       NA     R2294544
+14          0.1    single nucleus       NA     R6114572
+15          0.1    single nucleus       NA     R3900996
+16          0.1    single nucleus       NA     R3086211
+17          0.1    single nucleus       NA     R9426782
+18          0.1    single nucleus       NA     R4728676
+19          0.1    single nucleus       NA     R8451530
+20          0.1    single nucleus       NA     R5196723
+21          0.1    single nucleus       NA     R2081705
+22          0.1    single nucleus       NA     R8744945
+23          0.1    single nucleus       NA     R9500594
+24          0.1    single nucleus       NA     R4262244
+25          0.1    single nucleus       NA     R4567280
+26          0.1    single nucleus       NA     R7944883
+27          0.1    single nucleus       NA     R3405776
+28          0.1    single nucleus       NA     R9094222
+29          0.1    single nucleus       NA     R3884524
+30          0.1    single nucleus       NA     R4482444
+31          0.1    single nucleus       NA     R2880377
+32          0.1    single nucleus       NA     R4415805
+33          0.1    single nucleus       NA     R1067972
+34          0.1    single nucleus       NA     R8629052
+35          0.1    single nucleus       NA     R6176158
+36          0.1    single nucleus       NA     R4258320
+37          0.1    single nucleus       NA     R8725848
+38          0.1    single nucleus       NA     R1538032
+39          0.1    single nucleus       NA     R9113571
+40          0.1    single nucleus       NA     R7160627
+41          0.1    single nucleus       NA     R6267541
+42          0.1    single nucleus       NA     R5885245
+43          0.1    single nucleus       NA     R7288382
+44          0.1    single nucleus       NA     R7770387
+45          0.1    single nucleus       NA     R3177264
+46          0.1    single nucleus       NA     R4042599
+47          0.1    single nucleus       NA     R4739508
+48          0.1    single nucleus       NA     R2830542
+Joining with `by = join_by(projid)`
+Joining with `by = join_by(projid)`
+'select()' returned 1:many mapping between keys and columns
+[1] TRUE
+
+FALSE  TRUE 
+16549  1377 
+
+    Astro EndoMural     Micro     Oligo       OPC     Excit     Inhib 
+     3392       288      1920     18235      2627     34976      9196 
+[1] "Reproducibility information:"
+[1] "2024-03-07 15:45:55 EST"
+   user  system elapsed 
+293.375  12.762 313.064 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.2 Patched (2024-02-08 r85876)
+ os       Rocky Linux 9.2 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2024-03-07
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.2)
+ AnnotationDbi        * 1.64.1    2023-11-03 [2] Bioconductor
+ beachmat               2.18.0    2023-10-24 [2] Bioconductor
+ beeswarm               0.4.0     2021-06-01 [2] CRAN (R 4.3.2)
+ Biobase              * 2.62.0    2023-10-24 [2] Bioconductor
+ BiocGenerics         * 0.48.1    2023-11-01 [2] Bioconductor
+ BiocNeighbors          1.20.2    2024-01-07 [2] Bioconductor 3.18 (R 4.3.2)
+ BiocParallel           1.36.0    2023-10-24 [2] Bioconductor
+ BiocSingular           1.18.0    2023-10-24 [2] Bioconductor
+ Biostrings             2.70.2    2024-01-28 [2] Bioconductor 3.18 (R 4.3.2)
+ bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.2)
+ bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.2)
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.2)
+ blob                   1.2.4     2023-03-17 [2] CRAN (R 4.3.2)
+ cachem                 1.0.8     2023-05-01 [2] CRAN (R 4.3.2)
+ cli                    3.6.2     2023-12-11 [1] CRAN (R 4.3.2)
+ codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.2)
+ colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.2)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.2)
+ DBI                    1.2.1     2024-01-12 [2] CRAN (R 4.3.2)
+ DelayedArray           0.28.0    2023-10-24 [2] Bioconductor
+ DelayedMatrixStats     1.24.0    2023-10-24 [2] Bioconductor
+ dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.3.2)
+ fansi                  1.0.6     2023-12-08 [1] CRAN (R 4.3.2)
+ fastmap                1.1.1     2023-02-24 [2] CRAN (R 4.3.2)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.2)
+ GenomeInfoDb         * 1.38.6    2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDbData       1.2.11    2024-02-09 [2] Bioconductor
+ GenomicRanges        * 1.54.1    2023-10-29 [2] Bioconductor
+ ggbeeswarm             0.7.2     2023-04-29 [2] CRAN (R 4.3.2)
+ ggplot2              * 3.4.4     2023-10-12 [2] CRAN (R 4.3.2)
+ ggrepel                0.9.5     2024-01-10 [2] CRAN (R 4.3.2)
+ glue                   1.7.0     2024-01-09 [2] CRAN (R 4.3.2)
+ gridExtra              2.3       2017-09-09 [2] CRAN (R 4.3.2)
+ gtable                 0.3.4     2023-08-21 [2] CRAN (R 4.3.2)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.2)
+ httr                   1.4.7     2023-08-15 [2] CRAN (R 4.3.2)
+ IRanges              * 2.36.0    2023-10-24 [2] Bioconductor
+ irlba                  2.3.5.1   2022-10-03 [2] CRAN (R 4.3.2)
+ KEGGREST               1.42.0    2023-10-24 [2] Bioconductor
+ lattice                0.22-5    2023-10-24 [3] CRAN (R 4.3.2)
+ lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.3.2)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.2)
+ Matrix               * 1.6-5     2024-01-11 [3] CRAN (R 4.3.2)
+ MatrixGenerics       * 1.14.0    2023-10-24 [2] Bioconductor
+ matrixStats          * 1.2.0     2023-12-11 [1] CRAN (R 4.3.2)
+ memoise                2.0.1     2021-11-26 [2] CRAN (R 4.3.2)
+ munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.2)
+ org.Hs.eg.db         * 3.18.0    2024-02-09 [2] Bioconductor
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.2)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.2)
+ png                    0.1-8     2022-11-29 [2] CRAN (R 4.3.2)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.2)
+ Rcpp                   1.0.12    2024-01-09 [2] CRAN (R 4.3.2)
+ RCurl                  1.98-1.14 2024-01-09 [2] CRAN (R 4.3.2)
+ rlang                  1.1.3     2024-01-10 [2] CRAN (R 4.3.2)
+ rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.3.2)
+ RSQLite                2.3.5     2024-01-21 [2] CRAN (R 4.3.2)
+ rsvd                   1.0.5     2021-04-16 [2] CRAN (R 4.3.2)
+ S4Arrays               1.2.0     2023-10-24 [2] Bioconductor
+ S4Vectors            * 0.40.2    2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
+ ScaledMatrix           1.10.0    2023-10-24 [2] Bioconductor
+ scales                 1.3.0     2023-11-28 [1] CRAN (R 4.3.2)
+ scater               * 1.30.1    2023-11-16 [2] Bioconductor
+ scuttle              * 1.12.0    2023-10-24 [2] Bioconductor
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.2)
+ SingleCellExperiment * 1.24.0    2023-10-24 [2] Bioconductor
+ SparseArray            1.2.4     2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
+ sparseMatrixStats      1.14.0    2023-10-24 [2] Bioconductor
+ SummarizedExperiment * 1.32.0    2023-10-24 [2] Bioconductor
+ tibble                 3.2.1     2023-03-20 [2] CRAN (R 4.3.2)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.2)
+ utf8                   1.2.4     2023-10-22 [2] CRAN (R 4.3.2)
+ vctrs                  0.6.5     2023-12-01 [1] CRAN (R 4.3.2)
+ vipor                  0.4.7     2023-12-18 [2] CRAN (R 4.3.2)
+ viridis                0.6.5     2024-01-29 [2] CRAN (R 4.3.2)
+ viridisLite            0.4.2     2023-05-02 [2] CRAN (R 4.3.2)
+ withr                  3.0.0     2024-01-16 [2] CRAN (R 4.3.2)
+ XVector                0.42.0    2023-10-24 [2] Bioconductor
+ zlibbioc               1.48.0    2023-10-24 [2] Bioconductor
+
+ [1] /users/lhuuki/R/4.3.x
+ [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Mar  7 03:45:57 PM EST 2024
