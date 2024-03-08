@@ -174,3 +174,15 @@ ggsave(oligo_example2, filename = here(plot_dir, "Oligo_example2.png"), height =
 
 ggsave(oligo_example1/oligo_example2, filename = here(plot_dir, "Oligo_example.png"), height = 6, width = 5)
 
+### upset plots for marker gene sets ####
+
+marker_fn <- list.files(here("processed-data", "08_bulk_deconvolution"), pattern = ".txt", full.names = TRUE)
+names(marker_fn) <- gsub("markers_(.*?).txt","\\1",basename(marker_fn))
+
+marker_list <- map(marker_fn, ~scan(.x, what="", sep="\n"))
+map_int(marker_list, length)
+# 1vALL_top25  MeanRatio_MAD3 MeanRatio_over2 MeanRatio_top25 
+# 145             520             557             151 
+
+
+
