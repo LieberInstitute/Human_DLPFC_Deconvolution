@@ -10,6 +10,8 @@ Raw Data
 Transfered from `/dcs04/lieber/data/transfers/psomagen/` with `_jhpce_org/move_bulk_round2.sh`  
 `AN00000906`
 
+**Other**: `bulkRNA/flat_dir`: this is a non-version-controlled directory of soft links to rounds 1 and 2 of FASTQs, with all FASTQs stored at the same level (i.e. no complex subdirectory structure). This is necessary for upload to SRA.
+
 
 ## HALO
 **Metadata + Notes**  
