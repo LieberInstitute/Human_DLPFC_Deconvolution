@@ -15,8 +15,13 @@ list.files(mathys_dir)
 pd = read.csv(paste0(mathys_dir, "snRNAseqPFC_BA10_biospecimen_metadata.csv"), as.is=TRUE)
 pd
 
-dx_info <- read.csv("/dcs04/lieber/lcolladotor/with10x_LIBD001/HumanPilot/Analysis/Layer_Guesses/mathys/ROSMAP_Clinical_2019-05_v3.csv")
+dx_info <- read.csv("/dcs04/lieber/lcolladotor/with10x_LIBD001/HumanPilot/Analysis/Layer_Guesses/mathys/ROSMAP_Clinical_2019-05_v3.csv") |>
+  mutate(Dx = factor(ifelse(age_first_ad_dx == "", "Control", "AD"), levels = c("Control", "AD")))
 
+pd2 <- pd |> left_join(dx_info)
+table(pd2$Dx)
+# Control      AD 
+# 31      17 
 
 pheno = read.delim(paste0(mathys_dir, "filtered_column_metadata.txt"), row.names = 1) |>
   mutate(cellType_broad = factor(case_when(grepl("Ast", broad.cell.type) ~ "Astro",
@@ -28,8 +33,7 @@ pheno = read.delim(paste0(mathys_dir, "filtered_column_metadata.txt"), row.names
                                     grepl("Per|End", broad.cell.type) ~ "EndoMural",
                                     TRUE ~ "Other"), 
                                  levels = c('Astro',"EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"))) |>
-  left_join(pd |> dplyr::select(projid, specimenID, tissue, BrodmannArea, individualID)) |>
-  left_join(dx_info |> dplyr::select(projid, cogdx)) ## need to find real Dx
+  left_join(pd2 |> dplyr::select(projid, specimenID, tissue, BrodmannArea, individualID, Dx, cogdx)) 
 
 dat = Matrix::readMM(paste0(mathys_dir, "filtered_count_matrix.mtx"))
 genes = read.delim(paste0(mathys_dir, "filtered_gene_row_names.txt"),header=FALSE,as.is=TRUE)
@@ -73,9 +77,9 @@ save(sce, file = here("processed-data", "12_other_input_deconvolution", "sce_Mat
 ## cell type prop
 ct_prop <- colData(sce) |>
   as.data.frame() |>
-  dplyr::group_by(individualID, cellType_broad, cogdx) |>
+  dplyr::group_by(individualID, cellType_broad, Dx) |>
   dplyr::count() |>
-  dplyr::group_by(individualID, cogdx) |>
+  dplyr::group_by(individualID, Dx) |>
   dplyr::mutate(prop = n/sum(n))
 
 write.csv(ct_prop, file = here("processed-data", "12_other_input_deconvolution", "Mathys_ct_prop.csv"))
