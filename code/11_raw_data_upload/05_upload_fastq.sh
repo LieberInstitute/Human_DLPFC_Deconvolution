@@ -7,6 +7,7 @@
 #SBATCH --job-name=05_upload_fastq
 #SBATCH -o ../../processed-data/11_raw_data_upload/05_upload_fastq.log
 #SBATCH -e ../../processed-data/11_raw_data_upload/05_upload_fastq.log
+#SBATCH --open-mode=append
 
 set -e
 

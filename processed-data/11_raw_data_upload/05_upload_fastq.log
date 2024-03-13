@@ -1,0 +1,33 @@
+**** Job starts ****
+Fri Mar  8 01:50:31 PM EST 2024
+**** JHPCE info ****
+User: neagles
+Job id: 2972429
+Job name: 05_upload_fastq
+Node name: transfer-01
+Partial Completion: 325851544K bytes transferred in 27687 seconds
+ (96412K bits/sec), in 127 files, 1 directory; 30 files failed.
+
+Session Stop  (Error: Mandatory management socket localhost:38223, Connection reset by peer (server))
+**** Job starts ****
+Mon Mar 11 10:13:59 AM EDT 2024
+**** JHPCE info ****
+User: neagles
+Job id: 3096082
+Job name: 05_upload_fastq
+Node name: transfer-01
+Partial Completion: 266067857K bytes transferred in 22493 seconds
+ (96900K bits/sec), in 206 files, 1 directory; 32 files failed.
+
+Session Stop  (Error: Session shutdown failed, Failure while draining incoming flow)
+**** Job starts ****
+Mon Mar 11 05:14:09 PM EDT 2024
+**** JHPCE info ****
+User: neagles
+Job id: 3101422
+Job name: 05_upload_fastq
+Node name: transfer-01
+Completed: 167765688K bytes transferred in 14158 seconds
+ (97069K bits/sec), in 226 files, 1 directory.
+**** Job ends ****
+Mon Mar 11 09:10:10 PM EDT 2024
