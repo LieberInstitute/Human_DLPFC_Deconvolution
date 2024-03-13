@@ -6,7 +6,8 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("jaffelab")
-library("UpSetR")
+# library("UpSetR")
+library("ComplexUpset")
 
 #### Set up ####
 
@@ -29,8 +30,9 @@ load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 rd <- as.data.frame(rowData(rse_gene)) |> select(gencodeID, ensemblID, gene_type, Symbol, EntrezID)
 
 ## marker gene data
-load(here("processed-data", "06_marker_genes", "marker_genes_top25.Rdata"), verbose = TRUE)
-marker_genes_top25_simple <- marker_genes_top25_simple |> rename(ensemblID = gene)
+load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
+marker_genes_top25_simple <- marker_stats |> filter(rank_ratio <= 25) |> select(ensemblID = gene, cellType.target)
+marker_genes_top25_simple |> count(cellType.target)
 
 ## library_type
 load(here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type.Rdata"), verbose = TRUE)
@@ -252,14 +254,15 @@ DREAM_library_type_filter <- DREAM_library_type_long |>
 DE_libray_type_geneList <- map(splitit(DREAM_library_type_filter$DE_class), ~DREAM_library_type_filter$ensemblID[.x])
 map_int(DE_libray_type_geneList, length)
 
-pdf(here(plot_dir, "library_type_upset.pdf"))
+pdf(here(plot_dir, "library_type_upset.pdf"), width = 9)
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
-ups <- upset(fromList(DE_libray_type_geneList), 
+ups <- UpSetR::upset(fromList(DE_libray_type_geneList), 
       order.by = "freq", 
       sets = names(DE_libray_type_geneList), 
       keep.order = TRUE,
-      # shade.color = library_combo_colors2[names(DE_libray_type_geneList)] ## TODO fix colors
+      sets.bar.color = library_combo_colors2[names(DE_libray_type_geneList)]
                                         )
+print(ups)
 dev.off()
 
 ## library_prep
@@ -288,9 +291,14 @@ DREAM_library_prep_filter |>
 DE_libray_prep_geneList <- map(splitit(DREAM_library_prep_filter$prep_class), ~DREAM_library_prep_filter$ensemblID[.x])
 map_int(DE_libray_prep_geneList, length)
 
-pdf(here(plot_dir, "library_prep_upset.pdf"))
+pdf(here(plot_dir, "library_prep_upset.pdf"), width = 9)
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
-upset(fromList(DE_libray_prep_geneList), order.by = "freq", sets = names(DE_libray_prep_geneList), keep.order = TRUE)
+ups <- UpSetR::upset(fromList(DE_libray_prep_geneList), 
+                     order.by = "freq", 
+                     sets = names(DE_libray_prep_geneList), 
+                     keep.order = TRUE,
+                     sets.bar.color = library_type_colors[ss(names(DE_libray_prep_geneList),"_")])
+print(ups)
 dev.off()
 
 #### marker genes ####
