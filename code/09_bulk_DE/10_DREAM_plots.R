@@ -6,7 +6,8 @@ library("here")
 library("sessioninfo")
 library("ggrepel")
 library("jaffelab")
-library("UpSetR")
+# library("UpSetR")
+library("ComplexUpset")
 
 #### Set up ####
 
@@ -29,8 +30,9 @@ load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
 rd <- as.data.frame(rowData(rse_gene)) |> select(gencodeID, ensemblID, gene_type, Symbol, EntrezID)
 
 ## marker gene data
-load(here("processed-data", "06_marker_genes", "marker_genes_top25.Rdata"), verbose = TRUE)
-marker_genes_top25_simple <- marker_genes_top25_simple |> rename(ensemblID = gene)
+load(here("processed-data", "06_marker_genes", "03_find_markers_broad", "marker_stats_broad.Rdata"), verbose = TRUE)
+marker_genes_top25_simple <- marker_stats |> filter(rank_ratio <= 25) |> select(ensemblID = gene, cellType.target)
+marker_genes_top25_simple |> count(cellType.target)
 
 ## library_type
 load(here("processed-data", "09_bulk_DE","08_DREAM_library-type", "DREAM_library-type.Rdata"), verbose = TRUE)
@@ -91,6 +93,7 @@ DREAM_library_prep_long <- map2_dfr(DREAM_library_prep, names(DREAM_library_prep
   left_join(marker_genes_top25_simple)
 
 DREAM_library_prep_long |> count()
+DREAM_library_prep_long |> count(down, up)
 
 #### pval distribution ####
 library_type_pval_histo <- DREAM_library_type_long |>
@@ -252,45 +255,62 @@ DREAM_library_type_filter <- DREAM_library_type_long |>
 DE_libray_type_geneList <- map(splitit(DREAM_library_type_filter$DE_class), ~DREAM_library_type_filter$ensemblID[.x])
 map_int(DE_libray_type_geneList, length)
 
-pdf(here(plot_dir, "library_type_upset.pdf"))
+pdf(here(plot_dir, "library_type_upset.pdf"), width = 9)
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
-ups <- upset(fromList(DE_libray_type_geneList), 
+ups <- UpSetR::upset(fromList(DE_libray_type_geneList), 
       order.by = "freq", 
       sets = names(DE_libray_type_geneList), 
       keep.order = TRUE,
-      # shade.color = library_combo_colors2[names(DE_libray_type_geneList)] ## TODO fix colors
+      sets.bar.color = library_combo_colors2[names(DE_libray_type_geneList)]
                                         )
+print(ups)
 dev.off()
 
 ## library_prep
+
+case_when(logFC > 1 & adj.P.Val < 0.05 ~ paste0(library_type, "_", up),
+                            logFC < -1 & adj.P.Val < 0.05 ~ paste0(library_type, "_", down),
+                            TRUE ~"None")
+
 DREAM_library_prep_filter <- DREAM_library_prep_long |> 
   filter(DE_class != "None") |>
   # mutate(prep_class = paste0(library_type  ,"_", library_prep_pair, "_", DE_class))
-  mutate(prep_class = ifelse(DE_class == up, paste0(library_type,"_",up,"^_",down), paste0(library_type,"_",up,"_",down,"^")))
+  # mutate(prep_class = ifelse(grepl(DE_class, up), paste0(library_type,"_",up,"^_",down), paste0(library_type,"_",up,"_",down,"^")))
+  mutate(prep_class = paste0(library_type,"_",gsub("_", "vs",library_prep_pair)),
+         prep_class2 = case_when(logFC > 1 & adj.P.Val < 0.05 ~ paste0(prep_class, "^", up),
+                                 logFC < -1 & adj.P.Val < 0.05 ~ paste0(prep_class, "^", down),
+                                 TRUE ~ NA), 
+  )
 
-DREAM_library_prep_filter |>
-  count(prep_class)
-# library_type library_prep_pair DE_class prep_class                  n
-# <chr>        <chr>             <chr>    <chr>                   <int>
-#   1 RiboZeroGold Bulk_Cyto         Bulk     RiboZeroGold_Cyto_Bulk^  2698
-# 2 RiboZeroGold Bulk_Cyto         Cyto     RiboZeroGold_Cyto^_Bulk   247
-# 3 RiboZeroGold Bulk_Nuc          Bulk     RiboZeroGold_Nuc_Bulk^    346
-# 4 RiboZeroGold Bulk_Nuc          Nuc      RiboZeroGold_Nuc^_Bulk    217
-# 5 RiboZeroGold Cyto_Nuc          Cyto     RiboZeroGold_Nuc_Cyto^   1887
-# 6 RiboZeroGold Cyto_Nuc          Nuc      RiboZeroGold_Nuc^_Cyto   2775
-# 7 polyA        Bulk_Cyto         Bulk     polyA_Cyto_Bulk^         3269
-# 8 polyA        Bulk_Cyto         Cyto     polyA_Cyto^_Bulk         2639
-# 9 polyA        Bulk_Nuc          Bulk     polyA_Nuc_Bulk^           556
-# 10 polyA        Bulk_Nuc          Nuc      polyA_Nuc^_Bulk           848
-# 11 polyA        Cyto_Nuc          Cyto     polyA_Nuc_Cyto^          2449
-# 12 polyA        Cyto_Nuc          Nuc      polyA_Nuc^_Cyto          2321
+(prep_class_count <- DREAM_library_prep_filter |>
+  count(up, prep_class2))
+# library_type library_prep_pair DE_class           up    prep_class2                        n
+# <chr>        <chr>             <chr>              <chr> <chr>                          <int>
+#   1 RiboZeroGold Cyto_Nuc          RiboZeroGold_Cyto  Nuc   RiboZeroGold_CytovsNuc_Cyto     1887
+# 2 RiboZeroGold Cyto_Nuc          RiboZeroGold_Nuc   Nuc   RiboZeroGold_CytovsNuc_Nuc      2775
+# 3 RiboZeroGold Total_Cyto        RiboZeroGold_Cyto  Cyto  RiboZeroGold_TotalvsCyto_Cyto    247
+# 4 RiboZeroGold Total_Cyto        RiboZeroGold_Total Cyto  RiboZeroGold_TotalvsCyto_Total  2698
+# 5 RiboZeroGold Total_Nuc         RiboZeroGold_Nuc   Nuc   RiboZeroGold_TotalvsNuc_Nuc      217
+# 6 RiboZeroGold Total_Nuc         RiboZeroGold_Total Nuc   RiboZeroGold_TotalvsNuc_Total    346
+# 7 polyA        Cyto_Nuc          polyA_Cyto         Nuc   polyA_CytovsNuc_Cyto            2449
+# 8 polyA        Cyto_Nuc          polyA_Nuc          Nuc   polyA_CytovsNuc_Nuc             2321
+# 9 polyA        Total_Cyto        polyA_Cyto         Cyto  polyA_TotalvsCyto_Cyto          2639
+# 10 polyA        Total_Cyto        polyA_Total        Cyto  polyA_TotalvsCyto_Total         3269
+# 11 polyA        Total_Nuc         polyA_Nuc          Nuc   polyA_TotalvsNuc_Nuc             848
+# 12 polyA        Total_Nuc         polyA_Total        Nuc   polyA_TotalvsNuc_Total           556
 
-DE_libray_prep_geneList <- map(splitit(DREAM_library_prep_filter$prep_class), ~DREAM_library_prep_filter$ensemblID[.x])
+DE_libray_prep_geneList <- map(splitit(DREAM_library_prep_filter$prep_class2), ~DREAM_library_prep_filter$ensemblID[.x])
 map_int(DE_libray_prep_geneList, length)
+unique(DREAM_library_prep_filter$DE_class)
 
-pdf(here(plot_dir, "library_prep_upset.pdf"))
+pdf(here(plot_dir, "library_prep_upset.pdf"), width = 11)
 # upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
-upset(fromList(DE_libray_prep_geneList), order.by = "freq", sets = names(DE_libray_prep_geneList), keep.order = TRUE)
+ups <- UpSetR::upset(fromList(DE_libray_prep_geneList), 
+                     order.by = "freq", 
+                     sets = names(DE_libray_prep_geneList), 
+                     keep.order = TRUE,
+                     sets.bar.color = library_combo_colors2[prep_class_count$DE_class])
+print(ups)
 dev.off()
 
 #### marker genes ####
