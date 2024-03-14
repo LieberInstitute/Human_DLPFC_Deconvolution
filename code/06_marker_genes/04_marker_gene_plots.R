@@ -4,6 +4,7 @@ library("tidyverse")
 library("ggrepel")
 library("here")
 library("sessioninfo")
+library("UpSetR")
 
 ## prep plot_dir
 plot_dir <- here("plots", "06_marker_genes", "04_marker_gene_plots")
@@ -184,5 +185,14 @@ map_int(marker_list, length)
 # 1vALL_top25  MeanRatio_MAD3 MeanRatio_over2 MeanRatio_top25 
 # 145             520             557             151 
 
+pdf(here(plot_dir, "marker_set_upset.pdf"))
+# upset(fromList(DE_libray_type_geneList), order.by = "freq", nsets = 6, keep.order = TRUE)
+upset(fromList(marker_list), 
+             order.by = "freq", 
+             sets = names(marker_list), 
+             keep.order = TRUE,
+             # shade.color = library_combo_colors2[names(DE_libray_type_geneList)] ## TODO fix colors
+)
+dev.off()
 
 
