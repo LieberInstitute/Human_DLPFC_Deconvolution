@@ -7,7 +7,7 @@ library("viridis")
 library("GGally")
 
 ## prep dirs ##
-plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots_OligoOPC")
+plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## load colors & shapes
@@ -42,16 +42,17 @@ prop_long_opc <- prop_long_opc |>
 prop_long |> count(cell_type)
 prop_long_opc |> count(cell_type)
 
-prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
-# # A tibble: 6 × 2
+prop_long |> 
+  filter(is.na(RNAscope_prop)) |>
+  count(method)
 # method         n
 # <chr>      <int>
-# 1 BayesPrism   434
-# 2 Bisque       434
-# 3 CIBERSORTx   434
-# 4 DWLS         434
-# 5 MuSiC        434
-# 6 hspe         434
+# 1 BayesPrism   261
+# 2 Bisque       261
+# 3 CIBERSORTx   261
+# 4 DWLS         261
+# 5 MuSiC        261
+# 6 hspe         261
 
 #### compare to RNAscope ####
 
@@ -75,6 +76,7 @@ prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
 ## factor method by overall cor
 cor_check$method <- factor(cor_check$method, levels = cor_check$method)
 prop_long$method <- factor(prop_long$method, levels = cor_check$method)
+prop_long_opc$method <- factor(prop_long_opc$method, levels = cor_check$method)
 
 # method     library_type rna_extract library_combo        cor  rmse cor_anno               
 # <fct>      <chr>        <chr>       <chr>              <dbl> <dbl> <chr>                  
