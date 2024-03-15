@@ -49,7 +49,8 @@ dataset_donor_n <- ct_prop |>
   group_by(dataset, donor, Diagnosis) |>
   count() |>
   group_by(dataset,  Diagnosis) |>
-  count()
+  count() |>
+  mutate(n = ifelse(dataset == "Mathys",24, n)) ## using date of Dx doesn't match the n from the Mathys paper
 
 dataset_prop <- ct_prop |>
   group_by(dataset, cell_type) |>
