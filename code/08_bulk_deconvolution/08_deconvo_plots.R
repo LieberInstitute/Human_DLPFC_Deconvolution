@@ -365,7 +365,22 @@ est_prop_v_sn_scatter_top25 <- prop_long_opc |>
 ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.png"), width = 10, height = 4)
 ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.pdf"), width = 10, height = 4)
 
+#### polyA vs RiboZero Oligo ####
 
+oligo_scatter <- prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  ggplot(aes(x = RiboZeroGold, y = polyA, color = method, shape = rna_extract)) +
+  geom_point() +
+  geom_abline() +
+  facet_grid(method~rna_extract) +
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = c(Total=16, Cyto=17, Nuc=15)) +
+  theme_bw()
+
+ggsave(oligo_scatter, filename = here(plot_dir, "oligo_scatter.png"))
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
