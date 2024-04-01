@@ -54,6 +54,23 @@ prop_long |>
 # 5 MuSiC        261
 # 6 hspe         261
 
+## check one sample 
+prop_long_opc |>
+  filter(Sample == "Br2720_mid", 
+         library_combo == "polyA_Cyto",
+         cell_type == "Excit") |>
+  select(Sample, library_combo, method, cell_type, prop) |>
+  arrange(prop)
+
+# Sample     library_combo method     cell_type  prop
+# <chr>      <chr>         <fct>      <fct>     <dbl>
+#   1 Br2720_mid polyA_Cyto    DWLS       Excit     0.164
+# 2 Br2720_mid polyA_Cyto    BayesPrism Excit     0.189
+# 3 Br2720_mid polyA_Cyto    MuSiC      Excit     0.208
+# 4 Br2720_mid polyA_Cyto    Bisque     Excit     0.448
+# 5 Br2720_mid polyA_Cyto    hspe       Excit     0.491
+# 6 Br2720_mid polyA_Cyto    CIBERSORTx Excit     0.688
+
 #### compare to RNAscope ####
 
 #### correlation ####
@@ -373,16 +390,17 @@ prop_long_opc |>
   mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
   pivot_wider(names_from = "library_type", values_from = "prop") |>
   group_by(method) |> 
-  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE))
+  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE)) |> 
+  arrange(-mean_diff)
 
 # method     mean_diff
 # <fct>          <dbl>
-#   1 DWLS          0.113 
-# 2 BayesPrism    0.0160
-# 3 MuSiC         0.132 
-# 4 CIBERSORTx   -0.0692
-# 5 hspe          0.0240
-# 6 Bisque       -0.0256
+#   1 MuSiC         0.132 
+# 2 DWLS          0.113 
+# 3 hspe          0.0240
+# 4 BayesPrism    0.0160
+# 5 Bisque       -0.0256
+# 6 CIBERSORTx   -0.0692
 
 oligo_diff <- prop_long_opc |>
   filter(cell_type == "Oligo") |>
