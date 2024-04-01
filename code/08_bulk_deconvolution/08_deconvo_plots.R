@@ -367,6 +367,52 @@ ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_sca
 
 #### polyA vs RiboZero Oligo ####
 
+prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  group_by(method) |> 
+  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE))
+
+# method     mean_diff
+# <fct>          <dbl>
+#   1 DWLS          0.113 
+# 2 BayesPrism    0.0160
+# 3 MuSiC         0.132 
+# 4 CIBERSORTx   -0.0692
+# 5 hspe          0.0240
+# 6 Bisque       -0.0256
+
+oligo_diff <- prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  group_by(method, rna_extract) |> 
+  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE)) |> 
+  arrange(-mean_diff)
+# method     rna_extract mean_diff
+# <fct>      <fct>           <dbl>
+#   1 DWLS       Total         0.181  
+# 2 MuSiC      Total         0.167  
+# 3 MuSiC      Cyto          0.165  
+# 4 DWLS       Cyto          0.0780 
+# 5 DWLS       Nuc           0.0724 
+# 6 MuSiC      Nuc           0.0548 
+# 7 BayesPrism Cyto          0.0492 
+# 8 hspe       Total         0.0302 
+# 9 hspe       Cyto          0.0297 
+# 10 hspe       Nuc           0.0103 
+# 11 BayesPrism Total         0.00910
+# 12 Bisque     Cyto         -0.00644
+# 13 BayesPrism Nuc          -0.0130 
+# 14 Bisque     Total        -0.0287 
+# 15 Bisque     Nuc          -0.0434 
+# 16 CIBERSORTx Nuc          -0.0640 
+# 17 CIBERSORTx Total        -0.0671 
+# 18 CIBERSORTx Cyto         -0.0760
+
 oligo_scatter <- prop_long_opc |>
   filter(cell_type == "Oligo") |>
   select(Sample, rna_extract, library_type, method, prop) |>
@@ -376,6 +422,9 @@ oligo_scatter <- prop_long_opc |>
   geom_point() +
   geom_abline() +
   facet_grid(method~rna_extract) +
+  geom_text(data = oligo_diff, 
+            aes(x = .2, y = .75, label = round(mean_diff, 3)), 
+            color = "black") +
   scale_color_manual(values = method_colors) +
   scale_shape_manual(values = c(Total=16, Cyto=17, Nuc=15)) +
   theme_bw()
