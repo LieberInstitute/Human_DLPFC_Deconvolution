@@ -91,6 +91,42 @@ est_prop_v_RNAscope_scatter <- prop_long_subset_summary |>
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_subset.png"), height = 4)
 ggsave(est_prop_v_RNAscope_scatter, filename = here(plot_dir, "est_prop_v_RNAscope_scatter_subset.pdf"))
 
+#### compare to full data set ####
 
+load(here("processed-data", "08_bulk_deconvolution", "03_get_est_prop","prop_long.Rdata"), verbose = TRUE)
+prop_long_opc <- prop_long_opc |> 
+  filter(marker == "MeanRatio_top25") |>
+  select(SAMPLE_ID, method, cell_type, prop)
 
+prop_long_subset_summary_opc <- prop_long_subset_summary_opc|>
+  left_join(prop_long_opc)
+
+(cor_check_full <- prop_long_subset_summary_opc |>
+    group_by(method) |>
+    summarize(cor = cor(prop, median_prop),
+              rmse = Metrics::rmse(prop, median_prop))  |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+    arrange(cor))
+
+# method   cor  rmse cor_anno               
+# <chr>  <dbl> <dbl> <chr>                  
+# 1 Bisque 0.430 0.135 "cor:0.430\nrmse:0.135"
+# 2 hspe   0.927 0.137 "cor:0.927\nrmse:0.137"
+
+est_mean_prop_v_prop_scatter <- prop_long_subset_summary_opc |>
+  ggplot() +
+  geom_point(aes(x = prop, y = mean_prop, color = cell_type, shape = library_combo)) +
+  geom_text(data = cor_check_full, 
+            aes(label = cor_anno,x = .25, y = .75),
+            vjust = "inward") +
+  facet_wrap(~method, nrow = 1) +
+  scale_color_manual(values = cell_type_colors_broad) +
+  scale_shape_manual(values = library_combo_shapes2) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw() +
+  labs( x = "Full Data Estimated Proportion", y = "Mean Estimated Proportion (1k reps)")
+
+ggsave(est_mean_prop_v_prop_scatter, filename = here(plot_dir, "est_mean_prop_v_prop_scatter_subset.png"), height = 4)
+ggsave(est_mean_prop_v_prop_scatter, filename = here(plot_dir, "est_mean_prop_v_prop_scatter_subset.pdf"))
 
