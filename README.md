@@ -10,20 +10,26 @@ This is an integrative, multi-assay project including individual-matched data ge
   <img src= "overview.png" width="800" >
 </p>
 
-**Experimental design overview and exploration of gene detection in different assays**. **A**. Human postmortem brain dorsolateral prefrontal cortex (DLPFC) tissue blocks across the anterior to posterior axis from 10 donors were dissected for a total of 19 tissue blocks, these tissue blocks are a subset of the 30 tissue blocks that were used in a [previous spatial transcriptomic study](https://doi.org/10.1101/2023.02.15.528722). For each block, sequential slides were cut for different assays while maintaining the same white matter vs gray matter orientation. **B**. nRNA-seq data, generated as part of the same spatial transcriptomic study was collected for 19 tissue blocks [Huuki-Myers et al.](https://doi.org/10.1101/2023.02.15.528722), from which bulk RNA-seq data was also generated across two library preparations (polyA in purple or RiboZeroGold in gold) and three different RNA extractions targeting different cell fractions: cytosolic (Cyto, light color), whole cell (Bulk/Total, intermediate color), or nuclear (Nuc, dark color) in this study. **C**. tSNE plot of the reference snRNA-seq data at the broad cell type resolution. **D**. Scatter plot of bulk RNA-seq principal components (PCs) 1 and 2. PC1 is associated with library type and PC2 with RNA extraction method. Colors are the same as groups in _B_. **E**. Volcano plots for the differential expression analysis between polyA and RiboZeroGold, faceted by RNA extraction method. The colors of the points are the same as _B_. Volcano plot for the differential expression analysis between total bulk RNA-seq (point colors same as _E_) and snRNA-seq (blue points). Annotations are the same as _E_.
+**Experimental design overview and exploration of gene detection in different assays**. **A**. Human postmortem brain dorsolateral prefrontal cortex (DLPFC) tissue blocks across the anterior to posterior axis from 10 donors were dissected for a total of 19 tissue blocks, these tissue blocks are a subset of the 30 tissue blocks that were used in a [previous spatial transcriptomic study](https://doi.org/10.1101/2023.02.15.528722). For each block, sequential slides were cut for different assays while maintaining the same white matter vs gray matter orientation. **B**. snRNA-seq data, generated as part of the same spatial transcriptomic study was collected for 19 tissue blocks [Huuki-Myers et al.](https://doi.org/10.1101/2023.02.15.528722), from which bulk RNA-seq data was also generated across two library preparations (polyA in purple or RiboZeroGold in gold) and three different RNA extractions targeting different cell fractions: cytosolic (Cyto, light color), whole cell (Total, intermediate color), or nuclear (Nuc, dark color) in this study. **C**. tSNE plot of the reference snRNA-seq data at the broad cell type resolution. **D**. Scatter plot of bulk RNA-seq principal components (PCs) 1 and 2. PC1 is associated with library type and PC2 with RNA extraction method. Colors are the same as groups in _B_. **E**. Volcano plots for the differential expression analysis between polyA and RiboZeroGold, faceted by RNA extraction method. The colors of the points are the same as _B_. Horizontal dotted line denotes FDR < 0.05 cutoff, vertical dotted lines are logFC = -1 and 1. **F**. Volcano plot for the differential expression analysis between Total bulk RNA-seq (point colors same as _E_) and snRNA-seq (blue points). Annotations are the same as _E_.
 
 ## Citation
 
 We hope that this repository will be useful for your research. Please use the following [BibTeX](https://en.wikipedia.org/wiki/BibTeX) information to cite this code repository as well as the data released by this project. Thank you!
 
-> **Title (TODO)**
+> **Benchmark of cellular deconvolution methods using a multi-assay reference dataset from postmortem human prefrontal cortex.**
 
-> Louise A. Huuki-Myers, Kelsey D. Montgomery, Sang Ho Kwon, Sophia Cinquemani, Sean K. Maden, Nicholas J. Eagles, Joel E. Kleinman, Thomas M. Hyde, Stephanie C. Hicks, Kristen R. Maynard, Leonardo Collado-Torres.
+> Louise A. Huuki-Myers, Kelsey D. Montgomery, Sang Ho Kwon, Sophia Cinquemani, Nicholas J. Eagles, Daianna Gonzalez-Padilla, Sean K. Maden, Joel E. Kleinman, Thomas M. Hyde, Stephanie C. Hicks, Kristen R. Maynard, Leonardo Collado-Torres.
 
-> bioRxiv (TODO DOI); doi: <https://doi.org/10.1101/TODO>
+> bioRxiv 2024.02.09.579665; doi: <https://doi.org/10.1101/2024.02.09.579665>
 
 ```
-@article {TODO (once we have a pre-print)
+@article {Huuki-Myers2024.02.09.579665,
+	author = {Louise A. Huuki-Myers and Kelsey D. Montgomery and Sang Ho Kwon and Sophia Cinquemani and Nicholas J. Eagles and Daianna Gonzalez-Padilla and Sean K. Maden and Joel E. Kleinman and Thomas M. Hyde and Stephanie C. Hicks and Kristen R. Maynard and Leonardo Collado-Torres},
+	title = {Benchmark of cellular deconvolution methods using a multi-assay reference dataset from postmortem human prefrontal cortex},
+	year = {2024},
+	doi = {10.1101/2024.02.09.579665},
+	publisher = {Cold Spring Harbor Laboratory},
+	journal = {bioRxiv}
 }
 ```
 
@@ -33,11 +39,11 @@ Files for this project are publicly available.
 
 ## snRNA-seq
 
-As documented in the [`spatialDLPFC` project](https://github.com/LieberInstitute/spatialDLPFC), the FASTQ files are available via Globus endpoint ['jhpce#DLPFC_snRNAseq'](https://research.libd.org/globus/jhpce_DLPFC_snRNAseq/index.html) endpoint as well as the PsychENCODE Knowledge Portal (https://PsychENCODE.synapse.org/) through https://doi.org/10.7303/syn51032055.1 or https://www.synapse.org/#!Synapse:syn51032055/datasets/.
+As documented in the [`spatialDLPFC` project](https://github.com/LieberInstitute/spatialDLPFC), the FASTQ files are available via Globus endpoint ['jhpce#DLPFC_snRNAseq'](https://research.libd.org/globus/jhpce_DLPFC_snRNAseq/index.html) endpoint as well as the [PsychENCODE Knowledge Portal](https://PsychENCODE.synapse.org/) through https://doi.org/10.7303/syn51032055.1 or https://www.synapse.org/#!Synapse:syn51032055/datasets/.
 
 ## bulk RNA-seq
 
-The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#humanDeconvolutionBulkRNAseq'](https://research.libd.org/globus/jhpce_humanDeconvolutionBulkRNAseq/index.html) endpoint. They are also available through the NCBI Sequence Read Archive at study ID accession (TODO).
+The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#humanDeconvolutionBulkRNAseq'](https://research.libd.org/globus/jhpce_humanDeconvolutionBulkRNAseq/index.html) endpoint. Bulk RNA-seq FASTQ files are also available at NIH BioProject under accession [PRJNA1086804](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1086804) and Sequence Read Archive study [SRP494701](https://www.ncbi.nlm.nih.gov/sra/?term=SRP494701).
 
 ## smFISH data
 
