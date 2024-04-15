@@ -71,6 +71,34 @@ prop_long_opc |>
 # 5 Br2720_mid polyA_Cyto    hspe       Excit     0.491
 # 6 Br2720_mid polyA_Cyto    CIBERSORTx Excit     0.688
 
+prop_bar_Br2720_mid_inhib <- prop_long_opc |>
+  filter(Sample == "Br2720_mid", 
+         library_combo == "polyA_Cyto",
+         cell_type == "Inhib") |>
+  arrange(prop) |>
+  ggplot(aes(x = reorder(method, prop), y = prop, fill = cell_type)) +
+  geom_col() +
+  geom_text(aes(label = round(prop, 3)), nudge_y = 0.02) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  labs(x = "Method", y = "Proportion Inhibitory Neurons", title = "Br2720_mid_polyA_Cyto") +
+  theme_bw() +
+  theme(legend.position = "None")
+  
+ggsave(prop_bar_Br2720_mid_inhib, filename = here(plot_dir, "prop_bar_Br2720_mid_Inhib.png"), height = 4, width = 5)
+
+prop_bar_Br2720_mid <- prop_long_opc |>
+  filter(Sample == "Br2720_mid", 
+         library_combo == "polyA_Cyto") |> 
+  mutate(method = factor(method, levels = c("DWLS", "CIBERSORTx", "MuSiC", "hspe", "Bisque", "BayesPrism")))|>
+  ggplot(aes(x =method, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", fill = "Cell Type", x = "Method", title = "Br2720_mid_polyA_Cyto") +
+  theme_bw() 
+
+ggsave(prop_bar_Br2720_mid, filename = here(plot_dir, "prop_bar_Br2720_mid.png"), width = 6, height = 4)
+
+
 #### compare to RNAscope ####
 
 #### correlation ####
@@ -229,6 +257,21 @@ prop_bar_Bulk_RiboZero <- prop_long |>
 
 ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.png"))
 ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.pdf"))
+
+#### One Sample 
+prop_bar_SAMPLE_Br2720_mid <- prop_long_opc |> 
+  filter(Sample == "Br2720_mid") |>
+  mutate(Sample = gsub("_","\n", Sample)) |>
+  ggplot(aes(x = library_combo, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  facet_grid(Sample~method) +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", x = "Library Type & RNA Extraction Prep", fill = "Cell Type") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave(prop_bar_SAMPLE_Br2720_mid, filename = here(plot_dir, "Bulk_prop_SAMPLE_Br2720_mid.png"), width = 10, height = 4)
+
 
 
 ## Scatter plots
