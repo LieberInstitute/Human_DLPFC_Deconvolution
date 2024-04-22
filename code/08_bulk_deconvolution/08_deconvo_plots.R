@@ -71,8 +71,8 @@ prop_long_opc |>
 # 5 Br2720_mid polyA_Cyto    hspe       Excit     0.491
 # 6 Br2720_mid polyA_Cyto    CIBERSORTx Excit     0.688
 
-prop_bar_Br2720_mid_inhib <- prop_long_opc |>
-  filter(Sample == "Br2720_mid", 
+prop_bar_Br2720_post_inhib <- prop_long_opc |>
+  filter(Sample == "Br2720_post", 
          library_combo == "polyA_Cyto",
          cell_type == "Inhib") |>
   arrange(prop) |>
@@ -80,23 +80,23 @@ prop_bar_Br2720_mid_inhib <- prop_long_opc |>
   geom_col() +
   geom_text(aes(label = round(prop, 3)), nudge_y = 0.02) +
   scale_fill_manual(values = cell_type_colors_halo) +
-  labs(x = "Method", y = "Proportion Inhibitory Neurons", title = "Br2720_mid_polyA_Cyto") +
+  labs(x = "Method", y = "Proportion Inhibitory Neurons", title = "Br2720_post_polyA_Cyto") +
   theme_bw() +
   theme(legend.position = "None")
   
-ggsave(prop_bar_Br2720_mid_inhib, filename = here(plot_dir, "prop_bar_Br2720_mid_Inhib.png"), height = 4, width = 5)
+ggsave(prop_bar_Br2720_post_inhib, filename = here(plot_dir, "prop_bar_Br2720_post_Inhib.png"), height = 4, width = 5)
 
-prop_bar_Br2720_mid <- prop_long_opc |>
-  filter(Sample == "Br2720_mid", 
+prop_bar_Br2720_post <- prop_long_opc |>
+  filter(Sample == "Br2720_post", 
          library_combo == "polyA_Cyto") |> 
-  mutate(method = factor(method, levels = c("DWLS", "CIBERSORTx", "MuSiC", "hspe", "Bisque", "BayesPrism")))|>
+  mutate(method = factor(method, levels = c("DWLS", "CIBERSORTx", "Bisque", "hspe", "MuSiC", "BayesPrism")))|>
   ggplot(aes(x =method, y = prop, fill = cell_type)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = cell_type_colors_broad) +
-  labs(y = "Cell Type Proportion", fill = "Cell Type", x = "Method", title = "Br2720_mid_polyA_Cyto") +
+  labs(y = "Cell Type Proportion", fill = "Cell Type", x = "Method", title = "Br2720_post_polyA_Cyto") +
   theme_bw() 
 
-ggsave(prop_bar_Br2720_mid, filename = here(plot_dir, "prop_bar_Br2720_mid.png"), width = 6, height = 4)
+ggsave(prop_bar_Br2720_post, filename = here(plot_dir, "prop_bar_Br2720_post.png"), width = 6, height = 4)
 
 
 #### compare to RNAscope ####
