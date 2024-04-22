@@ -132,6 +132,21 @@ ggsave(star_cells, filename = here(plot_dir, "HALO_star_cells.pdf"), height = 12
 
 # ggsave(star_akt3 + star_cells, filename = here(plot_dir, "HALO_star.png"), height = 12, width = 6)
 
+star_cells_subset <- halo_all_adj |>
+  filter(Combo == "Star",
+         cell_type != "Other",
+         Sample %in% c("Br8667_mid", "Br6423_post")) |>
+  ggplot() +
+  geom_hex(aes(x = XMax, y = YMax), bins = 100)  +
+  scale_fill_continuous(type = "viridis", name = "Number of Cells") + ## top value of 100 for visualization 
+  coord_equal() +
+  theme_bw() +
+  facet_grid(Sample~cell_type) +
+  blank_axis
+
+ggsave(star_cells_subset, filename = here(plot_dir, "HALO_star_cells_subset.png"), height = 5, width = 6)
+
+
 #### Circle plots ####
 circle_akt3 <- halo_all_adj |>
   filter(Combo == "Circle") |>
