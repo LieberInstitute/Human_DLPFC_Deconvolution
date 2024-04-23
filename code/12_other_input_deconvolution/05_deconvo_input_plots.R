@@ -96,6 +96,17 @@ ggsave(data_set_cols, filename = here(plot_dir, "dataset_bar_plots.pdf"), width 
 
 ## even cell type prop
 
+simple_paired_prop <- dataset_prop |>
+  filter(dataset == "paired")  |>
+  ggplot(aes(x = "", y = prop, fill = cell_type)) +
+  geom_col() +
+  geom_text(aes(label = round(prop, 3)),
+            position = position_stack(vjust = .5)) +
+  theme_bw() +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", x = "DLPFC")
+
+ggsave(simple_paired_prop,  filename = here(plot_dir, "dataset_bar_paired_prop.png"), height = 7, width = 3)
 
 dataset_prop_subset <- dataset_prop |>
   filter(dataset == "paired") |>
