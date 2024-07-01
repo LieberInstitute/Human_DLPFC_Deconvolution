@@ -7,7 +7,7 @@ library("viridis")
 library("GGally")
 
 ## prep dirs ##
-plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots_OligoOPC")
+plot_dir <- here("plots", "08_bulk_deconvolution", "08_deconvo_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 ## load colors & shapes
@@ -42,16 +42,62 @@ prop_long_opc <- prop_long_opc |>
 prop_long |> count(cell_type)
 prop_long_opc |> count(cell_type)
 
-prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
-# # A tibble: 6 × 2
+prop_long |> 
+  filter(is.na(RNAscope_prop)) |>
+  count(method)
 # method         n
 # <chr>      <int>
-# 1 BayesPrism   434
-# 2 Bisque       434
-# 3 CIBERSORTx   434
-# 4 DWLS         434
-# 5 MuSiC        434
-# 6 hspe         434
+# 1 BayesPrism   261
+# 2 Bisque       261
+# 3 CIBERSORTx   261
+# 4 DWLS         261
+# 5 MuSiC        261
+# 6 hspe         261
+
+## check one sample 
+prop_long_opc |>
+  filter(Sample == "Br2720_mid", 
+         library_combo == "polyA_Cyto",
+         cell_type == "Excit") |>
+  select(Sample, library_combo, method, cell_type, prop) |>
+  arrange(prop)
+
+# Sample     library_combo method     cell_type  prop
+# <chr>      <chr>         <fct>      <fct>     <dbl>
+#   1 Br2720_mid polyA_Cyto    DWLS       Excit     0.164
+# 2 Br2720_mid polyA_Cyto    BayesPrism Excit     0.189
+# 3 Br2720_mid polyA_Cyto    MuSiC      Excit     0.208
+# 4 Br2720_mid polyA_Cyto    Bisque     Excit     0.448
+# 5 Br2720_mid polyA_Cyto    hspe       Excit     0.491
+# 6 Br2720_mid polyA_Cyto    CIBERSORTx Excit     0.688
+
+prop_bar_Br2720_post_inhib <- prop_long_opc |>
+  filter(Sample == "Br2720_post", 
+         library_combo == "polyA_Cyto",
+         cell_type == "Inhib") |>
+  arrange(prop) |>
+  ggplot(aes(x = reorder(method, prop), y = prop, fill = cell_type)) +
+  geom_col() +
+  geom_text(aes(label = round(prop, 3)), nudge_y = 0.02) +
+  scale_fill_manual(values = cell_type_colors_halo) +
+  labs(x = "Method", y = "Proportion Inhibitory Neurons", title = "Br2720_post_polyA_Cyto") +
+  theme_bw() +
+  theme(legend.position = "None")
+  
+ggsave(prop_bar_Br2720_post_inhib, filename = here(plot_dir, "prop_bar_Br2720_post_Inhib.png"), height = 4, width = 5)
+
+prop_bar_Br2720_post <- prop_long_opc |>
+  filter(Sample == "Br2720_post", 
+         library_combo == "polyA_Cyto") |> 
+  mutate(method = factor(method, levels = c("DWLS", "CIBERSORTx", "Bisque", "hspe", "MuSiC", "BayesPrism")))|>
+  ggplot(aes(x =method, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", fill = "Cell Type", x = "Method", title = "Br2720_post_polyA_Cyto") +
+  theme_bw() 
+
+ggsave(prop_bar_Br2720_post, filename = here(plot_dir, "prop_bar_Br2720_post.png"), width = 6, height = 4)
+
 
 #### compare to RNAscope ####
 
@@ -75,6 +121,7 @@ prop_long |> filter(is.na(RNAscope_prop)) |> count(method)
 ## factor method by overall cor
 cor_check$method <- factor(cor_check$method, levels = cor_check$method)
 prop_long$method <- factor(prop_long$method, levels = cor_check$method)
+prop_long_opc$method <- factor(prop_long_opc$method, levels = cor_check$method)
 
 # method     library_type rna_extract library_combo        cor  rmse cor_anno               
 # <fct>      <chr>        <chr>       <chr>              <dbl> <dbl> <chr>                  
@@ -210,6 +257,21 @@ prop_bar_Bulk_RiboZero <- prop_long |>
 
 ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.png"))
 ggsave(prop_bar_Bulk_RiboZero, filename = here(plot_dir, "Bulk_prop_Bulk_RiboZero.pdf"))
+
+#### One Sample 
+prop_bar_SAMPLE_Br2720_mid <- prop_long_opc |> 
+  filter(Sample == "Br2720_mid") |>
+  mutate(Sample = gsub("_","\n", Sample)) |>
+  ggplot(aes(x = library_combo, y = prop, fill = cell_type)) +
+  geom_bar(stat = "identity") +
+  facet_grid(Sample~method) +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", x = "Library Type & RNA Extraction Prep", fill = "Cell Type") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave(prop_bar_SAMPLE_Br2720_mid, filename = here(plot_dir, "Bulk_prop_SAMPLE_Br2720_mid.png"), width = 10, height = 4)
+
 
 
 ## Scatter plots
@@ -363,7 +425,72 @@ est_prop_v_sn_scatter_top25 <- prop_long_opc |>
 ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.png"), width = 10, height = 4)
 ggsave(est_prop_v_sn_scatter_top25, filename = here(plot_dir, "est_prop_v_sn_scatter_top25.pdf"), width = 10, height = 4)
 
+#### polyA vs RiboZero Oligo ####
 
+prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  group_by(method) |> 
+  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE)) |> 
+  arrange(-mean_diff)
+
+# method     mean_diff
+# <fct>          <dbl>
+#   1 MuSiC         0.132 
+# 2 DWLS          0.113 
+# 3 hspe          0.0240
+# 4 BayesPrism    0.0160
+# 5 Bisque       -0.0256
+# 6 CIBERSORTx   -0.0692
+
+oligo_diff <- prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  group_by(method, rna_extract) |> 
+  summarise(mean_diff = mean(polyA - RiboZeroGold, na.rm = TRUE)) |> 
+  arrange(-mean_diff)
+# method     rna_extract mean_diff
+# <fct>      <fct>           <dbl>
+#   1 DWLS       Total         0.181  
+# 2 MuSiC      Total         0.167  
+# 3 MuSiC      Cyto          0.165  
+# 4 DWLS       Cyto          0.0780 
+# 5 DWLS       Nuc           0.0724 
+# 6 MuSiC      Nuc           0.0548 
+# 7 BayesPrism Cyto          0.0492 
+# 8 hspe       Total         0.0302 
+# 9 hspe       Cyto          0.0297 
+# 10 hspe       Nuc           0.0103 
+# 11 BayesPrism Total         0.00910
+# 12 Bisque     Cyto         -0.00644
+# 13 BayesPrism Nuc          -0.0130 
+# 14 Bisque     Total        -0.0287 
+# 15 Bisque     Nuc          -0.0434 
+# 16 CIBERSORTx Nuc          -0.0640 
+# 17 CIBERSORTx Total        -0.0671 
+# 18 CIBERSORTx Cyto         -0.0760
+
+oligo_scatter <- prop_long_opc |>
+  filter(cell_type == "Oligo") |>
+  select(Sample, rna_extract, library_type, method, prop) |>
+  mutate(rna_extract = factor(rna_extract, levels = c("Cyto", "Total", "Nuc"))) |>
+  pivot_wider(names_from = "library_type", values_from = "prop") |>
+  ggplot(aes(x = RiboZeroGold, y = polyA, color = method, shape = rna_extract)) +
+  geom_point() +
+  geom_abline() +
+  facet_grid(method~rna_extract) +
+  geom_text(data = oligo_diff, 
+            aes(x = .2, y = .75, label = round(mean_diff, 3)), 
+            color = "black") +
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = c(Total=16, Cyto=17, Nuc=15)) +
+  theme_bw()
+
+ggsave(oligo_scatter, filename = here(plot_dir, "oligo_scatter.png"))
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information

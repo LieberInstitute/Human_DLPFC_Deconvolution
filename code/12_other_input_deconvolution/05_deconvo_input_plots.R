@@ -49,7 +49,8 @@ dataset_donor_n <- ct_prop |>
   group_by(dataset, donor, Diagnosis) |>
   count() |>
   group_by(dataset,  Diagnosis) |>
-  count()
+  count() |>
+  mutate(n = ifelse(dataset == "Mathys",24, n)) ## using date of Dx doesn't match the n from the Mathys paper
 
 dataset_prop <- ct_prop |>
   group_by(dataset, cell_type) |>
@@ -92,6 +93,47 @@ data_set_cols <- donor_n_col / (dataset_cell_bar + theme(legend.position = "None
 
 ggsave(data_set_cols, filename = here(plot_dir, "dataset_bar_plots.png"), width = 5, height = 7)  
 ggsave(data_set_cols, filename = here(plot_dir, "dataset_bar_plots.pdf"), width = 5, height = 7)  
+
+## even cell type prop
+
+simple_paired_prop <- dataset_prop |>
+  filter(dataset == "paired")  |>
+  ggplot(aes(x = "", y = prop, fill = cell_type)) +
+  geom_col() +
+  geom_text(aes(label = round(prop, 3)),
+            position = position_stack(vjust = .5)) +
+  theme_bw() +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion", x = "DLPFC")
+
+ggsave(simple_paired_prop,  filename = here(plot_dir, "dataset_bar_paired_prop.png"), height = 7, width = 3)
+
+dataset_prop_subset <- dataset_prop |>
+  filter(dataset == "paired") |>
+  bind_rows(tibble(dataset = "subset", cell_type = levels(dataset_prop$cell_type)[1:7], n_cells = 1601, prop = 1/7)
+)
+
+dataset_cell_bar_subset <- dataset_prop_subset |>
+  ggplot(aes(x = dataset, y = n_cells, fill = cell_type)) +
+  geom_col() +
+  # geom_text(aes(label = n_cells),
+  #           position = position_stack(vjust = .5)) +
+  theme_bw() +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Number of Nuclei")
+
+dataset_prop_bar_subset  <- dataset_prop_subset |>
+  ggplot(aes(x = dataset, y = prop, fill = cell_type)) +
+  geom_col() +
+  geom_text(aes(label = ifelse(prop > .05, round(prop, 3), "")),
+            position = position_stack(vjust = .5),
+            size = 2.5) +
+  theme_bw() +
+  scale_fill_manual(values = cell_type_colors_broad) +
+  labs(y = "Cell Type Proportion")
+
+ggsave(dataset_cell_bar_subset + theme(legend.position = "None") + dataset_prop_bar_subset, 
+       filename = here(plot_dir, "dataset_bar_plots_subset.png"), width = 5, height = 7)  
 
 
 #### load data - combine input datasets ####

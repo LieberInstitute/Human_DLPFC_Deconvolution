@@ -52,7 +52,7 @@ focused_qc_metrics <- c(
 )
 
 # qc_variables <- c("numReads", "numMapped", "numUnmapped", "overallMapRate", "concordMapRate", "totalMapped", "mitoMapped","mitoRate", "rRNA_rate", "totalAssignedGene")
-pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, all_of(focused_qc_metrics))
+pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, library_combo2, qc_class, all_of(focused_qc_metrics))
 
 #### check out dispersion patterns ####
 library("vsn")
@@ -109,6 +109,7 @@ names(pca)
 # pca$x[,1:5]
 
 ## create table with groups and some QC metrics
+identical(rownames(pca$x), rownames(pd_simple))
 pca_tab <- pd_simple |> cbind(pca$x[, 1:5])
 
 #### ggpairs for pca ####
@@ -154,11 +155,11 @@ pc1v2_lab <- pca_tab |>
 ggsave(pc1v2_lab, filename = here(plot_dir, "Bulk_PC1vPC2_library_combo_label.png"))
 
 pc2v5_lab <- pca_tab |>
-    ggplot(aes(x = PC2, y = PC5, color = library_combo, shape = qc_class)) +
+    ggplot(aes(x = PC2, y = PC5, color = library_combo2, shape = qc_class)) +
     geom_point() +
-    geom_text_repel(aes(label = Sample), color = "black", size = 2) +
+    geom_text_repel(aes(label = Sample), min.segment.length = unit(0, 'lines'), color = "black", size = 2) +
     theme_bw() +
-    scale_color_manual(values = library_combo_colors) +
+    scale_color_manual(values = library_combo_colors2, name = "library_combo") +
     labs(x = pca_vars_lab[[2]], y = pca_vars_lab[[5]]) +
     coord_equal()
 

@@ -120,6 +120,7 @@ example_prop <- matrix(data = rep(c(6,3), 4), nrow = 4, byrow = TRUE) - matrix(r
 example_prop[1,1] <- example_prop[1,1] -1
 example_prop <- cbind(example_prop, 10 - rowSums(example_prop))/10
 rowSums(example_prop)
+any(example_prop < 0)
 
 colnames(example_prop) <- c("Neuron", "Astro","Oligo")
 rownames(example_prop) <- paste0("sample_", 1:nrow(example_prop))
@@ -142,9 +143,23 @@ example_prop_plot <- DeconvoBuddies::plot_composition_bar(example_prop_long,
   scale_fill_manual(values = example_colors2) +
   theme_void()
 
-ggsave(example_prop_plot, filename = here(plot_dir, "example_composition.png"), width = 5)
+ggsave(example_prop_plot, filename = here(plot_dir, "example_composition2.png"), width = 5, height = 5)
 
 print(example_prop_plot)
+
+# example_composition_scatter <- example_prop_long |> 
+#   rename(prop_deconvo = prop) |> 
+#   left_join(
+#     example_prop_long2 |> rename(prop_RNAScope = prop)
+#   ) |>
+#   ggplot(aes(x = prop_RNAScope, y = prop_deconvo, color = cell_type)) +
+#   geom_point(size = 2) +
+#   scale_color_manual(values = example_colors2) +
+#   theme_bw() +
+#   geom_abline() 
+# 
+#   ggsave(example_composition_scatter, filename = here(plot_dir, "example_composition_scatter.png"), width = 3.5, height = 3.5)
+
 
 #### Mean Ratio Cartoon ####
 
