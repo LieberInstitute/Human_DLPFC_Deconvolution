@@ -26,8 +26,24 @@ load(here("processed-data", "08_bulk_deconvolution", "03_get_est_prop","prop_lon
 prop_long |>  count(method, marker)|> count(marker)
 
 prop_long |>  filter(!is.na(RNAscope_prop)) |> count(method, marker)
-
 prop_long |> count(cell_type)
+
+## get n marker genes
+marker_list <- list.files(here("processed-data","08_bulk_deconvolution"), pattern = "markers_.*.txt", full.names = TRUE)
+names(marker_list) <- gsub("markers_|.txt", "", basename(marker_list))
+
+n_markers <- c(map_int(marker_list, ~length(scan(.x, what="", sep="\n"))), FULL = 17804)
+
+n_marker_tb <- tibble(marker = names(n_markers), n_markers =n_markers) |>
+  arrange(n_markers)
+# marker          n_markers
+# <chr>               <dbl>
+# 1 1vALL_top25           145
+# 2 MeanRatio_top25       151
+# 3 MeanRatio_MAD3        520
+# 4 MeanRatio_over2       557
+# 5 FULL                17804
+
 #### compare to RNAscope ####
 
 #### correlation ####
@@ -37,7 +53,8 @@ prop_long |> count(cell_type)
    summarize(cor = cor(RNAscope_prop, prop),
              rmse = Metrics::rmse(RNAscope_prop, prop))  |>
    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
-   arrange(-cor))
+   arrange(-cor) |>
+   left_join(n_marker_tb))
 # method     marker            cor  rmse cor_anno               
 # <chr>      <chr>           <dbl> <dbl> <chr>                  
 #   1 hspe       MeanRatio_over2 0.596 0.215 "cor:0.596\nrmse:0.215"
@@ -62,7 +79,8 @@ prop_long$method <- factor(prop_long$method, levels = method_levels)
     summarize(cor = cor(RNAscope_prop, prop),
               rmse = Metrics::rmse(RNAscope_prop, prop)) |>
     arrange(-cor) |>
-    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3))) 
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3))) |>
+    left_join(n_marker_tb)
 )
 # marker          method     library_combo   cor  rmse cor_anno               
 # <chr>           <fct>      <chr>         <dbl> <dbl> <chr>                  
@@ -76,23 +94,6 @@ prop_long$method <- factor(prop_long$method, levels = method_levels)
 # 8 MeanRatio_top25 CIBERSORTx polyA_Cyto    0.645 0.185 "cor:0.645\nrmse:0.185"
 # 9 MeanRatio_over2 Bisque     polyA_Cyto    0.644 0.139 "cor:0.644\nrmse:0.139"
 # 10 1vALL_top25     Bisque     polyA_Cyto    0.619 0.136 "cor:0.619\nrmse:0.136"
-
-
-## TODO reletive cell type error (divide by mean RNAscope prop)
-# cor_check_ct <- prop_long |>
-#   filter(!is.na(RNAscope_prop)) |>
-#   group_by(method, marker, library_type, library_prep, library_combo, cell_type) |>
-#   summarize(cor = cor(RNAscope_prop, prop),
-#             rmse = Metrics::rmse(RNAscope_prop, prop))|>
-#   mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)),
-#          library = paste0(library_type, "_",library_prep))
-# # method marker   correlation
-# <chr>  <chr>          <dbl>
-#   1 Bisque MR_top25     0.508  
-# 2 DWLS   MR_top25    -0.00684
-# 3 MuSiC  MR_top25     0.0292 
-# 4 hspe   ALL          0.416  
-# 5 hspe   MR_top25     0.513 
 
 
 ## cor vs rmse ##
@@ -184,6 +185,51 @@ rmse_line_facet <- cor_check_library |>
 
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.png"), width = 10, height = 7)
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 7)
+
+## corelation vs. n markers
+
+cor_n_marker_scatter <- 
+  ggplot() +
+  geom_vline(data = n_marker_tb, aes(xintercept = n_markers), color = "skyblue") +
+  geom_point(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  # geom_text_repel(data = n_marker_tb, aes(label = n_markers, x = n_markers, y = .1)) +
+  coord_trans(x = "log10") +
+  labs(x = "n marker genes (log10 axis)")
+
+ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
+ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
+
+rmse_n_marker_scatter <- 
+  ggplot() +
+  geom_vline(data = n_marker_tb, aes(xintercept = n_markers), color = "skyblue") +
+  geom_point(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  # geom_text_repel(data = n_marker_tb, aes(label = n_markers, x = n_markers, y = .1)) +
+  coord_trans(x = "log10") +
+  labs(x = "n marker genes (log10 axis)")
+
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.png"), width = 10)
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.pdf"), width = 10)
+
+
+cor_n_marker_library_scatter <- cor_check_library |>
+  # filter(marker != "FULL") |>
+  ggplot(aes(x = n_markers, y = cor, color= method)) +
+  geom_point(aes(shape = library_combo)) +
+  # geom_point(aes(size = rmse), alpha = .7) +
+  # geom_line(aes(group = method)) +
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = library_combo_shapes2) +
+  theme_bw() +
+  coord_trans(x = "log10")
+
+ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"))
+
+
+
 
 #### proportion data ####
 prop_bar_SAMPLE_facet <- prop_long_opc |> 
