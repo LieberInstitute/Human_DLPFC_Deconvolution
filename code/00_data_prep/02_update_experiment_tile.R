@@ -229,7 +229,7 @@ ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5, width = 7.
 #### build demographics table ####
 br_qc <- qc_tab |> 
   group_by(data_type, BrNum) |> 
-  summarise(n_qc = paste0(sum(pass_qc),'/', n())) |>
+  summarise(n_qc = paste0(sum(pass_qc),'(', n(), ')')) |>
   pivot_wider(names_from = "data_type", values_from = n_qc)
 
 all_demo <- sn_demo |>
