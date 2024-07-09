@@ -1,6 +1,6 @@
 
 library("tidyverse")
-# library("SingleCellExperiment")
+library("SummarizedExperiment")
 library("here")
 library("sessioninfo")
 
@@ -26,6 +26,8 @@ sn_n_samp <- sn_samples |>
   dplyr::count(Sample, Position, BrNum) |>
   dplyr::mutate(data_type = "snRNA-seq")
 
+sn_demo <- sn_samples |> group_by(BrNum, age, sex) |> summarize(n_snRNA = n())
+
 #### bulk data ####
 
 ## post QC bulk data (dropped 3 samples)
@@ -40,6 +42,8 @@ bulk_n_samp <- bulk_samples |>
   dplyr::count(Sample, Position, BrNum, library_type) |>
   mutate(data_type = paste0("Bulk RNA-seq\n", library_type)) |>
   select(-library_type)
+
+bulk_demo <- bulk_samples |> group_by(BrNum, age, sex) |> summarize(n_bulk = n())
 
 ## type x prep
 library_prep_type_count <- bulk_samples |>
@@ -80,12 +84,16 @@ halo_combo_samp <- halo_samp  |>
   summarize(combo = paste0(Combo, collapse = "_")) |>
   mutate(n = ifelse(combo == "Star_Circle", "Both", combo))
 
+halo_demo <- halo_samp |> group_by(BrNum) |> summarize(n_RNAScope = n())
+
 #### ALL DLPFC SAMPLES ####
 all_dlpfc <- do.call("rbind", list(sn_n_samp, bulk_n_samp, halo_n_samp))
 
 ## Do we have 4 matched assays for each sample?
 all_dlpfc <- all_dlpfc |> 
   left_join(all_dlpfc |> dplyr::count(Sample)|> mutate(Matched = n ==4) |> select(-n)) 
+
+all_dlpfc
 
 experiment_tile <- all_dlpfc |> 
   mutate(n = as.factor(n)) |>
@@ -217,3 +225,16 @@ qc_tile <- qc_tab |>
 
 ggsave(qc_tile, filename = here(plot_dir, "qc_tile.png"), height = 5, width = 7.25)
 ggsave(qc_tile, filename = here(plot_dir, "qc_tile.pdf"), height = 5, width = 7.25)
+
+#### build demographics table ####
+br_qc <- qc_tab |> 
+  group_by(data_type, BrNum) |> 
+  summarise(n_qc = paste0(sum(pass_qc),'/', n())) |>
+  pivot_wider(names_from = "data_type", values_from = n_qc)
+
+all_demo <- sn_demo |>
+  select(-n_snRNA) |>
+  mutate(PrimaryDx = "Control") |>
+  left_join(br_qc)
+
+write_csv(all_demo, file = here("processed-data", "00_data_prep", "donor_demographics.csv"))

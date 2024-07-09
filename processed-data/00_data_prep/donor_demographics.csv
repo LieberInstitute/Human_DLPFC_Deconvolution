@@ -1,0 +1,11 @@
+BrNum,age,sex,PrimaryDx,RNAScope/IF,snRNA-seq,Bulk RNA-seq
+Br2720,48.22,F,Control,2/4,2/2,11/12
+Br2743,61.54,M,Control,2/2,2/2,5/6
+Br3942,47.53,M,Control,4/6,2/2,12/12
+Br6423,51.73,M,Control,4/4,2/2,12/12
+Br6432,48.88,M,Control,1/6,1/1,12/12
+Br6471,55.46,M,Control,2/4,2/2,12/12
+Br6522,33.39,M,Control,2/4,2/2,12/12
+Br8325,57.62,F,Control,3/4,2/2,11/11
+Br8492,53.4,F,Control,3/4,2/2,11/12
+Br8667,37.33,F,Control,2/4,2/2,12/12
