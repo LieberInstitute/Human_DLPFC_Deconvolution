@@ -124,7 +124,8 @@ props_df_list = bplapply(
     sce = sce,
     exp_set_bulk = exp_set_bulk,
     unique_donors = unique_donors,
-    BPPARAM = MulticoreParam(n_cores)
+    BPPARAM = MulticoreParam(n_cores),
+    RNGseed = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 )
 
 #   Export a combined CSV of all runs
