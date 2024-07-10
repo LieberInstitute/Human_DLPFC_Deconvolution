@@ -16,16 +16,28 @@ n_markers_per_type = 25
 sce = readRDS(sce_path)
 
 mean_ratio <- get_mean_ratio2(
-    sce, cellType_col = "cellType_broad", assay_name = "counts",
+    sce, cellType_col = "subclass", assay_name = "X",
     add_symbol = TRUE
 )
 
 write_csv(mean_ratio, stats_out_path)
 
+#   Take up to 25 markers per cell type, provided all ratios exceed 1
+filtered_stats = mean_ratio |>
+    group_by(cellType.target) |>
+    arrange(desc(ratio)) |>
+    filter(ratio > 1) |>
+    slice_head(n = n_markers_per_type) |>
+    ungroup()
+    
+message(
+    sprintf(
+        "Number of markers found by cell type (%s total):", nrow(filtered_stats)
+    )
+)
+table(filtered_stats$cellType.target)
+
 #   Write one marker per line to a text file
-mean_ratio |>
-    filter(rank_ratio <= n_markers_per_type) |>
-    pull(gene) |>
-    writeLines(markers_out_path)
+writeLines(filtered_stats$gene, markers_out_path)
 
 session_info()
