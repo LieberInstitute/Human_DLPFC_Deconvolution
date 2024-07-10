@@ -20,9 +20,12 @@ out_path <- here(
     "processed-data", "13_PEC_deconvolution", "bisque_donor_subset",
     sprintf("est_prop_bisque_n%s_%s_random_subsets.csv", n_donors, n_runs)
 )
-sce_coldata_cols = c(
-    "key", "Sample", "BrNum", "cellType_broad_hc", "cellType_hc"
-)
+
+sce_assay_name = "X"
+
+#   colnames in colData(sce)
+sce_cell_type_col = "subclass"
+sce_individual_col = "individualID"
 
 n_cores = as.integer(Sys.getenv('SLURM_CPUS_PER_TASK'))
 
@@ -32,20 +35,20 @@ dir.create(dirname(out_path), showWarnings = FALSE)
 #   Function definitions
 ################################################################################
 
-unique_donors = unique(sce$donor)
-stopifnot(length(unique_donors) == n_total_donors)
-
-run_bisque = function(i, sce, exp_set_bulk) {
+run_bisque = function(i, sce, exp_set_bulk, unique_donors) {
     #   Randomly take [n_donors] donors from the set of [n_total_donors]
     sce_sub = sce[
-        , sce$donor %in% unique_donors[sample(seq(n_total_donors), n_donors)]
+        , sce[[sce_individual_col]] %in%
+            unique_donors[sample(seq(n_total_donors), n_donors)]
     ]
 
     #   Convert to ExpressionSet as required for Bisque
     exp_set_sce <- ExpressionSet(
-        assayData = assays(sce_sub)$counts,
+        assayData = assays(sce_sub)[[sce_assay_name]],
         phenoData = AnnotatedDataFrame(
-            as.data.frame(colData(sce_sub)[,sce_coldata_cols])
+            as.data.frame(
+                colData(sce_sub)[,c(sce_cell_type_col, sce_individual_col)]
+            )
         )
     )
 
@@ -53,8 +56,8 @@ run_bisque = function(i, sce, exp_set_bulk) {
     est_prop_bisque <- ReferenceBasedDecomposition(
         bulk.eset = exp_set_bulk,
         sc.eset = exp_set_sce,
-        cell.types = "cellType_broad_hc",
-        subject.names = "Sample",
+        cell.types = sce_cell_type_col,
+        subject.names = sce_individual_col,
         use.overlap = FALSE
     )
 
@@ -77,10 +80,60 @@ run_bisque = function(i, sce, exp_set_bulk) {
 #   Load bulk data, single-cell data, and top-25 mean-ratio markers
 ################################################################################
 
-## load bulk data
+#-------------------------------------------------------------------------------
+#   Bulk data
+#-------------------------------------------------------------------------------
+
 load(bulk_path, verbose = TRUE)
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
+
+exp_set_bulk <- ExpressionSet(
+    assayData = assays(rse_gene)$counts[markers,],
+    phenoData = AnnotatedDataFrame(
+        as.data.frame(colData(rse_gene))[c("SAMPLE_ID")]
+    )
+)
+
+#-------------------------------------------------------------------------------
+#   Single-cell data
+#-------------------------------------------------------------------------------
 
 ## sce data and markers
 sce = readRDS(sce_path)
 markers <- readLines(marker_file)
+
+unique_donors = unique(sce$individualID)
+stopifnot(length(unique_donors) == n_total_donors)
+
+#   Subset to markers and cells with at least some gene expression
+nonempty_cells = colSums(assays(sce)[[sce_assay_name]][markers,]) > 0
+sce = sce[markers, nonempty_cells]
+message("Excluding ", sum(!nonempty_cells), " zero-expression cells")
+
+#   Dense matrices are faster to work with
+assays(sce)[[sce_assay_name]] = as.matrix(assays(sce)[[sce_assay_name]])
+
+################################################################################
+#   Run Bisque and export results
+################################################################################
+
+#   Run Bisque on the many different subsets in parallel
+props_df_list = bplapply(
+    1:n_runs,
+    run_bisque,
+    sce = sce,
+    exp_set_bulk = exp_set_bulk,
+    unique_donors = unique_donors,
+    BPPARAM = MulticoreParam(n_cores)
+)
+
+#   Export a combined CSV of all runs
+do.call(rbind, props_df_list) |>
+    write_csv(out_path)
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
