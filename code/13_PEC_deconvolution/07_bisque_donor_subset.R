@@ -6,8 +6,8 @@ library("sessioninfo")
 library("BiocParallel")
 
 n_runs = 100
-n_total_donors = 104
-n_donors = round(1.5**(1:10) * n_total_donors / 1.5**10)[
+n_total_donors = 52
+n_donors = round(1.4**(1:10) * n_total_donors / 1.4**10)[
     as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 ]
 
@@ -80,6 +80,8 @@ run_bisque = function(i, sce, exp_set_bulk, unique_donors) {
 #   Load bulk data, single-cell data, and top-25 mean-ratio markers
 ################################################################################
 
+markers <- readLines(marker_file)
+
 #-------------------------------------------------------------------------------
 #   Bulk data
 #-------------------------------------------------------------------------------
@@ -100,7 +102,6 @@ exp_set_bulk <- ExpressionSet(
 
 ## sce data and markers
 sce = readRDS(sce_path)
-markers <- readLines(marker_file)
 
 unique_donors = unique(sce$individualID)
 stopifnot(length(unique_donors) == n_total_donors)
@@ -124,8 +125,9 @@ props_df_list = bplapply(
     sce = sce,
     exp_set_bulk = exp_set_bulk,
     unique_donors = unique_donors,
-    BPPARAM = MulticoreParam(n_cores),
-    RNGseed = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
+    BPPARAM = MulticoreParam(
+        n_cores, RNGseed = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
+    )
 )
 
 #   Export a combined CSV of all runs

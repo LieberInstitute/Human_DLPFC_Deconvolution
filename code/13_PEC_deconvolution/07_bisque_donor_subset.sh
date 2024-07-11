@@ -3,10 +3,10 @@
 #SBATCH --mem=10G
 #SBATCH --job-name=07_bisque_donor_subset
 #SBATCH -c 4
-#SBATCH -t 4:00:00
+#SBATCH -t 8:00:00
 #SBATCH -o logs/07_bisque_donor_subset_%a.txt
 #SBATCH -e logs/07_bisque_donor_subset_%a.txt
-#SBATCH --array=1-10%5
+#SBATCH --array=1
 
 set -e
 
