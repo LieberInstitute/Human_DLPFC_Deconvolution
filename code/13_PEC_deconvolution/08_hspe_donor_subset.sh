@@ -6,13 +6,13 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
-#SBATCH --array=1-1000%20
+#SBATCH --array=1
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_n_donors=(1 2 3 5 7 10 15 23 35 52)
+all_n_donors=(3 4 5 7 10 14 19 27 37 52)
 n_donors=${all_n_donors[$(( $SLURM_ARRAY_TASK_ID / 100 % 10 ))]}
 
-all_run_num=$(seq 1 100)
+all_run_num=($(seq 1 100))
 run_num=${all_run_num[$(( $SLURM_ARRAY_TASK_ID / 1 % 100 ))]}
 
 ## Explicitly pipe script output to a log

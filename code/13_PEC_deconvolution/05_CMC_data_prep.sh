@@ -1,12 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=20G
-#SBATCH --job-name=07_bisque_donor_subset
-#SBATCH -c 4
-#SBATCH -t 8:00:00
-#SBATCH -o logs/07_bisque_donor_subset_%a.txt
-#SBATCH -e logs/07_bisque_donor_subset_%a.txt
-#SBATCH --array=1
+#SBATCH --mem=40G
+#SBATCH --job-name=05_CMC_data_prep
+#SBATCH -c 1
+#SBATCH -t 1-00:00:00
+#SBATCH -o logs/05_CMC_data_prep.txt
+#SBATCH -e logs/05_CMC_data_prep.txt
 
 set -e
 
@@ -26,8 +25,7 @@ module load conda_R/4.3.x
 ## List current modules for reproducibility
 module list
 
-## Edit with your job command
-Rscript 07_bisque_donor_subset.R
+Rscript 05_CMC_data_prep.R
 
 echo "**** Job ends ****"
 date
