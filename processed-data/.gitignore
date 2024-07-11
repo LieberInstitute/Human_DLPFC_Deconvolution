@@ -2,3 +2,4 @@ rse/preQC/rse*.Rdata
 rse/rse_exon.Rdata
 rse/rse_jx.Rdata
 rse/rse_tx.Rdata
+13_PEC_deconvolution/sce_CMC.rds
