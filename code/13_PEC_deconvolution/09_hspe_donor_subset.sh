@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=10G
-#SBATCH --job-name=08_hspe_donor_subset
+#SBATCH --job-name=09_hspe_donor_subset
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
@@ -16,7 +16,7 @@ all_run_num=($(seq 1 100))
 run_num=${all_run_num[$(( $SLURM_ARRAY_TASK_ID / 1 % 100 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/08_hspe_donor_subset_${n_donors}donors_run${run_num}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=logs/09_hspe_donor_subset_${n_donors}donors_run${run_num}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -38,7 +38,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 08_hspe_donor_subset.R --n_donors ${n_donors} --run_num ${run_num}
+Rscript 09_hspe_donor_subset.R --n_donors ${n_donors} --run_num ${run_num}
 
 echo "**** Job ends ****"
 date
