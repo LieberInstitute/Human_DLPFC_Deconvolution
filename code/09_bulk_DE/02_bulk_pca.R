@@ -36,7 +36,7 @@ focused_qc_metrics <- c(
     "totalMapped"
 )
 
-pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, all_of(focused_qc_metrics))
+pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, sex, age, all_of(focused_qc_metrics))
 
 #### check out dispersion patterns ####
 pdf(here(plot_dir, "mean_vs_sd_counts.pdf"))
@@ -188,11 +188,10 @@ pca_long <- pca$x[, 1:6] |>
 
 pca_long
 
-# TODO Add Sex
 # Position, library_type, library_prep, qc_class
 
 pdf(here(plot_dir, "PCs_vs_groups.pdf"), width = 10)
-walk(c("Position", "library_type", "library_prep", "library_combo", "batch", "qc_class"), ~ {
+walk(c("BrNum", "Sample","sex", "Position", "library_type", "library_prep", "library_combo", "batch", "qc_class"), ~ {
     pca_v_cat <- pca_long |>
         ggplot(aes(y = PC_val, x = .data[[.x]], color = .data[[.x]])) +
         geom_boxplot() +
@@ -208,11 +207,10 @@ walk(c("Position", "library_type", "library_prep", "library_combo", "batch", "qc
 })
 dev.off()
 
-# TODO add Age
 # mitoRate,totalAssignedGene
 
 pdf(here(plot_dir, "PCs_vs_QC_metrics.pdf"), width = 10)
-walk(focused_qc_metrics, ~ {
+walk(c("age", focused_qc_metrics), ~ {
     pca_v_con <- pca_long |>
         ggplot(aes(x = PC_val, y = .data[[.x]], shape = qc_class, color = library_combo)) +
         geom_point() +
@@ -230,11 +228,51 @@ dev.off()
 
 #### Check Br8325_mid ####
 
-gg_pca <- ggpairs(pca_tab,
-                  mapping = aes(color = library_combo),
+## Br8325_mid is an outlier in PC4
+ggpairs(pca_tab,
+                  mapping = aes(color = Sample == "Br8325_mid"),
                   columns = paste0("PC", 1:5),
                   upper = "blank"
 )
+
+pc1_pc4_Br8325_mid <- pca_tab |>
+  ggplot(aes(x = PC1, y = PC4, color = Sample == "Br8325_mid", shape = qc_class)) +
+  geom_point() +
+  theme_bw() +
+  # scale_color_viridis() +
+  labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[4]])
+
+ggsave(pc1_pc4_Br8325_mid, filename = here(plot_dir, "Bulk_PC1vPC4_Br8325_mid.png"))
+
+pc4_Sample <- pca_tab |>
+  ggplot(aes(x = Sample, y = PC4, color = Sample == "Br8325_mid")) +
+  geom_boxplot() +
+  theme_bw() +
+  # scale_color_viridis() +
+  labs(y = pca_vars_lab[[4]]) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "None")
+
+ggsave(pc4_Sample, filename = here(plot_dir, "Bulk_PC4_boxplot_Br8325_mid.png"))
+
+
+
+pca_tab |> filter(Sample == "Br8325_mid")
+
+qc_Sample <- pd_simple |>
+  select(SAMPLE_ID, Sample, qc_class,  library_combo, all_of(focused_qc_metrics)) |>
+  pivot_longer(!c(SAMPLE_ID, Sample, library_combo, qc_class)) |>
+  ggplot(aes(Sample, value)) +
+  geom_boxplot(aes(color = Sample == "Br8325_mid"), outlier.shape = NA)+
+  geom_point(aes(shape = qc_class, color = library_combo)) +
+  scale_color_manual(values = c(library_combo_colors, `TRUE` = "red")) +
+  facet_wrap(~name, scales = "free_y")  +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+ggsave(qc_Sample, filename = here(plot_dir, "Bulk_qc_Sample.png"), width = 11)
+
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
 ## Reproducibility information
