@@ -78,6 +78,8 @@ meanSdPlot(geneExprs_filter, ranks = FALSE)
 dev.off()
 
 ## calc PCA and vars
+set.seed(071524)
+
 pca <- prcomp(t(geneExprs_filter))
 pca_vars <- getPcaVars(pca)
 pca_vars_lab <- paste0(
@@ -88,6 +90,8 @@ pca_vars_lab <- paste0(
 pca_vars
 
 pca$x[1:5,1:5]
+
+save(pca, pca_vars, file = here("processed-data", "02_bulk_pca", "bulk_PCA.Rdata"))
 
 ## create table with groups and some QC metrics
 pca_tab <- pd_simple |> cbind(pca$x[, 1:5])
@@ -223,6 +227,14 @@ walk(focused_qc_metrics, ~ {
     print(pca_v_con)
 })
 dev.off()
+
+#### Check Br8325_mid ####
+
+gg_pca <- ggpairs(pca_tab,
+                  mapping = aes(color = library_combo),
+                  columns = paste0("PC", 1:5),
+                  upper = "blank"
+)
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
 ## Reproducibility information
