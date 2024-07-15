@@ -29,13 +29,23 @@ filtered_stats = mean_ratio |>
     filter(ratio > 1) |>
     slice_head(n = n_markers_per_type) |>
     ungroup()
-    
+
 message(
     sprintf(
         "Number of markers found by cell type (%s total):", nrow(filtered_stats)
     )
 )
 table(filtered_stats$cellType.target)
+
+missing_types = setdiff(sce$subclass, filtered_stats$cellType.target)
+if (length(missing_types) > 0) {
+    warning(
+        sprintf(
+            "No markers were found for %s cell type(s)",
+            paste(missing_types, collapse = ", ")
+        )
+    )
+}
 
 #   Write one marker per line to a text file
 writeLines(filtered_stats$gene, markers_out_path)

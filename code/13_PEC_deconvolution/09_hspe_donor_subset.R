@@ -46,18 +46,6 @@ dir.create(dirname(out_path), showWarnings = FALSE)
 sce_cell_type_col = "subclass"
 sce_individual_col = "individualID"
 
-#   Take up to 25 markers per cell type, provided all ratios exceed 1
-filtered_stats = read_csv(marker_stats_path, show_col_types = FALSE) |>
-    group_by(cellType.target) |>
-    arrange(desc(ratio)) |>
-    filter(ratio > 1) |>
-    slice_head(n = n_markers_per_type) |>
-    ungroup()
-
-#   Form a named list with names as cell types and values as markers
-marker_genes = split(filtered_stats, f = filtered_stats$cellType.target) |>
-    map(~.x$gene)
-
 #   Randomly take [opt$n_donors] donors from the set of [n_total_donors]
 sce = readRDS(sce_path)
 
@@ -77,11 +65,60 @@ sce_pb = registration_pseudobulk(
     var_registration = sce_cell_type_col,
     var_sample_id = sce_individual_col
 )
+sce_pb[[sce_cell_type_col]] = droplevels(sce_pb[[sce_cell_type_col]])
 table(sce_pb[[sce_cell_type_col]])
 
-#   Pseudobulking performs gene filtering, but markers should all be
-#   well-expressed
-stopifnot(all(unlist(marker_genes) %in% rownames(sce_pb)))
+#   Take up to 25 markers per cell type, provided all ratios exceed 1
+filtered_stats = read_csv(marker_stats_path, show_col_types = FALSE) |>
+    group_by(cellType.target) |>
+    arrange(desc(ratio)) |>
+    filter(ratio > 1) |>
+    slice_head(n = n_markers_per_type) |>
+    ungroup()
+
+#   Pseudobulking performs gene filtering, which can drop markers
+num_dropped_markers = length(which(!filtered_stats$gene %in% rownames(sce_pb)))
+if (num_dropped_markers > 0) {
+    warning(
+        sprintf(
+            "Pseudobulking dropped %s lowly expressed markers.",
+            num_dropped_markers
+        )
+    )
+}
+
+#   Both subsetting and pseudobulking can drop cells and therefore cell types
+dropped_types = setdiff(
+    filtered_stats$cellType.target, sce_pb[[sce_cell_type_col]]
+)
+if (length(dropped_types) > 0) {
+    warning(
+        sprintf(
+            "Subsetting and pseudobulking dropped %s cell types.",
+            paste(dropped_types, collapse = ", ")
+        )
+    )
+}
+
+#   Since both markers and cells can be dropped during pseudobulking, ensure
+#   we only keep markers of the remaining types that are present in the pb
+#   object
+filtered_stats = filtered_stats |>
+    filter(
+        gene %in% rownames(sce_pb),
+        cellType.target %in% sce_pb[[sce_cell_type_col]]
+    )
+
+#   Form a named list with names as cell types and values as markers
+marker_genes = split(filtered_stats, f = filtered_stats$cellType.target) |>
+    map(~.x$gene)
+
+sce_pb = sce_pb[
+    unlist(marker_genes), sce_pb[[sce_cell_type_col]] %in% names(marker_genes)
+]
+
+load(bulk_path, verbose = TRUE)
+rownames(rse_gene) <- rowData(rse_gene)$ensemblID
 
 ################################################################################
 #   Run hspe and export estimates to CSV
@@ -96,6 +133,8 @@ mixture_samples = t(assays(rse_gene)$logcounts[unlist(marker_genes),])
 reference_samples = t(assays(sce_pb)$logcounts)
 
 stopifnot(ncol(mixture_samples) == ncol(reference_samples))
+stopifnot(setequal(names(pure_samples), names(marker_genes)))
+marker_genes = marker_genes[names(pure_samples)]
 
 est_prop_hspe = hspe(
     Y = mixture_samples,

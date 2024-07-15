@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=20G
-#SBATCH --job-name=07_bisque_donor_subset
+#SBATCH --mem=40G
+#SBATCH --job-name=08_bisque_donor_subset
 #SBATCH -c 4
 #SBATCH -t 8:00:00
-#SBATCH -o logs/07_bisque_donor_subset_%a.txt
-#SBATCH -e logs/07_bisque_donor_subset_%a.txt
+#SBATCH -o logs/08_bisque_donor_subset_%a.txt
+#SBATCH -e logs/08_bisque_donor_subset_%a.txt
 #SBATCH --array=1
 
 set -e
@@ -27,7 +27,7 @@ module load conda_R/4.3.x
 module list
 
 ## Edit with your job command
-Rscript 07_bisque_donor_subset.R
+Rscript 08_bisque_donor_subset.R
 
 echo "**** Job ends ****"
 date
