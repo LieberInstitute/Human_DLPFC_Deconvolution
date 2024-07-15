@@ -492,6 +492,63 @@ oligo_scatter <- prop_long_opc |>
 
 ggsave(oligo_scatter, filename = here(plot_dir, "oligo_scatter.png"))
 
+#### compare with WM estimates from Visium data ####
+##Sp02D01 ~ WM : Sp02D02 ~ GM
+spatialDLPFC_harmony_k2 <- read.csv(here("processed-data", "08_bulk_deconvolution","08_deconvo_plots", "spatialDLPFC_bayesSpace_harmony_2", "clusters.csv")) |>
+  mutate(Sample = gsub("^.*?_|_2", "", key),
+         cluster_anno = ifelse(cluster == 1, "Sp02D01~WM", "Sp02D02~GM")) |> 
+  count(Sample, cluster, cluster_anno) |>
+  group_by(Sample) |>
+  mutate(prop = n/sum(n), 
+         overlap = Sample %in% prop_long$Sample)
+
+wm_order <- spatialDLPFC_harmony_k2 |>
+  filter(overlap, cluster ==1) |> 
+  arrange(prop) |>
+  pull(Sample)
+
+spatialDLPFC_harmony_k2 |>
+  filter(overlap) |>
+  select(Sample, cluster_anno, prop) |>
+  pivot_wider(values_from = "prop", names_from = cluster_anno) |>
+  summary()
+
+# Sample            Sp02D01~WM        Sp02D02~GM    
+# Length:19          Min.   :0.04034   Min.   :0.6180  
+# Class :character   1st Qu.:0.07147   1st Qu.:0.7962  
+# Mode  :character   Median :0.10104   Median :0.8990  
+#                    Mean   :0.14697   Mean   :0.8530  
+#                    3rd Qu.:0.20382   3rd Qu.:0.9285  
+#                    Max.   :0.38196   Max.   :0.9597 
+
+visium_composition_k2 <- spatialDLPFC_harmony_k2 |>
+  filter(overlap) |>
+  mutate(Sample = factor(Sample, levels = wm_order)) |>
+  ggplot(aes(x = Sample, y = prop, fill = cluster_anno)) +
+  geom_col() +
+  geom_text(aes(label = round(prop, 3)), position = position_stack(vjust = 0.5), size = 2) +
+  scale_fill_manual(values = c(`Sp02D01~WM` = "grey90", `Sp02D02~GM` = "grey40")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.position = "bottom")
+
+ggsave(visium_composition_k2, filename = here(plot_dir, "visium_composition_k2.png"), height = 4)
+  
+
+prop_long_opc <- prop_long_opc |>
+  left_join(spatialDLPFC_harmony_k2 |> 
+              filter(overlap, cluster ==1) |>
+              select(Sample, Prop_WM = prop)) 
+
+
+prop_long_opc |>
+  ggplot(aes(x= Prop_WM, y = prop, color = cell_type, shape = library_combo)) +
+  geom_point() +
+  scale_color_manual(values = cell_type_colors_broad) +
+  facet_grid(method~cell_type, scales = "free") +
+  scale_shape_manual(values = library_combo_shapes2)
+
+
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
 print("Reproducibility information:")
