@@ -548,6 +548,14 @@ prop_long_opc |>
   facet_grid(method~cell_type, scales = "free") +
   scale_shape_manual(values = library_combo_shapes2)
 
+## VISIUM SPG
+spe <- spatialLIBD::fetch_data("spatialDLPFC_Visium_SPG")
+# Error in BiocFileCache::bfcrpath(bfc, url) : 
+#   not all 'rnames' found or unique.
+# In addition: Warning message:
+#   In value[[3L]](cond) : 
+#   trying to add rname 'https://www.dropbox.com/s/nbf13dna9ibqfaa/spe.rds?dl=1' produced error:
+#   HTTP/2 stream 1 was not closed cleanly: PROTOCOL_ERROR (err 1)
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
