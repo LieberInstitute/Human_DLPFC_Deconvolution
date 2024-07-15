@@ -548,6 +548,8 @@ prop_long_opc |>
   facet_grid(method~cell_type, scales = "free") +
   scale_shape_manual(values = library_combo_shapes2)
 
+prop_long_opc |> filter(cell_type =="Oligo", Sample == "Br8325_mid")
+
 ## VISIUM SPG
 spe <- spatialLIBD::fetch_data("spatialDLPFC_Visium_SPG")
 # Error in BiocFileCache::bfcrpath(bfc, url) : 
