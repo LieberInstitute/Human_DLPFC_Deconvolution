@@ -256,7 +256,7 @@ ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line
 
 
 
-## corelation vs. n markers
+#### corelation vs. n markers ####
 
 cor_n_marker_scatter <- 
   ggplot() +
@@ -270,6 +270,17 @@ cor_n_marker_scatter <-
 
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
+
+cor_marker_scatter <- cor_check |>
+  mutate(marker = fct_reorder(paste(marker, " (", n_markers, ")"), n_markers)) |>
+  ggplot(aes(x = marker, y = cor, color= method)) +
+  geom_point() +
+  # geom_smooth() + # not working because marker is a factor - fix
+  scale_color_manual(values = method_colors) +
+  theme_bw() 
+
+ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.png"), width = 10)
+ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.pdf"), width = 10)
 
 rmse_n_marker_scatter <- 
   ggplot() +
