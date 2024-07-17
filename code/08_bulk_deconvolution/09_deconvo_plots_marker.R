@@ -3,8 +3,11 @@ library("tidyverse")
 library("sessioninfo")
 library("DeconvoBuddies")
 library("here")
+library("Metrics")
+library("survival")
 library("viridis")
 library("GGally")
+library("patchwork")
 
 ## prep dirs ##
 plot_dir <- here("plots", "08_bulk_deconvolution", "09_deconvo_plots_marker")
@@ -47,14 +50,24 @@ n_marker_tb <- tibble(marker = names(n_markers), n_markers =n_markers) |>
 #### compare to RNAscope ####
 
 #### correlation ####
+
+concordance <- prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker) |> 
+  group_map(~survival::concordance(RNAscope_prop~prop, data = .x)$concordance) |>
+  unlist()
+
 (cor_check <- prop_long |>
-   filter(!is.na(RNAscope_prop)) |>
-   group_by(method, marker) |>
-   summarize(cor = cor(RNAscope_prop, prop),
-             rmse = Metrics::rmse(RNAscope_prop, prop))  |>
-   mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
-   arrange(-cor) |>
-   left_join(n_marker_tb))
+    filter(!is.na(RNAscope_prop)) |>
+    group_by(method, marker) |>
+    summarize(cor = cor(RNAscope_prop, prop), #pearson
+              cor_spearman = cor(RNAscope_prop, prop, method = "spearman"),
+              rmse = Metrics::rmse(RNAscope_prop, prop),
+    )  |>
+    add_column(concordance = concordance) |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+    arrange(-cor) |>
+    left_join(n_marker_tb))
 # method     marker            cor  rmse cor_anno               
 # <chr>      <chr>           <dbl> <dbl> <chr>                  
 #   1 hspe       MeanRatio_over2 0.596 0.215 "cor:0.596\nrmse:0.215"
@@ -67,19 +80,58 @@ n_marker_tb <- tibble(marker = names(n_markers), n_markers =n_markers) |>
 # 8 hspe       MeanRatio_top25 0.532 0.143 "cor:0.532\nrmse:0.143"
 # 9 Bisque     FULL            0.524 0.142 "cor:0.524\nrmse:0.142"
 # 10 Bisque     1vALL_top25     0.508 0.150 "cor:0.508\nrmse:0.150"
+
+
+cor_method_scatter <- cor_check |>
+  ggplot(aes(cor, cor_spearman, color = method, shape = marker)) +
+  geom_point() +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  coord_equal() +
+  geom_abline()
+
+ggsave(cor_method_scatter, filename = here(plot_dir, "Correlation_method_scatter.png"), height = 5)
+
+cor_concord_scatter <- cor_check |>
+  ggplot(aes(cor, concordance, color = method, shape = marker)) +
+  geom_point() +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  theme(legend.position = "None")
+
+cor_spear_concord_scatter <- cor_check |>
+  ggplot(aes(cor_spearman, concordance, color = method, shape = marker)) +
+  geom_point() +
+  scale_color_manual(values = method_colors) +
+  theme_bw()
+
+ggsave(cor_concord_scatter + cor_spear_concord_scatter, filename = here(plot_dir, "Correlation_Concordance_scatter.png"), height = 5, width = 9)
+
+cor_check |> arrange(-cor_spearman)
+
 ## factor method by overall cor in FULL
 method_levels <- cor_check |> filter(marker == "MeanRatio_top25") |> arrange(cor) |> pull(method)
 
 cor_check$method <- factor(cor_check$method, levels = method_levels)
 prop_long$method <- factor(prop_long$method, levels = method_levels)
 
+concordance_library <- prop_long |>
+  filter(!is.na(RNAscope_prop)) |>
+  group_by(method, marker, library_combo) |> 
+  group_map(~survival::concordance(RNAscope_prop~prop, data = .x)$concordance) |>
+  unlist()
+
 (cor_check_library <- prop_long |>
     filter(!is.na(RNAscope_prop)) |>
     group_by(marker, method, library_combo) |>
     summarize(cor = cor(RNAscope_prop, prop),
+              cor_spearman = cor(RNAscope_prop, prop, method = "spearman"),
               rmse = Metrics::rmse(RNAscope_prop, prop)) |>
+    add_column(concordance = concordance_library) |>
     arrange(-cor) |>
-    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3))) |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)),
+           cor_spear_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor_spearman,3), round(rmse,3)),
+           ) |>
     left_join(n_marker_tb)
 )
 # marker          method     library_combo   cor  rmse cor_anno               
@@ -125,7 +177,6 @@ ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method
 ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.pdf"), width = 11, height = 4)
 
 ## cor check line/rank plot
-## TODO method color pallet
 cor_rmse_line <- cor_check_library |>
   mutate(group = paste(method, marker)) |>
   ggplot(aes(x = library_combo, y = cor, color= method)) +
@@ -185,6 +236,25 @@ rmse_line_facet <- cor_check_library |>
 
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.png"), width = 10, height = 7)
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 7)
+
+## spearman line rank
+
+cor_spear_rmse_line_top25 <- cor_check_library |>
+  filter(marker == "MeanRatio_top25") |>
+  mutate(group = paste(method, marker)) |>
+  ggplot(aes(x = library_combo, y = cor_spearman, color= method)) +
+  geom_point(aes(size = rmse), alpha = .7) +
+  geom_line(aes(group = group)) +
+  # geom_line(aes(group = group)) +
+  scale_size(range = c(1,8)) +
+  theme_bw() +
+  scale_color_manual(values = method_colors) +
+  labs(x = "Library Type + RNA Extraction")
+
+ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line_top25.png"), width = 10, height = 3.4)
+ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line_top25.pdf"), width = 10, height = 3.4)
+
+
 
 ## corelation vs. n markers
 
