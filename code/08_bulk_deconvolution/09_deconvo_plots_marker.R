@@ -257,19 +257,81 @@ ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line
 
 
 #### corelation vs. n markers ####
+# stats about terms
+cor_check |>
+  do(tidy(lm(cor~n_markers,.)))
+# method     term            estimate  std.error statistic    p.value
+# <chr>      <chr>              <dbl>      <dbl>     <dbl>      <dbl>
+#   1 BayesPrism (Intercept)  0.0104      0.0110         0.941 0.416     
+# 2 BayesPrism n_markers    0.0000234   0.00000138    17.0   0.000446  
+# 3 Bisque     (Intercept)  0.515       0.00804       64.0   0.00000840
+# 4 Bisque     n_markers    0.000000503 0.00000101     0.498 0.652     
+# 5 CIBERSORTx (Intercept)  0.524       0.0178        29.4   0.0000865 
+# 6 CIBERSORTx n_markers    0.00000165  0.00000224     0.738 0.514     
+# 7 DWLS       (Intercept)  0.175       0.0948         1.85  0.161     
+# 8 DWLS       n_markers   -0.00000723  0.0000119     -0.608 0.586     
+# 9 MuSiC      (Intercept)  0.283       0.0963         2.94  0.0603    
+# 10 MuSiC      n_markers   -0.0000278   0.0000121     -2.31  0.104     
+# 11 hspe       (Intercept)  0.580       0.0160        36.3   0.0000460 
+# 12 hspe       n_markers   -0.0000165   0.00000201    -8.23  0.00376 
+
+# summary statistics for the entire regression, such as R^2 and the F-statistic.
+cor_check |>
+  summarise(glance(lm(cor~n_markers)))
+# method     r.squared adj.r.squared  sigma statistic  p.value    df logLik     AIC     BIC deviance df.residual  nobs
+# <chr>          <dbl>         <dbl>  <dbl>     <dbl>    <dbl> <dbl>  <dbl>   <dbl>   <dbl>    <dbl>       <int> <int>
+# 1 BayesPrism    0.990          0.986 0.0216   288.    0.000446     1  13.4  -20.7   -21.9   0.00140            3     5
+# 2 Bisque        0.0765        -0.231 0.0158     0.248 0.652        1  14.9  -23.9   -25.0   0.000745           3     5
+# 3 CIBERSORTx    0.154         -0.128 0.0350     0.545 0.514        1  10.9  -15.9   -17.1   0.00367            3     5
+# 4 DWLS          0.110         -0.187 0.186      0.369 0.586        1   2.60   0.805  -0.366 0.104              3     5
+# 5 MuSiC         0.639          0.519 0.189      5.31  0.104        1   2.52   0.961  -0.211 0.107              3     5
+# 6 hspe          0.958          0.943 0.0313    67.7   0.00376      1  11.5  -17.0   -18.2   0.00295            3     5
+
 
 cor_n_marker_scatter <- 
+  ggplot(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
+  geom_smooth() +
+  geom_point(size = 2) +
+  scale_color_manual(values = method_colors) +
+  theme_bw()
+
+ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
+ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
+
+cor_n_marker_scatter_r2 <-  ggplot(data = cor_check, aes(x = n_markers, y = cor, color = method)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  stat_regline_equation(label.x = with(cor_check,tapply(n_markers,method,quantile,.6)),
+                        label.y = with(cor_check,tapply(cor,method,max)- 0.2),
+                        aes(label = ..adj.rr.label..),
+                        show.legend = FALSE) +
+  scale_color_manual(values = method_colors) +
+  theme_bw()
+
+ggsave(cor_n_marker_scatter_r2, filename = here(plot_dir, "cor_n_marker_scatter_r2.png"), width = 10)
+
+rmse_n_marker_scatter <- 
+  ggplot(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
+  geom_smooth() +
+  geom_point(size = 2) +
+  scale_color_manual(values = method_colors) +
+  theme_bw()
+
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.png"), width = 10)
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.pdf"), width = 10)
+
+
+cor_n_marker_scatter_log <- 
   ggplot() +
   geom_vline(data = n_marker_tb, aes(xintercept = n_markers), color = "skyblue") +
   geom_point(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
   scale_color_manual(values = method_colors) +
   theme_bw() +
-  # geom_text_repel(data = n_marker_tb, aes(label = n_markers, x = n_markers, y = .1)) +
   coord_trans(x = "log10") +
   labs(x = "n marker genes (log10 axis)")
 
-ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
-ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
+ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter_log.png"), width = 10)
+ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter_log.pdf"), width = 10)
 
 cor_marker_scatter <- cor_check |>
   mutate(marker = fct_reorder(paste(marker, " (", n_markers, ")"), n_markers)) |>
@@ -282,18 +344,6 @@ cor_marker_scatter <- cor_check |>
 ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.png"), width = 10)
 ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.pdf"), width = 10)
 
-rmse_n_marker_scatter <- 
-  ggplot() +
-  geom_vline(data = n_marker_tb, aes(xintercept = n_markers), color = "skyblue") +
-  geom_point(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
-  scale_color_manual(values = method_colors) +
-  theme_bw() +
-  # geom_text_repel(data = n_marker_tb, aes(label = n_markers, x = n_markers, y = .1)) +
-  coord_trans(x = "log10") +
-  labs(x = "n marker genes (log10 axis)")
-
-ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.png"), width = 10)
-ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.pdf"), width = 10)
 
 
 cor_n_marker_library_scatter <- cor_check_library |>
