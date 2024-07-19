@@ -334,9 +334,10 @@ ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter
 ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter_log.pdf"), width = 10)
 
 cor_marker_scatter <- cor_check |>
-  mutate(marker = fct_reorder(paste(marker, " (", n_markers, ")"), n_markers)) |>
+  mutate(marker = fct_reorder(paste0(marker, " (", n_markers, ")"), n_markers)) |>
   ggplot(aes(x = marker, y = cor, color= method)) +
-  geom_point() +
+  geom_point(size = 2) +
+  geom_line(aes(group = method)) +
   # geom_smooth() + # not working because marker is a factor - fix
   scale_color_manual(values = method_colors) +
   theme_bw() 
