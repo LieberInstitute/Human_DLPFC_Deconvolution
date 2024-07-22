@@ -18,6 +18,9 @@ load(here("processed-data", "00_data_prep", "bulk_colors.Rdata"), verbose = TRUE
 # library_combo_colors
 # library_prep_colors
 # library_type_colors
+load(here("processed-data", "00_data_prep", "library_combo_shapes.Rdata"), verbose = TRUE)
+# library_combo_shapes
+# library_combo_shapes2
 
 #### Load Data ####
 load(here("processed-data","rse", "rse_gene.Rdata"), verbose = TRUE)
@@ -36,7 +39,9 @@ focused_qc_metrics <- c(
     "totalMapped"
 )
 
-pd_simple <- pd |> select(SAMPLE_ID, Sample, BrNum, Position, library_type, library_prep, library_combo, qc_class, sex, age, all_of(focused_qc_metrics))
+pd_simple <- pd |> 
+  select(SAMPLE_ID, Sample, round, batch, BrNum, Position, library_type, library_prep, library_combo, library_combo2, qc_class, sex, age, all_of(focused_qc_metrics)) |>
+  mutate(round = as.factor(round))
 
 #### check out dispersion patterns ####
 pdf(here(plot_dir, "mean_vs_sd_counts.pdf"))
@@ -174,6 +179,17 @@ pc_test <- pca_tab |>
 
 ggsave(pc_test, filename = here(plot_dir, "Bulk_PC1vPC2_mitoRate.png"))
 
+
+pc_round <- pca_tab |>
+  ggplot(aes(x = PC1, y = PC2, color = round, shape = library_combo2)) +
+  geom_point() +
+  theme_bw() +
+  scale_shape_manual(values = library_combo_shapes2, "Library Combo") +
+  labs(x = pca_vars_lab[[1]], y = pca_vars_lab[[2]])
+
+ggsave(pc_round , filename = here(plot_dir, "Bulk_PC1vPC2_round.png"), width = 7)
+
+
 #### compare directly to PD variables ####
 
 pca_long <- pca$x[, 1:6] |>
@@ -191,7 +207,7 @@ pca_long
 # Position, library_type, library_prep, qc_class
 
 pdf(here(plot_dir, "PCs_vs_groups.pdf"), width = 10)
-walk(c("BrNum", "Sample","sex", "Position", "library_type", "library_prep", "library_combo", "batch", "qc_class"), ~ {
+walk(c("BrNum", "Sample", "round","sex", "Position", "library_type", "library_prep", "library_combo", "batch", "qc_class"), ~ {
     pca_v_cat <- pca_long |>
         ggplot(aes(y = PC_val, x = .data[[.x]], color = .data[[.x]])) +
         geom_boxplot() +
