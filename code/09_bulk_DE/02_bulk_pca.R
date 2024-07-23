@@ -200,7 +200,8 @@ pca_long <- pca$x[, 1:6] |>
     left_join(tibble(
         PC_lab = pca_vars_lab,
         PC_name = paste0("PC", seq(along = pca_vars))
-    ))
+    )) |>
+   mutate(round = as.factor(round))
 
 pca_long
 
