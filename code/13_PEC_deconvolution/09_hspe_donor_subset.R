@@ -29,7 +29,7 @@ print(opt)
 marker_stats_path <- here(
     'processed-data', '13_PEC_deconvolution', 'CMC_marker_stats.csv'
 )
-sce_path = here("processed-data", "13_PEC_deconvolution", "sce_CMC.rds")
+sce_path = here("processed-data", "13_PEC_deconvolution", "sce_CMC_subset.rds")
 bulk_path = here("processed-data", "rse", "rse_gene.Rdata")
 out_path <- here(
     "processed-data", "13_PEC_deconvolution", "hspe_donor_subset",
@@ -49,16 +49,24 @@ sce_individual_col = "individualID"
 #   Randomly take [opt$n_donors] donors from the set of [n_total_donors]
 sce = readRDS(sce_path)
 
+#   Take up to 25 markers per cell type, provided all ratios exceed 1
+filtered_stats = read_csv(marker_stats_path, show_col_types = FALSE) |>
+    group_by(cellType.target) |>
+    arrange(desc(ratio)) |>
+    filter(ratio > 1) |>
+    slice_head(n = n_markers_per_type) |>
+    ungroup()
+
+#   The SCE should be filtered to markers and contain the expected number of
+#   donors
 unique_donors = unique(sce$individualID)
+stopifnot(setequal(filtered_stats$gene, rownames(sce)))
 stopifnot(length(unique_donors) == n_total_donors)
 
 sce_sub = sce[
     , sce[[sce_individual_col]] %in%
         unique_donors[sample(seq(n_total_donors), opt$n_donors)]
 ]
-
-#   registration_pseudobulk looks for a specific assay name
-names(assays(sce_sub)) = "counts"
 
 sce_pb = registration_pseudobulk(
     sce_sub,
@@ -67,14 +75,6 @@ sce_pb = registration_pseudobulk(
 )
 sce_pb[[sce_cell_type_col]] = droplevels(sce_pb[[sce_cell_type_col]])
 table(sce_pb[[sce_cell_type_col]])
-
-#   Take up to 25 markers per cell type, provided all ratios exceed 1
-filtered_stats = read_csv(marker_stats_path, show_col_types = FALSE) |>
-    group_by(cellType.target) |>
-    arrange(desc(ratio)) |>
-    filter(ratio > 1) |>
-    slice_head(n = n_markers_per_type) |>
-    ungroup()
 
 #   Pseudobulking performs gene filtering, which can drop markers
 num_dropped_markers = length(which(!filtered_stats$gene %in% rownames(sce_pb)))
@@ -113,9 +113,8 @@ filtered_stats = filtered_stats |>
 marker_genes = split(filtered_stats, f = filtered_stats$cellType.target) |>
     map(~.x$gene)
 
-sce_pb = sce_pb[
-    unlist(marker_genes), sce_pb[[sce_cell_type_col]] %in% names(marker_genes)
-]
+#   In case markers were dropped
+sce_pb = sce_pb[unlist(marker_genes),]
 
 load(bulk_path, verbose = TRUE)
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
