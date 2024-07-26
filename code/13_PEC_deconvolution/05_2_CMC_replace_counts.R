@@ -16,10 +16,16 @@ raw_count_dir = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/ra
 
 sce = readRDS(sce_in_path)
 
+#   Remove an assay meant to previously have been removed, and rename the
+#   existing one as logcounts
+assays(sce)$raw.X.log_norm = NULL
+names(assays(sce)) = "logcounts"
+gc()
+
 load(rse_gene_path, verbose = TRUE)
 
 #   Ensembl IDs for rownames
-sce$symbol = rownames(sce)
+rowData(sce)$symbol = rownames(sce)
 rownames(sce) <- rowData(sce)$featureid
 rownames(rse_gene) = rowData(rse_gene)$ensemblID
 
@@ -39,19 +45,24 @@ for (ind in unique(sce$individualID)) {
     a = fread(counts_path)
 
     #   Subset (and order) counts matrix to the genes present in the SCE
-    stopifnot(all(sce$symbol %in% a$featureid))
-    a = a[match(sce$symbol, a$featureid), - match('featureid', colnames(a))]
+    stopifnot(all(rowData(sce)$symbol %in% a$featurekey))
+    a = a[match(rowData(sce)$symbol, a$featurekey),]
+    a$featurekey = NULL
 
     #   Columns in the count matrix are named by their cell types. Ensure they
     #   line up, then use the colnames in the SCE object instead
-    stopifnot(identical(sce$subclass[sce$individualID == ind], colnames(a)))
+    stopifnot(all(sce$subclass[sce$individualID == ind] == colnames(a)))
     colnames(a) = colnames(sce)[sce$individualID == ind]
 
     #   Save memory by representing as a sparse matrix
-    raw_counts_list[[ind]] = as(a, "dgCMatrix")
+    raw_counts_list[[ind]] = as(as.matrix(a), "dgCMatrix")
 }
 raw_counts = do.call(cbind, raw_counts_list)
 raw_counts = raw_counts[, colnames(sce)]
 
-#   Replace logcounts with counts
-assays(sce) = list('counts' = raw_counts)
+#   Add raw counts as an assay
+assays(sce)$counts = raw_counts
+
+saveRDS(sce, sce_out_path)
+
+session_info()
