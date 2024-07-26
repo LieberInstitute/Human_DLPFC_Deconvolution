@@ -139,6 +139,27 @@ sn_ct_prop |>
 #                    Max.   :0.155498   Max.   :0.081568   Max.   :0.67375   Max.   :0.77813   Max.   :0.054713   Max.   :0.525431  
 #                    NA's   :1     
 
+sn_ct_prop_opc |> 
+  select(-n_cell_sn) |> 
+  pivot_wider(names_from = "cellType_broad_hc", values_from = "prop_sn") |>
+  summary()
+
+# Sample              Astro            EndoMural            Micro              Oligo             OPC               Excit        
+# Length:19          Min.   :0.002514   Min.   :0.002514   Min.   :0.004944   Min.   :0.0022   Min.   :0.007228   Min.   :0.06182  
+# Class :character   1st Qu.:0.048339   1st Qu.:0.024908   1st Qu.:0.025223   1st Qu.:0.1197   1st Qu.:0.018122   1st Qu.:0.38352  
+# Mode  :character   Median :0.063607   Median :0.038208   Median :0.029891   Median :0.1727   Median :0.023194   Median :0.47881  
+# Mean   :0.072243   Mean   :0.038965   Mean   :0.031759   Mean   :0.1981   Mean   :0.035751   Mean   :0.43741  
+# 3rd Qu.:0.080744   3rd Qu.:0.048462   3rd Qu.:0.043661   3rd Qu.:0.2707   3rd Qu.:0.039684   3rd Qu.:0.56496  
+# Max.   :0.155498   Max.   :0.081568   Max.   :0.054713   Max.   :0.4811   Max.   :0.130521   Max.   :0.67375  
+# NA's   :1                                                               
+#      Inhib        
+#  Min.   :0.03938  
+#  1st Qu.:0.06819  
+#  Median :0.10275  
+#  Mean   :0.18744  
+#  3rd Qu.:0.15765  
+#  Max.   :0.77813
+
 ## prop plot with other
 sn_prop_bar_other <- sn_ct_prop |>
   ggplot(aes(x = Sample, y = prop_sn, fill = cell_type)) +
@@ -306,6 +327,19 @@ cell_type_prop <- halo_all |>
   mutate(prop = n_cell / sum(n_cell)) |>
   left_join(sn_ct_prop) |>
   mutate(cell_type = factor(cell_type, levels = halo_ct))
+
+
+cell_type_prop |> filter(Confidence != "Low") |> group_by(Combo, cell_type) |> summarise(median = median(prop), n= n())
+# Combo  cell_type median     n
+# <chr>  <chr>      <dbl> <int>
+# 1 Circle Astro     0.0967    12
+# 2 Circle EndoMural 0.0467    12
+# 3 Circle Inhib     0.111     12
+# 4 Circle Other     0.726     12
+# 5 Star   Excit     0.234     13
+# 6 Star   Micro     0.0377    13
+# 7 Star   OligoOPC  0.123     13
+# 8 Star   Other     0.613     13
 
 write_csv(cell_type_prop, file = here(data_dir,"HALO_cell_type_proportions.csv"))
 # cell_type_prop <- read_csv(here(data_dir,"HALO_cell_type_proportions.csv"))
