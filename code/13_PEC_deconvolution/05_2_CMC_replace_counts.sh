@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=30G
+#SBATCH --mem=60G
 #SBATCH --job-name=05_2_CMC_replace_counts
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00

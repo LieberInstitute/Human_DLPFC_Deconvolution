@@ -59,6 +59,7 @@ for (ind in unique(sce$individualID)) {
 }
 raw_counts = do.call(cbind, raw_counts_list)
 raw_counts = raw_counts[, colnames(sce)]
+rownames(raw_counts) = rownames(sce)
 
 #   Add raw counts as an assay
 assays(sce)$counts = raw_counts
