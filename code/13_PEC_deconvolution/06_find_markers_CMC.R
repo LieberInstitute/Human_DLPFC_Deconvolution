@@ -11,12 +11,29 @@ stats_out_path = here(
 markers_out_path = here(
     "processed-data", "13_PEC_deconvolution", "CMC_markers_MeanRatio_top25.txt"
 )
+ct_table_path = here(
+    "processed-data", "13_PEC_deconvolution", "PEC_cell_types.csv"
+)
 n_markers_per_type = 25
 
 sce = readRDS(sce_path)
 
+#   Remove counts in this script to reduce memory usage
+assays(sce)$counts = NULL
+gc()
+
+#   Add cell type at broad resolution. Drop certain broad cell types as
+#   consistent with the other PEC analysis
+ct_table = read_csv(ct_table_path, show_col_types = FALSE)
+stopifnot(all(sce$subclass %in% ct_table$subclass))
+sce$cell_type_broad = ct_table$cellType_broad[
+    match(sce$subclass, ct_table$subclass)
+]
+sce = sce[, sce$cell_type_broad != "drop"]
+
+#   Find markers at broad resolution
 mean_ratio <- get_mean_ratio2(
-    sce, cellType_col = "subclass", assay_name = "logcounts",
+    sce, cellType_col = "cell_type_broad", assay_name = "logcounts",
     add_symbol = TRUE
 )
 
@@ -37,7 +54,7 @@ message(
 )
 table(filtered_stats$cellType.target)
 
-missing_types = setdiff(sce$subclass, filtered_stats$cellType.target)
+missing_types = setdiff(sce$cell_type_broad, filtered_stats$cellType.target)
 if (length(missing_types) > 0) {
     warning(
         sprintf(
