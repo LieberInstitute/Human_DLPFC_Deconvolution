@@ -3,6 +3,7 @@ library("sessioninfo")
 library("DeconvoBuddies")
 library("here")
 library("viridis")
+library(spatialLIBD)
 # library("GGally")
 
 ## prep dirs ##
@@ -137,6 +138,38 @@ wm_oligo_rank |>
 spe_spg <- spatialLIBD::fetch_data("spatialDLPFC_Visium_SPG")
 
 
+pd_spg <- as.data.frame(colData(spe_spg))
+
+table(pd_spg$sample_id, pd_spg$manual_layer_label)
+
+prop_WM_spg <- pd_spg |>
+  group_by(sample_id) |>
+  summarise(spg_n = n(),
+            spg_n_WM = sum(manual_layer_label == "WM", na.rm = TRUE),
+            spg_prop_WM = spg_n_WM/spg_n) |>
+  mutate(Sample = gsub("br", "Br", tolower(gsub("_IF", "", sample_id)))) |>
+  left_join(
+    spatialDLPFC_harmony_k2 |>
+      filter(cluster_anno == "Sp02D01~WM") |>
+      select(Sample, vis_n_WM = n, vis_prop_WM = prop, overlap))
+
+# sample_id          n  n_WM prop_WM
+# <chr>          <int> <int>   <dbl>
+#   1 Br2720_Ant_IF   2965   940   0.317
+# 2 Br6432_Ant_IF   3574   491   0.137
+# 3 Br6522_Ant_IF   4319   627   0.145
+# 4 Br8667_Post_IF  4255     0   0  
+
+prop_WM_Visium_SPG_scatter <- prop_WM_spg |>
+  ggplot(aes(vis_prop_WM, spg_prop_WM)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  geom_text_repel(aes(label = Sample)) +
+  labs(x = "Prop WM - Visium", y = "Prop WM - Visium SPG") +
+  theme_bw()
+
+ggsave(prop_WM_Visium_SPG_scatter, filename = here(plot_dir, "prop_WM_Visium_SPG_scatter.png"))
+
 #### WM vs. cell types ####
 
 wm_v_cell_type <- prop_long |>
@@ -180,7 +213,9 @@ wm_v_cell_type_scatter <-  wm_v_cell_type |>
   ) +
   scale_color_manual(values = cell_type_colors_halo) +
   facet_grid(cell_type~data_type, scales = "free") +
-  theme_bw()
+  labs(x = "Prop Cell Type", y = "Prop WM - Visium") +
+  theme_bw()  +
+  theme(legend.position = "None")
 
 ggsave(wm_v_cell_type_scatter, filename = here(plot_dir, "wm_v_cell_type_scatter.png"))
 
@@ -198,6 +233,7 @@ wm_v_astro_scatter <- wm_v_cell_type |>
   ) +
   scale_color_manual(values = cell_type_colors_halo) +
   facet_grid(cell_type~data_type, scales = "free") +
+  labs(x = "Prop Cell Type", y = "Prop WM - Visium") +
   theme_bw()
 
 ggsave(wm_v_astro_scatter, filename = here(plot_dir, "wm_v_astro_scatter.png"), width = 8)
