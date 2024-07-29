@@ -1,0 +1,1212 @@
+**** Job starts ****
+Mon Jul 29 03:34:32 PM EDT 2024
+**** JHPCE info ****
+User: neagles
+Job id: 8808072
+Job name: 08_bisque_donor_subset
+Node name: compute-143
+Task id: 1
+Loading conda_R/4.3.x
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) conda_R/4.3.x
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading objects:
+  rse_gene
+Excluding 0 zero-expression cells
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 15802 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 13855 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 21077 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11014 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 15033 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9072 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9532 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 15652 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9739 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 4371 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17855 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22309 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10183 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 12098 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 5343 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 6 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9109 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 3670 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 14667 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22156 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11084 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 18487 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 4924 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6093 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9350 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22306 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 13655 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 21970 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 13129 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17294 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6365 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 19068 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10605 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 26161 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 16035 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 7192 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 12840 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 19086 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6768 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 21407 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 23274 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 14402 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 20266 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 15202 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 19500 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11605 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10953 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22258 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 18579 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6177 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 12070 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 18246 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 16343 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8181 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9455 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8553 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11113 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22476 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 26792 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10449 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6499 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 22692 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 5207 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 13838 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 16944 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11199 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 16010 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17648 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 15755 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10341 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 19893 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 19035 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11703 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8078 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 4757 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6448 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 24914 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 12557 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6892 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 21663 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 14442 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17102 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 10907 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17837 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 3389 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 13829 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8101 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 16715 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 27186 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8536 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 20058 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 7151 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9176 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 17638 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 7748 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 30438 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 9228 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 6636 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 8023 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 11536 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+Decomposing into 7 cell types.
+Using 169 genes in both bulk and single-cell expression.
+Converting single-cell counts to CPM and filtering zero variance genes.
+Filtered 0 zero variance genes.
+Converting bulk counts to CPM and filtering unexpressed genes.
+Filtered 0 unexpressed genes.
+Generating single-cell based reference from 12795 cells.
+
+Inferring bulk transformation from single-cell alone.
+Applying transformation to bulk samples and decomposing.
+
+[1] "Reproducibility information:"
+[1] "2024-07-29 15:44:59 EDT"
+    user   system  elapsed 
+1943.307  105.210  626.269 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.2 Patched (2024-02-08 r85876)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2024-07-29
+ pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version   date (UTC) lib source
+ abind                  1.4-5     2016-07-21 [2] CRAN (R 4.3.2)
+ Biobase              * 2.62.0    2023-10-24 [2] Bioconductor
+ BiocGenerics         * 0.48.1    2023-11-01 [2] Bioconductor
+ BiocParallel         * 1.36.0    2023-10-24 [2] Bioconductor
+ BisqueRNA            * 1.0.5     2021-05-23 [1] CRAN (R 4.3.2)
+ bit                    4.0.5     2022-11-15 [2] CRAN (R 4.3.2)
+ bit64                  4.0.5     2020-08-30 [2] CRAN (R 4.3.2)
+ bitops                 1.0-7     2021-04-24 [2] CRAN (R 4.3.2)
+ cli                    3.6.2     2023-12-11 [2] CRAN (R 4.3.2)
+ codetools              0.2-19    2023-02-01 [3] CRAN (R 4.3.2)
+ colorspace             2.1-0     2023-01-23 [2] CRAN (R 4.3.2)
+ crayon                 1.5.2     2022-09-29 [2] CRAN (R 4.3.2)
+ DelayedArray           0.28.0    2023-10-24 [2] Bioconductor
+ dplyr                * 1.1.4     2023-11-17 [2] CRAN (R 4.3.2)
+ fansi                  1.0.6     2023-12-08 [2] CRAN (R 4.3.2)
+ forcats              * 1.0.0     2023-01-29 [2] CRAN (R 4.3.2)
+ generics               0.1.3     2022-07-05 [2] CRAN (R 4.3.2)
+ GenomeInfoDb         * 1.38.5    2023-12-28 [2] Bioconductor 3.18 (R 4.3.2)
+ GenomeInfoDbData       1.2.11    2024-02-09 [2] Bioconductor
+ GenomicRanges        * 1.54.1    2023-10-29 [2] Bioconductor
+ ggplot2              * 3.5.0     2024-02-23 [1] CRAN (R 4.3.2)
+ glue                   1.7.0     2024-01-09 [2] CRAN (R 4.3.2)
+ gtable                 0.3.4     2023-08-21 [2] CRAN (R 4.3.2)
+ here                 * 1.0.1     2020-12-13 [2] CRAN (R 4.3.2)
+ hms                    1.1.3     2023-03-21 [2] CRAN (R 4.3.2)
+ IRanges              * 2.36.0    2023-10-24 [2] Bioconductor
+ lattice                0.22-5    2023-10-24 [3] CRAN (R 4.3.2)
+ lifecycle              1.0.4     2023-11-07 [2] CRAN (R 4.3.2)
+ lubridate            * 1.9.3     2023-09-27 [2] CRAN (R 4.3.2)
+ magrittr               2.0.3     2022-03-30 [2] CRAN (R 4.3.2)
+ Matrix                 1.6-5     2024-01-11 [3] CRAN (R 4.3.2)
+ MatrixGenerics       * 1.14.0    2023-10-24 [2] Bioconductor
+ matrixStats          * 1.2.0     2023-12-11 [2] CRAN (R 4.3.2)
+ munsell                0.5.0     2018-06-12 [2] CRAN (R 4.3.2)
+ pillar                 1.9.0     2023-03-22 [2] CRAN (R 4.3.2)
+ pkgconfig              2.0.3     2019-09-22 [2] CRAN (R 4.3.2)
+ purrr                * 1.0.2     2023-08-10 [2] CRAN (R 4.3.2)
+ R6                     2.5.1     2021-08-19 [2] CRAN (R 4.3.2)
+ RCurl                  1.98-1.14 2024-01-09 [2] CRAN (R 4.3.2)
+ readr                * 2.1.5     2024-01-10 [2] CRAN (R 4.3.2)
+ rlang                  1.1.3     2024-01-10 [2] CRAN (R 4.3.2)
+ rprojroot              2.0.4     2023-11-05 [2] CRAN (R 4.3.2)
+ S4Arrays               1.2.0     2023-10-24 [2] Bioconductor
+ S4Vectors            * 0.40.2    2023-11-23 [2] Bioconductor 3.18 (R 4.3.2)
+ scales                 1.3.0     2023-11-28 [2] CRAN (R 4.3.2)
+ sessioninfo          * 1.2.2     2021-12-06 [2] CRAN (R 4.3.2)
+ SingleCellExperiment * 1.24.0    2023-10-24 [2] Bioconductor
+ SparseArray            1.2.3     2023-12-25 [2] Bioconductor 3.18 (R 4.3.2)
+ stringi                1.8.3     2023-12-11 [2] CRAN (R 4.3.2)
+ stringr              * 1.5.1     2023-11-14 [2] CRAN (R 4.3.2)
+ SummarizedExperiment * 1.32.0    2023-10-24 [2] Bioconductor
+ tibble               * 3.2.1     2023-03-20 [2] CRAN (R 4.3.2)
+ tidyr                * 1.3.1     2024-01-24 [2] CRAN (R 4.3.2)
+ tidyselect             1.2.0     2022-10-10 [2] CRAN (R 4.3.2)
+ tidyverse            * 2.0.0     2023-02-22 [2] CRAN (R 4.3.2)
+ timechange             0.3.0     2024-01-18 [2] CRAN (R 4.3.2)
+ tzdb                   0.4.0     2023-05-12 [2] CRAN (R 4.3.2)
+ utf8                   1.2.4     2023-10-22 [2] CRAN (R 4.3.2)
+ vctrs                  0.6.5     2023-12-01 [2] CRAN (R 4.3.2)
+ vroom                  1.6.5     2023-12-05 [2] CRAN (R 4.3.2)
+ withr                  3.0.0     2024-01-16 [2] CRAN (R 4.3.2)
+ XVector                0.42.0    2023-10-24 [2] Bioconductor
+ zlibbioc               1.48.0    2023-10-24 [2] Bioconductor
+
+ [1] /users/neagles/R/4.3.x
+ [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Jul 29 03:45:00 PM EDT 2024

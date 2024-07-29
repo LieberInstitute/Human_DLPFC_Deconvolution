@@ -24,7 +24,7 @@ out_path <- here(
 sce_assay_name = "counts"
 
 #   colnames in colData(sce)
-sce_cell_type_col = "subclass"
+sce_cell_type_col = "cell_type_broad"
 sce_individual_col = "individualID"
 
 n_cores = as.integer(Sys.getenv('SLURM_CPUS_PER_TASK'))
@@ -88,6 +88,7 @@ markers <- readLines(marker_file)
 
 load(bulk_path, verbose = TRUE)
 rownames(rse_gene) <- rowData(rse_gene)$ensemblID
+stopifnot(all(markers %in% rownames(rse_gene)))
 
 exp_set_bulk <- ExpressionSet(
     assayData = assays(rse_gene)$counts[markers,],

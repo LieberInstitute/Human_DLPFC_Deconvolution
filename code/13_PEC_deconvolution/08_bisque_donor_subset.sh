@@ -6,7 +6,7 @@
 #SBATCH -t 3:00:00
 #SBATCH -o logs/08_bisque_donor_subset_%a.txt
 #SBATCH -e logs/08_bisque_donor_subset_%a.txt
-#SBATCH --array=1
+#SBATCH --array=2-10%10
 
 set -e
 
