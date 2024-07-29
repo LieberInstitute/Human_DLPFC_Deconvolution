@@ -133,8 +133,76 @@ wm_oligo_rank |>
 
 
 ## VISIUM SPG
-spe <- spatialLIBD::fetch_data("spatialDLPFC_Visium")
+# spe <- spatialLIBD::fetch_data("spatialDLPFC_Visium")
 spe_spg <- spatialLIBD::fetch_data("spatialDLPFC_Visium_SPG")
+
+
+#### WM vs. cell types ####
+
+wm_v_cell_type <- prop_long |>
+  select(Sample, cell_type, RNAscope_prop, snRNA_prop) |>
+  unique() |>
+  pivot_longer(!c(Sample, cell_type), names_to = "data_type", values_to = "prop") |>
+  left_join(spatialDLPFC_harmony_k2 |>
+              filter(overlap, cluster_anno == "Sp02D01~WM") |>
+              rename(n_spots_WM = n, prop_WM = prop)) 
+
+
+(cor_check <- wm_v_cell_type |>
+    filter(!is.na(prop)) |>
+    group_by(cell_type, data_type) |>
+    summarize(cor = cor(prop_WM, prop))  |>
+    mutate(cor_anno = sprintf("\ncor:%.3f", round(cor,3)))|>
+    arrange(data_type, cor))
+
+# cell_type data_type          cor
+# <fct>     <chr>            <dbl>
+#   1 Inhib     RNAscope_prop -0.840  
+# 2 EndoMural RNAscope_prop -0.109  
+# 3 Excit     RNAscope_prop -0.0344 
+# 4 Micro     RNAscope_prop -0.0205 
+# 5 OligoOPC  RNAscope_prop  0.155  
+# 6 Astro     RNAscope_prop  0.637  
+# 7 Excit     snRNA_prop    -0.310  
+# 8 Micro     snRNA_prop    -0.221  
+# 9 EndoMural snRNA_prop    -0.179  
+# 10 Inhib     snRNA_prop    -0.00687
+# 11 Astro     snRNA_prop     0.273  
+# 12 OligoOPC  snRNA_prop     0.421 
+
+wm_v_cell_type_scatter <-  wm_v_cell_type |>
+  ggplot(aes(x = prop, y = prop_WM, color = cell_type)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  geom_text(
+    data = cor_check, ggplot2::aes(x = Inf, y = Inf, label = cor_anno),
+    vjust = "inward", hjust = "inward"
+  ) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  facet_grid(cell_type~data_type, scales = "free") +
+  theme_bw()
+
+ggsave(wm_v_cell_type_scatter, filename = here(plot_dir, "wm_v_cell_type_scatter.png"))
+
+wm_v_astro_scatter <- wm_v_cell_type |>
+  filter(cell_type == "Astro") |>
+  ggplot(aes(x = prop, y = prop_WM, color = cell_type)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  geom_text_repel(aes(label = Sample)) +
+  geom_text(
+    data = cor_check |>
+      filter(cell_type == "Astro") , ggplot2::aes(x = Inf, y = Inf, label = cor_anno),
+    vjust = "inward", hjust = "inward",
+    color = "black"
+  ) +
+  scale_color_manual(values = cell_type_colors_halo) +
+  facet_grid(cell_type~data_type, scales = "free") +
+  theme_bw()
+
+ggsave(wm_v_astro_scatter, filename = here(plot_dir, "wm_v_astro_scatter.png"), width = 8)
+
+
 
 
 
