@@ -123,6 +123,14 @@ cor_check$method <- factor(cor_check$method, levels = cor_check$method)
 prop_long$method <- factor(prop_long$method, levels = cor_check$method)
 prop_long_opc$method <- factor(prop_long_opc$method, levels = cor_check$method)
 
+(cor_check_library <- prop_long |>
+    filter(!is.na(RNAscope_prop)) |>
+    group_by(method, rna_extract, library_type, library_combo) |>
+    summarize(cor = cor(RNAscope_prop, prop),
+              rmse = Metrics::rmse(RNAscope_prop, prop))  |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+    arrange(-cor))
+
 # method     library_type rna_extract library_combo        cor  rmse cor_anno               
 # <fct>      <chr>        <chr>       <chr>              <dbl> <dbl> <chr>                  
 #  1 Bisque     polyA        Cyto        polyA_Cyto         0.683 0.123 "cor:0.683\nrmse:0.123"
@@ -198,6 +206,68 @@ cor_rmse_line <- cor_check_library |>
 
 ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.png"), width = 10, height = 4)
 ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_MRtop25.pdf"), width = 10, height = 4)
+
+#### cor check no Astro ####
+cor_check_no_astro <- prop_long |>
+  filter(!is.na(RNAscope_prop), cell_type != "Astro") |>
+  group_by(method) |>
+  summarize(cor = cor(RNAscope_prop, prop),
+            rmse = Metrics::rmse(RNAscope_prop, prop))  |>
+  mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+  arrange(cor)
+
+cor_check_library_no_astro <- prop_long |>
+  filter(!is.na(RNAscope_prop), cell_type != "Astro") |>
+  group_by(method, rna_extract, library_type, library_combo) |>
+  summarize(cor = cor(RNAscope_prop, prop),
+            rmse = Metrics::rmse(RNAscope_prop, prop))  |>
+  mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))
+
+cor_rmse_line_no_astro <- cor_check_library_no_astro |>
+  ggplot(aes(x = library_combo, y = cor, color = method, group = method)) +
+  geom_point(aes(size = rmse), alpha = .7) +
+  geom_line() +
+  scale_size(range = c(1,8)) +
+  theme_bw() +
+  labs(x = "Library Type + RNA Extraction") +
+  scale_color_manual(values = method_colors)
+
+ggsave(cor_rmse_line_no_astro, filename = here(plot_dir, "cor_rmse_line_MRtop25_no_astro.png"), width = 10, height = 4)
+ggsave(cor_rmse_line_no_astro, filename = here(plot_dir, "cor_rmse_line_MRtop25_no_astro.pdf"), width = 10, height = 4)
+
+## compare metrics with and without astro
+global_metrics_no_astro <- cor_check |> 
+  ungroup() |>
+  select(method, cor, rmse) |>
+  pivot_longer(!c(method), names_to = "metric", values_to = "all_cell_type") |>
+  left_join(cor_check_no_astro |> 
+              ungroup() |>
+              select(method, cor, rmse) |>
+              pivot_longer(!c(method), names_to = "metric", values_to = "no_Astro")
+  ) |>
+  mutate(library_combo = "GLOBAL")
+
+metrics_scatter_no_astro <- cor_check_library |> 
+  ungroup() |>
+  select(method, library_combo, cor, rmse) |>
+  pivot_longer(!c(method, library_combo), names_to = "metric", values_to = "all_cell_type") |>
+  left_join(cor_check_library_no_astro |> 
+              ungroup() |>
+              select(method, library_combo, cor, rmse) |>
+              pivot_longer(!c(method, library_combo), names_to = "metric", values_to = "no_Astro")
+  ) |>
+  rbind(global_metrics_no_astro) |>
+  ggplot(aes(x = all_cell_type, y = no_Astro, shape = library_combo, color = method)) +
+  geom_point() +
+  facet_wrap(~metric, scales = "free") + 
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = c(GLOBAL = 8, library_combo_shapes2)) +
+  geom_abline() +
+  theme_bw()
+
+ggsave(metrics_scatter_no_astro, filename = here(plot_dir, "metrics_scatter_no_astro.png"), width = 10, height = 4)
+ggsave(metrics_scatter_no_astro, filename = here(plot_dir, "metrics_scatter_no_astro.pdf"), width = 10, height = 4)
+
 
 #### proportion data ####
 
