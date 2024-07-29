@@ -291,19 +291,16 @@ qc_Sample <- pd_simple |>
 ggsave(qc_Sample, filename = here(plot_dir, "Bulk_qc_Sample.png"), width = 11)
 
 #### Check PC over round ####
+
 pc_boxplot_round <- pca_long |>
-  ggplot(aes(x = round, y = PC_val, color = library_type)) +
+  ggplot(aes(x = library_type, y = PC_val, color = round)) +
   geom_boxplot()+
-  # geom_boxplot(outlier.shape = NA)+
-  # geom_point(aes(shape = qc_class)) +
-  scale_color_manual(values = c(library_type_colors, `TRUE` = "red")) +
   labs(y="") +
   facet_wrap(~PC_name, scales = "free_y")  +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave(pc_boxplot_round, filename = here(plot_dir, "Bulk_PCA_round.png"), width = 11)
-
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
 ## Reproducibility information
