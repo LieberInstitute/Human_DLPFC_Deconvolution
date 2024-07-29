@@ -87,16 +87,16 @@ set.seed(071524)
 
 pca <- prcomp(t(geneExprs_filter))
 pca_vars <- getPcaVars(pca)
-pca_vars_lab <- paste0(
-    "PC", seq(along = pca_vars), ": ",
-    pca_vars, "% Var Expl"
-)
-
 pca_vars
 
 pca$x[1:5,1:5]
 
 save(pca, pca_vars, file = here("processed-data", "02_bulk_pca", "bulk_PCA.Rdata"))
+
+pca_vars_lab <- paste0(
+  "PC", seq(along = pca_vars), ": ",
+  pca_vars, "% Var Expl"
+)
 
 ## create table with groups and some QC metrics
 pca_tab <- pd_simple |> cbind(pca$x[, 1:5])
@@ -289,6 +289,20 @@ qc_Sample <- pd_simple |>
 
 
 ggsave(qc_Sample, filename = here(plot_dir, "Bulk_qc_Sample.png"), width = 11)
+
+#### Check PC over round ####
+pc_boxplot_round <- pca_long |>
+  ggplot(aes(x = round, y = PC_val, color = library_type)) +
+  geom_boxplot()+
+  # geom_boxplot(outlier.shape = NA)+
+  # geom_point(aes(shape = qc_class)) +
+  scale_color_manual(values = c(library_type_colors, `TRUE` = "red")) +
+  labs(y="") +
+  facet_wrap(~PC_name, scales = "free_y")  +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(pc_boxplot_round, filename = here(plot_dir, "Bulk_PCA_round.png"), width = 11)
 
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
