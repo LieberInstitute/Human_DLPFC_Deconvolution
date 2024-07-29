@@ -3,7 +3,7 @@
 #SBATCH --mem=10G
 #SBATCH --job-name=09_hspe_donor_subset
 #SBATCH -c 1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 4:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --array=1

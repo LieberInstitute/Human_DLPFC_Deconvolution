@@ -14,14 +14,14 @@ n_donors = round(1.4**(1:10) * n_total_donors / 1.4**10)[
 marker_file <- here(
     "processed-data", "13_PEC_deconvolution", "CMC_markers_MeanRatio_top25.txt"
 )
-sce_path = here("processed-data", "13_PEC_deconvolution", "sce_CMC.rds")
+sce_path = here("processed-data", "13_PEC_deconvolution", "sce_CMC_subset.rds")
 bulk_path = here("processed-data","rse", "rse_gene.Rdata")
 out_path <- here(
     "processed-data", "13_PEC_deconvolution", "bisque_donor_subset",
     sprintf("est_prop_bisque_n%s_%s_random_subsets.csv", n_donors, n_runs)
 )
 
-sce_assay_name = "X"
+sce_assay_name = "counts"
 
 #   colnames in colData(sce)
 sce_cell_type_col = "subclass"
@@ -72,7 +72,7 @@ run_bisque = function(i, sce, exp_set_bulk, unique_donors) {
             values_to = 'prop'
         ) |>
         mutate(subset_run = i, num_donors = n_donors)
-    
+
     return(props_df)
 }
 
@@ -105,14 +105,12 @@ sce = readRDS(sce_path)
 
 unique_donors = unique(sce$individualID)
 stopifnot(length(unique_donors) == n_total_donors)
+stopifnot(setequal(markers, rownames(sce)))
 
-#   Subset to markers and cells with at least some gene expression
-nonempty_cells = colSums(assays(sce)[[sce_assay_name]][markers,]) > 0
-sce = sce[markers, nonempty_cells]
+#   Subset to cells with at least some gene expression
+nonempty_cells = colSums(assays(sce)[[sce_assay_name]]) > 0
+sce = sce[, nonempty_cells]
 message("Excluding ", sum(!nonempty_cells), " zero-expression cells")
-
-#   Dense matrices are faster to work with
-assays(sce)[[sce_assay_name]] = as.matrix(assays(sce)[[sce_assay_name]])
 
 ################################################################################
 #   Run Bisque and export results

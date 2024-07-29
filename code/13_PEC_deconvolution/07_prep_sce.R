@@ -34,7 +34,7 @@ sce = sce[
     filtered_stats$gene,
     sce$subclass %in% unique(filtered_stats$cellType.target)
 ]
-assays(sce) = list(counts = as.matrix(assays(sce)$X))
+assays(sce) = list(counts = as.matrix(assays(sce)$counts))
 saveRDS(sce, sce_out_path)
 
 session_info()

@@ -16,7 +16,7 @@ n_markers_per_type = 25
 sce = readRDS(sce_path)
 
 mean_ratio <- get_mean_ratio2(
-    sce, cellType_col = "subclass", assay_name = "X",
+    sce, cellType_col = "subclass", assay_name = "logcounts",
     add_symbol = TRUE
 )
 
