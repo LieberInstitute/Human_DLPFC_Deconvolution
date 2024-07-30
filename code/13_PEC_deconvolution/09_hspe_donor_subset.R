@@ -43,11 +43,12 @@ n_total_donors = 52
 dir.create(dirname(out_path), showWarnings = FALSE)
 
 #   colnames in colData(sce)
-sce_cell_type_col = "subclass"
+sce_cell_type_col = "cell_type_broad"
 sce_individual_col = "individualID"
 
 #   Randomly take [opt$n_donors] donors from the set of [n_total_donors]
 sce = readRDS(sce_path)
+sce[[sce_cell_type_col]] = factor(sce[[sce_cell_type_col]])
 
 #   Take up to 25 markers per cell type, provided all ratios exceed 1
 filtered_stats = read_csv(marker_stats_path, show_col_types = FALSE) |>
@@ -153,8 +154,10 @@ est_prop_hspe$estimates |>
         names_to = 'cell_type',
         values_to = 'prop'
     ) |>
-    mutate(subset_run = task_id) |>
+    mutate(subset_run = opt$run_num, num_donors = opt$n_donors) |>
     write_csv(out_path)
+
+gc()
 
 ## Reproducibility information
 print("Reproducibility information:")

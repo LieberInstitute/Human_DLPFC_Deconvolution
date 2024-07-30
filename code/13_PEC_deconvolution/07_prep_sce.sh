@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
+#SBATCH --mem=25G
 #SBATCH --job-name=07_prep_sce
 #SBATCH -c 1
 #SBATCH -t 1:00:00
