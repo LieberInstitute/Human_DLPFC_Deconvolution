@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=10G
+#SBATCH --mem=8G
 #SBATCH --job-name=09_hspe_donor_subset
 #SBATCH -c 1
 #SBATCH -t 4:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
-#SBATCH --array=1
+#SBATCH --array=1-998%20
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_n_donors=(3 4 5 7 10 14 19 27 37 52)
