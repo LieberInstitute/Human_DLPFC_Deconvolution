@@ -276,9 +276,11 @@ ggsave(pc4_Sample, filename = here(plot_dir, "Bulk_PC4_boxplot_Br8325_mid.png"))
 
 pca_tab |> filter(Sample == "Br8325_mid")
 
-qc_Sample <- pd_simple |>
-  select(SAMPLE_ID, Sample, qc_class,  library_combo, all_of(focused_qc_metrics)) |>
-  pivot_longer(!c(SAMPLE_ID, Sample, library_combo, qc_class)) |>
+pd_long <-  pd_simple |>
+  select(SAMPLE_ID, Sample, qc_class,  library_combo, age, all_of(focused_qc_metrics)) |>
+  pivot_longer(!c(SAMPLE_ID, Sample, library_combo, qc_class))
+
+qc_Sample <- pd_long |>
   ggplot(aes(Sample, value)) +
   geom_boxplot(aes(color = Sample == "Br8325_mid"), outlier.shape = NA)+
   geom_point(aes(shape = qc_class, color = library_combo)) +
@@ -301,6 +303,52 @@ pc_boxplot_round <- pca_long |>
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave(pc_boxplot_round, filename = here(plot_dir, "Bulk_PCA_round.png"), width = 11)
+
+
+#### correlation heatmap ####
+pd_long <-  pd_simple |>
+  select(SAMPLE_ID, BrNum, library_combo, age, all_of(focused_qc_metrics)) |>
+  pivot_longer(!c(SAMPLE_ID, BrNum, library_combo))
+
+pca_longer <- pca$x[, 1:6] |>
+  as.data.frame() |>
+  rownames_to_column("SAMPLE_ID") |>
+  pivot_longer(!SAMPLE_ID, names_to = "PC_name", values_to = "PC_val") |>
+  right_join(pd_long) 
+
+
+pca_cor <- pca_longer |>
+  group_by(PC_name, name) |>
+  summarise(cor = cor(PC_val, value))
+
+pca_cor |>
+  arrange(-cor)
+
+pca_cor |>
+  ggplot(aes(x = PC_name, y = name, fill = cor)) +
+  geom_tile() +
+  geom_text(aes(label = round(cor, 3))) +
+  scale_fill_gradient2(
+    low = "#0571B0", 
+    mid = "white", 
+    high = "#CA0020", 
+    midpoint = 0
+  )
+
+## use vairancePartition
+library(variancePartition)
+
+C = canCorPairs(~BrNum + Position + library_type + library_prep  + sex + age + 
+                  concordMapRate + mitoRate + numMapped + overallMapRate + totalAssignedGene + totalMapped +
+                  PC1 + PC2 + PC3 + PC4 + PC5, 
+                pca_tab)
+
+C[!grepl("PC", rownames(C)),grepl("PC", colnames(C))]
+
+# Plot correlation matrix
+pdf(here(plot_dir, "PCA_canCorPairs.pdf"))
+plotCorrMatrix(C)
+dev.off()
 
 # sgejobs::job_single('03_qc_pca', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_qc_pca.R")
 ## Reproducibility information
