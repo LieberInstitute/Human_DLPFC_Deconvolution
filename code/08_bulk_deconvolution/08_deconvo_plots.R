@@ -562,6 +562,66 @@ oligo_scatter <- prop_long_opc |>
 
 ggsave(oligo_scatter, filename = here(plot_dir, "oligo_scatter.png"))
 
+#### Drop Br8325_mid ####
+(cor_check_no_Br8325_mid <- prop_long |>
+   filter(!is.na(RNAscope_prop), Sample != "Br8325_mid") |>
+   group_by(method) |>
+   summarize(cor = cor(RNAscope_prop, prop),
+             rmse = Metrics::rmse(RNAscope_prop, prop))  |>
+   mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+   arrange(cor))
+
+
+(cor_check_library_no_Br8325_mid <- prop_long |>
+    filter(!is.na(RNAscope_prop), Sample != "Br8325_mid") |>
+    group_by(method, rna_extract, library_type, library_combo) |>
+    summarize(cor = cor(RNAscope_prop, prop),
+              rmse = Metrics::rmse(RNAscope_prop, prop))  |>
+    mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
+    arrange(-cor))
+
+cor_rmse_line_no_Br8325_mid <- cor_check_library_no_Br8325_mid |>
+  ggplot(aes(x = library_combo, y = cor, color = method, group = method)) +
+  geom_point(aes(size = rmse), alpha = .7) +
+  geom_line() +
+  scale_size(range = c(1,8)) +
+  theme_bw() +
+  labs(x = "Library Type + RNA Extraction") +
+  scale_color_manual(values = method_colors)
+
+ggsave(cor_rmse_line_no_Br8325_mid, filename = here(plot_dir, "cor_rmse_line_MRtop25_no_Br8325_mid.png"), width = 10, height = 4)
+
+global_metrics_no_Br8325_mid <- cor_check |> 
+  ungroup() |>
+  select(method, cor, rmse) |>
+  pivot_longer(!c(method), names_to = "metric", values_to = "all_Samples") |>
+  left_join(cor_check_no_Br8325_mid |> 
+              ungroup() |>
+              select(method, cor, rmse) |>
+              pivot_longer(!c(method), names_to = "metric", values_to = "no_Br8325_mid")
+  ) |>
+  mutate(library_combo = "GLOBAL")
+
+metrics_scatter_no_Br8325_mid <- cor_check_library |> 
+  ungroup() |>
+  select(method, library_combo, cor, rmse) |>
+  pivot_longer(!c(method, library_combo), names_to = "metric", values_to = "all_Samples") |>
+  left_join(cor_check_library_no_Br8325_mid |> 
+              ungroup() |>
+              select(method, library_combo, cor, rmse) |>
+              pivot_longer(!c(method, library_combo), names_to = "metric", values_to = "no_Br8325_mid")
+  ) |>
+  rbind(global_metrics_no_Br8325_mid) |>
+  ggplot(aes(x = all_Samples, y = no_Br8325_mid, shape = library_combo, color = method)) +
+  geom_point() +
+  facet_wrap(~metric, scales = "free") + 
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = c(GLOBAL = 8, library_combo_shapes2)) +
+  geom_abline() +
+  theme_bw()
+
+ggsave(metrics_scatter_no_Br8325_mid, filename = here(plot_dir, "metrics_scatter_no_Br8325_mid.png"), width = 10, height = 4)
+
 
 # sgejobs::job_single('08_deconvo_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 08_deconvo_plots.R")
 ## Reproducibility information
