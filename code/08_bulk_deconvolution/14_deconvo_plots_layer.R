@@ -4,6 +4,7 @@ library("DeconvoBuddies")
 library("here")
 library("viridis")
 library(spatialLIBD)
+library(ggrepel)
 # library("GGally")
 
 ## prep dirs ##
@@ -30,8 +31,8 @@ prop_long <- prop_long |>
 prop_long_opc <- prop_long_opc |> 
   filter(marker == "MeanRatio_top25")
 
-prop_long |> count(cell_type)
-prop_long_opc |> count(cell_type)
+prop_long |> dplyr::count(cell_type)
+prop_long_opc |> dplyr::count(cell_type)
 
 prop_long |> 
   filter(is.na(RNAscope_prop)) |>
@@ -42,7 +43,7 @@ prop_long |>
 spatialDLPFC_harmony_k2 <- read.csv(here("processed-data", "08_bulk_deconvolution","08_deconvo_plots", "spatialDLPFC_bayesSpace_harmony_2", "clusters.csv")) |>
   mutate(Sample = gsub("^.*?_|_2", "", key),
          cluster_anno = ifelse(cluster == 1, "Sp02D01~WM", "Sp02D02~GM")) |> 
-  count(Sample, cluster, cluster_anno) |>
+  dplyr::count(Sample, cluster, cluster_anno) |>
   group_by(Sample) |>
   mutate(prop = n/sum(n), 
          overlap = Sample %in% prop_long$Sample)
@@ -163,23 +164,40 @@ prop_WM_spg <- pd_spg |>
 prop_WM_Visium_SPG_scatter <- prop_WM_spg |>
   ggplot(aes(vis_prop_WM, spg_prop_WM)) +
   geom_point() +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "lm", se=FALSE) +
   geom_text_repel(aes(label = Sample)) +
+  geom_abline()+
   labs(x = "Prop WM - Visium", y = "Prop WM - Visium SPG") +
   theme_bw()
 
-ggsave(prop_WM_Visium_SPG_scatter, filename = here(plot_dir, "prop_WM_Visium_SPG_scatter.png"))
+ggsave(prop_WM_Visium_SPG_scatter, filename = here(plot_dir, "prop_WM_Visium_SPG_scatter.png"), height = 5, width = 5)
+
+## Spot plots 
+
+spe_spg$WM <- ifelse(spe_spg$manual_layer_label == "WM", "WM", "GM")
+
+spot_spg_Br6432_Ant_IF <- vis_clus(spe = spe_spg,
+         sampleid = "Br6432_Ant_IF",
+         clustervar = "WM",
+         # spatial = FALSE,
+         colors = c("grey40", "grey90", "white"),
+         point_size = 1.5
+         )
+
+ggsave(spot_spg_Br6432_Ant_IF, filename = here(plot_dir, "spot_spg_Br6432_Ant_IF.png"))
+
+spe_spg <- spatialLIBD::fetch_data("spatialDLPFC_Visium_SPG")
+
+
 
 #### WM vs. cell types ####
-
 wm_v_cell_type <- prop_long |>
   select(Sample, cell_type, RNAscope_prop, snRNA_prop) |>
   unique() |>
   pivot_longer(!c(Sample, cell_type), names_to = "data_type", values_to = "prop") |>
   left_join(spatialDLPFC_harmony_k2 |>
               filter(overlap, cluster_anno == "Sp02D01~WM") |>
-              rename(n_spots_WM = n, prop_WM = prop)) 
-
+              dplyr::rename(n_spots_WM = n, prop_WM = prop)) 
 
 (cor_check <- wm_v_cell_type |>
     filter(!is.na(prop)) |>
@@ -218,6 +236,7 @@ wm_v_cell_type_scatter <-  wm_v_cell_type |>
   theme(legend.position = "None")
 
 ggsave(wm_v_cell_type_scatter, filename = here(plot_dir, "wm_v_cell_type_scatter.png"))
+ggsave(wm_v_cell_type_scatter, filename = here(plot_dir, "wm_v_cell_type_scatter.pdf"))
 
 wm_v_astro_scatter <- wm_v_cell_type |>
   filter(cell_type == "Astro") |>
