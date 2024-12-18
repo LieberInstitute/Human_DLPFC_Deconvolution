@@ -109,5 +109,23 @@ deconvo_run_times <- c(map2(logs_notCS, pattern, get_times),
   return(as.numeric(diff, units = "mins"))
 }))
 
+deconvo_run_times_tb <- tibble(data = names(deconvo_run_times),
+                               runtime = deconvo_run_times)  |> 
+  unnest(runtime) |>
+  separate(data, into = c("Method", "Markers"), sep = "_", extra = "merge")
 
+marker_list <- list.files(here("processed-data","08_bulk_deconvolution"), pattern = "markers_.*.txt", full.names = TRUE)
+names(marker_list) <- gsub("markers_|.txt", "", basename(marker_list))
+n_markers <- c(map_int(marker_list, ~length(scan(.x, what="", sep="\n"))), FULL = 17804)
 
+n_marker_tb <- tibble(Markers = names(n_markers), n_gene = n_markers)
+
+n_marker_tb |> 
+  right_join(deconvo_run_times_tb) |>
+  ggplot(aes(x = n_gene, y = runtime, color = Method)) +
+  geom_point()
+  
+  
+runtime_boxplot <- deconvo_run_times_tb |>
+  ggplot(aes(x = Method, y = runtime, color = Method)) +
+  geom_boxplot()
