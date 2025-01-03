@@ -1,8 +1,9 @@
 
 library("tidyverse")
 library("sessioninfo")
-library("DeconvoBuddies")
+# library("DeconvoBuddies")
 library("here")
+library("slurmjobs")
 # library("viridis")
 # library(spatialLIBD)
 # library(ggrepel)
@@ -141,3 +142,9 @@ runtime_boxplot <- deconvo_run_times_tb |>
   labs(y = "Runtime (min)")
 
 ggsave(runtime_boxplot, filename = here(plot_dir, "runtime_boxplot.png"))
+
+#### Memory Usage ####
+
+head(logs[[1]])
+
+slurmjobs::job_report(1949942)
