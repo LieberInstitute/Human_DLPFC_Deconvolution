@@ -196,3 +196,9 @@ upset(fromList(marker_list),
 dev.off()
 
 
+length(intersect(marker_list$`1vALL_top25`, marker_list$MeanRatio_top25)) # [1] 65
+length(setdiff(marker_list$`1vALL_top25`, marker_list$MeanRatio_top25)) # [1] 80
+length(intersect(marker_list$MeanRatio_top25, marker_list$`1vALL_top25`)) # [1] 65
+
+
+
