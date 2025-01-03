@@ -51,4 +51,3 @@ map_int(hvg_genesets, length)
 
 map_int(hvg_genesets, length)/nrow(dec_common)
 
-map2(hvg_genesets, cat())
