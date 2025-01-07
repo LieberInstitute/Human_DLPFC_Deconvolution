@@ -20,6 +20,7 @@ rownames(sce) <- rowData(sce)$gene_id
 
 ## subset marker genes
 marker_files <- sprintf("HVG%d0", 1:10)
+names(marker_files) <- marker_files
 marker_gene_sets <- map(marker_files, ~scan(here("processed-data", "06_marker_genes","09_HVGs", paste0(.x,".txt")), what="", sep="\n"))
 
 map_int(marker_gene_sets, length)
