@@ -36,7 +36,7 @@ module load conda_R/4.4
 module list
 
 ## Edit with your job command
-Rscript 01_deconvolution_Bisque_HVG.R ../../processed-data/06_marker_genes/09_HVGs/HVG${HVG}.txt
+Rscript 01_deconvolution_Bisque_HVG.R HVG${HVG} ../../processed-data/06_marker_genes/09_HVGs/HVG${HVG}.txt
 
 echo "**** Job ends ****"
 date
