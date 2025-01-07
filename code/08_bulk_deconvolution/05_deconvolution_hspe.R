@@ -135,4 +135,4 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-
+gc()
