@@ -7,7 +7,7 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-10%20
+#SBATCH --array=1-10%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_HVG=(10 20 30 40 50 60 70 80 90 100)
@@ -36,7 +36,7 @@ module load conda_R/4.4.x
 module list
 
 ## Edit with your job command
-Rscript 01_deconvolution_Bisque_HVG.R HVG${HVG} ../../processed-data/06_marker_genes/09_HVGs/HVG${HVG}.txt
+Rscript 01_deconvolution_Bisque.R HVG${HVG} ../../processed-data/06_marker_genes/09_HVGs/HVG${HVG}.txt
 
 echo "**** Job ends ****"
 date
