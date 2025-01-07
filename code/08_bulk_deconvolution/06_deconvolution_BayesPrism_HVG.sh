@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=100G
 #SBATCH --job-name=06_deconvolution_BayesPrism_HVG
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
