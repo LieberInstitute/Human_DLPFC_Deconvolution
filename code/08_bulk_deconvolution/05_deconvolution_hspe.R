@@ -95,31 +95,8 @@ if(marker_label == "FULL"){
                     rank_marker <= 25) 
     
   } else {
-    
-    ##test
-    marker_label <- "HVG10.txt"
-    gene_list_fn <- "../../processed-data/06_marker_genes/09_HVGs/HVG10.txt"
-    
-    ## Run subset
-    gene_list_fn <- args[2]
-    message("Read ", marker_label, " gene set from: ", gene_list_fn)
-    gene_list <- scan(gene_list_fn, what="", sep="\n")
-    if(!all(gene_list %in% common_genes)) warning("gene_list missing from common genes: ", paste(setdiff(gene_list, common_genes), collapse = ", "))
-    gene_list <- intersect(gene_list, common_genes)
-    
-    ## subset data
-    reference_samples <- reference_samples[,gene_list]
-    mixture_samples <- mixture_samples[,gene_list]
-    stopifnot(ncol(mixture_samples) == ncol(reference_samples))
-    
-    message(Sys.time(), "- hspe")
-    ## n_markers...If not specified then top 10% of genes are used. 1vALL ratio method
-    est_prop_hspe = hspe(Y = mixture_samples,
-                         reference = reference_samples,
-                         pure_samples = pure_samples,
-                         seed =10524)
-    
-  }
+    stop("Invalid marker list")
+    }
   
   marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x])
     
@@ -137,8 +114,30 @@ if(marker_label == "FULL"){
                        pure_samples = pure_samples,
                        markers = marker_genes,
                        seed = 10524)
-} else { ## not valid marker condition
-  stop()
+} else { ## Subset run
+  
+  ##test
+  # marker_label <- "HVG10.txt"
+  # gene_list_fn <- "../../processed-data/06_marker_genes/09_HVGs/HVG10.txt"
+  
+  ## Read geneset
+  gene_list_fn <- args[2]
+  message("Read ", marker_label, " gene set from: ", gene_list_fn)
+  gene_list <- scan(gene_list_fn, what="", sep="\n")
+  if(!all(gene_list %in% common_genes)) warning("gene_list missing from common genes: ", paste(setdiff(gene_list, common_genes), collapse = ", "))
+  gene_list <- intersect(gene_list, common_genes)
+  
+  ## subset data
+  reference_samples <- reference_samples[,gene_list]
+  mixture_samples <- mixture_samples[,gene_list]
+  stopifnot(ncol(mixture_samples) == ncol(reference_samples))
+  
+  message(Sys.time(), "- hspe")
+  ## n_markers...If not specified then top 10% of genes are used. 1vALL ratio method
+  est_prop_hspe = hspe(Y = mixture_samples,
+                       reference = reference_samples,
+                       pure_samples = pure_samples,
+                       seed =10524)
 }
 
 message(Sys.time(), "- Saving")
