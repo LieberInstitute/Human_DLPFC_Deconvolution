@@ -7,7 +7,7 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1,6-9%10
+#SBATCH --array=1-10%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_HVG=(10 20 30 40 50 60 70 80 90 100)
