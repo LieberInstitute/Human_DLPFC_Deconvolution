@@ -39,6 +39,9 @@ module list
 in_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep
 out_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_HVG${HVG}
 
+## make directory
+mkdir ${out_dir}
+
 ref=${in_dir}/DLPFC_sc_counts-HVG${HVG}.txt
 mix=${in_dir}/DLPFC_bulk_counts.txt
 
