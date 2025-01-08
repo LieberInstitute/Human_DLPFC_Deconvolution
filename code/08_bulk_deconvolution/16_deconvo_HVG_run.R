@@ -30,8 +30,8 @@ hvg_prop <- as.character(seq(10,100, 10))
 plot_dir <- here("plots", "08_bulk_deconvolution", "16_deconvo_HVG_run")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-plot_dir <- here("plots", "08_bulk_deconvolution", "16_deconvo_HVG_run")
-if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+data_dir <- here("plots", "08_bulk_deconvolution", "16_deconvo_HVG_run")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 load(here("processed-data","00_data_prep","method_colors.Rdata"), verbose = TRUE)
 
@@ -69,10 +69,11 @@ job_report_df |> count(name, exit_code)
 # 1 01_deconvolution_Bisque_HVG             0    10
 # 2 02_deconvolution_MuSiC_HVG              0    10
 # 3 04_deconvolution_DWLS_HVG               0    10
-# 4 05_deconvolution_hspe_HVG               1    10
+# 4 05_deconvolution_hspe_HVG               0    10
 # 5 06_deconvolution_BayesPrism_HVG         0    10
 # 6 07_deconvolution_CIBERSORTx_HVG         0    10
 
+write.csv(job_report_df, file = hrer(data_dir, "deconvolution_HVG_job_report.csv"))
 
 #### run time & memory vs. n gene ####
 
