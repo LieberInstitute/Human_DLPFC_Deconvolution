@@ -38,6 +38,7 @@ list.files(here("processed-data","08_bulk_deconvolution"))
 # [7] "07_deconvolution_CIBERSORTx_prep"
 
 #### DWLS ####
+message(Sys.time(), " - DWLS")
 fn_dwls <- list.files(here("processed-data","08_bulk_deconvolution", "04_deconvolution_DWLS"), pattern = ".Rdata", full.names = TRUE)
 names(fn_dwls) <- gsub("est_prop_dwls-(.*?).Rdata","\\1",basename(fn_dwls))
 map_chr(fn_dwls, basename)
@@ -55,6 +56,7 @@ est_prop_dwls <- do.call("rbind", est_prop_dwls)
 est_prop_dwls |> count(marker)
 
 #### Bisque ####
+message(Sys.time(), " - Bisque")
 fn_bisque <- list.files(here("processed-data","08_bulk_deconvolution", "01_deconvolution_Bisque"), pattern = ".Rdata", full.names = TRUE)
 names(fn_bisque) <- gsub("est_prop_bisque-(.*?).Rdata","\\1",basename(fn_bisque))
 map_chr(fn_bisque, basename)
@@ -72,6 +74,7 @@ est_prop_bisque <- do.call("rbind", est_prop_bisque)
 est_prop_bisque |> count(marker)
 
 #### MuSiC ####
+message(Sys.time(), " - MuSiC")
 fn_music <- list.files(here("processed-data","08_bulk_deconvolution", "02_deconvolution_MuSiC"), pattern = ".Rdata", full.names = TRUE)
 names(fn_music) <- gsub("est_prop_music-(.*?).Rdata","\\1",basename(fn_music))
 map_chr(fn_music, basename)
@@ -89,6 +92,7 @@ est_prop_music <- do.call("rbind", est_prop_music)
 est_prop_music |> count(marker)
 
 #### CIBERSORTx ####
+message(Sys.time(), " - CIBERSORTx")
 fn_ciber <- list.files(here("processed-data","08_bulk_deconvolution", "07_deconvolution_CIBERSORTx_prep"), pattern = "CIBERSORTx_Adjusted.txt", full.names = TRUE, recursive = TRUE)
 ## keep an eye on this
 fn_ciber <- fn_ciber[!grepl("tutorial|test",fn_ciber)]
@@ -107,6 +111,7 @@ est_prop_ciber <- do.call("rbind", est_prop_ciber)
 est_prop_ciber |> count(marker)
 
 #### hspe ####
+message(Sys.time(), " - hspe")
 fn_hspe <- list.files(here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe"), pattern = ".Rdata", full.names = TRUE)
 names(fn_hspe) <- gsub("est_prop_hspe-(.*?).Rdata","\\1",basename(fn_hspe))
 
@@ -124,6 +129,7 @@ est_prop_hspe |> count(marker)
 
 
 #### BayesPrism ####
+message(Sys.time(), " - BayesPrism")
 fn_bayes <- list.files(here("processed-data","08_bulk_deconvolution", "06_deconvolution_BayesPrism"), pattern = ".Rdata", full.names = TRUE)
 names(fn_bayes) <- gsub("est_prop_BayesPrism-(.*?).Rdata","\\1",basename(fn_bayes))
 
@@ -143,6 +149,7 @@ est_prop_bayes |> count(marker)
 
 
 #### Compile data ####
+message(Sys.time(), " - Compile and output")
 prop_long_opc <- est_prop_bisque |>
   bind_rows(est_prop_music) |>
   bind_rows(est_prop_hspe) |>
