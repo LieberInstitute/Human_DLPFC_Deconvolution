@@ -1,0 +1,40 @@
+**** Job starts ****
+Wed Jan  8 10:21:45 AM EST 2025
+**** JHPCE info ****
+User: lhuuki
+Job id: 11844306
+Job name: 07_deconvolution_CIBERSORTx_HVG
+Node name: compute-169
+Task id: 8
+Loading LIBD SLURM module for cibersortx/04_04_2020
+
+Software is invoked by calling 'CIBERSORTxFractions'. It runs inside a
+Singularity container, which by default has the fastscratch space mounted
+(run 'echo $MYSCRATCH' to see the exact path), and therefore CIBERSORTx may only
+recognize input and output files under this directory.
+
+To mount custom paths or manually access the Singularity image directly, use
+    singularity exec
+/jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif
+/src/CIBERSORTxFractions 
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) singularity/3.11.4
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) cibersortx/04_04_2020
+
+ 
+
+>Running CIBERSORTxFractions...
+>[Options] username: louise.huuki@libd.org
+>[Options] token: d06f1b37e8876ad5d9b8df8844c1ad30
+>[Options] single_cell: TRUE
+>[Options] refsample: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_sc_counts-HVG90.txt
+>[Options] mixture: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/DLPFC_bulk_counts.txt
+>[Options] fraction: 0
+>[Options] rmbatchSmode: TRUE
+>[Options] outdir: /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_HVG90
+>single_cell is set to TRUE, so quantile normalization is set to FALSE, and the default parameters for building the signature matrix have been set to the following values:
+	- G.min <- 300
+	- G.max <- 500
+	- q.value <- 0.01
+/var/spool/slurm/d/job11844306/slurm_script: line 65: 3607987 Killed                  singularity exec -B ${in_dir}:/src/data -B ${out_dir}:/src/outdir /jhpce/shared/libd/core/cibersortx/04_04_2020/fractions_latest.sif /src/CIBERSORTxFractions --username louise.huuki@libd.org --token $CIBERSORT_TOKEN --single_cell TRUE --refsample $ref --mixture $mix --fraction 0 --rmbatchSmode TRUE --outdir ${out_dir}
