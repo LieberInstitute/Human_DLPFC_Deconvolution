@@ -7,7 +7,7 @@
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1,5-9%10
+#SBATCH --array=1,4-9%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_HVG=(10 20 30 40 50 60 70 80 90 100)
@@ -40,7 +40,7 @@ in_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolutio
 out_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/processed-data/08_bulk_deconvolution/07_deconvolution_CIBERSORTx_prep/output_HVG${HVG}
 
 ## make directory
-mkdir ${out_dir}
+# mkdir ${out_dir}
 
 ref=${in_dir}/DLPFC_sc_counts-HVG${HVG}.txt
 mix=${in_dir}/DLPFC_bulk_counts.txt
