@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -p shared
-#SBATCH --mem=25G
+#SBATCH --mem=75G
 #SBATCH --job-name=04_deconvolution_DWLS_HVG
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
 #SBATCH --mail-type=ALL
-#SBATCH --array=1-10%10
+#SBATCH --array=1,6-9%10
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_HVG=(10 20 30 40 50 60 70 80 90 100)
