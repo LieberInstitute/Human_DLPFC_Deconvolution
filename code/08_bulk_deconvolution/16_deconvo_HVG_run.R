@@ -39,7 +39,7 @@ load(here("processed-data","00_data_prep","method_colors.Rdata"), verbose = TRUE
 hvg_files <- sprintf("../../processed-data/06_marker_genes/09_HVGs/HVG%d0.txt", seq(1,10))
 hvg_n <- map_int(hvg_files, ~length(readLines(.x)))
 
-log_fn <- list.files("logs", "HVG")
+log_fn <- list.files("logs", pattern = "HVG\\d+")
 gsub("0\\d_deconvolution_.*?_(HVG\\d+_\\d+).txt", "\\1", log_fn)
 
 hvg_n_df <- tibble(hvg_id = gsub("0\\d_deconvolution_.*?_(HVG\\d+_\\d+).txt", "\\1", log_fn)) |>
@@ -69,8 +69,9 @@ job_report_df |> count(name, exit_code)
 # 1 01_deconvolution_Bisque_HVG             0    10
 # 2 02_deconvolution_MuSiC_HVG              0    10
 # 3 04_deconvolution_DWLS_HVG               0    10
-# 4 05_deconvolution_hspe_HVG               1    10 ## hspe bug
+# 4 05_deconvolution_hspe_HVG               1    10
 # 5 06_deconvolution_BayesPrism_HVG         0    10
+# 6 07_deconvolution_CIBERSORTx_HVG         0    10
 
 
 #### run time & memory vs. n gene ####
