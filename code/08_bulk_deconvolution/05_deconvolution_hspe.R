@@ -14,7 +14,7 @@ marker_label <- args[1]
 
 ## not using txt list of marker genes, methods needs named list
 marker_sets <- c("MeanRatio_top25", "1vALL_top25", "MeanRatio_MAD3", "MeanRatio_over2")
-stopifnot(marker_label %in% c(marker_sets, "FULL"))
+# stopifnot(marker_label %in% c(marker_sets, "FULL"))
 
 #### data output folder ####
 data_dir <- here("processed-data","08_bulk_deconvolution", "05_deconvolution_hspe")
@@ -95,7 +95,30 @@ if(marker_label == "FULL"){
                     rank_marker <= 25) 
     
   } else {
-    stop("non-valid marker label: ", marker_label)
+    
+    ##test
+    marker_label <- "HVG10.txt"
+    gene_list_fn <- "../../processed-data/06_marker_genes/09_HVGs/HVG10.txt"
+    
+    ## Run subset
+    gene_list_fn <- args[2]
+    message("Read ", marker_label, " gene set from: ", gene_list_fn)
+    gene_list <- scan(gene_list_fn, what="", sep="\n")
+    if(!all(gene_list %in% common_genes)) warning("gene_list missing from common genes: ", paste(setdiff(gene_list, common_genes), collapse = ", "))
+    gene_list <- intersect(gene_list, common_genes)
+    
+    ## subset data
+    reference_samples <- reference_samples[,gene_list]
+    mixture_samples <- mixture_samples[,gene_list]
+    stopifnot(ncol(mixture_samples) == ncol(reference_samples))
+    
+    message(Sys.time(), "- hspe")
+    ## n_markers...If not specified then top 10% of genes are used. 1vALL ratio method
+    est_prop_hspe = hspe(Y = mixture_samples,
+                         reference = reference_samples,
+                         pure_samples = pure_samples,
+                         seed =10524)
+    
   }
   
   marker_genes <- purrr::map(rafalib::splitit(marker_tab$cellType.target), ~marker_tab$gene[.x])
