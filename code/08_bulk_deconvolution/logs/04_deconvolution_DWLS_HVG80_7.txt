@@ -1,11 +1,12 @@
 **** Job starts ****
-Tue Jan  7 01:51:49 PM EST 2025
+Thu Jan  9 11:20:40 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 11834455
+Job id: 11876713
 Job name: 04_deconvolution_DWLS_HVG
-Node name: compute-115
+Node name: compute-157
 Task id: 7
+Unloading conda_R/4.4.x
 Loading conda_R/4.4.x
 
 Currently Loaded Modules:
@@ -141,8 +142,39 @@ The following object is masked from ‘package:rhdf5’:
 [1] 17804
 Input Markers:
 Read 6490 items
-2025-01-07 13:52:43.45884 - Prep data with 6490 genes
-2025-01-07 13:52:44.613091- convert counts to matrix
-2025-01-07 13:55:11.777156- buildSignatureMatrix
+2025-01-09 11:21:07.909207 - Prep data with 6490 genes
+2025-01-09 11:21:08.466408- convert counts to matrix
+2025-01-09 11:22:08.989641- buildSignatureMatrix
 Using  as id variables
-/var/spool/slurm/d/job11834455/slurm_script: line 44: 1744571 Killed                  Rscript 04_deconvolution_DWLS.R HVG${HVG} ../../processed-data/06_marker_genes/09_HVGs/HVG${HVG}.txt
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 747 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Inhib"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 359 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "Oligo"
+Using  as id variables
+No dimnames in `exprsArray`, assuming `fData` and `cData` are sorted according to `exprsArray`
+Assuming data assay in position 1, with name Et is log-transformed.
+
+Done!
+Fitted zlm on 414 genes and 56447 cells.
+ Using BayesGLMlike ~ Population 
+Refitting on reduced model...
+
+Done!
+[1] "OPC"
