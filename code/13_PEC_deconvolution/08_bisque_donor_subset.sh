@@ -5,7 +5,7 @@
 #SBATCH -c 4
 #SBATCH -t 3:00:00
 #SBATCH -o logs/08_bisque_donor_subset_%a.txt
-#SBATCH -e logs/08_bisque_donor_subset_%a.txt
+#SBATCH -e /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/code/13_PEC_deconvolution/logs/08_bisque_donor_subset_%a.txt
 #SBATCH --array=2-10%10
 
 set -e

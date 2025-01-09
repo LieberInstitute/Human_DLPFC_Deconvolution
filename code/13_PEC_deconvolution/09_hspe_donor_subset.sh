@@ -16,7 +16,7 @@ all_run_num=($(seq 1 100))
 run_num=${all_run_num[$(( $SLURM_ARRAY_TASK_ID / 1 % 100 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=logs/09_hspe_donor_subset_${n_donors}donors_run${run_num}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_Deconvolution/code/13_PEC_deconvolution/logs/09_hspe_donor_subset_${n_donors}donors_run${run_num}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
