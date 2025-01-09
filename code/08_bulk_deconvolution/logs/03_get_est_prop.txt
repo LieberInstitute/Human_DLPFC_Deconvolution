@@ -1,17 +1,12 @@
 **** Job starts ****
-Thu Jan  9 11:48:44 AM EST 2025
+Thu Jan  9 02:25:49 PM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 11877130
+Job id: 11898038
 Job name: 03_get_est_prop
-Node name: compute-157
+Node name: compute-063
 Task id: 
-Unloading conda_R/4.4.x
 Loading conda_R/4.3.x
-
-The following have been reloaded with a version change:
-  1) conda/3-24.3.0 => conda/3-23.3.1     2) conda_R/4.4.x => conda_R/4.3.x
-
 
 Currently Loaded Modules:
   1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
@@ -52,35 +47,42 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 [15] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
 [17] "markers_top25.csv"                "markers_top25.Rdata"             
 [19] "old"                             
-2025-01-09 11:48:54.20608 - DWLS
+2025-01-09 14:26:16.339253 - DWLS
                           1vALL_top25                                  FULL 
     "est_prop_dwls-1vALL_top25.Rdata"            "est_prop_dwls-FULL.Rdata" 
-                                HVG10                                 HVG20 
-          "est_prop_dwls-HVG10.Rdata"           "est_prop_dwls-HVG20.Rdata" 
-                                HVG30                                 HVG40 
-          "est_prop_dwls-HVG30.Rdata"           "est_prop_dwls-HVG40.Rdata" 
-                                HVG50                                 HVG60 
-          "est_prop_dwls-HVG50.Rdata"           "est_prop_dwls-HVG60.Rdata" 
-                                HVG70                        MeanRatio_MAD3 
-          "est_prop_dwls-HVG70.Rdata"  "est_prop_dwls-MeanRatio_MAD3.Rdata" 
-                      MeanRatio_over2                       MeanRatio_top25 
-"est_prop_dwls-MeanRatio_over2.Rdata" "est_prop_dwls-MeanRatio_top25.Rdata" 
-# A tibble: 12 × 2
+                                HVG10                                HVG100 
+          "est_prop_dwls-HVG10.Rdata"          "est_prop_dwls-HVG100.Rdata" 
+                                HVG20                                 HVG30 
+          "est_prop_dwls-HVG20.Rdata"           "est_prop_dwls-HVG30.Rdata" 
+                                HVG40                                 HVG50 
+          "est_prop_dwls-HVG40.Rdata"           "est_prop_dwls-HVG50.Rdata" 
+                                HVG60                                 HVG70 
+          "est_prop_dwls-HVG60.Rdata"           "est_prop_dwls-HVG70.Rdata" 
+                                HVG80                                 HVG90 
+          "est_prop_dwls-HVG80.Rdata"           "est_prop_dwls-HVG90.Rdata" 
+                       MeanRatio_MAD3                       MeanRatio_over2 
+ "est_prop_dwls-MeanRatio_MAD3.Rdata" "est_prop_dwls-MeanRatio_over2.Rdata" 
+                      MeanRatio_top25 
+"est_prop_dwls-MeanRatio_top25.Rdata" 
+# A tibble: 15 × 2
    marker              n
    <chr>           <int>
  1 1vALL_top25       770
  2 FULL              770
  3 HVG10             770
- 4 HVG20             770
- 5 HVG30             770
- 6 HVG40             770
- 7 HVG50             770
- 8 HVG60             770
- 9 HVG70             770
-10 MeanRatio_MAD3    770
-11 MeanRatio_over2   770
-12 MeanRatio_top25   770
-2025-01-09 11:48:54.584904 - Bisque
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 14:26:17.209447 - Bisque
                             1vALL_top25                                    FULL 
     "est_prop_bisque-1vALL_top25.Rdata"            "est_prop_bisque-FULL.Rdata" 
                                   HVG10                                  HVG100 
@@ -115,7 +117,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 13 MeanRatio_MAD3    770
 14 MeanRatio_over2   770
 15 MeanRatio_top25   770
-2025-01-09 11:48:58.040726 - MuSiC
+2025-01-09 14:26:21.088771 - MuSiC
                            1vALL_top25                                   FULL 
     "est_prop_music-1vALL_top25.Rdata"            "est_prop_music-FULL.Rdata" 
                                  HVG10                                 HVG100 
@@ -150,7 +152,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 13 MeanRatio_MAD3    770
 14 MeanRatio_over2   770
 15 MeanRatio_top25   770
-2025-01-09 11:49:00.889648 - CIBERSORTx
+2025-01-09 14:26:25.566017 - CIBERSORTx
               1vALL_top25                      FULL                     HVG10 
 "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
                    HVG100                     HVG20                     HVG30 
@@ -179,7 +181,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 13 MeanRatio_MAD3    770
 14 MeanRatio_over2   770
 15 MeanRatio_top25   770
-2025-01-09 11:49:01.765095 - hspe
+2025-01-09 14:26:27.064018 - hspe
 # A tibble: 15 × 2
    marker              n
    <chr>           <int>
@@ -198,7 +200,7 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 13 MeanRatio_MAD3    770
 14 MeanRatio_over2   770
 15 MeanRatio_top25   770
-2025-01-09 11:49:03.078178 - BayesPrism
+2025-01-09 14:26:29.364311 - BayesPrism
 # A tibble: 15 × 2
    marker              n
    <chr>           <int>
@@ -217,17 +219,17 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
 13 MeanRatio_MAD3    770
 14 MeanRatio_over2   770
 15 MeanRatio_top25   770
-2025-01-09 11:49:07.091069 - Compile and output
+2025-01-09 14:26:35.245692 - Compile and output
 # A tibble: 7 × 2
   cell_type     n
   <chr>     <int>
-1 Astro      9570
-2 EndoMural  9570
-3 Excit      9570
-4 Inhib      9570
-5 Micro      9570
-6 OPC        9570
-7 Oligo      9570
+1 Astro      9900
+2 EndoMural  9900
+3 Excit      9900
+4 Inhib      9900
+5 Micro      9900
+6 OPC        9900
+7 Oligo      9900
 `summarise()` has grouped output by 'SAMPLE_ID', 'Sample', 'Dataset', 'BrNum',
 'pos', 'library_prep', 'method', 'marker'. You can override using the `.groups`
 argument.
@@ -236,13 +238,13 @@ Joining with `by = join_by(Dataset)`
 # A tibble: 6 × 2
   cell_type     n
   <fct>     <int>
-1 Astro      9570
-2 EndoMural  9570
-3 Micro      9570
-4 OligoOPC   9570
-5 Excit      9570
-6 Inhib      9570
-# A tibble: 87 × 3
+1 Astro      9900
+2 EndoMural  9900
+3 Micro      9900
+4 OligoOPC   9900
+5 Excit      9900
+6 Inhib      9900
+# A tibble: 90 × 3
    method     marker              n
    <chr>      <fct>           <int>
  1 BayesPrism 1vALL_top25       660
@@ -255,19 +257,19 @@ Joining with `by = join_by(Dataset)`
  8 BayesPrism HVG30             660
  9 BayesPrism HVG40             660
 10 BayesPrism HVG50             660
-# ℹ 77 more rows
+# ℹ 80 more rows
 # A tibble: 3 × 3
   `!is.na(RNAscope_prop)` `!is.na(snRNA_prop)`     n
   <lgl>                   <lgl>                <int>
-1 FALSE                   FALSE                 3654
-2 FALSE                   TRUE                 19053
-3 TRUE                    TRUE                 34713
+1 FALSE                   FALSE                 3780
+2 FALSE                   TRUE                 19710
+3 TRUE                    TRUE                 35910
 Joining with `by = join_by(Dataset)`
 Joining with `by = join_by(cell_type, Sample)`
 [1] "Reproducibility information:"
-[1] "2025-01-09 11:49:09 EST"
+[1] "2025-01-09 14:26:42 EST"
    user  system elapsed 
- 15.789   0.839  24.486 
+ 36.268   2.333  51.672 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
@@ -397,4 +399,4 @@ Joining with `by = join_by(cell_type, Sample)`
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jan  9 11:49:09 AM EST 2025
+Thu Jan  9 02:26:43 PM EST 2025
