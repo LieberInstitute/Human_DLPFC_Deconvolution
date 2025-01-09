@@ -1,23 +1,28 @@
 **** Job starts ****
-Wed Feb 28 08:52:57 AM EST 2024
+Thu Jan  9 11:48:44 AM EST 2025
 **** JHPCE info ****
 User: lhuuki
-Job id: 2818973
+Job id: 11877130
 Job name: 03_get_est_prop
-Node name: compute-153
+Node name: compute-157
 Task id: 
+Unloading conda_R/4.4.x
 Loading conda_R/4.3.x
 
+The following have been reloaded with a version change:
+  1) conda/3-24.3.0 => conda/3-23.3.1     2) conda_R/4.4.x => conda_R/4.3.x
+
+
 Currently Loaded Modules:
-  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-23.3.1
-  2) JHPCE_tools/3.0            4) conda_R/4.3.x
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) ruby/3.2.2     5) conda/3-23.3.1
+  2) JHPCE_tools/3.0            4) rmate/1.5.10   6) conda_R/4.3.x
 
  
 
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
 ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 ✔ purrr     1.0.2     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -40,91 +45,189 @@ here() starts at /dcs04/lieber/lcolladotor/deconvolution_LIBD4030/Human_DLPFC_De
  [1] "01_deconvolution_Bisque"          "02_deconvolution_MuSiC"          
  [3] "03_get_est_prop"                  "04_deconvolution_DWLS"           
  [5] "05_deconvolution_hspe"            "06_deconvolution_BayesPrism"     
- [7] "07_deconvolution_CIBERSORTx_prep" "example_data"                    
- [9] "markers_1vALL_top25.txt"          "markers_MeanRatio_MAD3.txt"      
-[11] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
-[13] "markers_top25.csv"                "markers_top25.Rdata"             
-[15] "markers_top25.txt"                "old"                             
+ [7] "07_deconvolution_CIBERSORTx_prep" "08_deconvo_plots"                
+ [9] "10_get_est_prop_subset"           "12_get_est_prop_MuSiC_cell_size" 
+[11] "15_method_runtime"                "example_data"                    
+[13] "markers_1vALL_top25.txt"          "markers_MeanRatio_MAD3.txt"      
+[15] "markers_MeanRatio_over2.txt"      "markers_MeanRatio_top25.txt"     
+[17] "markers_top25.csv"                "markers_top25.Rdata"             
+[19] "old"                             
+2025-01-09 11:48:54.20608 - DWLS
                           1vALL_top25                                  FULL 
     "est_prop_dwls-1vALL_top25.Rdata"            "est_prop_dwls-FULL.Rdata" 
-                       MeanRatio_MAD3                       MeanRatio_over2 
- "est_prop_dwls-MeanRatio_MAD3.Rdata" "est_prop_dwls-MeanRatio_over2.Rdata" 
-                      MeanRatio_top25 
-"est_prop_dwls-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
+                                HVG10                                 HVG20 
+          "est_prop_dwls-HVG10.Rdata"           "est_prop_dwls-HVG20.Rdata" 
+                                HVG30                                 HVG40 
+          "est_prop_dwls-HVG30.Rdata"           "est_prop_dwls-HVG40.Rdata" 
+                                HVG50                                 HVG60 
+          "est_prop_dwls-HVG50.Rdata"           "est_prop_dwls-HVG60.Rdata" 
+                                HVG70                        MeanRatio_MAD3 
+          "est_prop_dwls-HVG70.Rdata"  "est_prop_dwls-MeanRatio_MAD3.Rdata" 
+                      MeanRatio_over2                       MeanRatio_top25 
+"est_prop_dwls-MeanRatio_over2.Rdata" "est_prop_dwls-MeanRatio_top25.Rdata" 
+# A tibble: 12 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG20             770
+ 5 HVG30             770
+ 6 HVG40             770
+ 7 HVG50             770
+ 8 HVG60             770
+ 9 HVG70             770
+10 MeanRatio_MAD3    770
+11 MeanRatio_over2   770
+12 MeanRatio_top25   770
+2025-01-09 11:48:54.584904 - Bisque
                             1vALL_top25                                    FULL 
     "est_prop_bisque-1vALL_top25.Rdata"            "est_prop_bisque-FULL.Rdata" 
+                                  HVG10                                  HVG100 
+          "est_prop_bisque-HVG10.Rdata"          "est_prop_bisque-HVG100.Rdata" 
+                                  HVG20                                   HVG30 
+          "est_prop_bisque-HVG20.Rdata"           "est_prop_bisque-HVG30.Rdata" 
+                                  HVG40                                   HVG50 
+          "est_prop_bisque-HVG40.Rdata"           "est_prop_bisque-HVG50.Rdata" 
+                                  HVG60                                   HVG70 
+          "est_prop_bisque-HVG60.Rdata"           "est_prop_bisque-HVG70.Rdata" 
+                                  HVG80                                   HVG90 
+          "est_prop_bisque-HVG80.Rdata"           "est_prop_bisque-HVG90.Rdata" 
                          MeanRatio_MAD3                         MeanRatio_over2 
  "est_prop_bisque-MeanRatio_MAD3.Rdata" "est_prop_bisque-MeanRatio_over2.Rdata" 
                         MeanRatio_top25 
 "est_prop_bisque-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
+# A tibble: 15 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 11:48:58.040726 - MuSiC
                            1vALL_top25                                   FULL 
     "est_prop_music-1vALL_top25.Rdata"            "est_prop_music-FULL.Rdata" 
+                                 HVG10                                 HVG100 
+          "est_prop_music-HVG10.Rdata"          "est_prop_music-HVG100.Rdata" 
+                                 HVG20                                  HVG30 
+          "est_prop_music-HVG20.Rdata"           "est_prop_music-HVG30.Rdata" 
+                                 HVG40                                  HVG50 
+          "est_prop_music-HVG40.Rdata"           "est_prop_music-HVG50.Rdata" 
+                                 HVG60                                  HVG70 
+          "est_prop_music-HVG60.Rdata"           "est_prop_music-HVG70.Rdata" 
+                                 HVG80                                  HVG90 
+          "est_prop_music-HVG80.Rdata"           "est_prop_music-HVG90.Rdata" 
                         MeanRatio_MAD3                        MeanRatio_over2 
  "est_prop_music-MeanRatio_MAD3.Rdata" "est_prop_music-MeanRatio_over2.Rdata" 
                        MeanRatio_top25 
 "est_prop_music-MeanRatio_top25.Rdata" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-              1vALL_top25                      FULL            MeanRatio_MAD3 
+# A tibble: 15 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 11:49:00.889648 - CIBERSORTx
+              1vALL_top25                      FULL                     HVG10 
 "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
-          MeanRatio_over2           MeanRatio_top25 
-"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
-# A tibble: 5 × 2
-  marker              n
-  <chr>           <int>
-1 1vALL_top25       770
-2 FULL              770
-3 MeanRatio_MAD3    770
-4 MeanRatio_over2   770
-5 MeanRatio_top25   770
+                   HVG100                     HVG20                     HVG30 
+"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
+                    HVG40                     HVG50                     HVG60 
+"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
+                    HVG70                     HVG80                     HVG90 
+"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
+           MeanRatio_MAD3           MeanRatio_over2           MeanRatio_top25 
+"CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" "CIBERSORTx_Adjusted.txt" 
+# A tibble: 15 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 11:49:01.765095 - hspe
+# A tibble: 15 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 11:49:03.078178 - BayesPrism
+# A tibble: 15 × 2
+   marker              n
+   <chr>           <int>
+ 1 1vALL_top25       770
+ 2 FULL              770
+ 3 HVG10             770
+ 4 HVG100            770
+ 5 HVG20             770
+ 6 HVG30             770
+ 7 HVG40             770
+ 8 HVG50             770
+ 9 HVG60             770
+10 HVG70             770
+11 HVG80             770
+12 HVG90             770
+13 MeanRatio_MAD3    770
+14 MeanRatio_over2   770
+15 MeanRatio_top25   770
+2025-01-09 11:49:07.091069 - Compile and output
 # A tibble: 7 × 2
   cell_type     n
   <chr>     <int>
-1 Astro      3300
-2 EndoMural  3300
-3 Excit      3300
-4 Inhib      3300
-5 Micro      3300
-6 OPC        3300
-7 Oligo      3300
+1 Astro      9570
+2 EndoMural  9570
+3 Excit      9570
+4 Inhib      9570
+5 Micro      9570
+6 OPC        9570
+7 Oligo      9570
 `summarise()` has grouped output by 'SAMPLE_ID', 'Sample', 'Dataset', 'BrNum',
 'pos', 'library_prep', 'method', 'marker'. You can override using the `.groups`
 argument.
@@ -133,162 +236,165 @@ Joining with `by = join_by(Dataset)`
 # A tibble: 6 × 2
   cell_type     n
   <fct>     <int>
-1 Astro      3300
-2 EndoMural  3300
-3 Micro      3300
-4 OligoOPC   3300
-5 Excit      3300
-6 Inhib      3300
-# A tibble: 30 × 3
+1 Astro      9570
+2 EndoMural  9570
+3 Micro      9570
+4 OligoOPC   9570
+5 Excit      9570
+6 Inhib      9570
+# A tibble: 87 × 3
    method     marker              n
-   <chr>      <chr>           <int>
+   <chr>      <fct>           <int>
  1 BayesPrism 1vALL_top25       660
  2 BayesPrism FULL              660
  3 BayesPrism MeanRatio_MAD3    660
  4 BayesPrism MeanRatio_over2   660
  5 BayesPrism MeanRatio_top25   660
- 6 Bisque     1vALL_top25       660
- 7 Bisque     FULL              660
- 8 Bisque     MeanRatio_MAD3    660
- 9 Bisque     MeanRatio_over2   660
-10 Bisque     MeanRatio_top25   660
-# ℹ 20 more rows
+ 6 BayesPrism HVG10             660
+ 7 BayesPrism HVG20             660
+ 8 BayesPrism HVG30             660
+ 9 BayesPrism HVG40             660
+10 BayesPrism HVG50             660
+# ℹ 77 more rows
 # A tibble: 3 × 3
   `!is.na(RNAscope_prop)` `!is.na(snRNA_prop)`     n
   <lgl>                   <lgl>                <int>
-1 FALSE                   FALSE                 1260
-2 FALSE                   TRUE                  6570
-3 TRUE                    TRUE                 11970
+1 FALSE                   FALSE                 3654
+2 FALSE                   TRUE                 19053
+3 TRUE                    TRUE                 34713
 Joining with `by = join_by(Dataset)`
 Joining with `by = join_by(cell_type, Sample)`
 [1] "Reproducibility information:"
-[1] "2024-02-28 08:53:20 EST"
+[1] "2025-01-09 11:49:09 EST"
    user  system elapsed 
- 12.993   0.757  20.038 
+ 15.789   0.839  24.486 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.3.2 Patched (2024-02-08 r85876)
- os       Rocky Linux 9.2 (Blue Onyx)
+ os       Rocky Linux 9.4 (Blue Onyx)
  system   x86_64, linux-gnu
  ui       X11
  language (EN)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2024-02-28
+ date     2025-01-09
  pandoc   3.1.3 @ /jhpce/shared/community/core/conda_R/4.3.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
- package              * version    date (UTC) lib source
- abind                  1.4-5      2016-07-21 [2] CRAN (R 4.3.2)
- BayesPrism           * 2.1.1      2023-12-06 [1] Github (Danko-Lab/BayesPrism@f98bd4d)
- beachmat               2.18.0     2023-10-24 [2] Bioconductor
- bigmemory            * 4.6.4      2024-01-09 [2] CRAN (R 4.3.2)
- bigmemory.sri          0.1.8      2024-01-10 [2] CRAN (R 4.3.2)
- Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
- BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
- BiocNeighbors          1.20.2     2024-01-07 [2] Bioconductor 3.18 (R 4.3.2)
- BiocParallel           1.36.0     2023-10-24 [2] Bioconductor
- BiocSingular           1.18.0     2023-10-24 [2] Bioconductor
- bit                    4.0.5      2022-11-15 [2] CRAN (R 4.3.2)
- bit64                  4.0.5      2020-08-30 [2] CRAN (R 4.3.2)
- bitops                 1.0-7      2021-04-24 [2] CRAN (R 4.3.2)
- bluster                1.12.0     2023-10-24 [2] Bioconductor
- caTools                1.18.2     2021-03-28 [2] CRAN (R 4.3.2)
- cli                    3.6.2      2023-12-11 [1] CRAN (R 4.3.2)
- cluster              * 2.1.6      2023-12-01 [3] CRAN (R 4.3.2)
- codetools              0.2-19     2023-02-01 [3] CRAN (R 4.3.2)
- colorspace             2.1-0      2023-01-23 [2] CRAN (R 4.3.2)
- crayon                 1.5.2      2022-09-29 [2] CRAN (R 4.3.2)
- DelayedArray           0.28.0     2023-10-24 [2] Bioconductor
- DelayedMatrixStats     1.24.0     2023-10-24 [2] Bioconductor
- digest                 0.6.34     2024-01-11 [2] CRAN (R 4.3.2)
- doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.3.2)
- dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
- dqrng                  0.3.2      2023-11-29 [1] CRAN (R 4.3.2)
- edgeR                  4.0.16     2024-02-18 [1] Bioconductor 3.18 (R 4.3.2)
- fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
- forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
- foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
- generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
- GenomeInfoDb           1.38.6     2024-02-08 [1] Bioconductor 3.18 (R 4.3.2)
- GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
- GenomicRanges          1.54.1     2023-10-29 [2] Bioconductor
- ggplot2              * 3.4.4      2023-10-12 [2] CRAN (R 4.3.2)
- glue                   1.7.0      2024-01-09 [2] CRAN (R 4.3.2)
- gplots                 3.1.3.1    2024-02-02 [2] CRAN (R 4.3.2)
- gridBase               0.4-7      2014-02-24 [1] CRAN (R 4.3.2)
- gtable                 0.3.4      2023-08-21 [2] CRAN (R 4.3.2)
- gtools                 3.9.5      2023-11-20 [1] CRAN (R 4.3.2)
- here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.3.2)
- hms                    1.1.3      2023-03-21 [2] CRAN (R 4.3.2)
- igraph                 2.0.1.9008 2024-02-09 [2] Github (igraph/rigraph@39158c6)
- IRanges                2.36.0     2023-10-24 [2] Bioconductor
- irlba                  2.3.5.1    2022-10-03 [2] CRAN (R 4.3.2)
- iterators              1.0.14     2022-02-05 [2] CRAN (R 4.3.2)
- KernSmooth             2.23-22    2023-07-10 [3] CRAN (R 4.3.2)
- lattice                0.22-5     2023-10-24 [3] CRAN (R 4.3.2)
- lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.3.2)
- limma                  3.58.1     2023-10-31 [2] Bioconductor
- locfit                 1.5-9.8    2023-06-11 [2] CRAN (R 4.3.2)
- lubridate            * 1.9.3      2023-09-27 [2] CRAN (R 4.3.2)
- magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.3.2)
- Matrix                 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
- MatrixGenerics         1.14.0     2023-10-24 [2] Bioconductor
- matrixStats            1.2.0      2023-12-11 [1] CRAN (R 4.3.2)
- metapod                1.10.1     2023-12-24 [2] Bioconductor 3.18 (R 4.3.2)
- munsell                0.5.0      2018-06-12 [2] CRAN (R 4.3.2)
- NMF                  * 0.27       2024-02-08 [1] CRAN (R 4.3.2)
- pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
- pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
- plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.3.2)
- purrr                * 1.0.2      2023-08-10 [2] CRAN (R 4.3.2)
- R6                     2.5.1      2021-08-19 [2] CRAN (R 4.3.2)
- RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.3.2)
- Rcpp                   1.0.12     2024-01-09 [2] CRAN (R 4.3.2)
- RCurl                  1.98-1.14  2024-01-09 [2] CRAN (R 4.3.2)
- readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.3.2)
- registry             * 0.5-1      2019-03-05 [2] CRAN (R 4.3.2)
- reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.3.2)
- rlang                  1.1.3      2024-01-10 [2] CRAN (R 4.3.2)
- rngtools             * 1.5.2      2021-09-20 [2] CRAN (R 4.3.2)
- rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
- rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.3.2)
- S4Arrays               1.2.0      2023-10-24 [2] Bioconductor
- S4Vectors              0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
- ScaledMatrix           1.10.0     2023-10-24 [2] Bioconductor
- scales                 1.3.0      2023-11-28 [1] CRAN (R 4.3.2)
- scran                  1.30.2     2024-01-22 [2] Bioconductor 3.18 (R 4.3.2)
- scuttle                1.12.0     2023-10-24 [2] Bioconductor
- sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
- SingleCellExperiment   1.24.0     2023-10-24 [2] Bioconductor
- snow                 * 0.4-4      2021-10-27 [2] CRAN (R 4.3.2)
- snowfall             * 1.84-6.3   2023-11-26 [1] CRAN (R 4.3.2)
- SparseArray            1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
- sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
- statmod                1.5.0      2023-01-06 [2] CRAN (R 4.3.2)
- stringi                1.8.3      2023-12-11 [1] CRAN (R 4.3.2)
- stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
- SummarizedExperiment   1.32.0     2023-10-24 [2] Bioconductor
- synchronicity        * 1.3.10     2024-01-10 [2] CRAN (R 4.3.2)
- tibble               * 3.2.1      2023-03-20 [2] CRAN (R 4.3.2)
- tidyr                * 1.3.1      2024-01-24 [2] CRAN (R 4.3.2)
- tidyselect             1.2.0      2022-10-10 [2] CRAN (R 4.3.2)
- tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.3.2)
- timechange             0.3.0      2024-01-18 [2] CRAN (R 4.3.2)
- tzdb                   0.4.0      2023-05-12 [2] CRAN (R 4.3.2)
- utf8                   1.2.4      2023-10-22 [2] CRAN (R 4.3.2)
- uuid                   1.2-0      2024-01-14 [2] CRAN (R 4.3.2)
- vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.3.2)
- vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.3.2)
- withr                  3.0.0      2024-01-16 [2] CRAN (R 4.3.2)
- XVector                0.42.0     2023-10-24 [2] Bioconductor
- zlibbioc               1.48.0     2023-10-24 [2] Bioconductor
+ ! package              * version    date (UTC) lib source
+   abind                  1.4-5      2016-07-21 [2] CRAN (R 4.3.2)
+   BayesPrism           * 2.1.1      2023-12-06 [1] Github (Danko-Lab/BayesPrism@f98bd4d)
+   beachmat               2.18.1     2024-02-14 [1] Bioconductor 3.18 (R 4.3.2)
+   bigmemory            * 4.6.4      2024-01-09 [2] CRAN (R 4.3.2)
+   bigmemory.sri          0.1.8      2024-01-10 [2] CRAN (R 4.3.2)
+   Biobase              * 2.62.0     2023-10-24 [2] Bioconductor
+   BiocGenerics         * 0.48.1     2023-11-01 [2] Bioconductor
+   BiocManager            1.30.25    2024-08-28 [1] CRAN (R 4.3.2)
+   BiocNeighbors          1.20.2     2024-01-07 [2] Bioconductor 3.18 (R 4.3.2)
+   BiocParallel           1.36.0     2023-10-24 [2] Bioconductor
+   BiocSingular           1.18.0     2023-10-24 [2] Bioconductor
+   bit                    4.0.5      2022-11-15 [2] CRAN (R 4.3.2)
+   bit64                  4.0.5      2020-08-30 [2] CRAN (R 4.3.2)
+   bitops                 1.0-8      2024-07-29 [1] CRAN (R 4.3.2)
+   bluster                1.12.0     2023-10-24 [2] Bioconductor
+   caTools                1.18.2     2021-03-28 [2] CRAN (R 4.3.2)
+   cli                    3.6.3      2024-06-21 [1] CRAN (R 4.3.2)
+   cluster              * 2.1.6      2023-12-01 [3] CRAN (R 4.3.2)
+   codetools              0.2-19     2023-02-01 [3] CRAN (R 4.3.2)
+   colorspace             2.1-1      2024-07-26 [1] CRAN (R 4.3.2)
+   crayon                 1.5.3      2024-06-20 [1] CRAN (R 4.3.2)
+   DelayedArray           0.28.0     2023-10-24 [2] Bioconductor
+   DelayedMatrixStats     1.24.0     2023-10-24 [2] Bioconductor
+   digest                 0.6.37     2024-08-19 [1] CRAN (R 4.3.2)
+   doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.3.2)
+   dplyr                * 1.1.4      2023-11-17 [2] CRAN (R 4.3.2)
+   dqrng                  0.4.1      2024-05-28 [1] CRAN (R 4.3.2)
+   edgeR                  4.0.16     2024-02-18 [1] Bioconductor 3.18 (R 4.3.2)
+   fansi                  1.0.6      2023-12-08 [1] CRAN (R 4.3.2)
+   forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.3.2)
+   foreach                1.5.2      2022-02-02 [2] CRAN (R 4.3.2)
+   generics               0.1.3      2022-07-05 [2] CRAN (R 4.3.2)
+ R GenomeInfoDb           1.38.5     <NA>       [2] <NA>
+   GenomeInfoDbData       1.2.11     2024-02-09 [2] Bioconductor
+   GenomicRanges          1.54.1     2023-10-29 [2] Bioconductor
+   ggplot2              * 3.5.1      2024-04-23 [1] CRAN (R 4.3.2)
+   glue                   1.7.0      2024-01-09 [2] CRAN (R 4.3.2)
+   gplots                 3.1.3.1    2024-02-02 [2] CRAN (R 4.3.2)
+   gridBase               0.4-7      2014-02-24 [1] CRAN (R 4.3.2)
+   gtable                 0.3.5      2024-04-22 [1] CRAN (R 4.3.2)
+   gtools                 3.9.5      2023-11-20 [1] CRAN (R 4.3.2)
+   here                 * 1.0.1      2020-12-13 [2] CRAN (R 4.3.2)
+   hms                    1.1.3      2023-03-21 [2] CRAN (R 4.3.2)
+ R igraph                 2.0.1.9008 <NA>       [2] <NA>
+   IRanges                2.36.0     2023-10-24 [2] Bioconductor
+   irlba                  2.3.5.1    2022-10-03 [2] CRAN (R 4.3.2)
+   iterators              1.0.14     2022-02-05 [2] CRAN (R 4.3.2)
+   KernSmooth             2.23-22    2023-07-10 [3] CRAN (R 4.3.2)
+   lattice                0.22-5     2023-10-24 [3] CRAN (R 4.3.2)
+   lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.3.2)
+   limma                  3.58.1     2023-10-31 [2] Bioconductor
+   locfit                 1.5-9.10   2024-06-24 [1] CRAN (R 4.3.2)
+   lubridate            * 1.9.3      2023-09-27 [2] CRAN (R 4.3.2)
+   magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.3.2)
+   Matrix                 1.6-5      2024-01-11 [3] CRAN (R 4.3.2)
+   MatrixGenerics         1.14.0     2023-10-24 [2] Bioconductor
+   matrixStats            1.4.0      2024-09-04 [1] CRAN (R 4.3.2)
+   metapod                1.10.1     2023-12-24 [2] Bioconductor 3.18 (R 4.3.2)
+   munsell                0.5.1      2024-04-01 [1] CRAN (R 4.3.2)
+   NMF                  * 0.28       2024-08-22 [1] CRAN (R 4.3.2)
+   pillar                 1.9.0      2023-03-22 [2] CRAN (R 4.3.2)
+   pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.3.2)
+   plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.3.2)
+   purrr                * 1.0.2      2023-08-10 [2] CRAN (R 4.3.2)
+   R6                     2.5.1      2021-08-19 [2] CRAN (R 4.3.2)
+   RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.3.2)
+   Rcpp                   1.0.13     2024-07-17 [1] CRAN (R 4.3.2)
+   RCurl                  1.98-1.16  2024-07-11 [1] CRAN (R 4.3.2)
+   readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.3.2)
+   registry             * 0.5-1      2019-03-05 [2] CRAN (R 4.3.2)
+   reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.3.2)
+   rlang                  1.1.4      2024-06-04 [1] CRAN (R 4.3.2)
+   rngtools             * 1.5.2      2021-09-20 [2] CRAN (R 4.3.2)
+   rprojroot              2.0.4      2023-11-05 [2] CRAN (R 4.3.2)
+   rsvd                   1.0.5      2021-04-16 [2] CRAN (R 4.3.2)
+   S4Arrays               1.2.1      2024-03-04 [1] Bioconductor 3.18 (R 4.3.2)
+   S4Vectors              0.40.2     2023-11-23 [1] Bioconductor 3.18 (R 4.3.2)
+   ScaledMatrix           1.10.0     2023-10-24 [2] Bioconductor
+   scales                 1.3.0      2023-11-28 [1] CRAN (R 4.3.2)
+   scran                  1.30.2     2024-01-22 [2] Bioconductor 3.18 (R 4.3.2)
+   scuttle                1.12.0     2023-10-24 [2] Bioconductor
+   sessioninfo          * 1.2.2      2021-12-06 [2] CRAN (R 4.3.2)
+   SingleCellExperiment   1.24.0     2023-10-24 [2] Bioconductor
+   snow                 * 0.4-4      2021-10-27 [2] CRAN (R 4.3.2)
+   snowfall             * 1.84-6.3   2023-11-26 [1] CRAN (R 4.3.2)
+   SparseArray            1.2.4      2024-02-11 [1] Bioconductor 3.18 (R 4.3.2)
+   sparseMatrixStats      1.14.0     2023-10-24 [2] Bioconductor
+   statmod                1.5.0      2023-01-06 [2] CRAN (R 4.3.2)
+   stringi                1.8.4      2024-05-06 [1] CRAN (R 4.3.2)
+   stringr              * 1.5.1      2023-11-14 [2] CRAN (R 4.3.2)
+   SummarizedExperiment   1.32.0     2023-10-24 [2] Bioconductor
+   synchronicity        * 1.3.10     2024-01-10 [2] CRAN (R 4.3.2)
+   tibble               * 3.2.1      2023-03-20 [2] CRAN (R 4.3.2)
+   tidyr                * 1.3.1      2024-01-24 [2] CRAN (R 4.3.2)
+   tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.3.2)
+   tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.3.2)
+   timechange             0.3.0      2024-01-18 [2] CRAN (R 4.3.2)
+   tzdb                   0.4.0      2023-05-12 [2] CRAN (R 4.3.2)
+   utf8                   1.2.4      2023-10-22 [2] CRAN (R 4.3.2)
+   uuid                   1.2-1      2024-07-29 [1] CRAN (R 4.3.2)
+   vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.3.2)
+   vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.3.2)
+   withr                  3.0.1      2024-07-31 [1] CRAN (R 4.3.2)
+   XVector                0.42.0     2023-10-24 [2] Bioconductor
+   zlibbioc               1.48.2     2024-03-13 [1] Bioconductor 3.18 (R 4.3.2)
 
  [1] /users/lhuuki/R/4.3.x
  [2] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/site-library
  [3] /jhpce/shared/community/core/conda_R/4.3.x/R/lib64/R/library
 
+ R ── Package was removed from disk.
+
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb 28 08:53:21 AM EST 2024
+Thu Jan  9 11:49:09 AM EST 2025
