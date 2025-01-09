@@ -173,7 +173,10 @@ prop_long <- prop_long_opc |>
   left_join(dataset_lt) |> 
   mutate(rna_extract = gsub("Bulk", "Total", library_prep),
          library_combo = paste0(library_type, "_",rna_extract),
-         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","OligoOPC","Excit","Inhib")))
+         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","OligoOPC","Excit","Inhib")),
+         marker = factor(marker, 
+                         levels = c("1vALL_top25", "FULL","MeanRatio_MAD3", "MeanRatio_over2", "MeanRatio_top25",
+                                    sprintf("HVG%d0", seq(1,10)))))
 
 prop_long |> count(cell_type)
 prop_long |> count(method, marker)
@@ -188,7 +191,11 @@ prop_long_opc <- prop_long_opc |>
   left_join(sn_prop_opc) |>
   mutate(rna_extract = gsub("Bulk", "Total", library_prep),
          library_combo = paste0(library_type, "_",rna_extract),
-         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","Oligo","OPC","Excit","Inhib")))
+         cell_type = factor(cell_type, levels = c("Astro","EndoMural","Micro","Oligo","OPC","Excit","Inhib")),
+         marker = factor(marker, 
+                          levels = c("1vALL_top25", "FULL","MeanRatio_MAD3", "MeanRatio_over2", "MeanRatio_top25",
+                          sprintf("HVG%d0", seq(1,10))))
+  )
 
 ## export this data
 save(prop_long_opc, prop_long, file = here(data_dir, "prop_long.Rdata"))
