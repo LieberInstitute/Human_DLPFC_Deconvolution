@@ -73,7 +73,7 @@ job_report_df |> count(name, exit_code)
 # 5 06_deconvolution_BayesPrism_HVG         0    10
 # 6 07_deconvolution_CIBERSORTx_HVG         0    10
 
-write.csv(job_report_df, file = hrer(data_dir, "deconvolution_HVG_job_report.csv"))
+write.csv(job_report_df, file = here(data_dir, "deconvolution_HVG_job_report.csv"))
 
 #### run time & memory vs. n gene ####
 
