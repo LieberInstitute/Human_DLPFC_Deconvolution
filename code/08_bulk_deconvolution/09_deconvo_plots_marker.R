@@ -8,10 +8,15 @@ library("survival")
 library("viridis")
 library("GGally")
 library("patchwork")
+library("ggrepel")
+library("broom")
 
-## prep dirs ##
+#### prep dirs & plot info ####
 plot_dir <- here("plots", "08_bulk_deconvolution", "09_deconvo_plots_marker")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+data_dir <- here("processed-data", "08_bulk_deconvolution", "09_deconvo_plots_marker")
+if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 ## load colors
 load(here("processed-data","00_data_prep","cell_colors.Rdata"), verbose = TRUE)
@@ -31,9 +36,15 @@ prop_long |>  count(method, marker)|> count(marker)
 prop_long |>  filter(!is.na(RNAscope_prop)) |> count(method, marker)
 prop_long |> count(cell_type)
 
-## get n marker genes
+#### get n marker genes ####
 marker_list <- list.files(here("processed-data","08_bulk_deconvolution"), pattern = "markers_.*.txt", full.names = TRUE)
 names(marker_list) <- gsub("markers_|.txt", "", basename(marker_list))
+
+## HVG files
+hvg_files <- here("processed-data", "06_marker_genes", sprintf("09_HVGs/HVG%d0.txt", seq(1,10)))
+names(hvg_files) <- sprintf("HVG%d0", seq(1,10))
+
+marker_list <- c(marker_list, hvg_files)
 
 n_markers <- c(map_int(marker_list, ~length(scan(.x, what="", sep="\n"))), FULL = 17804)
 
@@ -49,13 +60,13 @@ n_marker_tb <- tibble(marker = names(n_markers), n_markers =n_markers) |>
 
 #### compare to RNAscope ####
 
-#### correlation ####
-
 concordance <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   group_by(method, marker) |> 
   group_map(~survival::concordance(RNAscope_prop~prop, data = .x)$concordance) |>
   unlist()
+
+## Overall correlation
 
 (cor_check <- prop_long |>
     filter(!is.na(RNAscope_prop)) |>
@@ -67,22 +78,30 @@ concordance <- prop_long |>
     add_column(concordance = concordance) |>
     mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)))|>
     arrange(-cor) |>
-    left_join(n_marker_tb))
-# method     marker            cor  rmse cor_anno               
-# <chr>      <chr>           <dbl> <dbl> <chr>                  
-#   1 hspe       MeanRatio_over2 0.596 0.215 "cor:0.596\nrmse:0.215"
-# 2 hspe       1vALL_top25     0.586 0.206 "cor:0.586\nrmse:0.206"
-# 3 hspe       MeanRatio_MAD3  0.585 0.212 "cor:0.585\nrmse:0.212"
-# 4 CIBERSORTx MeanRatio_over2 0.564 0.202 "cor:0.564\nrmse:0.202"
-# 5 CIBERSORTx FULL            0.553 0.171 "cor:0.553\nrmse:0.171"
-# 6 CIBERSORTx MeanRatio_MAD3  0.547 0.198 "cor:0.547\nrmse:0.198"
-# 7 Bisque     MeanRatio_top25 0.538 0.141 "cor:0.538\nrmse:0.141"
-# 8 hspe       MeanRatio_top25 0.532 0.143 "cor:0.532\nrmse:0.143"
-# 9 Bisque     FULL            0.524 0.142 "cor:0.524\nrmse:0.142"
-# 10 Bisque     1vALL_top25     0.508 0.150 "cor:0.508\nrmse:0.150"
+    left_join(n_marker_tb)  |>
+    mutate(marker = factor(marker, 
+                           levels = c("FULL", "1vALL_top25", "MeanRatio_MAD3", "MeanRatio_over2", "MeanRatio_top25",
+                                      sprintf("HVG%d0", seq(1,10)))))
+)
+# method     marker            cor cor_spearman  rmse concordance cor_anno                n_markers
+# <chr>      <fct>           <dbl>        <dbl> <dbl>       <dbl> <chr>                       <dbl>
+#   1 CIBERSORTx HVG10           0.598        0.535 0.200       0.690 "cor:0.598\nrmse:0.200"       811
+# 2 hspe       MeanRatio_over2 0.596        0.518 0.215       0.687 "cor:0.596\nrmse:0.215"       557
+# 3 CIBERSORTx HVG30           0.590        0.488 0.191       0.667 "cor:0.590\nrmse:0.191"      2434
+# 4 CIBERSORTx HVG20           0.590        0.465 0.187       0.657 "cor:0.590\nrmse:0.187"      1623
+# 5 hspe       1vALL_top25     0.586        0.458 0.206       0.665 "cor:0.586\nrmse:0.206"       145
+# 6 hspe       MeanRatio_MAD3  0.585        0.402 0.212       0.640 "cor:0.585\nrmse:0.212"       520
+# 7 CIBERSORTx HVG40           0.577        0.498 0.167       0.667 "cor:0.577\nrmse:0.167"      3245
+# 8 CIBERSORTx HVG80           0.576        0.469 0.184       0.662 "cor:0.576\nrmse:0.184"      6490
+# 9 CIBERSORTx HVG100          0.575        0.473 0.191       0.658 "cor:0.575\nrmse:0.191"      8113
+# 10 CIBERSORTx HVG50           0.570        0.474 0.178       0.660 "cor:0.570\nrmse:0.178"      4056
 
+## plot spearman's vs. pearson's correlation
+
+cor_check |> arrange(-cor_spearman)
 
 cor_method_scatter <- cor_check |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(cor, cor_spearman, color = method, shape = marker)) +
   geom_point() +
   scale_color_manual(values = method_colors) +
@@ -92,7 +111,21 @@ cor_method_scatter <- cor_check |>
 
 ggsave(cor_method_scatter, filename = here(plot_dir, "Correlation_method_scatter.png"), height = 5)
 
+cor_method_scatter_HVG <- cor_check |>
+  filter(!grepl("HVG", marker)) |>
+  ggplot(aes(cor, cor_spearman, color = method)) +
+  geom_point() +
+  geom_text_repel(aes(label = marker), size = 2) +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  coord_equal() +
+  geom_abline()
+
+ggsave(cor_method_scatter_HVG, filename = here(plot_dir, "Correlation_method_scatter_HVG.png"), height = 5)
+
+## concordance vs. correlation
 cor_concord_scatter <- cor_check |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(cor, concordance, color = method, shape = marker)) +
   geom_point() +
   scale_color_manual(values = method_colors) +
@@ -100,6 +133,7 @@ cor_concord_scatter <- cor_check |>
   theme(legend.position = "None")
 
 cor_spear_concord_scatter <- cor_check |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(cor_spearman, concordance, color = method, shape = marker)) +
   geom_point() +
   scale_color_manual(values = method_colors) +
@@ -107,21 +141,39 @@ cor_spear_concord_scatter <- cor_check |>
 
 ggsave(cor_concord_scatter + cor_spear_concord_scatter, filename = here(plot_dir, "Correlation_Concordance_scatter.png"), height = 5, width = 9)
 
-cor_check |> arrange(-cor_spearman)
-
-## factor method by overall cor in FULL
+## factor method by overall cor from MeanRatio_top25
 method_levels <- cor_check |> filter(marker == "MeanRatio_top25") |> arrange(cor) |> pull(method)
 
 cor_check$method <- factor(cor_check$method, levels = method_levels)
 prop_long$method <- factor(prop_long$method, levels = method_levels)
 
+## plot overall cor vs. rmse
+cor_rmse_scater_overall <- cor_check |>
+  ggplot(aes(x= cor, y = rmse, shape= method, color = marker)) +
+  geom_point(size = 2) +
+  theme_bw() 
+
+ggsave(cor_rmse_scater_overall, filename = here(plot_dir, "cor_rmse_scater_overall.png"), width = 9, height =7)
+ggsave(cor_rmse_scater_overall, filename = here(plot_dir, "cor_rmse_scater.pdf"), width = 10, height = 3.4)
+
+## text version
+# cor_check |>
+#   mutate(method_short = ifelse(substring(method, 1,1) == "B", 
+#                                substring(method, 1,2), 
+#                                substring(method, 1,1))) |>
+#   ggplot(aes(x= cor, y = rmse, color = marker)) +
+#   geom_text(aes(label = method_short)) +
+#   theme_bw() 
+
+
+#### Correlation by library type ####
 concordance_library <- prop_long |>
   filter(!is.na(RNAscope_prop)) |>
   group_by(method, marker, library_combo) |> 
   group_map(~survival::concordance(RNAscope_prop~prop, data = .x)$concordance) |>
   unlist()
 
-(cor_check_library <- prop_long |>
+cor_check_library <- prop_long |>
     filter(!is.na(RNAscope_prop)) |>
     group_by(marker, method, library_combo) |>
     summarize(cor = cor(RNAscope_prop, prop),
@@ -132,24 +184,32 @@ concordance_library <- prop_long |>
     mutate(cor_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor,3), round(rmse,3)),
            cor_spear_anno = sprintf("cor:%.3f\nrmse:%.3f", round(cor_spearman,3), round(rmse,3)),
            ) |>
-    left_join(n_marker_tb)
-)
-# marker          method     library_combo   cor  rmse cor_anno               
-# <chr>           <fct>      <chr>         <dbl> <dbl> <chr>                  
-#  1 MeanRatio_over2 hspe       polyA_Cyto    0.690 0.215 "cor:0.690\nrmse:0.215"
-# 2 MeanRatio_over2 CIBERSORTx polyA_Cyto    0.684 0.263 "cor:0.684\nrmse:0.263"
-# 3 MeanRatio_top25 Bisque     polyA_Cyto    0.683 0.123 "cor:0.683\nrmse:0.123"
-# 4 1vALL_top25     hspe       polyA_Cyto    0.670 0.205 "cor:0.670\nrmse:0.205"
-# 5 MeanRatio_MAD3  hspe       polyA_Cyto    0.669 0.213 "cor:0.669\nrmse:0.213"
-# 6 MeanRatio_MAD3  CIBERSORTx polyA_Cyto    0.655 0.246 "cor:0.655\nrmse:0.246"
-# 7 MeanRatio_MAD3  Bisque     polyA_Cyto    0.649 0.136 "cor:0.649\nrmse:0.136"
-# 8 MeanRatio_top25 CIBERSORTx polyA_Cyto    0.645 0.185 "cor:0.645\nrmse:0.185"
-# 9 MeanRatio_over2 Bisque     polyA_Cyto    0.644 0.139 "cor:0.644\nrmse:0.139"
-# 10 1vALL_top25     Bisque     polyA_Cyto    0.619 0.136 "cor:0.619\nrmse:0.136"
+    left_join(n_marker_tb) |>
+    mutate(marker = factor(marker, 
+                           levels = c("FULL","1vALL_top25","MeanRatio_MAD3", "MeanRatio_over2", "MeanRatio_top25",
+                                      sprintf("HVG%d0", seq(1,10)))))
 
+cor_check_library |> select(1:6)
+# marker          method     library_combo   cor cor_spearman  rmse
+# <fct>           <fct>      <chr>         <dbl>        <dbl> <dbl>
+# 1 HVG10           CIBERSORTx polyA_Cyto    0.700        0.385 0.233
+# 2 MeanRatio_over2 hspe       polyA_Cyto    0.690        0.469 0.215
+# 3 HVG20           CIBERSORTx polyA_Cyto    0.684        0.388 0.214
+# 4 MeanRatio_over2 CIBERSORTx polyA_Cyto    0.684        0.402 0.263
+# 5 MeanRatio_top25 Bisque     polyA_Cyto    0.683        0.568 0.123
+# 6 HVG30           CIBERSORTx polyA_Cyto    0.682        0.397 0.221
+# 7 1vALL_top25     hspe       polyA_Cyto    0.670        0.375 0.205
+# 8 MeanRatio_MAD3  hspe       polyA_Cyto    0.669        0.300 0.213
+# 9 HVG10           Bisque     polyA_Cyto    0.665        0.442 0.133
+# 10 MeanRatio_MAD3  CIBERSORTx polyA_Cyto    0.655        0.173 0.246
+
+## write correlation values
+write_csv(cor_check, file = here(data_dir, "est_prop_correlation.csv"))
+write_csv(cor_check_library, file = here(data_dir, "est_prop_correlation_library.csv"))
 
 ## cor vs rmse ##
 cor_rmse_scater <- cor_check_library |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(x= cor, y = rmse, color= method, shape = library_combo)) +
   geom_point() +
   theme_bw() +
@@ -160,12 +220,25 @@ cor_rmse_scater <- cor_check_library |>
 ggsave(cor_rmse_scater, filename = here(plot_dir, "cor_rmse_scater.png"), width = 10, height = 3.4)
 ggsave(cor_rmse_scater, filename = here(plot_dir, "cor_rmse_scater.pdf"), width = 10, height = 3.4)
 
+cor_rmse_scater_HVG <- cor_check_library |>
+  filter(grepl("HVG", marker)) |>
+  ggplot(aes(x= cor, y = rmse, color= method, shape = library_combo)) +
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~marker, nrow = 2) +
+  scale_color_manual(values = method_colors) +
+  scale_shape_manual(values = library_combo_shapes2) 
+
+ggsave(cor_rmse_scater_HVG, filename = here(plot_dir, "cor_rmse_scater_HVG.png"), width = 10, height = 6)
+
 ## note several values are identical for BayesPrism - maybe use geom_jitter?
 cor_check_library |>
   filter(method == "BayesPrism") |>
   arrange(cor)
 
+## factor by method
 cor_rmse_scater_method <- cor_check_library |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(x= cor, y = rmse, color = marker, shape = library_combo)) +
   geom_point() +
   # geom_jitter(width = 0.25) +
@@ -176,20 +249,31 @@ cor_rmse_scater_method <- cor_check_library |>
 ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.png"), width = 11, height = 4)
 ggsave(cor_rmse_scater_method, filename = here(plot_dir, "cor_rmse_scater_method.pdf"), width = 11, height = 4)
 
+cor_rmse_scater_method_HVG <- cor_check_library |>
+  ggplot(aes(x= cor, y = rmse, color = marker, shape = library_combo)) +
+  geom_point() +
+  # geom_jitter(width = 0.25) +
+  theme_bw() +
+  facet_wrap(~method, nrow = 1) +
+  scale_shape_manual(values = library_combo_shapes2) 
+  
+ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.png"), width = 12, height = 6)
+ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.pdf"), width = 12, height = 6)
+
 ## cor check line/rank plot
 cor_rmse_line <- cor_check_library |>
+  filter(marker %in% c('FULL', "1vALL_top25", "MeanRatio_top25")) |>
   mutate(group = paste(method, marker)) |>
   ggplot(aes(x = library_combo, y = cor, color= method)) +
   geom_point(aes(size = 1/rmse), alpha = .7) +
   geom_line(aes(group = group, linetype = marker)) +
-  # geom_line(aes(group = group)) +
   scale_size(range = c(1,8)) +
   theme_bw() +
   scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction")
 
-ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.png"), width = 10, height = 3.4)
-ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.pdf"), width = 10, height = 3.4)
+ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.png"), width = 10, height = 5)
+ggsave(cor_rmse_line, filename = here(plot_dir, "cor_rmse_line_markers.pdf"), width = 10, height = 5)
 
 cor_rmse_line_facet <- cor_check_library |>
   ggplot(aes(x = library_combo, y = cor, color= method)) +
@@ -198,16 +282,15 @@ cor_rmse_line_facet <- cor_check_library |>
   scale_size(range = c(1,8)) +
   theme_bw() +
   scale_color_manual(values = method_colors) +
-  # scale_linetype_manual(values=c(FULL = "solid", `1vALL_top25` = "dotted", `MeanRatio_top25` = "longdash")) +
   labs(x = "Library Type + RNA Extraction") +
-  facet_wrap(~marker, ncol = 1)
+  facet_wrap(~marker, ncol = 2)
 
-ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.png"), width = 10, height = 9)
-ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.pdf"), width = 10, height = 9)
+ggsave(cor_rmse_line_facet, filename = here(plot_dir, "cor_rmse_line_markers_facet.png"), width = 15, height = 15)
 
 
 cor_rmse_line_facet2 <- cor_check_library |>
   filter(marker != "MeanRatio_top25") |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(x = library_combo, y = cor, color= method)) +
   geom_point(aes(size = cor), alpha = .7) +
   geom_line(aes(group = method)) +
@@ -223,6 +306,7 @@ ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_fa
 ggsave(cor_rmse_line_facet2, filename = here(plot_dir, "cor_rmse_line_markers_facet2.pdf"), width = 10, height = 9)
 
 rmse_line_facet <- cor_check_library |>
+  filter(!grepl("HVG", marker)) |>
   ggplot(aes(x = library_combo, y = rmse, color= method)) +
   geom_point(aes(size = cor), alpha = .7) +
   geom_line(aes(group = method)) +
@@ -238,9 +322,9 @@ ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.png")
 ggsave(rmse_line_facet, filename = here(plot_dir, "rmse_line_markers_facet.pdf"), width = 10, height = 7)
 
 ## spearman line rank
-
 cor_spear_rmse_line_top25 <- cor_check_library |>
   filter(marker == "MeanRatio_top25") |>
+  filter(!grepl("HVG", marker)) |>
   mutate(group = paste(method, marker)) |>
   ggplot(aes(x = library_combo, y = cor_spearman, color= method)) +
   geom_point(aes(size = rmse), alpha = .7) +
@@ -255,42 +339,40 @@ ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line
 ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line_top25.pdf"), width = 10, height = 3.4)
 
 
-
 #### corelation vs. n markers ####
 # stats about terms
 cor_check |>
   do(tidy(lm(cor~n_markers,.)))
-# method     term            estimate  std.error statistic    p.value
-# <chr>      <chr>              <dbl>      <dbl>     <dbl>      <dbl>
-#   1 BayesPrism (Intercept)  0.0104      0.0110         0.941 0.416     
-# 2 BayesPrism n_markers    0.0000234   0.00000138    17.0   0.000446  
-# 3 Bisque     (Intercept)  0.515       0.00804       64.0   0.00000840
-# 4 Bisque     n_markers    0.000000503 0.00000101     0.498 0.652     
-# 5 CIBERSORTx (Intercept)  0.524       0.0178        29.4   0.0000865 
-# 6 CIBERSORTx n_markers    0.00000165  0.00000224     0.738 0.514     
-# 7 DWLS       (Intercept)  0.175       0.0948         1.85  0.161     
-# 8 DWLS       n_markers   -0.00000723  0.0000119     -0.608 0.586     
-# 9 MuSiC      (Intercept)  0.283       0.0963         2.94  0.0603    
-# 10 MuSiC      n_markers   -0.0000278   0.0000121     -2.31  0.104     
-# 11 hspe       (Intercept)  0.580       0.0160        36.3   0.0000460 
-# 12 hspe       n_markers   -0.0000165   0.00000201    -8.23  0.00376 
+# method     term            estimate   std.error statistic  p.value
+# <chr>      <chr>              <dbl>       <dbl>     <dbl>    <dbl>
+#   1 BayesPrism (Intercept) -0.0774      0.0291         -2.66  1.96e- 2
+# 2 BayesPrism n_markers    0.0000203   0.00000472      4.30  8.65e- 4 ***
+# 3 Bisque     (Intercept)  0.508       0.00464       109.    1.16e-20
+# 4 Bisque     n_markers    0.000000572 0.000000753     0.760 4.61e- 1
+# 5 CIBERSORTx (Intercept)  0.557       0.0111         50.3   2.77e-16
+# 6 CIBERSORTx n_markers    0.000000981 0.00000179      0.547 5.94e- 1
+# 7 DWLS       (Intercept)  0.150       0.0360          4.17  1.09e- 3
+# 8 DWLS       n_markers   -0.0000101   0.00000583     -1.73  1.07e- 1
+# 9 MuSiC      (Intercept)  0.0462      0.0726          0.636 5.36e- 1
+# 10 MuSiC      n_markers   -0.0000232   0.0000118      -1.97  7.02e- 2
+# 11 hspe       (Intercept)  0.345       0.0836          4.12  1.20e- 3
+# 12 hspe       n_markers   -0.0000284   0.0000136      -2.09  5.67e- 2
 
 # summary statistics for the entire regression, such as R^2 and the F-statistic.
 cor_check |>
   summarise(glance(lm(cor~n_markers)))
-# method     r.squared adj.r.squared  sigma statistic  p.value    df logLik     AIC     BIC deviance df.residual  nobs
-# <chr>          <dbl>         <dbl>  <dbl>     <dbl>    <dbl> <dbl>  <dbl>   <dbl>   <dbl>    <dbl>       <int> <int>
-# 1 BayesPrism    0.990          0.986 0.0216   288.    0.000446     1  13.4  -20.7   -21.9   0.00140            3     5
-# 2 Bisque        0.0765        -0.231 0.0158     0.248 0.652        1  14.9  -23.9   -25.0   0.000745           3     5
-# 3 CIBERSORTx    0.154         -0.128 0.0350     0.545 0.514        1  10.9  -15.9   -17.1   0.00367            3     5
-# 4 DWLS          0.110         -0.187 0.186      0.369 0.586        1   2.60   0.805  -0.366 0.104              3     5
-# 5 MuSiC         0.639          0.519 0.189      5.31  0.104        1   2.52   0.961  -0.211 0.107              3     5
-# 6 hspe          0.958          0.943 0.0313    67.7   0.00376      1  11.5  -17.0   -18.2   0.00295            3     5
-
+# method     r.squared adj.r.squared  sigma statistic  p.value    df logLik    AIC     BIC deviance df.residual  nobs
+# <chr>          <dbl>         <dbl>  <dbl>     <dbl>    <dbl> <dbl>  <dbl>  <dbl>   <dbl>    <dbl>       <int> <int>
+# 1 BayesPrism    0.587         0.555  0.0817    18.5   0.000865     1  17.4  -28.7  -26.6    0.0867           13    15 ***
+# 2 Bisque        0.0425       -0.0311 0.0130     0.577 0.461        1  44.9  -83.8  -81.7    0.00221          13    15
+# 3 CIBERSORTx    0.0225       -0.0527 0.0311     0.299 0.594        1  31.9  -57.7  -55.6    0.0125           13    15
+# 4 DWLS          0.187         0.124  0.101      2.99  0.107        1  14.2  -22.4  -20.2    0.133            13    15
+# 5 MuSiC         0.230         0.171  0.204      3.89  0.0702       1   3.65  -1.29   0.831  0.540            13    15
+# 6 hspe          0.252         0.194  0.235      4.37  0.0567       1   1.53   2.94   5.06   0.716            13    15
 
 cor_n_marker_scatter <- 
   ggplot(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
-  geom_smooth() +
+  # geom_smooth() +
   geom_point(size = 2) +
   scale_color_manual(values = method_colors) +
   theme_bw()
@@ -298,10 +380,10 @@ cor_n_marker_scatter <-
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
 
-cor_n_marker_scatter_r2 <-  ggplot(data = cor_check, aes(x = n_markers, y = cor, color = method)) + 
+cor_n_marker_scatter_r2 <- ggplot(data = cor_check, aes(x = n_markers, y = cor, color = method)) + 
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) +
-  stat_regline_equation(label.x = with(cor_check,tapply(n_markers,method,quantile,.6)),
+  ggpubr::stat_regline_equation(label.x = with(cor_check,tapply(n_markers,method,quantile,.6)),
                         label.y = with(cor_check,tapply(cor,method,max)- 0.2),
                         aes(label = ..adj.rr.label..),
                         show.legend = FALSE) +
@@ -333,18 +415,37 @@ cor_n_marker_scatter_log <-
 ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter_log.png"), width = 10)
 ggsave(cor_n_marker_scatter_log, filename = here(plot_dir, "cor_n_marker_scatter_log.pdf"), width = 10)
 
+cor_check |>
+  filter(method == "hspe") |>
+  mutate(gene_set = paste0(marker, " (", n_markers, ")"),
+         gene_set = fct_reorder(gene_set, n_markers, .na_rm = FALSE)) |>
+    arrange(gene_set)
+
 cor_marker_scatter <- cor_check |>
-  mutate(marker = fct_reorder(paste0(marker, " (", n_markers, ")"), n_markers)) |>
-  ggplot(aes(x = marker, y = cor, color= method)) +
+  mutate(gene_set = fct_reorder(paste0(marker, " (", n_markers, ")"), n_markers)) |>
+  ggplot(aes(x = gene_set, y = cor, color= method)) +
   geom_point(size = 2) +
   geom_line(aes(group = method)) +
   # geom_smooth() + # not working because marker is a factor - fix
   scale_color_manual(values = method_colors) +
-  theme_bw() 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.png"), width = 10)
 ggsave(cor_marker_scatter, filename = here(plot_dir, "cor_marker_scatter.pdf"), width = 10)
 
+
+rmse_marker_scatter <- cor_check |>
+  mutate(gene_set = fct_reorder(paste0(marker, " (", n_markers, ")"), n_markers)) |>
+  ggplot(aes(x = gene_set, y = rmse, color= method)) +
+  geom_point(size = 2) +
+  geom_line(aes(group = method)) +
+  # geom_smooth() + # not working because marker is a factor - fix
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggsave(rmse_marker_scatter, filename = here(plot_dir, "rmse_marker_scatter.png"), width = 10)
 
 
 cor_n_marker_library_scatter <- cor_check_library |>
@@ -359,8 +460,6 @@ cor_n_marker_library_scatter <- cor_check_library |>
   coord_trans(x = "log10")
 
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"))
-
-
 
 
 #### proportion data ####
