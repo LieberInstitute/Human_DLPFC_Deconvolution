@@ -255,10 +255,11 @@ cor_rmse_scater_method_HVG <- cor_check_library |>
   # geom_jitter(width = 0.25) +
   theme_bw() +
   facet_wrap(~method, nrow = 1) +
-  scale_shape_manual(values = library_combo_shapes2) 
+  scale_shape_manual(values = library_combo_shapes2) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
   
-ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.png"), width = 12, height = 6)
-ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.pdf"), width = 12, height = 6)
+ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.png"), width = 12.5, height = 6)
+ggsave(cor_rmse_scater_method_HVG, filename = here(plot_dir, "cor_rmse_scater_method_HVG.pdf"), width = 12.5, height = 6)
 
 ## cor check line/rank plot
 cor_rmse_line <- cor_check_library |>
@@ -341,8 +342,8 @@ ggsave(cor_spear_rmse_line_top25, filename = here(plot_dir, "cor_spear_rmse_line
 
 #### corelation vs. n markers ####
 # stats about terms
-cor_check |>
-  do(tidy(lm(cor~n_markers,.)))
+(cor_check_tidy <- cor_check |>
+  do(tidy(lm(cor~n_markers,.))))
 # method     term            estimate   std.error statistic  p.value
 # <chr>      <chr>              <dbl>       <dbl>     <dbl>    <dbl>
 #   1 BayesPrism (Intercept) -0.0774      0.0291         -2.66  1.96e- 2
@@ -358,9 +359,11 @@ cor_check |>
 # 11 hspe       (Intercept)  0.345       0.0836          4.12  1.20e- 3
 # 12 hspe       n_markers   -0.0000284   0.0000136      -2.09  5.67e- 2
 
+
+
 # summary statistics for the entire regression, such as R^2 and the F-statistic.
-cor_check |>
-  summarise(glance(lm(cor~n_markers)))
+(cor_check_summary <- cor_check |>
+  summarise(glance(lm(cor~n_markers))))
 # method     r.squared adj.r.squared  sigma statistic  p.value    df logLik    AIC     BIC deviance df.residual  nobs
 # <chr>          <dbl>         <dbl>  <dbl>     <dbl>    <dbl> <dbl>  <dbl>  <dbl>   <dbl>    <dbl>       <int> <int>
 # 1 BayesPrism    0.587         0.555  0.0817    18.5   0.000865     1  17.4  -28.7  -26.6    0.0867           13    15 ***
@@ -370,15 +373,53 @@ cor_check |>
 # 5 MuSiC         0.230         0.171  0.204      3.89  0.0702       1   3.65  -1.29   0.831  0.540            13    15
 # 6 hspe          0.252         0.194  0.235      4.37  0.0567       1   1.53   2.94   5.06   0.716            13    15
 
+anno_y <- cor_check_tidy |> 
+  select(method, term, estimate) |>
+  mutate(term = gsub("\\(|\\)", "", term)) |>
+  pivot_wider(values_from = "estimate", names_from = "term") |>
+  mutate(y_anno = (15000*n_markers) + Intercept) |>
+  left_join(cor_check_summary |> select(method, adj.r.squared, p.value)) |>
+  mutate(p_anno = ifelse(p.value < 0.05, "*", ""),
+         r2_anno = paste0("R2=", round(adj.r.squared, 2)), p_anno)
+
 cor_n_marker_scatter <- 
   ggplot(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
-  # geom_smooth() +
+  geom_smooth(method = "lm", alpha=0.2, linewidth = 0.5) +
   geom_point(size = 2) +
   scale_color_manual(values = method_colors) +
-  theme_bw()
+  theme_bw() +
+  geom_text(data = anno_y, aes(x = 15000, y = y_anno + 0.05, label = r2_anno))
 
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.png"), width = 10)
 ggsave(cor_n_marker_scatter, filename = here(plot_dir, "cor_n_marker_scatter.pdf"), width = 10)
+
+
+rmse_check_tidy <- cor_check |>
+  do(tidy(lm(rmse~n_markers,.)))
+
+rmse_check_summary <- cor_check |>
+  summarise(glance(lm(rmse~n_markers)))
+
+rmse_anno_y <- rmse_check_tidy |> 
+  select(method, term, estimate) |>
+  mutate(term = gsub("\\(|\\)", "", term)) |>
+  pivot_wider(values_from = "estimate", names_from = "term") |>
+  mutate(y_anno = (15000*n_markers) + Intercept) |>
+  left_join(rmse_check_summary |> select(method, adj.r.squared)) |>
+  mutate(r2_anno = paste0("R2=", round(adj.r.squared, 2))) 
+
+
+rmse_n_marker_scatter <- 
+  ggplot(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
+  geom_smooth(method = "lm", alpha=0.2, linewidth = 0.5) +
+  geom_point(size = 2) +
+  scale_color_manual(values = method_colors) +
+  theme_bw() +
+  geom_text(data = rmse_anno_y, aes(x = 15000, y = y_anno + 0.005, label = r2_anno))
+
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.png"), width = 10)
+ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.pdf"), width = 10)
+
 
 cor_n_marker_scatter_r2 <- ggplot(data = cor_check, aes(x = n_markers, y = cor, color = method)) + 
   geom_point() + 
@@ -391,17 +432,6 @@ cor_n_marker_scatter_r2 <- ggplot(data = cor_check, aes(x = n_markers, y = cor, 
   theme_bw()
 
 ggsave(cor_n_marker_scatter_r2, filename = here(plot_dir, "cor_n_marker_scatter_r2.png"), width = 10)
-
-rmse_n_marker_scatter <- 
-  ggplot(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
-  geom_smooth() +
-  geom_point(size = 2) +
-  scale_color_manual(values = method_colors) +
-  theme_bw()
-
-ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.png"), width = 10)
-ggsave(rmse_n_marker_scatter, filename = here(plot_dir, "rmse_n_marker_scatter.pdf"), width = 10)
-
 
 cor_n_marker_scatter_log <- 
   ggplot() +
