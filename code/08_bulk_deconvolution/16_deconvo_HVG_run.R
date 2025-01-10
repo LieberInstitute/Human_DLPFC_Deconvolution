@@ -26,11 +26,10 @@ hvg_prop <- as.character(seq(10,100, 10))
 #          create_shell = TRUE)
 
 #### prep dirs & plotting ####
-
 plot_dir <- here("plots", "08_bulk_deconvolution", "16_deconvo_HVG_run")
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
-data_dir <- here("plots", "08_bulk_deconvolution", "16_deconvo_HVG_run")
+data_dir <- here("processed-data", "08_bulk_deconvolution", "16_deconvo_HVG_run")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
 load(here("processed-data","00_data_prep","method_colors.Rdata"), verbose = TRUE)
@@ -53,7 +52,10 @@ hvg_n_df |> count(HVG, array_task_id)
 
 #### get job reports ####
 ## get job_id from 10 run (HVG10)
-logs <- list.files("logs", "HVG10_", full.names = TRUE)
+logs <- list.files("logs", "HVG", full.names = TRUE)
+# logs <- list.files("logs", "HVG10_", full.names = TRUE)
+
+logs <- logs[!grepl("prep", logs)]
 length(logs)
 
 job_ids <- map_int(logs, ~parse_number(readLines(.x)[[5]]))
@@ -61,7 +63,14 @@ length(unique(job_ids))
 
 job_report_df <- map_dfr(job_ids, job_report) |>
   mutate(method = gsub("0\\d_deconvolution_(.*?)_HVG", "\\1", name)) |>
-  left_join(hvg_n_df)
+  unique() |>
+  left_join(hvg_n_df) |> 
+  group_by(name, ## select highest mem runs for DWLS & CIBERSORT- low runs had silent errors
+           array_task_id) |>
+  arrange(-requested_mem_gb)  |>
+  slice(1) |>
+  ungroup() |>
+  arrange(name, array_task_id)
 
 job_report_df |> count(name, exit_code)
 # name                            exit_code     n
@@ -97,5 +106,12 @@ n_gene_vs_wallclock_time <- job_report_df |>
 
 ggsave(n_gene_vs_wallclock_time, filename = here(plot_dir, "HVG_n_gene_vs_wallclock_time_scatter.png"), height = 5, width = 5)
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
+gc()
 
 
