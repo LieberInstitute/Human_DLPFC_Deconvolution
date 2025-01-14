@@ -380,7 +380,8 @@ anno_y <- cor_check_tidy |>
   mutate(y_anno = (15000*n_markers) + Intercept) |>
   left_join(cor_check_summary |> select(method, adj.r.squared, p.value)) |>
   mutate(p_anno = ifelse(p.value < 0.05, "*", ""),
-         r2_anno = paste0("R2=", round(adj.r.squared, 2)), p_anno)
+         r2_anno = paste0("R2=", round(adj.r.squared, 2), p_anno)
+  )
 
 cor_n_marker_scatter <- 
   ggplot(data = cor_check, aes(x = n_markers, y = cor, color= method)) +
@@ -405,9 +406,10 @@ rmse_anno_y <- rmse_check_tidy |>
   mutate(term = gsub("\\(|\\)", "", term)) |>
   pivot_wider(values_from = "estimate", names_from = "term") |>
   mutate(y_anno = (15000*n_markers) + Intercept) |>
-  left_join(rmse_check_summary |> select(method, adj.r.squared)) |>
-  mutate(r2_anno = paste0("R2=", round(adj.r.squared, 2))) 
-
+  left_join(rmse_check_summary |> select(method, adj.r.squared, p.value)) |>
+  mutate(p_anno = ifelse(p.value < 0.05, "*", ""),
+         r2_anno = paste0("R2=", round(adj.r.squared, 2), p_anno)
+  )
 
 rmse_n_marker_scatter <- 
   ggplot(data = cor_check, aes(x = n_markers, y = rmse, color= method)) +
