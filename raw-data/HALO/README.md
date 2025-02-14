@@ -1,3 +1,5 @@
+The HALO files used in the final publication are those from [`Annotation_refinement_20230922`](Annotation_refinement_20230922/). They are used by [`code/03_HALO/01_import_HALO_data.R`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/blob/66491598482f157df86f3c9487863179177d4e6b/code/03_HALO/01_import_HALO_data.R). Other files were from earlier analysis iterations.
+
 
 ### Metadata + Notes
 `Deconvolution_HALO_Analysis.xlsx`  
