@@ -3,7 +3,7 @@ The HALO files used in the final publication are those from [`Annotation_refinem
 
 ### Metadata + Notes
 `Deconvolution_HALO_Analysis.xlsx`  
-Downloaded from [this google sheet](https://docs.google.com/spreadsheets/d/1bld6g-7MN2G18b8hwXEkC0dDOhWlzmFTAmpcPYdgXjI) on 6/29/22  
+Downloaded from [this google sheet](https://docs.google.com/spreadsheets/d/1bld6g-7MN2G18b8hwXEkC0dDOhWlzmFTAmpcPYdgXjI) on 2025-05-04. 
 Other info is in [this google doc](https://docs.google.com/document/d/1GXbV134CdPmMcSw9pPeSKeHQ8tBMCf0gLuf5Sq4RF4g)
 
 

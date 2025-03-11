@@ -47,7 +47,7 @@ The RNA-seq FASTQ files are available via Globus endpoint ['jhpce#humanDeconvolu
 
 ## smFISH data
 
-The RNAscope images are available via the Globus endpoint ['jhpce#humanDeconvolutionRNAScope'](https://research.libd.org/globus/jhpce_humanDeconvolutionRNAScope/index.html).
+The RNAscope images are available via the Globus endpoint ['jhpce#humanDeconvolutionRNAScope'](https://research.libd.org/globus/jhpce_humanDeconvolutionRNAScope/index.html) under the `raw_images_to_share/` directory. The raw images are also available at Zenodo under DOI [10.5281/zenodo.14969130](https://doi.org/10.5281/zenodo.14969130).
 
 These images were analyzed with HALO software (Indica labs). The HALO exported setting files and data CSV files are available at [`raw-data/HALO`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/tree/main/raw-data/HALO). The combined HALO output data is available into an R object is available at [`processed-data/03_HALO/halo_all.Rdata`](https://github.com/LieberInstitute/Human_DLPFC_Deconvolution/blob/main/processed-data/03_HALO/halo_all.Rdata).
 
